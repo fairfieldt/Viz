@@ -16,6 +16,7 @@ public class Variable implements Drawable
 
 	public void draw(XAALScripter scripter)
 	{
+		
 		if (this.isReference)
 		{
 			scripter.addCircle(xPos, yPos);
@@ -27,6 +28,7 @@ public class Variable implements Drawable
 		
 		scripter.addText(name + " = " + value, xPos, yPos);
 	}
+	
 }
 
 

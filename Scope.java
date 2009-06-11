@@ -26,11 +26,13 @@ public class Scope implements Drawable
 
 	public void draw(XAALScripter scripter)
 	{
+		/*
 		scripter.addRectangle(xPos, yPos, sizeX, sizeY, color, hidden);
 
 		for (Variable v : vars)
 		{
 			v.draw();
-		}
+		}*/
 	}
+	
 }
