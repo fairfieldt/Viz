@@ -18,14 +18,14 @@ public class EricTest {
 		String triangle = scripter.addTriangle(20, 200, 100);
 		
 		scripter.startSlide();
-		scripter.translate(56, 300, rect1, triangle);
-		scripter.translate(-45, -30, text1);
+		scripter.addTranslate(56, 300, rect1, triangle);
+		scripter.addTranslate(-45, -30, text1);
 		scripter.endSlide();
 		
 		scripter.startSlide();
 		scripter.startPar();
 		
-		scripter.translate(4, -300, rect2);
+		scripter.addTranslate(4, -300, rect2);
 		scripter.endPar();
 		scripter.endSlide();
 		
