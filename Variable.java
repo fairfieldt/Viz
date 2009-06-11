@@ -14,7 +14,7 @@ public class Variable implements Drawable
 		this.isReference = isReference;
 	}
 
-	pubic void draw(XAALScripter scripter)
+	public void draw(XAALScripter scripter)
 	{
 		if (this.isReference)
 		{

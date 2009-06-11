@@ -10,6 +10,7 @@ public class XAALScripter {
 	
 	private int rectNum = 0;
 	private int textNum = 0;
+	private int lineNum = 0;
 	
 	public XAALScripter()
 	{
@@ -235,6 +236,78 @@ public class XAALScripter {
 		text.addContent(style);
 		
 		initial.addContent(text);
+		
+		return idVal;
+	}
+	
+	/**
+	 * Adds a new non-hidden black line to the initial element of the XAAL script.
+	 * @param x1 x coordinate for first point.
+	 * @param y1 y coordinate for first point.
+	 * @param x2 x coordinate for second point.
+	 * @param y2 y coordinate for second point.
+	 * @return a String containing the id of the line added.
+	 */
+	public String addLine(int x1, int y1, int x2, int y2)
+	{
+		return addLine(x1, y1, x2, y2, "black");
+	}
+	
+	/**
+	 * Adds a new non-hidden black line to the initial element of the XAAL script.
+	 * @param x1 x coordinate for first point.
+	 * @param y1 y coordinate for first point.
+	 * @param x2 x coordinate for second point.
+	 * @param y2 y coordinate for second point.
+	 * @param color the color of line. Must be a named XAAL color.
+	 * @return a String containing the id of the line added.
+	 */
+	public String addLine(int x1, int y1, int x2, int y2, String color)
+	{
+		return addLine(x1, y1, x2, y2, "black", false);
+	}
+	
+	/**
+	 * Adds a new non-hidden black line to the initial element of the XAAL script.
+	 * @param x1 x coordinate for first point.
+	 * @param y1 y coordinate for first point.
+	 * @param x2 x coordinate for second point.
+	 * @param y2 y coordinate for second point.
+	 * @param color the color of line. Must be a named XAAL color.
+	 * @param hidden whether the line should be initially hidden
+	 * @return a String containing the id of the line added.
+	 */
+	public String addLine(int x1, int y1, int x2, int y2, String color, boolean hidden)
+	{
+		Element initial = document.getRootElement().getChild("initial", defaultNS);
+		
+		Element line = new Element("line");
+		
+		String idVal = "line" + lineNum;
+		lineNum++;
+		line.setAttribute("id", idVal);
+		
+		line.setAttribute("hidden", hidden + "");
+		
+		Element coordinate = new Element("coordinate");
+		coordinate.setAttribute("x", x1 + "");
+		coordinate.setAttribute("y", y1 + "");
+		line.addContent(coordinate);
+		
+		coordinate = new Element("coordinate");
+		coordinate.setAttribute("x", x2 + "");
+		coordinate.setAttribute("y", y2 + "");
+		line.addContent(coordinate);
+		
+		Element style = new Element("style");
+		
+		Element colorElem = new Element("color");
+		colorElem.setAttribute("name", color);
+		style.addContent(colorElem);
+		
+		line.addContent(style);
+		
+		initial.addContent(line);
 		
 		return idVal;
 	}
