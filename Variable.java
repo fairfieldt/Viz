@@ -32,6 +32,7 @@ public class Variable implements Drawable
 
 	public void draw(XAALScripter scripter)
 	{
+		
 		if (this.isReference)
 		{
 		
@@ -44,6 +45,7 @@ public class Variable implements Drawable
 		
 		scripter.addText(xPos+15, yPos+25, name + " = " + value);
 	}
+	
 }
 
 

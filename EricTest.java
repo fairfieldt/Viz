@@ -29,6 +29,19 @@ public class EricTest {
 		scripter.endPar();
 		scripter.endSlide();
 		
+		scripter.startSlide();
+		scripter.addHide(rect1, triangle);
+		scripter.endSlide();
+		
+		scripter.startSlide();
+		scripter.addShow(rect1);
+		scripter.endSlide();
+		
+		scripter.startSlide();
+		scripter.addChangeStyle("green", text1);
+		scripter.addChangeStyle("green", triangle);
+		scripter.endSlide();
+		
 		FileWriter writer = new FileWriter("C:\\Users\\Eric\\Desktop\\test.xaal");
 		
 		writer.write(scripter.toString());
