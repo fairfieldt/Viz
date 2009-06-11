@@ -696,6 +696,80 @@ public class XAALScripter {
 			endPar();
 	}
 	
+	private void addMove(int x, int y) throws Exception
+	{
+		addMove(x, y, new String[0]);
+	}
+	
+	private void addMove(int x, int y, String...ids) throws Exception
+	{
+		if (!inSlide())
+			throw new Exception("You must create a slide before creating actions.");
+		
+		boolean closeParAtEnd = false;
+		
+		if(!inPar())
+		{
+			startPar();
+			closeParAtEnd = true;
+		}
+		
+		Element parent = currentPar;
+		
+		Element move = new Element("move");
+		move.setAttribute("type", "move");
+		
+	
+		for (String id : ids)
+		{
+			Element objRef = new Element("object-ref");
+			objRef.setAttribute("id", id);
+			move.addContent(objRef);
+		}
+		
+		Element coordinate = new Element("coordinate");
+		coordinate.setAttribute("x", x + "");
+		coordinate.setAttribute("y", y + "");
+		move.addContent(coordinate);
+		
+		parent.addContent(move);
+		
+		if (closeParAtEnd)
+			endPar();
+	}
+	
+	/**
+	 * Adds a pause to the open parallel section or creates one if necessary.
+	 * @param ms how long to pause in milliseconds.
+	 * @throws Exception
+	 */
+	public void addPause(int ms) throws Exception
+	{
+		addMove(ms, 0);
+	}
+	
+	private void addNarrative(String text) throws Exception
+	{
+		if (!inSlide())
+			throw new Exception("You must create a slide before creating actions.");
+		
+		Element narrative = new Element("narrative");
+		
+		narrative.setText(text);
+		
+		currentSlide.addContent(narrative);
+	}
+	
+	/**
+	 * Adds a pseudocode URL to the current slide
+	 * @param url the URL of the page to be displayed in the pseudocode pane.
+	 * @throws Exception
+	 */
+	public void addPseudocodeUrl(String url) throws Exception
+	{
+			addNarrative(url);
+	}
+	
 	//TODO: just for testing!
 	public String toString()
 	{

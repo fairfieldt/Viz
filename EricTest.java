@@ -42,6 +42,12 @@ public class EricTest {
 		scripter.addChangeStyle("green", triangle);
 		scripter.endSlide();
 		
+		scripter.startSlide();
+		scripter.addTranslate(70, 400, text1);
+		scripter.addPause(500);
+		scripter.addTranslate(-70, -400, text1);
+		scripter.endSlide();
+		
 		FileWriter writer = new FileWriter("C:\\Users\\Eric\\Desktop\\test.xaal");
 		
 		writer.write(scripter.toString());
