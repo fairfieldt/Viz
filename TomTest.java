@@ -1,6 +1,6 @@
 import java.io.*;
 
-public class Test {
+public class TomTest {
 
 	/**
 	 * @param args
