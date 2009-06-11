@@ -12,6 +12,10 @@ public class XAALScripter {
 	private int rectNum = 0;
 	private int textNum = 0;
 	private int lineNum = 0;
+	private int triangleNum = 0;
+	
+	private Element currentSlide = null;
+	private Element currentPar = null;
 	
 	public XAALScripter()
 	{
@@ -30,8 +34,6 @@ public class XAALScripter {
 		xaalRoot.addContent(initial);
 		
 		Element animation = new Element("animation", defaultNS);
-		Element sequence = new Element("seq", defaultNS);
-		animation.addContent(sequence);
 		xaalRoot.addContent(animation);
 		
 		document.setRootElement(xaalRoot);
@@ -316,9 +318,88 @@ public class XAALScripter {
 		return idVal;
 	}
 	
-	public void addCircle()
+	/**
+	 * Adds a new non-hidden black equilateral triangle to the initial element of a XAAL script.
+	 * @param x y coordinate for the top left corner of the rectangular box containing the triangle.
+	 * @param y y coordinate for the top left corner of the rectangular box containing the triangle.
+	 * @param width width (and height) of the triangle in pixels.
+	 * @return the String containing the id of the triangle added.
+	 */
+	public String addTriangle(int x, int y, int width)
 	{
+		return addTriangle(x, y, width, "black");
+	}
 	
+	/**
+	 * Adds a new non-hidden equilateral triangle to the initial element of a XAAL script.
+	 * @param x y coordinate for the top left corner of the rectangular box containing the triangle.
+	 * @param y y coordinate for the top left corner of the rectangular box containing the triangle.
+	 * @param width width (and height) of the triangle in pixels.
+	 * @param color the border color of the triangle
+	 * @return the String containing the id of the triangle added.
+	 */
+	public String addTriangle(int x, int y, int width, String color)
+	{
+		return addTriangle(x, y, width, color, false);
+	}
+	
+	/**
+	 *  * Adds a new equilateral triangle to the initial element of a XAAL script.
+	 * @param x y coordinate for the top left corner of the rectangular box containing the triangle.
+	 * @param y y coordinate for the top left corner of the rectangular box containing the triangle.
+	 * @param width width (and height) of the triangle in pixels.
+	 * @param color the border color of the triangle.
+	 * @param hidden whether the triangle is hidden initially.
+	 * @return the String containing the id of the triangle added.
+	 */
+	public String addTriangle(int x, int y, int width, String color, boolean hidden)
+	{
+		Element initial = document.getRootElement().getChild("initial", defaultNS);
+		
+		Element triangle = new Element("polyline");
+		
+		String idVal = "triangle" + lineNum;
+		triangleNum++;
+		triangle.setAttribute("id", idVal);
+		
+		triangle.setAttribute("hidden", hidden + "");
+		
+		Element coordinate = new Element("coordinate");
+		coordinate.setAttribute("x", (x +(width/2)) + "");
+		coordinate.setAttribute("y", y + "");
+		triangle.addContent(coordinate);
+		
+		
+		coordinate = new Element("coordinate");
+		coordinate.setAttribute("x", (x + width) + "");
+		coordinate.setAttribute("y", (y + width) + "");
+		triangle.addContent(coordinate);
+		
+		coordinate = new Element("coordinate");
+		coordinate.setAttribute("x", (x) + "");
+		coordinate.setAttribute("y", (y + width) + "");
+		triangle.addContent(coordinate);
+		
+		coordinate = new Element("coordinate");
+		coordinate.setAttribute("x", (x +(width/2)) + "");
+		coordinate.setAttribute("y", y + "");
+		triangle.addContent(coordinate);
+		
+		Element closed = new Element("closed");
+		closed.setAttribute("value", true + "");
+		triangle.addContent(closed);
+		
+		Element style = new Element("style");
+		
+		Element colorElem = new Element("color");
+		colorElem.setAttribute("name", color);
+		style.addContent(colorElem);
+		
+		triangle.addContent(style);
+		
+		initial.addContent(triangle);
+		
+		return idVal;
 	}
 
 	public String addArrow(String originName, String destName, boolean isDashed)
@@ -378,11 +459,130 @@ public class XAALScripter {
 		return "asdf";
 	}	
 	
+	//TODO: do we want to create specific exceptions for when slides have 
+	// already been started or just general exceptions?
+	
+	/**
+	 * Begins a slide for the animation. Corresponds to the seq element.
+	 * @throws Exception
+	 */
+	public void startSlide() throws Exception
+	{
+		if (inSlide())
+			throw new Exception("A slide has already been started. " +
+					"It must be ended before you can create another.");
+		
+		currentSlide = new Element("seq");
+	}
+	
+	/**
+	 * Closes the current open slide and inserts it in the animation section 
+	 * of the XAAL script.
+	 * @throws Exception
+	 */
+	public void endSlide() throws Exception
+	{
+		if (!inSlide())
+			throw new Exception("No slide has been started yet.");
+		
+		Element animation = document.getRootElement().getChild("animation", defaultNS);
+		
+		animation.addContent(currentSlide);
+		
+		currentSlide = null;
+	}
+	
+	public boolean inSlide()
+	{
+		return currentSlide != null;
+	}
+	
+	/**
+	 * Begins a section that runs multiple changes in parallel.
+	 * Corresponds to the par element in XAAL.
+	 * @throws Exception
+	 */
+	public void startPar() throws Exception
+	{
+		if (!inSlide())
+			throw new Exception("No slide is open. Parallel sections can only be " +
+					"added to open slides");
+		
+		if (inPar())
+			throw new Exception("Parallel section has already been started. " +
+					"It must be ended before you can create another.");
+		
+		currentPar = new Element("par");
+	}
+	
+	/**
+	 * Closes a parallel section and writes it to the animation section of 
+	 * the XAAL script.
+	 * @throws Exception
+	 */
+	public void endPar() throws Exception
+	{
+		if (!inPar())
+			throw new Exception("No parallel section");
+		
+		currentSlide.addContent(currentPar);
+		
+		currentPar = null;
+	}
+	
+	public boolean inPar()
+	{
+		return currentPar != null;
+	}
+	
+	/**
+	 * Adds a translate action to the open parallel section or creates one if necessary.
+	 * @param x the number pixels the objects should move right. Use negative if you
+	 * want to move left.
+	 * @param y the number pixels the objects should move down. Use negative if you want to move up.
+	 * @param ids a variable number of Strings containing the ids of objects to be moved.
+	 * @throws Exception
+	 */
+	public void addTranslate(int x, int y, String...ids) throws Exception
+	{
+		if (!inSlide())
+			throw new Exception("You must create a slide before creating actions.");
+		
+		boolean closeParAtEnd = false;
+		
+		if(!inPar())
+		{
+			startPar();
+			closeParAtEnd = true;
+		}
+		
+		Element parent = currentPar;
+		
+		Element move = new Element("move");
+		move.setAttribute("type", "translate");
+		
+		for (String id : ids)
+		{
+			Element objRef = new Element("object-ref");
+			objRef.setAttribute("id", id);
+			move.addContent(objRef);
+		}
+		
+		Element coordinate = new Element("coordinate");
+		coordinate.setAttribute("x", x + "");
+		coordinate.setAttribute("y", y + "");
+		move.addContent(coordinate);
+		
+		parent.addContent(move);
+		
+		if (closeParAtEnd)
+			endPar();
+	}
+	
 	//TODO: just for testing!
 	public String toString()
 	{
 		XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
 		return outputter.outputString(document);
-	
 	}
 }
