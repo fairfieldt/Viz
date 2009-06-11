@@ -34,8 +34,6 @@ public class XAALScripter {
 		xaalRoot.addContent(initial);
 		
 		Element animation = new Element("animation", defaultNS);
-		Element sequence = new Element("seq", defaultNS);
-		animation.addContent(sequence);
 		xaalRoot.addContent(animation);
 		
 		document.setRootElement(xaalRoot);
@@ -464,7 +462,7 @@ public class XAALScripter {
 	 */
 	public void startSlide() throws Exception
 	{
-		if (currentSlide != null)
+		if (inSlide())
 			throw new Exception("A slide has already been started. " +
 					"It must be ended before you can create another.");
 		
@@ -478,7 +476,7 @@ public class XAALScripter {
 	 */
 	public void endSlide() throws Exception
 	{
-		if (currentSlide == null)
+		if (!inSlide())
 			throw new Exception("No slide has been started yet.");
 		
 		Element animation = document.getRootElement().getChild("animation", defaultNS);
@@ -488,6 +486,11 @@ public class XAALScripter {
 		currentSlide = null;
 	}
 	
+	public boolean inSlide()
+	{
+		return currentSlide != null;
+	}
+	
 	/**
 	 * Begins a section that runs multiple changes in parallel.
 	 * Corresponds to the par element in XAAL.
@@ -495,11 +498,11 @@ public class XAALScripter {
 	 */
 	public void startPar() throws Exception
 	{
-		if (currentSlide == null)
+		if (!inSlide())
 			throw new Exception("No slide is open. Parallel sections can only be " +
 					"added to open slides");
 		
-		if (currentPar != null)
+		if (inPar())
 			throw new Exception("Parallel section has already been started. " +
 					"It must be ended before you can create another.");
 		
@@ -513,12 +516,61 @@ public class XAALScripter {
 	 */
 	public void endPar() throws Exception
 	{
-		if (currentPar == null)
+		if (!inPar())
 			throw new Exception("No parallel section");
 		
 		currentSlide.addContent(currentPar);
 		
 		currentPar = null;
+	}
+	
+	public boolean inPar()
+	{
+		return currentPar != null;
+	}
+	
+	/**
+	 * Adds a translate action to the open parallel section or creates one if necessary.
+	 * @param x the number pixels the objects should move right. Use negative if you
+	 * want to move left.
+	 * @param y the number pixels the objects should move down. Use negative if you want to move up.
+	 * @param ids a variable number of Strings containing the ids of objects to be moved.
+	 * @throws Exception
+	 */
+	public void addTranslate(int x, int y, String...ids) throws Exception
+	{
+		if (!inSlide())
+			throw new Exception("You must create a slide before creating actions.");
+		
+		boolean closeParAtEnd = false;
+		
+		if(!inPar())
+		{
+			startPar();
+			closeParAtEnd = true;
+		}
+		
+		Element parent = currentPar;
+		
+		Element move = new Element("move");
+		move.setAttribute("type", "translate");
+		
+		for (String id : ids)
+		{
+			Element objRef = new Element("object-ref");
+			objRef.setAttribute("id", id);
+			move.addContent(objRef);
+		}
+		
+		Element coordinate = new Element("coordinate");
+		coordinate.setAttribute("x", x + "");
+		coordinate.setAttribute("y", y + "");
+		move.addContent(coordinate);
+		
+		parent.addContent(move);
+		
+		if (closeParAtEnd)
+			endPar();
 	}
 	
 	//TODO: just for testing!
