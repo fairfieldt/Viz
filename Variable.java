@@ -2,16 +2,32 @@ public class Variable implements Drawable
 {
 	private String name;
 	private int value;
-	private boolean isReference;
+	private String color = "black";
+	private boolean isReference = false;
 	
 	private int xPos;
 	private int yPos;
 
-	public Variable(String name, int value, boolean isReference)
+	private int length = 0;
+	
+	public Variable(String name, int value, String color, boolean isReference)
 	{
 		this.name = name;
 		this.value = value;
+		this.color = color;
 		this.isReference = isReference;
+		this.length = (name.length() * 10) + 80;
+	}
+	
+	public void setPosition(int xPos, int yPos)
+	{
+		this.xPos = xPos;
+		this.yPos = yPos;
+	}
+	
+	public int getLength()
+	{
+		return this.length;
 	}
 
 	public void draw(XAALScripter scripter)
@@ -19,14 +35,15 @@ public class Variable implements Drawable
 		
 		if (this.isReference)
 		{
-			scripter.addCircle(xPos, yPos);
+		
 		}
 		else
 		{
-			scripter.addRectangle(xPos, yPos);
+			scripter.addRectangle(xPos, yPos, length, 40, color);
+			
 		}
 		
-		scripter.addText(name + " = " + value, xPos, yPos);
+		scripter.addText(xPos+15, yPos+25, name + " = " + value);
 	}
 	
 }

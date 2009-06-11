@@ -446,9 +446,15 @@ public class XAALScripter {
 			System.out.println(e);
 		}
 		
-		addLine(startX, startY, startX - 5, startY, "red");
-		addLine(startX - 5, startY, startX -5, endY, "red");
-		addLine(startX -5, endY, endX, endY, "red");
+		//Draw the line
+		addLine(startX, startY, startX - 10, startY, "red");
+		addLine(startX - 10, startY, startX -10, endY, "red");
+		addLine(startX -10, endY, endX, endY, "red");
+
+		//Add the arrow head
+		addLine(endX, endY, endX - 5, endY - 5, "red");
+		addLine(endX, endY, endX - 5, endY + 5, "red");		
+		
 		
 		return "asdf";
 	}	
