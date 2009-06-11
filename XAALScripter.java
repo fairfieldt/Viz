@@ -12,6 +12,7 @@ public class XAALScripter {
 	private int rectNum = 0;
 	private int textNum = 0;
 	private int lineNum = 0;
+	private int triangleNum = 0;
 	
 	public XAALScripter()
 	{
@@ -312,6 +313,90 @@ public class XAALScripter {
 		line.addContent(style);
 		
 		initial.addContent(line);
+		
+		return idVal;
+	}
+	
+	/**
+	 * Adds a new non-hidden black equilateral triangle to the initial element of a XAAL script.
+	 * @param x y coordinate for the top left corner of the rectangular box containing the triangle.
+	 * @param y y coordinate for the top left corner of the rectangular box containing the triangle.
+	 * @param width width (and height) of the triangle in pixels.
+	 * @return the String containing the id of the triangle added.
+	 */
+	public String addTriangle(int x, int y, int width)
+	{
+		return addTriangle(x, y, width, "black");
+	}
+	
+	/**
+	 * Adds a new non-hidden equilateral triangle to the initial element of a XAAL script.
+	 * @param x y coordinate for the top left corner of the rectangular box containing the triangle.
+	 * @param y y coordinate for the top left corner of the rectangular box containing the triangle.
+	 * @param width width (and height) of the triangle in pixels.
+	 * @param color the border color of the triangle
+	 * @return the String containing the id of the triangle added.
+	 */
+	public String addTriangle(int x, int y, int width, String color)
+	{
+		return addTriangle(x, y, width, color, false);
+	}
+	
+	/**
+	 *  * Adds a new equilateral triangle to the initial element of a XAAL script.
+	 * @param x y coordinate for the top left corner of the rectangular box containing the triangle.
+	 * @param y y coordinate for the top left corner of the rectangular box containing the triangle.
+	 * @param width width (and height) of the triangle in pixels.
+	 * @param color the border color of the triangle.
+	 * @param hidden whether the triangle is hidden initially.
+	 * @return the String containing the id of the triangle added.
+	 */
+	public String addTriangle(int x, int y, int width, String color, boolean hidden)
+	{
+		Element initial = document.getRootElement().getChild("initial", defaultNS);
+		
+		Element triangle = new Element("polyline");
+		
+		String idVal = "triangle" + lineNum;
+		triangleNum++;
+		triangle.setAttribute("id", idVal);
+		
+		triangle.setAttribute("hidden", hidden + "");
+		
+		Element coordinate = new Element("coordinate");
+		coordinate.setAttribute("x", (x +(width/2)) + "");
+		coordinate.setAttribute("y", y + "");
+		triangle.addContent(coordinate);
+		
+		
+		coordinate = new Element("coordinate");
+		coordinate.setAttribute("x", (x + width) + "");
+		coordinate.setAttribute("y", (y + width) + "");
+		triangle.addContent(coordinate);
+		
+		coordinate = new Element("coordinate");
+		coordinate.setAttribute("x", (x) + "");
+		coordinate.setAttribute("y", (y + width) + "");
+		triangle.addContent(coordinate);
+		
+		coordinate = new Element("coordinate");
+		coordinate.setAttribute("x", (x +(width/2)) + "");
+		coordinate.setAttribute("y", y + "");
+		triangle.addContent(coordinate);
+		
+		Element closed = new Element("closed");
+		closed.setAttribute("value", true + "");
+		triangle.addContent(closed);
+		
+		Element style = new Element("style");
+		
+		Element colorElem = new Element("color");
+		colorElem.setAttribute("name", color);
+		style.addContent(colorElem);
+		
+		triangle.addContent(style);
+		
+		initial.addContent(triangle);
 		
 		return idVal;
 	}
