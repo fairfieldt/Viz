@@ -14,6 +14,9 @@ public class XAALScripter {
 	private int lineNum = 0;
 	private int triangleNum = 0;
 	
+	private Element currentSlide = null;
+	private Element currentPar = null;
+	
 	public XAALScripter()
 	{
 		Element xaalRoot = new Element("xaal", defaultNS);
@@ -400,11 +403,6 @@ public class XAALScripter {
 		
 		return idVal;
 	}
-	
-	public void addCircle()
-	{
-	
-	}
 
 	public String addArrow(String originName, String destName, boolean isDashed)
 	{
@@ -457,11 +455,76 @@ public class XAALScripter {
 		return "asdf";
 	}	
 	
+	//TODO: do we want to create specific exceptions for when slides have 
+	// already been started or just general exceptions?
+	
+	/**
+	 * Begins a slide for the animation. Corresponds to the seq element.
+	 * @throws Exception
+	 */
+	public void startSlide() throws Exception
+	{
+		if (currentSlide != null)
+			throw new Exception("A slide has already been started. " +
+					"It must be ended before you can create another.");
+		
+		currentSlide = new Element("seq");
+	}
+	
+	/**
+	 * Closes the current open slide and inserts it in the animation section 
+	 * of the XAAL script.
+	 * @throws Exception
+	 */
+	public void endSlide() throws Exception
+	{
+		if (currentSlide == null)
+			throw new Exception("No slide has been started yet.");
+		
+		Element animation = document.getRootElement().getChild("animation", defaultNS);
+		
+		animation.addContent(currentSlide);
+		
+		currentSlide = null;
+	}
+	
+	/**
+	 * Begins a section that runs multiple changes in parallel.
+	 * Corresponds to the par element in XAAL.
+	 * @throws Exception
+	 */
+	public void startPar() throws Exception
+	{
+		if (currentSlide == null)
+			throw new Exception("No slide is open. Parallel sections can only be " +
+					"added to open slides");
+		
+		if (currentPar != null)
+			throw new Exception("Parallel section has already been started. " +
+					"It must be ended before you can create another.");
+		
+		currentPar = new Element("par");
+	}
+	
+	/**
+	 * Closes a parallel section and writes it to the animation section of 
+	 * the XAAL script.
+	 * @throws Exception
+	 */
+	public void endPar() throws Exception
+	{
+		if (currentPar == null)
+			throw new Exception("No parallel section");
+		
+		currentSlide.addContent(currentPar);
+		
+		currentPar = null;
+	}
+	
 	//TODO: just for testing!
 	public String toString()
 	{
 		XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
 		return outputter.outputString(document);
-	
 	}
 }
