@@ -573,6 +573,123 @@ public class XAALScripter {
 			endPar();
 	}
 	
+	/**
+	 * Adds a show action to the open parallel section or creates one if necessary.
+	 * @param ids a variable number of Strings containing the ids of objects to be shown.
+	 * @throws Exception
+	 */
+	public void addShow(String...ids) throws Exception
+	{
+		if (!inSlide())
+			throw new Exception("You must create a slide before creating actions.");
+		
+		boolean closeParAtEnd = false;
+		
+		if(!inPar())
+		{
+			startPar();
+			closeParAtEnd = true;
+		}
+		
+		Element parent = currentPar;
+		
+		Element show = new Element("show");
+		show.setAttribute("type", "selected");
+		
+		for (String id : ids)
+		{
+			Element objRef = new Element("object-ref");
+			objRef.setAttribute("id", id);
+			show.addContent(objRef);
+		}
+		
+		parent.addContent(show);		
+		
+		if (closeParAtEnd)
+			endPar();
+	}
+	
+	/**
+	 * Adds a hide action to the open parallel section or creates one if necessary.
+	 * @param ids a variable number of Strings containing the ids of objects to be hidden.
+	 * @throws Exception
+	 */
+	public void addHide(String...ids) throws Exception
+	{
+		if (!inSlide())
+			throw new Exception("You must create a slide before creating actions.");
+		
+		boolean closeParAtEnd = false;
+		
+		if(!inPar())
+		{
+			startPar();
+			closeParAtEnd = true;
+		}
+		
+		Element parent = currentPar;
+		
+		Element hide = new Element("hide");
+		hide.setAttribute("type", "selected");
+		
+		for (String id : ids)
+		{
+			Element objRef = new Element("object-ref");
+			objRef.setAttribute("id", id);
+			hide.addContent(objRef);
+		}
+		
+		parent.addContent(hide);		
+		
+		if (closeParAtEnd)
+			endPar();
+	}
+	
+	/**
+	 * Adds a change-style action to the open parallel section or creates one if necessary.
+	 * @param color the new color of the objects being changed.
+	 * @param ids a number of Strings containing the ids of the objects to be modified.
+	 * @throws Exception
+	 */
+	public void addChangeStyle(String color, String...ids) throws Exception
+	{
+		if (!inSlide())
+			throw new Exception("You must create a slide before creating actions.");
+		
+		boolean closeParAtEnd = false;
+		
+		if(!inPar())
+		{
+			startPar();
+			closeParAtEnd = true;
+		}
+		
+		Element parent = currentPar;
+		
+		Element changeStyle = new Element("change-style");
+		
+		for (String id : ids)
+		{
+			Element objRef = new Element("object-ref");
+			objRef.setAttribute("id", id);
+			changeStyle.addContent(objRef);
+		}
+		
+		Element style = new Element("style");
+		
+		Element colorElem = new Element("color");
+		colorElem.setAttribute("name", color);
+		
+		style.addContent(colorElem);
+		
+		changeStyle.addContent(style);
+		
+		parent.addContent(changeStyle);
+		
+		if (closeParAtEnd)
+			endPar();
+	}
+	
 	//TODO: just for testing!
 	public String toString()
 	{
