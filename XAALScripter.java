@@ -1,5 +1,6 @@
 import org.jdom.*;
 import org.jdom.output.*;
+import java.util.*;
 
 public class XAALScripter {
 	private Document document = new Document();
@@ -29,6 +30,8 @@ public class XAALScripter {
 		xaalRoot.addContent(initial);
 		
 		Element animation = new Element("animation", defaultNS);
+		Element sequence = new Element("seq", defaultNS);
+		animation.addContent(sequence);
 		xaalRoot.addContent(animation);
 		
 		document.setRootElement(xaalRoot);
@@ -79,6 +82,7 @@ public class XAALScripter {
 		
 		String idVal = "rectangle" + rectNum;
 		rectNum++;
+		
 		rect.setAttribute("id", idVal );
 		
 		rect.setAttribute("hidden", hidden + "");
@@ -264,7 +268,7 @@ public class XAALScripter {
 	 */
 	public String addLine(int x1, int y1, int x2, int y2, String color)
 	{
-		return addLine(x1, y1, x2, y2, "black", false);
+		return addLine(x1, y1, x2, y2, color, false);
 	}
 	
 	/**
@@ -316,6 +320,57 @@ public class XAALScripter {
 	{
 	
 	}
+
+	public String addArrow(String originName, String destName, boolean isDashed)
+	{
+		Element initial = document.getRootElement().getChild("initial", defaultNS);
+		
+		List elements = initial.getChildren();
+		Element origin = null;
+		Element dest = null;
+		for (Object o : elements)
+		{
+			Element e = (Element) o;
+			Attribute a = e.getAttribute("id");
+			System.out.println(a);
+			if (e.getAttribute("id").getValue().equals(originName))
+			{
+				origin = e;
+			}
+			else if (e.getAttribute("id").getValue().equals(destName))
+			{
+				dest = e;
+			}
+		}
+		//find our starting point
+
+		Element startPos = origin.getChild("coordinate");
+		Element endPos = dest.getChild("coordinate");
+		int startX = 0;
+		int startY = 0;
+		int endX = 0;
+		int endY= 0;
+		try
+		{	
+			startX = startPos.getAttribute("x").getIntValue();
+			startY = startPos.getAttribute("y").getIntValue();
+			System.out.println("X: " + startX + " Y: " + startY);
+			
+			endX = endPos.getAttribute("x").getIntValue();
+			endY = endPos.getAttribute("y").getIntValue();
+			System.out.println("End X: " + endX + " End Y: " + endY);
+		}
+		catch (Exception e)
+		{
+			System.out.println(e);
+		}
+		
+		addLine(startX, startY, startX - 5, startY, "red");
+		addLine(startX - 5, startY, startX -5, endY, "red");
+		addLine(startX -5, endY, endX, endY, "red");
+		
+		return "asdf";
+	}	
 	
 	//TODO: just for testing!
 	public String toString()
