@@ -58,7 +58,7 @@ public class TomTest {
 		scripter.endSlide();
 		
 		
-		FileWriter writer = new FileWriter("/home/fairfieldt/Documents/!test.xaal");
+		FileWriter writer = new FileWriter("C:\\Users\\Eric\\Desktop\\tomxaal.xaal");
 		
 		writer.write(scripter.toString());
 		
