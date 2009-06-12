@@ -62,13 +62,13 @@ public class Variable implements Drawable
 			if (ref != null)
 			{
 				scripter.addArrow(id, ref.getId(), 200, false, hidden ? true : false);
-				scripter.addText(xPos+15, yPos+25, name,  hidden ? true : false);
+				scripter.addText(xPos+15, yPos+25, name, "black",  hidden ? true : false);
 			}
 		}
 		else
 		{
 			id = scripter.addRectangle(xPos, yPos, length, 40, color,  hidden ? true : false);
-			scripter.addText(xPos+15, yPos+25, name + " = " + value,  hidden ? true : false);
+			scripter.addText(xPos+15, yPos+25, name + " = " + value, "black",  hidden ? true : false);
 		}
 		
 	}

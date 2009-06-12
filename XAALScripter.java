@@ -447,15 +447,6 @@ public class XAALScripter {
 			System.out.println(e);
 		}
 		
-		//Draw the line
-		//addLine(startX, startY, startX - padding, startY, "pink", isHidden);
-		//addLine(startX - padding, startY, startX -padding, endY, "pink", isHidden);
-		//addLine(startX - padding, endY, endX, endY, "pink", isHidden);
-
-		//Add the arrow head
-		addLine(endX, endY, endX - 5, endY - 5, "pink", isHidden);
-		addLine(endX, endY, endX - 5, endY + 5, "pink", isHidden);		
-		
 		Element arrow = new Element("polyline");
 		
 		Element coordinate = new Element("coordinate");
@@ -480,7 +471,7 @@ public class XAALScripter {
 				
 		coordinate = new Element("coordinate");
 		coordinate.setAttribute("x", (endX -5) + "");
-		coordinate.setAttribute("y", (endY -5) "");
+		coordinate.setAttribute("y", (endY -5) + "");
 		arrow.addContent(coordinate);
 				
 		coordinate = new Element("coordinate");
@@ -490,13 +481,16 @@ public class XAALScripter {
 		
 		coordinate = new Element("coordinate");
 		coordinate.setAttribute("x", (endX -5) + "");
-		coordinate.setAttribute("y", (endY +5) "");
+		coordinate.setAttribute("y", (endY +5) + "");
 		arrow.addContent(coordinate);
 		
 		arrow.setAttribute("hidden", isHidden + "");
 		
 		String idVal = "arrow" + arrowNum++;
 		arrow.setAttribute("id", idVal);
+		
+		initial.addContent(arrow);
+		
 		return idVal;
 	}	
 	

@@ -13,7 +13,7 @@ public class EricTest {
 		String rect2 = scripter.addRectangle(10, 110, 60, 160);
 		String text1 = scripter.addText(50, 20, "awesome");
 		
-		scripter.addArrow(rect1, rect2, false);
+		scripter.addArrow(rect1, rect2, 100, false, false);
 		
 		String triangle = scripter.addTriangle(20, 200, 100);
 		
