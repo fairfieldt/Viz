@@ -13,6 +13,7 @@ public class XAALScripter {
 	private int textNum = 0;
 	private int lineNum = 0;
 	private int triangleNum = 0;
+	private int arrowNum = 0;
 	
 	private Element currentSlide = null;
 	private Element currentPar = null;
@@ -402,7 +403,7 @@ public class XAALScripter {
 		return idVal;
 	}
 
-	public String addArrow(String originName, String destName, int padding, boolean isDashed)
+	public String addArrow(String originName, String destName, int padding, boolean isDashed, boolean isHidden)
 	{
 		Element initial = document.getRootElement().getChild("initial", defaultNS);
 		
@@ -446,17 +447,51 @@ public class XAALScripter {
 			System.out.println(e);
 		}
 		
-		//Draw the line
-		addLine(startX, startY, startX - padding, startY, "red");
-		addLine(startX - padding, startY, startX -padding, endY, "red");
-		addLine(startX - padding, endY, endX, endY, "red");
-
-		//Add the arrow head
-		addLine(endX, endY, endX - 5, endY - 5, "red");
-		addLine(endX, endY, endX - 5, endY + 5, "red");		
+		Element arrow = new Element("polyline");
 		
+		Element coordinate = new Element("coordinate");
+		coordinate.setAttribute("x", startX + "");
+		coordinate.setAttribute("y", startY + "");
+		arrow.addContent(coordinate);
+				
+		coordinate = new Element("coordinate");
+		coordinate.setAttribute("x", (startX - padding) + "");
+		coordinate.setAttribute("y", startY + "");
+		arrow.addContent(coordinate);
+				
+		coordinate = new Element("coordinate");
+		coordinate.setAttribute("x", (startX - padding) + "");
+		coordinate.setAttribute("y", endY + "");
+		arrow.addContent(coordinate);
+				
+		coordinate = new Element("coordinate");
+		coordinate.setAttribute("x", endX + "");
+		coordinate.setAttribute("y", endY + "");
+		arrow.addContent(coordinate);
+				
+		coordinate = new Element("coordinate");
+		coordinate.setAttribute("x", (endX -5) + "");
+		coordinate.setAttribute("y", (endY -5) + "");
+		arrow.addContent(coordinate);
+				
+		coordinate = new Element("coordinate");
+		coordinate.setAttribute("x", endX + "");
+		coordinate.setAttribute("y", endY + "");
+		arrow.addContent(coordinate);
 		
-		return "asdf";
+		coordinate = new Element("coordinate");
+		coordinate.setAttribute("x", (endX -5) + "");
+		coordinate.setAttribute("y", (endY +5) + "");
+		arrow.addContent(coordinate);
+		
+		arrow.setAttribute("hidden", isHidden + "");
+		
+		String idVal = "arrow" + arrowNum++;
+		arrow.setAttribute("id", idVal);
+		
+		initial.addContent(arrow);
+		
+		return idVal;
 	}	
 	
 	//TODO: do we want to create specific exceptions for when slides have 

@@ -6,6 +6,8 @@ public class Variable implements Drawable
 	private boolean isReference = false;
 	private String id = "";
 	
+	private boolean hidden = false;
+	
 	private int xPos;
 	private int yPos;
 
@@ -32,6 +34,10 @@ public class Variable implements Drawable
 		this.yPos = yPos;
 	}
 	
+	public void setHidden(boolean isHidden)
+	{
+		hidden = isHidden;
+	}
 	public void setColor(String color)
 	{
 		this.color = color;
@@ -52,17 +58,17 @@ public class Variable implements Drawable
 		
 		if (this.isReference)
 		{
-			id = scripter.addTriangle(xPos, yPos, 40, color);
+			id = scripter.addTriangle(xPos, yPos, 40, color, hidden ? true : false);
 			if (ref != null)
 			{
-				scripter.addArrow(id, ref.getId(), 200, false);
-				scripter.addText(xPos+15, yPos+25, name);
+				scripter.addArrow(id, ref.getId(), 200, false, hidden ? true : false);
+				scripter.addText(xPos+15, yPos+25, name, "black",  hidden ? true : false);
 			}
 		}
 		else
 		{
-			id = scripter.addRectangle(xPos, yPos, length, 40, color);
-			scripter.addText(xPos+15, yPos+25, name + " = " + value);
+			id = scripter.addRectangle(xPos, yPos, length, 40, color,  hidden ? true : false);
+			scripter.addText(xPos+15, yPos+25, name + " = " + value, "black",  hidden ? true : false);
 		}
 		
 	}
