@@ -347,7 +347,7 @@ public class XAALScripter {
 	}
 	
 	/**
-	 *  * Adds a new equilateral triangle to the initial element of a XAAL script.
+	 * Adds a new equilateral triangle to the initial element of a XAAL script.
 	 * @param x y coordinate for the top left corner of the rectangular box containing the triangle.
 	 * @param y y coordinate for the top left corner of the rectangular box containing the triangle.
 	 * @param width width (and height) of the triangle in pixels.
@@ -404,7 +404,16 @@ public class XAALScripter {
 		
 		return idVal;
 	}
-
+	
+	/**
+	 * Adds a new arrow to the initial element of the XAAL script.
+	 * @param originName the element the arrow comes from.
+	 * @param destName the element the arrow goes to.
+	 * @param padding padding around... something?
+	 * @param isDashed whether the line is dashed or solid
+	 * @param isHidden should the arrow be hidden initially.
+	 * @return the String containing the id of the arrow added.
+	 */
 	public String addArrow(String originName, String destName, int padding, boolean isDashed, boolean isHidden)
 	{
 		Element initial = document.getRootElement().getChild("initial", defaultNS);
@@ -529,6 +538,10 @@ public class XAALScripter {
 		currentSlide = null;
 	}
 	
+	/**
+	 * Tells us if a slide has been started but not ended.
+	 * @return whether a slide is started.
+	 */
 	public boolean inSlide()
 	{
 		return currentSlide != null;
@@ -567,6 +580,10 @@ public class XAALScripter {
 		currentPar = null;
 	}
 	
+	/**
+	 * Tells us if a parallel section has been started but not ended.
+	 * @return whether a parallel section is started.
+	 */
 	public boolean inPar()
 	{
 		return currentPar != null;
@@ -733,11 +750,25 @@ public class XAALScripter {
 			endPar();
 	}
 	
+	/**
+	 * Adds a move for no object. Used for current pause hack. Move not implemented.
+	 * @param x x coordinate of point to move objects to. Currently the number of ms to pause.
+	 * @param y y coordinate of point to move objects to. Must be 0 for pause to work.
+	 * @throws Exception
+	 */
 	private void addMove(int x, int y) throws Exception
 	{
 		addMove(x, y, new String[0]);
 	}
 	
+	/**
+	 * Adds a move for no object. Used for current pause hack. Move not implemented.
+	 * @param x x coordinate of point to move objects to. Currently the number of ms to pause.
+	 * @param y y coordinate of point to move objects to. Must be 0 for pause to work.
+	 * @param ids list of Strings containing the ids of the objects to move. 
+	 * Make it empty for pause to work
+	 * @throws Exception
+	 */
 	private void addMove(int x, int y, String...ids) throws Exception
 	{
 		if (!inSlide())
@@ -785,6 +816,11 @@ public class XAALScripter {
 		addMove(ms, 0);
 	}
 	
+	/**
+	 * Adds narrative to the current slide. Currently is used for pseudocode url.
+	 * @param text the narrative for the slide. Currently is just pseudocode url.
+	 * @throws Exception
+	 */
 	private void addNarrative(String text) throws Exception
 	{
 		if (!inSlide())
