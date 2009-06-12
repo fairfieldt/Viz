@@ -470,8 +470,8 @@ public class XAALScripter {
 		arrow.addContent(coordinate);
 				
 		coordinate = new Element("coordinate");
-		coordinate.setAttribute("x", (endX -5) + "");
-		coordinate.setAttribute("y", (endY -5) + "");
+		coordinate.setAttribute("x", (endX -10) + "");
+		coordinate.setAttribute("y", (endY -10) + "");
 		arrow.addContent(coordinate);
 				
 		coordinate = new Element("coordinate");
@@ -480,8 +480,8 @@ public class XAALScripter {
 		arrow.addContent(coordinate);
 		
 		coordinate = new Element("coordinate");
-		coordinate.setAttribute("x", (endX -5) + "");
-		coordinate.setAttribute("y", (endY +5) + "");
+		coordinate.setAttribute("x", (endX -10) + "");
+		coordinate.setAttribute("y", (endY +10) + "");
 		arrow.addContent(coordinate);
 		
 		arrow.setAttribute("hidden", isHidden + "");
