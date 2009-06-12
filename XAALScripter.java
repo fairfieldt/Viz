@@ -2,6 +2,8 @@ import org.jdom.*;
 import org.jdom.output.*;
 import java.util.*;
 
+//TODO: elements should be created with the defaultNS. Technically a lot of elements have no NS.
+// 		I'll add a createElement method later.
 public class XAALScripter {
 	private Document document = new Document();
 	private final Namespace defaultNS = Namespace.getNamespace("http://www.cs.hut.fi/Research/SVG/XAAL");
@@ -20,7 +22,7 @@ public class XAALScripter {
 	
 	public XAALScripter()
 	{
-		Element xaalRoot = new Element("xaal", defaultNS);
+		Element xaalRoot = createElement("xaal");
 		 
 		xaalRoot.setAttribute("version", 1.0 + "");
 		
@@ -31,10 +33,10 @@ public class XAALScripter {
 				"http://www.cs.hut.fi/Research/SVG/XAAL xaal.xsd", xsi);
 		xaalRoot.setAttribute(schemaLocation);
 		
-		Element initial = new Element("initial", defaultNS);
+		Element initial = createElement("initial");
 		xaalRoot.addContent(initial);
 		
-		Element animation = new Element("animation", defaultNS);
+		Element animation = createElement("animation");
 		xaalRoot.addContent(animation);
 		
 		document.setRootElement(xaalRoot);
@@ -81,7 +83,7 @@ public class XAALScripter {
 	{
 		Element initial = document.getRootElement().getChild("initial", defaultNS);
 		
-		Element rect = new Element("polyline");
+		Element rect = createElement("polyline");
 		
 		String idVal = "rectangle" + rectNum;
 		rectNum++;
@@ -90,38 +92,38 @@ public class XAALScripter {
 		
 		rect.setAttribute("hidden", hidden + "");
 		
-		Element x1y1 = new Element("coordinate");
+		Element x1y1 = createElement("coordinate");
 		x1y1.setAttribute("x", x + "");
 		x1y1.setAttribute("y", y + "");
 		rect.addContent(x1y1);
 		
-		Element x1y2 = new Element("coordinate");
+		Element x1y2 = createElement("coordinate");
 		x1y2.setAttribute("x", x + "" );
 		x1y2.setAttribute("y", (y+height) + "");
 		rect.addContent(x1y2);
 		
-		Element x2y2 = new Element("coordinate");
+		Element x2y2 = createElement("coordinate");
 		x2y2.setAttribute("x", (x+width) + "");
 		x2y2.setAttribute("y", (y+height) + "");
 		rect.addContent(x2y2);
 		
-		Element x2y1 = new Element("coordinate");
+		Element x2y1 = createElement("coordinate");
 		x2y1.setAttribute("x", (x+width) + "");
 		x2y1.setAttribute("y", y + "");
 		rect.addContent(x2y1);
 		
-		Element x1y1_2 = new Element("coordinate");
+		Element x1y1_2 = createElement("coordinate");
 		x1y1_2.setAttribute("x", x + "");
 		x1y1_2.setAttribute("y", y + "");
 		rect.addContent(x1y1_2);
 		
-		Element closed = new Element("closed");
+		Element closed = createElement("closed");
 		closed.setAttribute("value", true + "");
 		rect.addContent(closed);
 		
-		Element style = new Element("style");
+		Element style = createElement("style");
 		
-		Element colorElem = new Element("color");
+		Element colorElem = createElement("color");
 		colorElem.setAttribute("name", color);
 		style.addContent(colorElem);
 		
@@ -209,7 +211,7 @@ public class XAALScripter {
 	{
 		Element initial = document.getRootElement().getChild("initial", defaultNS);
 		
-		Element text = new Element("text");
+		Element text = createElement("text");
 		
 		String idVal = "text" + textNum;
 		textNum++;
@@ -217,25 +219,25 @@ public class XAALScripter {
 		
 		text.setAttribute("hidden", hidden + "");
 		
-		Element coordinate = new Element("coordinate");
+		Element coordinate = createElement("coordinate");
 		coordinate.setAttribute("x", x + "");
 		coordinate.setAttribute("y", y + "");
 		text.addContent(coordinate);
 		
-		Element contentsElem = new Element("contents");
+		Element contentsElem = createElement("contents");
 		
 		Text contentsVal = new Text(contents);
 		contentsElem.addContent(contentsVal);
 		
 		text.addContent(contentsElem);
 		
-		Element style = new Element("style");
+		Element style = createElement("style");
 		
-		Element colorElem = new Element("color");
+		Element colorElem = createElement("color");
 		colorElem.setAttribute("name", color);
 		style.addContent(colorElem);
 		
-		Element font = new Element("font");
+		Element font = createElement("font");
 		font.setAttribute("size", fontSize + "");
 		font.setAttribute("family", fontFamily);
 		style.addContent(font);
@@ -288,7 +290,7 @@ public class XAALScripter {
 	{
 		Element initial = document.getRootElement().getChild("initial", defaultNS);
 		
-		Element line = new Element("line");
+		Element line = createElement("line");
 		
 		String idVal = "line" + lineNum;
 		lineNum++;
@@ -296,19 +298,19 @@ public class XAALScripter {
 		
 		line.setAttribute("hidden", hidden + "");
 		
-		Element coordinate = new Element("coordinate");
+		Element coordinate = createElement("coordinate");
 		coordinate.setAttribute("x", x1 + "");
 		coordinate.setAttribute("y", y1 + "");
 		line.addContent(coordinate);
 		
-		coordinate = new Element("coordinate");
+		coordinate = createElement("coordinate");
 		coordinate.setAttribute("x", x2 + "");
 		coordinate.setAttribute("y", y2 + "");
 		line.addContent(coordinate);
 		
-		Element style = new Element("style");
+		Element style = createElement("style");
 		
-		Element colorElem = new Element("color");
+		Element colorElem = createElement("color");
 		colorElem.setAttribute("name", color);
 		style.addContent(colorElem);
 		
@@ -357,7 +359,7 @@ public class XAALScripter {
 	{
 		Element initial = document.getRootElement().getChild("initial", defaultNS);
 		
-		Element triangle = new Element("polyline");
+		Element triangle = createElement("polyline");
 		
 		String idVal = "triangle" + lineNum;
 		triangleNum++;
@@ -365,34 +367,34 @@ public class XAALScripter {
 		
 		triangle.setAttribute("hidden", hidden + "");
 		
-		Element coordinate = new Element("coordinate");
+		Element coordinate = createElement("coordinate");
 		coordinate.setAttribute("x", (x +(width/2)) + "");
 		coordinate.setAttribute("y", y + "");
 		triangle.addContent(coordinate);
 		
 		
-		coordinate = new Element("coordinate");
+		coordinate = createElement("coordinate");
 		coordinate.setAttribute("x", (x + width) + "");
 		coordinate.setAttribute("y", (y + width) + "");
 		triangle.addContent(coordinate);
 		
-		coordinate = new Element("coordinate");
+		coordinate = createElement("coordinate");
 		coordinate.setAttribute("x", (x) + "");
 		coordinate.setAttribute("y", (y + width) + "");
 		triangle.addContent(coordinate);
 		
-		coordinate = new Element("coordinate");
+		coordinate = createElement("coordinate");
 		coordinate.setAttribute("x", (x +(width/2)) + "");
 		coordinate.setAttribute("y", y + "");
 		triangle.addContent(coordinate);
 		
-		Element closed = new Element("closed");
+		Element closed = createElement("closed");
 		closed.setAttribute("value", true + "");
 		triangle.addContent(closed);
 		
-		Element style = new Element("style");
+		Element style = createElement("style");
 		
-		Element colorElem = new Element("color");
+		Element colorElem = createElement("color");
 		colorElem.setAttribute("name", color);
 		style.addContent(colorElem);
 		
@@ -426,8 +428,8 @@ public class XAALScripter {
 		}
 		//find our starting point
 
-		Element startPos = origin.getChild("coordinate");
-		Element endPos = dest.getChild("coordinate");
+		Element startPos = origin.getChild("coordinate", defaultNS);
+		Element endPos = dest.getChild("coordinate", defaultNS);
 		int startX = 0;
 		int startY = 0;
 		int endX = 0;
@@ -447,39 +449,39 @@ public class XAALScripter {
 			System.out.println(e);
 		}
 		
-		Element arrow = new Element("polyline");
+		Element arrow = createElement("polyline");
 		
-		Element coordinate = new Element("coordinate");
+		Element coordinate = createElement("coordinate");
 		coordinate.setAttribute("x", startX + "");
 		coordinate.setAttribute("y", startY + "");
 		arrow.addContent(coordinate);
 				
-		coordinate = new Element("coordinate");
+		coordinate = createElement("coordinate");
 		coordinate.setAttribute("x", (startX - padding) + "");
 		coordinate.setAttribute("y", startY + "");
 		arrow.addContent(coordinate);
 				
-		coordinate = new Element("coordinate");
+		coordinate = createElement("coordinate");
 		coordinate.setAttribute("x", (startX - padding) + "");
 		coordinate.setAttribute("y", endY + "");
 		arrow.addContent(coordinate);
 				
-		coordinate = new Element("coordinate");
+		coordinate = createElement("coordinate");
 		coordinate.setAttribute("x", endX + "");
 		coordinate.setAttribute("y", endY + "");
 		arrow.addContent(coordinate);
 				
-		coordinate = new Element("coordinate");
+		coordinate = createElement("coordinate");
 		coordinate.setAttribute("x", (endX -5) + "");
 		coordinate.setAttribute("y", (endY -5) + "");
 		arrow.addContent(coordinate);
 				
-		coordinate = new Element("coordinate");
+		coordinate = createElement("coordinate");
 		coordinate.setAttribute("x", endX + "");
 		coordinate.setAttribute("y", endY + "");
 		arrow.addContent(coordinate);
 		
-		coordinate = new Element("coordinate");
+		coordinate = createElement("coordinate");
 		coordinate.setAttribute("x", (endX -5) + "");
 		coordinate.setAttribute("y", (endY +5) + "");
 		arrow.addContent(coordinate);
@@ -507,7 +509,7 @@ public class XAALScripter {
 			throw new Exception("A slide has already been started. " +
 					"It must be ended before you can create another.");
 		
-		currentSlide = new Element("seq");
+		currentSlide = createElement("seq");
 	}
 	
 	/**
@@ -547,7 +549,7 @@ public class XAALScripter {
 			throw new Exception("Parallel section has already been started. " +
 					"It must be ended before you can create another.");
 		
-		currentPar = new Element("par");
+		currentPar = createElement("par");
 	}
 	
 	/**
@@ -593,17 +595,17 @@ public class XAALScripter {
 		
 		Element parent = currentPar;
 		
-		Element move = new Element("move");
+		Element move = createElement("move");
 		move.setAttribute("type", "translate");
 		
 		for (String id : ids)
 		{
-			Element objRef = new Element("object-ref");
+			Element objRef = createElement("object-ref");
 			objRef.setAttribute("id", id);
 			move.addContent(objRef);
 		}
 		
-		Element coordinate = new Element("coordinate");
+		Element coordinate = createElement("coordinate");
 		coordinate.setAttribute("x", x + "");
 		coordinate.setAttribute("y", y + "");
 		move.addContent(coordinate);
@@ -634,12 +636,12 @@ public class XAALScripter {
 		
 		Element parent = currentPar;
 		
-		Element show = new Element("show");
+		Element show = createElement("show");
 		show.setAttribute("type", "selected");
 		
 		for (String id : ids)
 		{
-			Element objRef = new Element("object-ref");
+			Element objRef = createElement("object-ref");
 			objRef.setAttribute("id", id);
 			show.addContent(objRef);
 		}
@@ -670,12 +672,12 @@ public class XAALScripter {
 		
 		Element parent = currentPar;
 		
-		Element hide = new Element("hide");
+		Element hide = createElement("hide");
 		hide.setAttribute("type", "selected");
 		
 		for (String id : ids)
 		{
-			Element objRef = new Element("object-ref");
+			Element objRef = createElement("object-ref");
 			objRef.setAttribute("id", id);
 			hide.addContent(objRef);
 		}
@@ -707,18 +709,18 @@ public class XAALScripter {
 		
 		Element parent = currentPar;
 		
-		Element changeStyle = new Element("change-style");
+		Element changeStyle = createElement("change-style");
 		
 		for (String id : ids)
 		{
-			Element objRef = new Element("object-ref");
+			Element objRef = createElement("object-ref");
 			objRef.setAttribute("id", id);
 			changeStyle.addContent(objRef);
 		}
 		
-		Element style = new Element("style");
+		Element style = createElement("style");
 		
-		Element colorElem = new Element("color");
+		Element colorElem = createElement("color");
 		colorElem.setAttribute("name", color);
 		
 		style.addContent(colorElem);
@@ -751,18 +753,18 @@ public class XAALScripter {
 		
 		Element parent = currentPar;
 		
-		Element move = new Element("move");
+		Element move = createElement("move");
 		move.setAttribute("type", "move");
 		
 	
 		for (String id : ids)
 		{
-			Element objRef = new Element("object-ref");
+			Element objRef = createElement("object-ref");
 			objRef.setAttribute("id", id);
 			move.addContent(objRef);
 		}
 		
-		Element coordinate = new Element("coordinate");
+		Element coordinate = createElement("coordinate");
 		coordinate.setAttribute("x", x + "");
 		coordinate.setAttribute("y", y + "");
 		move.addContent(coordinate);
@@ -788,7 +790,7 @@ public class XAALScripter {
 		if (!inSlide())
 			throw new Exception("You must create a slide before creating actions.");
 		
-		Element narrative = new Element("narrative");
+		Element narrative = createElement("narrative");
 		
 		narrative.setText(text);
 		
@@ -803,6 +805,16 @@ public class XAALScripter {
 	public void addPseudocodeUrl(String url) throws Exception
 	{
 			addNarrative(url);
+	}
+	
+	/**
+	 * Creates an element in the defaultNS
+	 * @param name the name of the element
+	 * @return an Element with the specified name and belonging to defaultNS
+	 */
+	private Element createElement(String name)
+	{
+		return new Element(name, defaultNS);
 	}
 	
 	//TODO: just for testing!
