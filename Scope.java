@@ -5,6 +5,8 @@ public class Scope implements Drawable
 	private String name;
 	private ArrayList<Variable> vars;
 	private ArrayList<Scope> scopes;
+	
+	private ArrayList<String> ids;
 
 	private int xPos = 50;
 	private int yPos = 50;
@@ -21,18 +23,29 @@ public class Scope implements Drawable
 	{
 		vars = new ArrayList<Variable>();
 		scopes = new ArrayList<Scope>();
+		ids = new ArrayList<String>();
 		this.name = name;
 		this.color = color;
 	}
 
 	public void addVariable(Variable v)
 	{
+		//If the scope is hidden we should hide all variables too
+		if (hidden)
+		{
+			v.setHidden(true);
+		}
 		v.setColor(color);
 		this.vars.add(v);
 	}
 	
 	public void addScope(Scope s)
 	{
+		//Again, if the scope is hidden so are all sub-scopes
+		if (hidden)
+		{
+			s.setHidden(true);
+		}
 		scopes.add(s);
 	}
 	
@@ -44,10 +57,20 @@ public class Scope implements Drawable
 		this.currentVarYPos = yPos;
 	}
 	
+	public void setHidden(boolean isHidden)
+	{
+		hidden = isHidden;
+	}
+	
 	public void setSize(int sizeX, int sizeY)
 	{
 		this.sizeX = sizeX;
 		this.sizeY = sizeY;
+	}
+	
+	public ArrayList<String> getIds()
+	{
+		return this.ids;
 	}
 	
 	private void sizeScopes()
@@ -81,9 +104,13 @@ public class Scope implements Drawable
 		System.out.println("Drawing scope: " + name);
 		System.out.println("XPos: " + xPos + " YPos: " + yPos);
 		int captionLength = name.length() * 13;
-		scripter.addRectangle(xPos, yPos, sizeX, sizeY, color, hidden);
-		scripter.addRectangle(xPos, yPos-30, captionLength, 30, color, hidden);
-		scripter.addText(xPos+3, yPos-10, name);
+		String id1 = scripter.addRectangle(xPos, yPos, sizeX, sizeY, color, hidden);
+		String id2 = scripter.addRectangle(xPos, yPos-30, captionLength, 30, color, hidden);
+		String id3 = scripter.addText(xPos+3, yPos-10, name, "black", hidden);
+		
+		ids.add(id1);
+		ids.add(id2);
+		ids.add(id3);
 
 		sizeVariables();
 		for (Variable v : vars)
