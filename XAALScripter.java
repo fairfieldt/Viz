@@ -686,15 +686,11 @@ public class XAALScripter {
 		coordinate.setAttribute("y", endY + "");
 		arrow.addContent(coordinate);
 				
-<<<<<<< HEAD:XAALScripter.java
+
 		coordinate = new Element("coordinate");
 		coordinate.setAttribute("x", (endX -10) + "");
 		coordinate.setAttribute("y", (endY -10) + "");
-=======
-		coordinate = createElement("coordinate");
-		coordinate.setAttribute("x", (endX -5) + "");
-		coordinate.setAttribute("y", (endY -5) + "");
->>>>>>> cae371f7102beb078ed678c0196bd3309d7e2f75:XAALScripter.java
+
 		arrow.addContent(coordinate);
 				
 		coordinate = createElement("coordinate");
@@ -702,15 +698,11 @@ public class XAALScripter {
 		coordinate.setAttribute("y", endY + "");
 		arrow.addContent(coordinate);
 		
-<<<<<<< HEAD:XAALScripter.java
+
 		coordinate = new Element("coordinate");
 		coordinate.setAttribute("x", (endX -10) + "");
 		coordinate.setAttribute("y", (endY +10) + "");
-=======
-		coordinate = createElement("coordinate");
-		coordinate.setAttribute("x", (endX -5) + "");
-		coordinate.setAttribute("y", (endY +5) + "");
->>>>>>> cae371f7102beb078ed678c0196bd3309d7e2f75:XAALScripter.java
+
 		arrow.addContent(coordinate);
 		
 		arrow.setAttribute("hidden", hidden + "");
