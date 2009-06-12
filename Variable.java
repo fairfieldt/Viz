@@ -4,19 +4,26 @@ public class Variable implements Drawable
 	private int value;
 	private String color = "black";
 	private boolean isReference = false;
+	private String id = "";
 	
 	private int xPos;
 	private int yPos;
 
 	private int length = 0;
 	
-	public Variable(String name, int value, String color, boolean isReference)
+	private Variable ref =  null;
+	
+	public Variable(String name, int value, boolean isReference)
 	{
 		this.name = name;
 		this.value = value;
-		this.color = color;
 		this.isReference = isReference;
 		this.length = (name.length() * 10) + 80;
+	}
+	
+	public void setReference(Variable ref)
+	{
+		this.ref = ref;
 	}
 	
 	public void setPosition(int xPos, int yPos)
@@ -25,9 +32,19 @@ public class Variable implements Drawable
 		this.yPos = yPos;
 	}
 	
+	public void setColor(String color)
+	{
+		this.color = color;
+	}
+	
 	public int getLength()
 	{
 		return this.length;
+	}
+	
+	public String getId()
+	{
+		return this.id;
 	}
 
 	public void draw(XAALScripter scripter)
@@ -35,15 +52,19 @@ public class Variable implements Drawable
 		
 		if (this.isReference)
 		{
-		
+			id = scripter.addTriangle(xPos, yPos, 40, color);
+			if (ref != null)
+			{
+				scripter.addArrow(id, ref.getId(), 200, false);
+				scripter.addText(xPos+15, yPos+25, name);
+			}
 		}
 		else
 		{
-			scripter.addRectangle(xPos, yPos, length, 40, color);
-			
+			id = scripter.addRectangle(xPos, yPos, length, 40, color);
+			scripter.addText(xPos+15, yPos+25, name + " = " + value);
 		}
 		
-		scripter.addText(xPos+15, yPos+25, name + " = " + value);
 	}
 	
 }

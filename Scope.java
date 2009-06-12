@@ -8,11 +8,12 @@ public class Scope implements Drawable
 
 	private int xPos = 50;
 	private int yPos = 50;
-	private int sizeX = 400;
-	private int sizeY = 400;
+	private int sizeX = 800;
+	private int sizeY = 600;
 	
-	private int currentVarPos = 0;
-
+	private int currentVarXPos = 50;
+	private int currentVarYPos = 50;
+	
 	private String color = "black";
 	private boolean hidden = false;
 
@@ -24,12 +25,10 @@ public class Scope implements Drawable
 		this.color = color;
 	}
 
-	public void addVariable(String name, int value)
+	public void addVariable(Variable v)
 	{
-		Variable v = new Variable(name, value, color, false);
-		v.setPosition(xPos + currentVarPos + 25, yPos+25);
+		v.setColor(color);
 		this.vars.add(v);
-		currentVarPos+=v.getLength() + 10;
 	}
 	
 	public void addScope(Scope s)
@@ -41,6 +40,8 @@ public class Scope implements Drawable
 	{
 		this.xPos = xPos;
 		this.yPos = yPos;
+		this.currentVarXPos = xPos;
+		this.currentVarYPos = yPos;
 	}
 	
 	public void setSize(int sizeX, int sizeY)
@@ -53,24 +54,38 @@ public class Scope implements Drawable
 	{
 		int subScopeXPos = xPos + 10;
 		int subScopeYPos = yPos + 100;
-		
+		int subScopeYSize = (sizeY-50) / (scopes.size()+1);
+		System.out.println("SubSize:: " + subScopeYSize);
+		System.out.println("Scopes.size: " + scopes.size());
 		for (Scope s : scopes)
 		{
+			System.out.println("SubSize: " + subScopeYSize);
 			s.setPosition(subScopeXPos, subScopeYPos);
-			s.setSize(sizeX - 20, sizeY-150 / (scopes.size()+1));
+			s.setSize(sizeX - 20, subScopeYSize);
+			subScopeYPos += subScopeYSize + 60;
 		}		 		
 			
+	}
+	
+	private void sizeVariables()
+	{
+		for (Variable v : vars)
+		{
+			v.setPosition(currentVarXPos + 25, currentVarYPos+25);
+			currentVarXPos+=v.getLength() + 10;
+		}
 	}
 
 	public void draw(XAALScripter scripter)
 	{
 		System.out.println("Drawing scope: " + name);
 		System.out.println("XPos: " + xPos + " YPos: " + yPos);
-		int captionLength = name.length() * 10;
+		int captionLength = name.length() * 13;
 		scripter.addRectangle(xPos, yPos, sizeX, sizeY, color, hidden);
 		scripter.addRectangle(xPos, yPos-30, captionLength, 30, color, hidden);
 		scripter.addText(xPos+3, yPos-10, name);
 
+		sizeVariables();
 		for (Variable v : vars)
 		{
 			v.draw(scripter);

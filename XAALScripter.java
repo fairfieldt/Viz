@@ -402,7 +402,7 @@ public class XAALScripter {
 		return idVal;
 	}
 
-	public String addArrow(String originName, String destName, boolean isDashed)
+	public String addArrow(String originName, String destName, int padding, boolean isDashed)
 	{
 		Element initial = document.getRootElement().getChild("initial", defaultNS);
 		
@@ -447,9 +447,9 @@ public class XAALScripter {
 		}
 		
 		//Draw the line
-		addLine(startX, startY, startX - 10, startY, "red");
-		addLine(startX - 10, startY, startX -10, endY, "red");
-		addLine(startX -10, endY, endX, endY, "red");
+		addLine(startX, startY, startX - padding, startY, "red");
+		addLine(startX - padding, startY, startX -padding, endY, "red");
+		addLine(startX - padding, endY, endX, endY, "red");
 
 		//Add the arrow head
 		addLine(endX, endY, endX - 5, endY - 5, "red");
