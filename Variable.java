@@ -1,10 +1,12 @@
+import java.util.*;
+
 public class Variable implements Drawable
 {
 	private String name;
 	private int value;
 	private String color = "black";
 	private boolean isReference = false;
-	private String id = "";
+	private ArrayList<String> ids;
 	
 	private boolean hidden = false;
 	
@@ -13,10 +15,13 @@ public class Variable implements Drawable
 
 	private int length = 0;
 	
+	private int copies = 1;
+	
 	private Variable ref =  null;
 	
 	public Variable(String name, int value, boolean isReference)
 	{
+		ids = new ArrayList<String>();
 		this.name = name;
 		this.value = value;
 		this.isReference = isReference;
@@ -43,14 +48,29 @@ public class Variable implements Drawable
 		this.color = color;
 	}
 	
+	public void addCopy()
+	{
+		copies++;
+	}
 	public int getLength()
 	{
 		return this.length;
 	}
 	
-	public String getId()
+	public int getXPos()
 	{
-		return this.id;
+		return this.xPos;
+	}
+	
+	public int getYPos()
+	{
+		return this.yPos;
+	}
+	
+	public ArrayList<String> getIds()
+	{
+		System.out.println("I have " + ids.size() + " ids");
+		return this.ids;
 	}
 
 	public void draw(XAALScripter scripter)
@@ -58,17 +78,29 @@ public class Variable implements Drawable
 		
 		if (this.isReference)
 		{
-			id = scripter.addTriangle(xPos, yPos, 40, color, hidden ? true : false);
+			String id1 = scripter.addTriangle(xPos, yPos, 40, color, hidden);
+			ids.add(id1);
 			if (ref != null)
 			{
-				scripter.addArrow(id, ref.getId(), 200, false, hidden ? true : false);
-				scripter.addText(xPos+15, yPos+25, name, "black",  hidden ? true : false);
+				String id2 = scripter.addArrow(id1, ref.getIds().get(0), 200, false, hidden);
+				ids.add(id2);
+				String id3 = scripter.addText(xPos+15, yPos+25, name, "black",  hidden);
+				ids.add(id3);
+
 			}
+
 		}
 		else
 		{
-			id = scripter.addRectangle(xPos, yPos, length, 40, color,  hidden ? true : false);
-			scripter.addText(xPos+15, yPos+25, name + " = " + value, "black",  hidden ? true : false);
+			String id1 = scripter.addRectangle(xPos, yPos, length, 40, color,  hidden);
+			String id2 = scripter.addText(xPos+15, yPos+25, name + " = " + value, "black",  hidden);
+			
+			ids.add(id1);
+			ids.add(id2);
+			for (int i = 0; i < copies; i++)
+			{
+				ids.add(value + "");
+			}
 		}
 		
 	}
