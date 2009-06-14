@@ -8,8 +8,9 @@ public class XAALScripter {
 	private Document document = new Document();
 	private final Namespace defaultNS = Namespace.getNamespace("http://www.cs.hut.fi/Research/SVG/XAAL");
 	
-	private final int DEFAULT_FONT_SIZE = 16;
-	private final String DEFAULT_FONT_FAMILY = "Lucida Bright";
+	public final int DEFAULT_FONT_SIZE = 16;
+	public final String DEFAULT_FONT_FAMILY = "Lucida Bright";
+	public final int DEFAULT_STROKE_WIDTH = 1;
 	
 	private int rectNum = 0;
 	private int textNum = 0;
@@ -43,7 +44,8 @@ public class XAALScripter {
 	}
 	
 	/**
-	 * Adds a new non-hidden black rectangle to the initial element of a XAAL script.
+	 * Adds a new non-hidden, solid, black rectangle with default line width
+	 * to the initial element of a XAAL script.
 	 * @param x y coordinate for the top left corner of the rectangle.
 	 * @param y y coordinate for the top left corner of the rectangle.
 	 * @param width width of the rectangle in pixels.
@@ -56,7 +58,8 @@ public class XAALScripter {
 	}
 	
 	/**
-	 * Adds a new non-hidden rectangle to the initial element of a XAAL script.
+	 * Adds a new non-hidden, solid rectangle with default line width
+	 * to the initial element of a XAAL script.
 	 * @param x y coordinate for the top left corner of the rectangle.
 	 * @param y y coordinate for the top left corner of the rectangle.
 	 * @param width width of the rectangle in pixels.
@@ -70,7 +73,8 @@ public class XAALScripter {
 	}
 	
 	/**
-	 * Adds a new rectangle to the initial element of a XAAL script.
+	 * Adds a new solid rectangle with default line width
+	 * to the initial element of a XAAL script.
 	 * @param x y coordinate for the top left corner of the rectangle.
 	 * @param y y coordinate for the top left corner of the rectangle.
 	 * @param width width of the rectangle in pixels.
@@ -80,6 +84,58 @@ public class XAALScripter {
 	 * @return a String containing the id of the rectangle added.
 	 */
 	public String addRectangle(int x, int y, int width, int height, String color, boolean hidden)
+	{
+		return addRectangle(x, y, width, height, color, hidden, StrokeType.solid);
+	}
+	
+	/**
+	 * Adds a new rectangle to the initial element of a XAAL script.
+	 * @param x y coordinate for the top left corner of the rectangle.
+	 * @param y y coordinate for the top left corner of the rectangle.
+	 * @param width width of the rectangle in pixels.
+	 * @param height height of the rectangle in pixels.
+	 * @param color color of the rectangle's border. Must be a named XAAL color.
+	 * @param hidden specifies whether the rectangle should be hidden initially.
+	 * @param strokeType whether the line should be solid, dashed or dotted.
+	 * @return a String containing the id of the rectangle added.
+	 */
+	public String addRectangle(int x, int y, int width, int height, String color, boolean hidden,
+			StrokeType strokeType)
+	{
+		return addRectangle(x, y, width, height, color, hidden, strokeType, DEFAULT_STROKE_WIDTH);
+	}
+	
+	/**
+	 * Adds a new solid rectangle to the initial element of a XAAL script.
+	 * @param x y coordinate for the top left corner of the rectangle.
+	 * @param y y coordinate for the top left corner of the rectangle.
+	 * @param width width of the rectangle in pixels.
+	 * @param height height of the rectangle in pixels.
+	 * @param color color of the rectangle's border. Must be a named XAAL color.
+	 * @param hidden specifies whether the rectangle should be hidden initially.
+	 * @param lineWidth the width of the rectangle's border.
+	 * @return a String containing the id of the rectangle added.
+	 */
+	public String addRectangle(int x, int y, int width, int height, String color, boolean hidden,
+			int lineWidth)
+	{
+		return addRectangle(x, y, width, height, color, hidden, StrokeType.solid, lineWidth);
+	}
+	
+	/**
+	 * Adds a new solid rectangle to the initial element of a XAAL script.
+	 * @param x y coordinate for the top left corner of the rectangle.
+	 * @param y y coordinate for the top left corner of the rectangle.
+	 * @param width width of the rectangle in pixels.
+	 * @param height height of the rectangle in pixels.
+	 * @param color color of the rectangle's border. Must be a named XAAL color.
+	 * @param hidden specifies whether the rectangle should be hidden initially.
+	 * @param strokeType
+	 * @param lineWidth the width of the rectangle's border.
+	 * @return
+	 */
+	public String addRectangle(int x, int y, int width, int height, String color, boolean hidden,
+			StrokeType strokeType, int lineWidth)
 	{
 		Element initial = document.getRootElement().getChild("initial", defaultNS);
 		
@@ -126,6 +182,11 @@ public class XAALScripter {
 		Element colorElem = createElement("color");
 		colorElem.setAttribute("name", color);
 		style.addContent(colorElem);
+		
+		Element strokeElem = createElement("stroke");
+		strokeElem.setAttribute("width", lineWidth + "");
+		strokeElem.setAttribute("type", strokeType.name());
+		style.addContent(strokeElem);
 		
 		rect.addContent(style);
 		
@@ -250,7 +311,8 @@ public class XAALScripter {
 	}
 	
 	/**
-	 * Adds a new non-hidden black line to the initial element of the XAAL script.
+	 * Adds a new non-hidden, solid, black line with the default line width 
+	 * to the initial element of the XAAL script.
 	 * @param x1 x coordinate for first point.
 	 * @param y1 y coordinate for first point.
 	 * @param x2 x coordinate for second point.
@@ -263,7 +325,8 @@ public class XAALScripter {
 	}
 	
 	/**
-	 * Adds a new non-hidden black line to the initial element of the XAAL script.
+	 * Adds a new non-hidden, solid line with the default line width 
+	 * to the initial element of the XAAL script.
 	 * @param x1 x coordinate for first point.
 	 * @param y1 y coordinate for first point.
 	 * @param x2 x coordinate for second point.
@@ -277,16 +340,70 @@ public class XAALScripter {
 	}
 	
 	/**
-	 * Adds a new non-hidden black line to the initial element of the XAAL script.
+	 * Adds a new solid line with the default line width
+	 * to the initial element of the XAAL script.
 	 * @param x1 x coordinate for first point.
 	 * @param y1 y coordinate for first point.
 	 * @param x2 x coordinate for second point.
 	 * @param y2 y coordinate for second point.
 	 * @param color the color of line. Must be a named XAAL color.
-	 * @param hidden whether the line should be initially hidden
+	 * @param hidden whether the line should be initially hidden.
 	 * @return a String containing the id of the line added.
 	 */
 	public String addLine(int x1, int y1, int x2, int y2, String color, boolean hidden)
+	{
+		return addLine(x1, y1, x2, y2, color, hidden, StrokeType.solid);
+	}
+	
+	/**
+	 * Adds a new line with the default line width
+	 * to the initial element of the XAAL script.
+	 * @param x1 x coordinate for first point.
+	 * @param y1 y coordinate for first point.
+	 * @param x2 x coordinate for second point.
+	 * @param y2 y coordinate for second point.
+	 * @param color the color of line. Must be a named XAAL color.
+	 * @param hidden whether the line should be initially hidden.
+	 * @param strokeType whether the line should be solid, dashed or dotted.
+	 * @return a String containing the id of the line added.
+	 */
+	public String addLine(int x1, int y1, int x2, int y2, String color, 
+			boolean hidden, StrokeType strokeType)
+	{
+		return addLine(x1, y1, x2, y2, color, hidden, strokeType, DEFAULT_STROKE_WIDTH);
+	}
+	
+	/**
+	 * Adds a new solid line to the initial element of the XAAL script.
+	 * @param x1 x coordinate for first point.
+	 * @param y1 y coordinate for first point.
+	 * @param x2 x coordinate for second point.
+	 * @param y2 y coordinate for second point.
+	 * @param color the color of line. Must be a named XAAL color.
+	 * @param hidden whether the line should be initially hidden.
+	 * @param lineWidth the width of the line.
+	 * @return a String containing the id of the line added.
+	 */
+	public String addLine(int x1, int y1, int x2, int y2, String color, 
+			boolean hidden, int lineWidth)
+	{
+		return addLine(x1, y1, x2, y2, color, hidden, StrokeType.solid, lineWidth );
+	}
+	
+	/**
+	 * Adds a new line to the initial element of the XAAL script.
+	 * @param x1 x coordinate for first point.
+	 * @param y1 y coordinate for first point.
+	 * @param x2 x coordinate for second point.
+	 * @param y2 y coordinate for second point.
+	 * @param color the color of line. Must be a named XAAL color.
+	 * @param hidden whether the line should be initially hidden.
+	 * @param strokeType whether the line should be solid, dashed or dotted.
+	 * @param lineWidth the width of the line.
+	 * @return a String containing the id of the line added.
+	 */
+	public String addLine(int x1, int y1, int x2, int y2, String color, 
+			boolean hidden, StrokeType strokeType, int lineWidth)
 	{
 		Element initial = document.getRootElement().getChild("initial", defaultNS);
 		
@@ -314,6 +431,11 @@ public class XAALScripter {
 		colorElem.setAttribute("name", color);
 		style.addContent(colorElem);
 		
+		Element stroke = createElement("stroke");
+		stroke.setAttribute("type", strokeType.name());
+		stroke.setAttribute("width", lineWidth + "");
+		style.addContent(stroke);
+		
 		line.addContent(style);
 		
 		initial.addContent(line);
@@ -322,7 +444,8 @@ public class XAALScripter {
 	}
 	
 	/**
-	 * Adds a new non-hidden black equilateral triangle to the initial element of a XAAL script.
+	 * Adds a new non-hidden, black, solid equilateral triangle with the default line width
+	 * to the initial element of a XAAL script.
 	 * @param x y coordinate for the top left corner of the rectangular box containing the triangle.
 	 * @param y y coordinate for the top left corner of the rectangular box containing the triangle.
 	 * @param width width (and height) of the triangle in pixels.
@@ -334,7 +457,8 @@ public class XAALScripter {
 	}
 	
 	/**
-	 * Adds a new non-hidden equilateral triangle to the initial element of a XAAL script.
+	 * Adds a new non-hidden, solid equilateral triangle with the default line width
+	 * to the initial element of a XAAL script.
 	 * @param x y coordinate for the top left corner of the rectangular box containing the triangle.
 	 * @param y y coordinate for the top left corner of the rectangular box containing the triangle.
 	 * @param width width (and height) of the triangle in pixels.
@@ -347,7 +471,8 @@ public class XAALScripter {
 	}
 	
 	/**
-	 * Adds a new equilateral triangle to the initial element of a XAAL script.
+	 * Adds a new equilateral, solid triangle with the default line width
+	 * to the initial element of a XAAL script.
 	 * @param x y coordinate for the top left corner of the rectangular box containing the triangle.
 	 * @param y y coordinate for the top left corner of the rectangular box containing the triangle.
 	 * @param width width (and height) of the triangle in pixels.
@@ -356,6 +481,57 @@ public class XAALScripter {
 	 * @return the String containing the id of the triangle added.
 	 */
 	public String addTriangle(int x, int y, int width, String color, boolean hidden)
+	{
+		return addTriangle(x, y, width, color, hidden, StrokeType.solid);
+	}
+	
+	/**
+	 * Adds a new equilateral triangle with the default line width
+	 * to the initial element of a XAAL script.
+	 * @param x y coordinate for the top left corner of the rectangular box containing the triangle.
+	 * @param y y coordinate for the top left corner of the rectangular box containing the triangle.
+	 * @param width width (and height) of the triangle in pixels.
+	 * @param color the border color of the triangle.
+	 * @param hidden whether the triangle is hidden initially.
+	 * @param strokeType whether the line should be solid, dashed or dotted.
+	 * @return the String containing the id of the triangle added.
+	 */
+	public String addTriangle(int x, int y, int width, String color, boolean hidden, 
+			StrokeType strokeType)
+	{
+		return addTriangle(x,y, width, color, hidden, strokeType, DEFAULT_STROKE_WIDTH);
+	}
+	
+	/**
+	 * Adds a new equilateral, solid triangle to the initial element of a XAAL script.
+	 * @param x y coordinate for the top left corner of the rectangular box containing the triangle.
+	 * @param y y coordinate for the top left corner of the rectangular box containing the triangle.
+	 * @param width width (and height) of the triangle in pixels.
+	 * @param color the border color of the triangle.
+	 * @param hidden whether the triangle is hidden initially.
+	 * @param lineWidth the width of the border line.
+	 * @return the String containing the id of the triangle added.
+	 */
+	public String addTriangle(int x, int y, int width, String color, boolean hidden,
+			int lineWidth)
+	{
+		return addTriangle(x,y, width, color, hidden, StrokeType.solid, lineWidth);
+	}
+	
+	/**
+	 * Adds a new equilateral triangle with the default line width
+	 * to the initial element of a XAAL script.
+	 * @param x y coordinate for the top left corner of the rectangular box containing the triangle.
+	 * @param y y coordinate for the top left corner of the rectangular box containing the triangle.
+	 * @param width width (and height) of the triangle in pixels.
+	 * @param color the border color of the triangle.
+	 * @param hidden whether the triangle is hidden initially.
+	 * @param strokeType whether the line should be solid, dashed or dotted.
+	 * @param lineWidth the width of the line.
+	 * @return the String containing the id of the triangle added.
+	 */
+	public String addTriangle(int x, int y, int width, String color, boolean hidden, 
+			StrokeType strokeType, int lineWidth)
 	{
 		Element initial = document.getRootElement().getChild("initial", defaultNS);
 		
@@ -398,6 +574,11 @@ public class XAALScripter {
 		colorElem.setAttribute("name", color);
 		style.addContent(colorElem);
 		
+		Element stroke = createElement("stroke");
+		stroke.setAttribute("type", strokeType.name());
+		stroke.setAttribute("width", lineWidth + "");
+		style.addContent(stroke);
+		
 		triangle.addContent(style);
 		
 		initial.addContent(triangle);
@@ -406,7 +587,8 @@ public class XAALScripter {
 	}
 	
 	/**
-	 * Adds a new arrow to the initial element of the XAAL script.
+	 * Adds a new solid arrow with default line width
+	 * to the initial element of the XAAL script.
 	 * @param originName the element the arrow comes from.
 	 * @param destName the element the arrow goes to.
 	 * @param padding padding around... something?
@@ -414,7 +596,31 @@ public class XAALScripter {
 	 * @param isHidden should the arrow be hidden initially.
 	 * @return the String containing the id of the arrow added.
 	 */
-	public String addArrow(String originName, String destName, int padding, boolean isDashed, boolean isHidden)
+	public String addArrow(String originName, String destName, int padding, boolean isDashed, 
+			boolean isHidden)
+	{
+		StrokeType type = StrokeType.solid;
+		
+		if (isDashed)
+			type = StrokeType.dashed;
+		
+		return addArrow(originName, destName, padding, "black", isHidden, type, DEFAULT_STROKE_WIDTH);
+	}	
+	
+	/**
+	 * Adds a new solid arrow with default line width
+	 * to the initial element of the XAAL script.
+	 * @param originName the element the arrow comes from.
+	 * @param destName the element the arrow goes to.
+	 * @param padding padding around... something?
+	 * @param color color of the arrow.
+	 * @param hidden whether the arrow is hidden initially.
+	 * @param strokeType whether the line is solid, dashed or dotted.
+	 * @param lineWidth the width of the line.
+	 * @return the String containing the id of the arrow added.
+	 */
+	public String addArrow(String originName, String destName, int padding, String color,
+			boolean hidden, StrokeType strokeType, int lineWidth)
 	{
 		Element initial = document.getRootElement().getChild("initial", defaultNS);
 		
@@ -480,15 +686,11 @@ public class XAALScripter {
 		coordinate.setAttribute("y", endY + "");
 		arrow.addContent(coordinate);
 				
-<<<<<<< HEAD:XAALScripter.java
+
 		coordinate = new Element("coordinate");
 		coordinate.setAttribute("x", (endX -10) + "");
 		coordinate.setAttribute("y", (endY -10) + "");
-=======
-		coordinate = createElement("coordinate");
-		coordinate.setAttribute("x", (endX -5) + "");
-		coordinate.setAttribute("y", (endY -5) + "");
->>>>>>> cae371f7102beb078ed678c0196bd3309d7e2f75:XAALScripter.java
+
 		arrow.addContent(coordinate);
 				
 		coordinate = createElement("coordinate");
@@ -496,38 +698,49 @@ public class XAALScripter {
 		coordinate.setAttribute("y", endY + "");
 		arrow.addContent(coordinate);
 		
-<<<<<<< HEAD:XAALScripter.java
+
 		coordinate = new Element("coordinate");
 		coordinate.setAttribute("x", (endX -10) + "");
 		coordinate.setAttribute("y", (endY +10) + "");
-=======
-		coordinate = createElement("coordinate");
-		coordinate.setAttribute("x", (endX -5) + "");
-		coordinate.setAttribute("y", (endY +5) + "");
->>>>>>> cae371f7102beb078ed678c0196bd3309d7e2f75:XAALScripter.java
+
 		arrow.addContent(coordinate);
 		
-		arrow.setAttribute("hidden", isHidden + "");
+		arrow.setAttribute("hidden", hidden + "");
+		
+		Element style = createElement("style");
+		
+		Element colorElem = createElement("color");
+		colorElem.setAttribute("name", color);
+		style.addContent(colorElem);
+		
+		Element stroke = createElement("stroke");
+		stroke.setAttribute("type", strokeType.name());
+		stroke.setAttribute("width", lineWidth + "");
+		style.addContent(stroke);
+		
+		arrow.addContent(style);
 		
 		String idVal = "arrow" + arrowNum++;
 		arrow.setAttribute("id", idVal);
 		
+		
+		
 		initial.addContent(arrow);
 		
 		return idVal;
-	}	
+	}
 	
 	//TODO: do we want to create specific exceptions for when slides have 
 	// already been started or just general exceptions?
 	
 	/**
 	 * Begins a slide for the animation. Corresponds to the seq element.
-	 * @throws Exception
+	 * @throws SlideException
 	 */
-	public void startSlide() throws Exception
+	public void startSlide() throws SlideException
 	{
 		if (inSlide())
-			throw new Exception("A slide has already been started. " +
+			throw new SlideException("A slide has already been started. " +
 					"It must be ended before you can create another.");
 		
 		currentSlide = createElement("seq");
@@ -538,10 +751,10 @@ public class XAALScripter {
 	 * of the XAAL script.
 	 * @throws Exception
 	 */
-	public void endSlide() throws Exception
+	public void endSlide() throws SlideException
 	{
 		if (!inSlide())
-			throw new Exception("No slide has been started yet.");
+			throw new SlideException("No slide has been started yet.");
 		
 		Element animation = document.getRootElement().getChild("animation", defaultNS);
 		
@@ -562,16 +775,17 @@ public class XAALScripter {
 	/**
 	 * Begins a section that runs multiple changes in parallel.
 	 * Corresponds to the par element in XAAL.
-	 * @throws Exception
+	 * @throws SlideException
+	 * @throws ParException
 	 */
-	public void startPar() throws Exception
+	public void startPar() throws SlideException, ParException
 	{
 		if (!inSlide())
-			throw new Exception("No slide is open. Parallel sections can only be " +
+			throw new SlideException("No slide is open. Parallel sections can only be " +
 					"added to open slides");
 		
 		if (inPar())
-			throw new Exception("Parallel section has already been started. " +
+			throw new ParException("Parallel section has already been started. " +
 					"It must be ended before you can create another.");
 		
 		currentPar = createElement("par");
@@ -580,12 +794,12 @@ public class XAALScripter {
 	/**
 	 * Closes a parallel section and writes it to the animation section of 
 	 * the XAAL script.
-	 * @throws Exception
+	 * @throws ParException
 	 */
-	public void endPar() throws Exception
+	public void endPar() throws ParException
 	{
 		if (!inPar())
-			throw new Exception("No parallel section");
+			throw new ParException("No parallel section");
 		
 		currentSlide.addContent(currentPar);
 		
@@ -607,18 +821,23 @@ public class XAALScripter {
 	 * want to move left.
 	 * @param y the number pixels the objects should move down. Use negative if you want to move up.
 	 * @param ids a variable number of Strings containing the ids of objects to be moved.
-	 * @throws Exception
+	 * @throws SlideException
 	 */
-	public void addTranslate(int x, int y, String...ids) throws Exception
+	public void addTranslate(int x, int y, String...ids) throws SlideException
 	{
 		if (!inSlide())
-			throw new Exception("You must create a slide before creating actions.");
+			throw new SlideException("You must create a slide before creating actions.");
 		
 		boolean closeParAtEnd = false;
 		
 		if(!inPar())
 		{
-			startPar();
+			try {
+				startPar();
+			} catch (ParException e) {
+				
+				e.printStackTrace();
+			}
 			closeParAtEnd = true;
 		}
 		
@@ -642,24 +861,35 @@ public class XAALScripter {
 		parent.addContent(move);
 		
 		if (closeParAtEnd)
-			endPar();
+			try {
+				endPar();
+			} catch (ParException e) {
+				
+				e.printStackTrace();
+			}
 	}
 	
 	/**
 	 * Adds a show action to the open parallel section or creates one if necessary.
 	 * @param ids a variable number of Strings containing the ids of objects to be shown.
-	 * @throws Exception
+	 * @throws SlideException
+
 	 */
-	public void addShow(String...ids) throws Exception
+	public void addShow(String...ids) throws SlideException
 	{
 		if (!inSlide())
-			throw new Exception("You must create a slide before creating actions.");
+			throw new SlideException("You must create a slide before creating actions.");
 		
 		boolean closeParAtEnd = false;
 		
 		if(!inPar())
 		{
-			startPar();
+			try {
+				startPar();
+			} catch (ParException e) {
+				
+				e.printStackTrace();
+			}
 			closeParAtEnd = true;
 		}
 		
@@ -678,24 +908,34 @@ public class XAALScripter {
 		parent.addContent(show);		
 		
 		if (closeParAtEnd)
-			endPar();
+			try {
+				endPar();
+			} catch (ParException e) {
+				
+				e.printStackTrace();
+			}
 	}
 	
 	/**
 	 * Adds a hide action to the open parallel section or creates one if necessary.
 	 * @param ids a variable number of Strings containing the ids of objects to be hidden.
-	 * @throws Exception
+	 * @throws SlideException
 	 */
-	public void addHide(String...ids) throws Exception
+	public void addHide(String...ids) throws SlideException
 	{
 		if (!inSlide())
-			throw new Exception("You must create a slide before creating actions.");
+			throw new SlideException("You must create a slide before creating actions.");
 		
 		boolean closeParAtEnd = false;
 		
 		if(!inPar())
 		{
-			startPar();
+			try {
+				startPar();
+			} catch (ParException e) {
+				
+				e.printStackTrace();
+			}
 			closeParAtEnd = true;
 		}
 		
@@ -714,25 +954,35 @@ public class XAALScripter {
 		parent.addContent(hide);		
 		
 		if (closeParAtEnd)
-			endPar();
+			try {
+				endPar();
+			} catch (ParException e) {
+				
+				e.printStackTrace();
+			}
 	}
 	
 	/**
 	 * Adds a change-style action to the open parallel section or creates one if necessary.
 	 * @param color the new color of the objects being changed.
 	 * @param ids a number of Strings containing the ids of the objects to be modified.
-	 * @throws Exception
+	 * @throws SlideException
 	 */
-	public void addChangeStyle(String color, String...ids) throws Exception
+	public void addChangeStyle(String color, String...ids) throws SlideException
 	{
 		if (!inSlide())
-			throw new Exception("You must create a slide before creating actions.");
+			throw new SlideException("You must create a slide before creating actions.");
 		
 		boolean closeParAtEnd = false;
 		
 		if(!inPar())
 		{
-			startPar();
+			try {
+				startPar();
+			} catch (ParException e) {
+				
+				e.printStackTrace();
+			}
 			closeParAtEnd = true;
 		}
 		
@@ -759,16 +1009,21 @@ public class XAALScripter {
 		parent.addContent(changeStyle);
 		
 		if (closeParAtEnd)
-			endPar();
+			try {
+				endPar();
+			} catch (ParException e) {
+				
+				e.printStackTrace();
+			}
 	}
 	
 	/**
 	 * Adds a move for no object. Used for current pause hack. Move not implemented.
 	 * @param x x coordinate of point to move objects to. Currently the number of ms to pause.
 	 * @param y y coordinate of point to move objects to. Must be 0 for pause to work.
-	 * @throws Exception
+	 * @throws SlideException
 	 */
-	private void addMove(int x, int y) throws Exception
+	private void addMove(int x, int y) throws SlideException
 	{
 		addMove(x, y, new String[0]);
 	}
@@ -779,18 +1034,23 @@ public class XAALScripter {
 	 * @param y y coordinate of point to move objects to. Must be 0 for pause to work.
 	 * @param ids list of Strings containing the ids of the objects to move. 
 	 * Make it empty for pause to work
-	 * @throws Exception
+	 * @throws SlideException
 	 */
-	private void addMove(int x, int y, String...ids) throws Exception
+	private void addMove(int x, int y, String...ids) throws SlideException
 	{
 		if (!inSlide())
-			throw new Exception("You must create a slide before creating actions.");
+			throw new SlideException("You must create a slide before creating actions.");
 		
 		boolean closeParAtEnd = false;
 		
 		if(!inPar())
 		{
-			startPar();
+			try {
+				startPar();
+			} catch (ParException e) {
+			
+				e.printStackTrace();
+			}
 			closeParAtEnd = true;
 		}
 		
@@ -815,15 +1075,20 @@ public class XAALScripter {
 		parent.addContent(move);
 		
 		if (closeParAtEnd)
-			endPar();
+			try {
+				endPar();
+			} catch (ParException e) {
+				
+				e.printStackTrace();
+			}
 	}
 	
 	/**
 	 * Adds a pause to the open parallel section or creates one if necessary.
 	 * @param ms how long to pause in milliseconds.
-	 * @throws Exception
+	 * @throws SlideException
 	 */
-	public void addPause(int ms) throws Exception
+	public void addPause(int ms) throws SlideException
 	{
 		addMove(ms, 0);
 	}
@@ -831,12 +1096,12 @@ public class XAALScripter {
 	/**
 	 * Adds narrative to the current slide. Currently is used for pseudocode url.
 	 * @param text the narrative for the slide. Currently is just pseudocode url.
-	 * @throws Exception
+	 * @throws SlideException
 	 */
-	private void addNarrative(String text) throws Exception
+	private void addNarrative(String text) throws SlideException
 	{
 		if (!inSlide())
-			throw new Exception("You must create a slide before creating actions.");
+			throw new SlideException("You must create a slide before creating actions.");
 		
 		Element narrative = createElement("narrative");
 		
@@ -850,7 +1115,7 @@ public class XAALScripter {
 	 * @param url the URL of the page to be displayed in the pseudocode pane.
 	 * @throws Exception
 	 */
-	public void addPseudocodeUrl(String url) throws Exception
+	public void addPseudocodeUrl(String url) throws SlideException
 	{
 			addNarrative(url);
 	}

@@ -19,6 +19,7 @@ public class EricTest {
 		
 		String triangle = scripter.addTriangle(20, 200, 100);
 		
+		String crap1 = scripter.addRectangle(50, 200, 200, 100, "red", false, StrokeType.dashed, 3);
 		scripter.startSlide();
 		scripter.addTranslate(56, 300, rect1, triangle);
 		scripter.addTranslate(-45, -30, text1);
