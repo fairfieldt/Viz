@@ -1,3 +1,4 @@
+package Main;
 import java.util.*;
 
 public class Variable implements Drawable

@@ -1,3 +1,4 @@
+package Main;
 import org.jdom.*;
 import org.jdom.output.*;
 import java.util.*;
@@ -1119,6 +1120,73 @@ public class XAALScripter {
 	{
 			addNarrative(url);
 	}
+	
+	/**
+	 * Adds a TF Question to the current slide
+	 * @param question
+	 * @param answer
+	 */
+	public void addTFQuestion(String question, boolean answer) throws SlideException
+	{
+		
+	}
+	
+	/**
+	 * Adds a Fill-in-the-blank question to the current slide
+	 * @param question
+	 * @param answers
+	 */
+	public void addFibQuestion(String question, String...answers) throws SlideException
+	{
+		
+	}
+	
+	/**
+	 * Adds a multiple choice, single selection question to the current slide
+	 * @param question
+	 * @param choices
+	 * @param answer
+	 */
+	public void addMCQuestion(String question, String[] choices,  
+			int answer) throws SlideException
+	{
+		
+	}
+	
+	/**
+	 * Adds a multiple choice, multiple selection question to the current slide
+	 * @param question
+	 * @param choices
+	 * @param answers
+	 */
+	public void	addMSQuestion(String question, String[] choices, 
+			int...answers) throws SlideException
+	{
+		
+	}
+	
+	private void createQuestion(String question, String[] choices, String[] answers){}
+	
+	public void createQuestion(String question, boolean answer)
+	{
+		
+	}
+	
+	public void createQuestion(String question, String[] answers)
+	{
+		
+	}
+	
+	public void createQuestion(String question, String[] choices, int answer)
+	{
+		
+	}
+	
+	public void createQuestion(String question, String[] choices, int...answers)
+	{
+		
+	}
+	
 	
 	/**
 	 * Creates an element in the defaultNS
