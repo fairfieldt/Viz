@@ -1,0 +1,189 @@
+	options
+	{
+		LOOKAHEAD = 2;
+		FORCE_LA_CHECK = true;
+	}
+
+	PARSER_BEGIN(VizParser)
+	public class VizParser
+	{
+		public static void main(String[] args)
+		{
+			try
+			{
+				VizParser vp = new VizParser(System.in);
+				SimpleNode node =vp.program();
+				node.dump("");
+			}
+			catch (Exception e)
+			{
+				System.out.println(e);
+			}
+		}
+	}
+
+	PARSER_END(VizParser)
+
+	TOKEN:
+	{
+		<DEF: "def" >
+		| <VAR: "var" >
+		| <NUM: ["0"-"9"] (["0"-"9"])* >
+		| <ID: <LETTER> (<LETTER>)* >
+		| <LETTER: ["a"-"z", "A"-"Z"] >
+		| <LTBCE: "{" >
+		| <RTBCE: "}" >
+		| <LTBCR: "[" >
+		| <RTBCR: "]" >
+		| <LTPRN: "(" >
+		| <RTPRN: ")" >	
+		| <SEMI: ";" >
+		| <COMMA: "," >
+		| <PLUS: "+" >
+		| <MINUS: "-" >
+		| <EQL: "=" >
+	}
+
+	SKIP:
+	{
+		" "
+		| "\t"
+		| "\n"
+		| "\r"
+	}
+
+
+	SimpleNode program():
+	{
+	}
+	{
+		
+		declarationList()
+		{
+				
+			return jjtThis;
+		}
+	}
+
+	void declarationList() #void:
+	{
+	}
+	{
+		declaration() (declarationList())?
+	}
+
+	void declaration() #void:
+	{
+	}
+	{
+		<VAR> varDecl() <SEMI> | funDecl()
+	}
+
+	void varDecl():
+	{
+	}
+	{
+		<ID> (<LTBCR> <RTBCR>)? <EQL> varDeclP() 
+	}
+	
+	void varDeclP() #void:
+	{
+	}
+	{
+		<LTBCE> arrayDecl() <RTBCE> | expression()
+	}
+	
+
+	void arrayDecl() #void:
+	{
+	}
+	{
+		<NUM> (<COMMA> arrayDecl())?
+	}
+
+	void funDecl():
+	{
+	}
+	{
+		<DEF> <ID> <LTPRN> params() <RTPRN> compoundStatement()
+	}
+
+	void compoundStatement() #void:
+	{
+	}
+	{
+		<LTBCE> statementList() <RTBCE>
+	}
+
+	void statementList() #void:
+	{
+	}
+	{
+		[statement() statementListP()]
+	}
+	
+	void statementListP() #void:
+	{
+	}
+	{
+		statementList()
+	}
+
+	void statement() #void:
+	{
+	}
+	{
+		 expression() <SEMI> |  <VAR> varDecl() <SEMI>
+	}
+
+	void call():
+	{
+	}
+	{
+		<LTPRN> args() <RTPRN>
+	}
+
+	void var():
+	{
+	}
+	{
+		(<LTBCR> expression() <RTBCR>)?
+	}
+
+	void assignment():
+	{
+	}
+	{
+		<EQL> expression()
+	}
+
+	void expression() #void:
+	{
+	}
+	{
+		<ID> call() | <ID> var() (assignment())? (op() expression())? | <ID> var() (op() expression())?| (<NUM> (op() expression())?) 
+	}	
+	
+
+	void args():
+	{
+	}
+	{
+		<ID> var() (<COMMA> args())? | <NUM> (<COMMA> args())?
+	}
+
+	void params():
+	{
+	}
+	{
+		<ID> (<COMMA> params())?
+	}
+	
+	void op():
+	{
+	}
+	{
+		<PLUS> | <MINUS>
+	}
+
+
