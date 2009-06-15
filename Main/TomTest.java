@@ -14,24 +14,26 @@ public class TomTest {
 	{
 		scripter = new XAALScripter();
 		
-		Scope global = new Scope("Global", "blue");
-		Variable var1 = new Variable("x", 3, false);
-		Variable var2 = new Variable("y", 12, false);
+		Scope global = new Scope("Global", "blue", true);
+		Variable var1 = new Variable("x", 3, false, false);
+		Variable var2 = new Variable("y", 12, false, false);
 		var2.addCopy();
 		global.addVariable(var1);
 		global.addVariable(var2);
-		Scope main = new Scope("main", "red");
+		Scope main = new Scope("main", "red", false);
 		main.setHidden(true);
-		Variable var3 = new Variable("a", 11, true);
+		Variable var3 = new Variable("a", 11, true, true);
 		var3.setReference(var1);
 		main.addVariable(var3);
 		global.addScope(main);
 		
-		Scope foo = new Scope("foo", "green");
+		Scope foo = new Scope("foo", "green", false);
 		foo.setHidden(true);
-		Variable var4 = new Variable("q", 0, false);
-		Variable var5 = new Variable("p", 5, true);
-		var5.setReference(var3);
+		Variable var4 = new Variable("q", 0, false, true);
+		Variable var5 = new Variable("p", 5, true, false);
+		var5.setReference(var1);
+		foo.addVariable(var4);
+		foo.addVariable(var5);
 		global.addScope(foo);
 		global.draw(scripter);
 		
@@ -68,8 +70,9 @@ public class TomTest {
 	
 	public static void moveCopy(Variable var1, Variable var2)
 	{
-		ArrayList<String> ids = var1.getIds();
-		String lastCopy = ids.get(ids.size() -1 );
+		ArrayList<String> copies = var1.getCopies();
+		int copyIndex = copies.size() - 1;
+		String lastCopy = copies.get(copyIndex);
 		
 		int startX = var1.getXPos();
 		int startY = var1.getYPos();
@@ -88,7 +91,7 @@ public class TomTest {
 		{
 			System.out.println(e);
 		}
-		
+		copies.remove(copyIndex);
 		
 	}
 	public static void showScope(Scope s)
@@ -123,5 +126,7 @@ public class TomTest {
 			}
 		}
 	}
+	
+	
 
 }

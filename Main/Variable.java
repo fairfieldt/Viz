@@ -9,7 +9,10 @@ public class Variable implements Drawable
 	private boolean isReference = false;
 	private ArrayList<String> ids;
 	
+	private ArrayList<String> copiesArray;
+	
 	private boolean hidden = false;
+	private boolean isParam = false;
 	
 	private int xPos;
 	private int yPos;
@@ -20,13 +23,15 @@ public class Variable implements Drawable
 	
 	private Variable ref =  null;
 	
-	public Variable(String name, int value, boolean isReference)
+	public Variable(String name, int value, boolean isReference, boolean isParameter)
 	{
 		ids = new ArrayList<String>();
+		copiesArray = new ArrayList<String>();
 		this.name = name;
 		this.value = value;
 		this.isReference = isReference;
 		this.length = (name.length() * 10) + 80;
+		this.isParam = isParameter;
 	}
 	
 	public void setReference(Variable ref)
@@ -53,6 +58,12 @@ public class Variable implements Drawable
 	{
 		copies++;
 	}
+	
+	public ArrayList<String> getCopies()
+	{
+		return copiesArray;
+	}
+	
 	public int getLength()
 	{
 		return this.length;
@@ -68,6 +79,11 @@ public class Variable implements Drawable
 		return this.yPos;
 	}
 	
+	public boolean getIsParam()
+	{
+		return this.isParam;
+	}
+	
 	public ArrayList<String> getIds()
 	{
 		System.out.println("I have " + ids.size() + " ids");
@@ -76,7 +92,7 @@ public class Variable implements Drawable
 
 	public void draw(XAALScripter scripter)
 	{
-		
+		int captionLength = name.length() * 13;
 		if (this.isReference)
 		{
 			String id1 = scripter.addTriangle(xPos, yPos, 40, color, hidden);
@@ -93,14 +109,19 @@ public class Variable implements Drawable
 		}
 		else
 		{
+			
 			String id1 = scripter.addRectangle(xPos, yPos, length, 40, color,  hidden);
-			String id2 = scripter.addText(xPos+15, yPos+25, name + " = " + value, "black",  hidden);
+			//String id2 = scripter.addRectangle(xPos, yPos -25, captionLength, 25, color, hidden);
+			String id3 = scripter.addText(xPos+3, yPos-5, name, "black", hidden);
+			String id4= scripter.addText(xPos+15, yPos+25, value + "", "black",  hidden);
 			
 			ids.add(id1);
-			ids.add(id2);
+			//ids.add(id2);
+			ids.add(id3);
+			ids.add(id4);
 			for (int i = 0; i < copies; i++)
 			{
-				ids.add(value + "");
+				copiesArray.add(scripter.addText(xPos+15, yPos+25, value + "", "black",  hidden));
 			}
 		}
 		
