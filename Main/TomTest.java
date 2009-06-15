@@ -22,9 +22,11 @@ public class TomTest {
 		global.addVariable(var2);
 		Scope main = new Scope("main", "red", false);
 		main.setHidden(true);
-		Variable var3 = new Variable("a", 11, true, true);
+		Variable var3 = new Variable("a", 11, false, true);
 		var3.setReference(var1);
+		
 		main.addVariable(var3);
+		
 		global.addScope(main);
 		
 		Scope foo = new Scope("foo", "green", false);
@@ -43,13 +45,14 @@ public class TomTest {
 		scripter.startSlide();
 		scripter.startPar();
 			showScope(main);
-			showVar(var3);
+			
 		scripter.endPar();	
 		scripter.endSlide();
 		
 		scripter.startSlide();
 		scripter.startPar();
 			showScope(foo);
+			showVar(var3);
 			showVar(var4);
 			showVar(var5);
 		scripter.endPar();
@@ -78,10 +81,10 @@ public class TomTest {
 		int startY = var1.getYPos();
 		
 		int endX = var2.getXPos();
-		int endY = var2.getXPos();
+		int endY = var2.getYPos();
 		
-		int moveX = startX - endX;
-		int moveY = startY - endY;
+		int moveX = endX - startX;
+		int moveY = endY - startY;
 		
 		try
 		{

@@ -538,7 +538,7 @@ public class XAALScripter {
 		
 		Element triangle = createElement("polyline");
 		
-		String idVal = "triangle" + lineNum;
+		String idVal = "triangle" + triangleNum;
 		triangleNum++;
 		triangle.setAttribute("id", idVal);
 		
