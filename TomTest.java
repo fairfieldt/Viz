@@ -13,22 +13,22 @@ public class TomTest {
 	{
 		scripter = new XAALScripter();
 		
-		Scope global = new Scope("Global", "blue");
-		Variable var1 = new Variable("x", 3);
-		Variable var2 = new Variable("y", 12);
+		Scope global = new Scope("Global", "blue", true);
+		Variable var1 = new Variable("x", 3, false);
+		Variable var2 = new Variable("y", 12, false);
 		var2.addCopy();
 		global.addVariable(var1);
 		global.addVariable(var2);
-		Scope main = new Scope("main", "red");
+		Scope main = new Scope("main", "red", false);
 		main.setHidden(true);
-		Variable var3 = new Variable("a", var1);
+		Variable var3 = new Variable("a", var1, true);
 
 		main.addVariable(var3);
 		global.addScope(main);
 		
-		Scope foo = new Scope("foo", "green");
-		Variable var4 = new Variable("q", 0);
-		Variable var5 = new Variable("p", 1);
+		Scope foo = new Scope("foo", "green", false);
+		Variable var4 = new Variable("q", 0, true);
+		Variable var5 = new Variable("p", 1, false);
 		foo.addVariable(var4);
 		foo.addVariable(var5);
 		foo.setHidden(true);
