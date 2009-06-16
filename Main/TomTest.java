@@ -59,7 +59,7 @@ public class TomTest {
 		
 		scripter.startPar();
 			//Move a copy down
-			moveCopy(var1, var5);
+			moveCopy(var2, var4);
 		scripter.endPar();
 		scripter.endSlide();
 		

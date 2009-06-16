@@ -3,12 +3,11 @@ import org.jdom.*;
 import org.jdom.output.*;
 import java.util.*;
 
+//TODO: elements should be created with the defaultNS. Technically a lot of elements have no NS.
+// 		I'll add a createElement method later.
 public class XAALScripter {
 	private Document document = new Document();
 	private final Namespace defaultNS = Namespace.getNamespace("http://www.cs.hut.fi/Research/SVG/XAAL");
-	
-	//TODO: change the namespace to a final namespace eventually
-	private final Namespace jhaveNS = Namespace.getNamespace("http://www.uwosh.edu/jhave/ns");
 	
 	public final int DEFAULT_FONT_SIZE = 16;
 	public final String DEFAULT_FONT_FAMILY = "Lucida Bright";

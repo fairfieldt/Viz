@@ -3,7 +3,7 @@ import java.util.*;
 
 public class Variable implements Drawable
 {
-	protected String name;
+	private String name;
 	private int value;
 	private String color = "black";
 	private boolean isReference = false;
@@ -17,7 +17,7 @@ public class Variable implements Drawable
 	private int xPos;
 	private int yPos;
 
-	protected int length = 0;
+	private int length = 0;
 	
 	private int copies = 1;
 	
