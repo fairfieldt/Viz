@@ -39,7 +39,7 @@ public class Array extends Variable implements Drawable {
 		for (int i = 0; i < values.length; i++)
 		{
 			String rectangle = 
-				scripter.addRectangle(arrayXPos + (i * 40), getYPos(), 40, 40, "black", getHidden());
+				scripter.addRectangle(arrayXPos + (i * 40), getYPos(), 40, 40, getColor(), getHidden());
 			String id = 
 				scripter.addText(arrayXPos + (i * 40) + 15, getYPos() + 25, values[i] + "", "black", getHidden());
 			

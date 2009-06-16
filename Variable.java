@@ -73,6 +73,11 @@ public class Variable implements Drawable
 		this.color = color;
 	}
 	
+	public String getColor()
+	{
+		return color;
+	}
+	
 	public void addCopy()
 	{
 		copies++;
