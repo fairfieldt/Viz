@@ -87,7 +87,7 @@ public class EricTest {
 		int startY = var1.getYPos();
 		
 		int endX = var2.getXPos();
-		int endY = var2.getXPos();
+		int endY = var2.getYPos();
 		
 		int moveX = startX - endX;
 		int moveY = startY - endY;
