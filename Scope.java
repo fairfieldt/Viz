@@ -13,30 +13,37 @@ public class Scope implements Drawable
 	private int sizeX = 800;
 	private int sizeY = 600;
 	
+	private int currentParamXPos = 50;
+	private int currentParamYPos = 50;
+	
 	private int currentVarXPos = 50;
 	private int currentVarYPos = 50;
 	
 	private String color = "black";
 	private boolean hidden = false;
+	private boolean isGlobal = false;
 
-	public Scope(String name, String color)
+	public Scope(String name, String color, boolean isGlobal)
 	{
 		vars = new ArrayList<Variable>();
 		scopes = new ArrayList<Scope>();
 		ids = new ArrayList<String>();
 		this.name = name;
 		this.color = color;
+		this.isGlobal = isGlobal;
 	}
 
 	public void addVariable(Variable v)
 	{
 		//If the scope is hidden we should hide all variables too
+
 		if (hidden)
 		{
 			v.setHidden(true);
 		}
 		v.setColor(color);
 		this.vars.add(v);
+		
 	}
 	
 	public void addScope(Scope s)
@@ -55,6 +62,9 @@ public class Scope implements Drawable
 		this.yPos = yPos;
 		this.currentVarXPos = xPos;
 		this.currentVarYPos = yPos;
+		this.currentParamXPos = xPos;
+		this.currentParamYPos = yPos;
+		
 	}
 	
 	public void setHidden(boolean isHidden)
@@ -94,9 +104,25 @@ public class Scope implements Drawable
 	{
 		for (Variable v : vars)
 		{
-			v.setPosition(currentVarXPos + 25, currentVarYPos+25);
-			currentVarXPos+=v.getLength() + 10;
+			if (v.getIsParam())
+			{
+				v.setPosition(currentParamXPos + 25, currentParamYPos + 35);
+				currentParamXPos+=v.getLength() + 10;
+			}
+			else 
+			{
+				if (isGlobal)
+				{
+					v.setPosition(currentVarXPos + 25, currentVarYPos +35);
+					
+				}
+				else 
+				{
+					v.setPosition(currentVarXPos + 25, currentVarYPos +90);
+				}
+				currentVarXPos += v.getLength() + 10;
 			System.out.println("Size var " + v.getName() + " to x: " +  xPos + " y: " + yPos);
+			}
 		}
 	}
 
@@ -106,11 +132,11 @@ public class Scope implements Drawable
 		System.out.println("XPos: " + xPos + " YPos: " + yPos);
 		int captionLength = name.length() * 13;
 		String id1 = scripter.addRectangle(xPos, yPos, sizeX, sizeY, color, hidden);
-		String id2 = scripter.addRectangle(xPos, yPos-30, captionLength, 30, color, hidden);
-		String id3 = scripter.addText(xPos+3, yPos-10, name, "black", hidden);
+		//String id2 = scripter.addRectangle(xPos, yPos-30, captionLength, 30, color, hidden);
+		String id3 = scripter.addText(xPos+3, yPos-5, name, "black", hidden);
 		
 		ids.add(id1);
-		ids.add(id2);
+		//ids.add(id2);
 		ids.add(id3);
 
 		sizeVariables();

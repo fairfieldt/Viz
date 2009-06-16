@@ -6,6 +6,8 @@
 	}
 
 	PARSER_BEGIN(VizParser)
+	package Interpreter;
+	
 	public class VizParser
 	{
 		public static void main(String[] args)
