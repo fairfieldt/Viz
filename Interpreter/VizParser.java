@@ -5,8 +5,8 @@
                         try
                         {
                                 VizParser vp = new VizParser(System.in);
-                                SimpleNode node =vp.program();
-                                node.dump("");
+                                Node node = vp.program();
+                                //node.dump("");
                         }
                         catch (Exception e)
                         {
@@ -14,9 +14,9 @@
                         }
                 }
 
-  static final public SimpleNode program() throws ParseException {
+  static final public Node program() throws ParseException {
          /*@bgen(jjtree) program */
-  SimpleNode jjtn000 = new SimpleNode(JJTPROGRAM);
+  ASTprogram jjtn000 = new ASTprogram(JJTPROGRAM);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -70,7 +70,7 @@
 
   static final public void varDecl() throws ParseException {
          /*@bgen(jjtree) varDecl */
-  SimpleNode jjtn000 = new SimpleNode(JJTVARDECL);
+  ASTvarDecl jjtn000 = new ASTvarDecl(JJTVARDECL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -129,7 +129,7 @@
 
   static final public void funDecl() throws ParseException {
          /*@bgen(jjtree) funDecl */
-  SimpleNode jjtn000 = new SimpleNode(JJTFUNDECL);
+  ASTfunDecl jjtn000 = new ASTfunDecl(JJTFUNDECL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -195,7 +195,7 @@
 
   static final public void call() throws ParseException {
          /*@bgen(jjtree) call */
-  SimpleNode jjtn000 = new SimpleNode(JJTCALL);
+  ASTcall jjtn000 = new ASTcall(JJTCALL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -225,7 +225,7 @@
 
   static final public void var() throws ParseException {
          /*@bgen(jjtree) var */
-  SimpleNode jjtn000 = new SimpleNode(JJTVAR);
+  ASTvar jjtn000 = new ASTvar(JJTVAR);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -259,7 +259,7 @@
 
   static final public void assignment() throws ParseException {
          /*@bgen(jjtree) assignment */
-  SimpleNode jjtn000 = new SimpleNode(JJTASSIGNMENT);
+  ASTassignment jjtn000 = new ASTassignment(JJTASSIGNMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -329,7 +329,7 @@
 
   static final public void args() throws ParseException {
          /*@bgen(jjtree) args */
-  SimpleNode jjtn000 = new SimpleNode(JJTARGS);
+  ASTargs jjtn000 = new ASTargs(JJTARGS);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -377,7 +377,7 @@
 
   static final public void params() throws ParseException {
          /*@bgen(jjtree) params */
-  SimpleNode jjtn000 = new SimpleNode(JJTPARAMS);
+  ASTparams jjtn000 = new ASTparams(JJTPARAMS);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -411,7 +411,7 @@
 
   static final public void op() throws ParseException {
          /*@bgen(jjtree) op */
-  SimpleNode jjtn000 = new SimpleNode(JJTOP);
+  ASTop jjtn000 = new ASTop(JJTOP);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -610,25 +610,6 @@
     try { return !jj_3_26(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(25, xla); }
-  }
-
-  static private boolean jj_3R_11() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_22()) {
-    jj_scanpos = xsp;
-    if (jj_3_23()) return true;
-    }
-    return false;
-  }
-
-  static private boolean jj_3_22() {
-    if (jj_scan_token(ID)) return true;
-    if (jj_3R_10()) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_20()) jj_scanpos = xsp;
-    return false;
   }
 
   static private boolean jj_3R_1() {
@@ -873,6 +854,25 @@
   static private boolean jj_3_15() {
     if (jj_3R_8()) return true;
     if (jj_3R_5()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_11() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_22()) {
+    jj_scanpos = xsp;
+    if (jj_3_23()) return true;
+    }
+    return false;
+  }
+
+  static private boolean jj_3_22() {
+    if (jj_scan_token(ID)) return true;
+    if (jj_3R_10()) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_20()) jj_scanpos = xsp;
     return false;
   }
 
