@@ -1,4 +1,3 @@
-package Main;
 import java.io.*;
 import java.util.*;
 
@@ -14,28 +13,25 @@ public class TomTest {
 	{
 		scripter = new XAALScripter();
 		
-		Scope global = new Scope("Global", "blue", true);
-		Variable var1 = new Variable("x", 3, false, false);
-		Variable var2 = new Variable("y", 12, false, false);
+		Scope global = new Scope("Global", "blue");
+		Variable var1 = new Variable("x", 3);
+		Variable var2 = new Variable("y", 12);
 		var2.addCopy();
 		global.addVariable(var1);
 		global.addVariable(var2);
-		Scope main = new Scope("main", "red", false);
+		Scope main = new Scope("main", "red");
 		main.setHidden(true);
-		Variable var3 = new Variable("a", 11, false, true);
-		var3.setReference(var1);
-		
+		Variable var3 = new Variable("a", var1);
+
 		main.addVariable(var3);
-		
 		global.addScope(main);
 		
-		Scope foo = new Scope("foo", "green", false);
-		foo.setHidden(true);
-		Variable var4 = new Variable("q", 0, false, true);
-		Variable var5 = new Variable("p", 5, true, false);
-		var5.setReference(var1);
+		Scope foo = new Scope("foo", "green");
+		Variable var4 = new Variable("q", 0);
+		Variable var5 = new Variable("p", 1);
 		foo.addVariable(var4);
 		foo.addVariable(var5);
+		foo.setHidden(true);
 		global.addScope(foo);
 		global.draw(scripter);
 		
@@ -45,26 +41,29 @@ public class TomTest {
 		scripter.startSlide();
 		scripter.startPar();
 			showScope(main);
-			
+			showVar(var3);
 		scripter.endPar();	
 		scripter.endSlide();
 		
 		scripter.startSlide();
 		scripter.startPar();
 			showScope(foo);
-			showVar(var3);
 			showVar(var4);
 			showVar(var5);
 		scripter.endPar();
+		scripter.endSlide();
 		
+		scripter.startSlide();
 		scripter.startPar();
 			//Move a copy down
-			moveCopy(var2, var4);
+
+			moveCopy(var2, var3);
+
 		scripter.endPar();
 		scripter.endSlide();
 		
 		
-		FileWriter writer = new FileWriter("C:\\Users\\Eric\\Desktop\\tomxaal.xaal");
+		FileWriter writer = new FileWriter("/home/fairfieldt/Documents/!test.xaal");
 		
 		writer.write(scripter.toString());
 		
@@ -73,28 +72,29 @@ public class TomTest {
 	
 	public static void moveCopy(Variable var1, Variable var2)
 	{
-		ArrayList<String> copies = var1.getCopies();
-		int copyIndex = copies.size() - 1;
-		String lastCopy = copies.get(copyIndex);
-		
+		ArrayList<String> ids = var1.getIds();
+		String lastCopy = ids.get(ids.size() -1 );
+		System.out.println("Moving " + lastCopy);
 		int startX = var1.getXPos();
 		int startY = var1.getYPos();
 		
 		int endX = var2.getXPos();
-		int endY = var2.getYPos();
+		int endY = var2.getXPos();
 		
-		int moveX = endX - startX;
-		int moveY = endY - startY;
-		
+		int moveX = startX - endX;
+		int moveY = startY - endY;
+		System.out.println("Startx: " + startX + " endx: " + endX);
+		System.out.println("Starty: " + startY + " endy: " + endY);
+		System.out.println("Moving x: " + moveX + " and Y: " + moveY);
 		try
 		{
-			scripter.addTranslate(moveX, moveY, lastCopy);
+			scripter.addTranslate(-moveX, -moveY, lastCopy);
 		}
 		catch (Exception e)
 		{
 			System.out.println(e);
 		}
-		copies.remove(copyIndex);
+		
 		
 	}
 	public static void showScope(Scope s)
@@ -129,7 +129,5 @@ public class TomTest {
 			}
 		}
 	}
-	
-	
 
 }

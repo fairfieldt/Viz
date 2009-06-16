@@ -1,4 +1,3 @@
-package Main;
 
 /**
  * An enumeration of the line stroke types available in XAAL.

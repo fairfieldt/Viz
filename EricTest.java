@@ -1,4 +1,3 @@
-package Main;
 import java.io.FileWriter;
 
 public class EricTest {

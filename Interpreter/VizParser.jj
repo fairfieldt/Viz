@@ -3,6 +3,7 @@
 	{
 		LOOKAHEAD = 2;
 		FORCE_LA_CHECK = true;
+		             
 	}
 
 	PARSER_BEGIN(VizParser)
@@ -18,8 +19,8 @@
 			try
 			{
 				VizParser vp = new VizParser(System.in);
-				SimpleNode node =vp.program();
-				node.dump("");
+				Node node = vp.program();
+				//node.dump("");
 			}
 			catch (Exception e)
 			{
@@ -59,9 +60,9 @@
 	}
 
 
-	SimpleNode program():
+	Node program():
 	{/*@bgen(jjtree) program */
-  SimpleNode jjtn000 = new SimpleNode(JJTPROGRAM);
+  ASTprogram jjtn000 = new ASTprogram(JJTPROGRAM);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
 /*@egen*/
@@ -118,7 +119,7 @@
 
 	void varDecl():
 	{/*@bgen(jjtree) varDecl */
-  SimpleNode jjtn000 = new SimpleNode(JJTVARDECL);
+  ASTvarDecl jjtn000 = new ASTvarDecl(JJTVARDECL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
 /*@egen*/
@@ -166,7 +167,7 @@
 
 	void funDecl():
 	{/*@bgen(jjtree) funDecl */
-  SimpleNode jjtn000 = new SimpleNode(JJTFUNDECL);
+  ASTfunDecl jjtn000 = new ASTfunDecl(JJTFUNDECL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
 /*@egen*/
@@ -227,7 +228,7 @@
 
 	void call():
 	{/*@bgen(jjtree) call */
-  SimpleNode jjtn000 = new SimpleNode(JJTCALL);
+  ASTcall jjtn000 = new ASTcall(JJTCALL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
 /*@egen*/
@@ -260,7 +261,7 @@
 
 	void var():
 	{/*@bgen(jjtree) var */
-  SimpleNode jjtn000 = new SimpleNode(JJTVAR);
+  ASTvar jjtn000 = new ASTvar(JJTVAR);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
 /*@egen*/
@@ -293,7 +294,7 @@
 
 	void assignment():
 	{/*@bgen(jjtree) assignment */
-  SimpleNode jjtn000 = new SimpleNode(JJTASSIGNMENT);
+  ASTassignment jjtn000 = new ASTassignment(JJTASSIGNMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
 /*@egen*/
@@ -334,7 +335,7 @@
 
 	void args():
 	{/*@bgen(jjtree) args */
-  SimpleNode jjtn000 = new SimpleNode(JJTARGS);
+  ASTargs jjtn000 = new ASTargs(JJTARGS);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
 /*@egen*/
@@ -367,7 +368,7 @@
 
 	void params():
 	{/*@bgen(jjtree) params */
-  SimpleNode jjtn000 = new SimpleNode(JJTPARAMS);
+  ASTparams jjtn000 = new ASTparams(JJTPARAMS);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
 /*@egen*/
@@ -400,7 +401,7 @@
 	
 	void op():
 	{/*@bgen(jjtree) op */
-  SimpleNode jjtn000 = new SimpleNode(JJTOP);
+  ASTop jjtn000 = new ASTop(JJTOP);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
 /*@egen*/

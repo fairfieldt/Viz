@@ -1,4 +1,3 @@
-package Main;
 
 public class ParException extends XAALScripterException {
 

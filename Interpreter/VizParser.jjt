@@ -2,6 +2,7 @@
 	{
 		LOOKAHEAD = 2;
 		FORCE_LA_CHECK = true;
+		MULTI = true;
 	}
 
 	PARSER_BEGIN(VizParser)
@@ -14,8 +15,8 @@
 			try
 			{
 				VizParser vp = new VizParser(System.in);
-				SimpleNode node =vp.program();
-				node.dump("");
+				Node node = vp.program();
+				//node.dump("");
 			}
 			catch (Exception e)
 			{
@@ -55,7 +56,7 @@
 	}
 
 
-	SimpleNode program():
+	Node program():
 	{
 	}
 	{

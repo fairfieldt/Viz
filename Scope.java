@@ -1,4 +1,3 @@
-package Main;
 import java.util.*;
 
 public class Scope implements Drawable
@@ -122,6 +121,7 @@ public class Scope implements Drawable
 					v.setPosition(currentVarXPos + 25, currentVarYPos +90);
 				}
 				currentVarXPos += v.getLength() + 10;
+			System.out.println("Size var " + v.getName() + " to x: " +  xPos + " y: " + yPos);
 			}
 		}
 	}
