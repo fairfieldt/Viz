@@ -9,7 +9,7 @@ public class Variable implements Drawable
 	private ArrayList<String> ids;
 	
 	private boolean hidden = false;
-	
+	private boolean isParam = false;	
 	private int xPos;
 	private int yPos;
 
@@ -33,6 +33,7 @@ public class Variable implements Drawable
 		ids = new ArrayList<String>();
 		this.name = name;
 		this.isReference = true;
+		this.isParam = true;
 		setReference(ref);
 	}
 	
@@ -43,6 +44,7 @@ public class Variable implements Drawable
 	
 	public void setPosition(int xPos, int yPos)
 	{
+		System.out.println("Setting position of " + name + " to " + xPos + "," + yPos);
 		this.xPos = xPos;
 		this.yPos = yPos;
 	}
@@ -50,6 +52,11 @@ public class Variable implements Drawable
 	public void setHidden(boolean isHidden)
 	{
 		hidden = isHidden;
+	}
+
+	public void setIsParam(boolean isParam)
+	{
+		this.isParam = isParam;
 	}
 	public void setColor(String color)
 	{
@@ -73,6 +80,11 @@ public class Variable implements Drawable
 	public int getYPos()
 	{
 		return this.yPos;
+	}
+
+	public boolean getIsParam()
+	{
+		return this.isParam;
 	}
 	
 	public ArrayList<String> getIds()
@@ -105,7 +117,7 @@ public class Variable implements Drawable
 		else
 		{
 			String id1 = scripter.addRectangle(xPos, yPos, length, 40, color,  hidden);
-			String id2 = scripter.addText(xPos, yPos-5, name);
+			String id2 = scripter.addText(xPos, yPos-5, name, "black", hidden);
 			String id3 = scripter.addText(xPos+15, yPos+25, value + "", "black",  hidden);
 			
 			ids.add(id1);

@@ -13,25 +13,26 @@ public class TomTest {
 	{
 		scripter = new XAALScripter();
 		
-		Scope global = new Scope("Global", "blue");
+		Scope global = new Scope("Global", "blue", true);
 		Variable var1 = new Variable("x", 3);
 		Variable var2 = new Variable("y", 12);
 		var2.addCopy();
 		global.addVariable(var1);
 		global.addVariable(var2);
-		Scope main = new Scope("main", "red");
+		Scope main = new Scope("main", "red", false);
 		main.setHidden(true);
 		Variable var3 = new Variable("a", var1);
 
 		main.addVariable(var3);
 		global.addScope(main);
 		
-		Scope foo = new Scope("foo", "green");
+		Scope foo = new Scope("foo", "green", false);
+		foo.setHidden(true);
 		Variable var4 = new Variable("q", 0);
+		var4.setIsParam(true);
 		Variable var5 = new Variable("p", 1);
 		foo.addVariable(var4);
 		foo.addVariable(var5);
-		foo.setHidden(true);
 		global.addScope(foo);
 		global.draw(scripter);
 		
@@ -56,7 +57,7 @@ public class TomTest {
 		scripter.startSlide();
 		scripter.startPar();
 			//Move a copy down
-			moveCopy(var2, var3);
+			moveCopy(var2, var4);
 		scripter.endPar();
 		scripter.endSlide();
 		
@@ -73,20 +74,21 @@ public class TomTest {
 		ArrayList<String> ids = var1.getIds();
 		String lastCopy = ids.get(ids.size() -1 );
 		System.out.println("Moving " + lastCopy);
+		System.out.println(var1.getName() + " " + var2.getName());
 		int startX = var1.getXPos();
 		int startY = var1.getYPos();
 		
 		int endX = var2.getXPos();
-		int endY = var2.getXPos();
+		int endY = var2.getYPos();
 		
-		int moveX = startX - endX;
-		int moveY = startY - endY;
+		int moveX = endX - startX;
+		int moveY = endY - startY;
 		System.out.println("Startx: " + startX + " endx: " + endX);
 		System.out.println("Starty: " + startY + " endy: " + endY);
 		System.out.println("Moving x: " + moveX + " and Y: " + moveY);
 		try
 		{
-			scripter.addTranslate(-moveX, -moveY, lastCopy);
+			scripter.addTranslate(moveX, moveY, lastCopy);
 		}
 		catch (Exception e)
 		{
