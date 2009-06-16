@@ -6,7 +6,9 @@ public class Variable implements Drawable
 	private int value;
 	private String color = "black";
 	private boolean isReference = false;
+	private boolean isParam = false;
 	private ArrayList<String> ids;
+	
 	
 	private boolean hidden = false;
 	
@@ -19,20 +21,22 @@ public class Variable implements Drawable
 	
 	private Variable ref =  null;
 	
-	public Variable(String name, int value)
+	public Variable(String name, int value, boolean isParam)
 	{
 		ids = new ArrayList<String>();
 		this.name = name;
 		this.value = value;
 		this.isReference = false;
+		this.isParam = isParam;
 		this.length = (name.length() * 10) + 80;
 	}
 	
-	public Variable(String name, Variable ref)
+	public Variable(String name, Variable ref, boolean isParam)
 	{
 		ids = new ArrayList<String>();
 		this.name = name;
 		this.isReference = true;
+		this.isParam = isParam;
 		setReference(ref);
 	}
 	
@@ -85,6 +89,11 @@ public class Variable implements Drawable
 	{
 		return name;
 	}
+	
+	public boolean getIsParam()
+	{
+		return isParam;
+	}
 
 	public void draw(XAALScripter scripter)
 	{
@@ -105,7 +114,7 @@ public class Variable implements Drawable
 		else
 		{
 			String id1 = scripter.addRectangle(xPos, yPos, length, 40, color,  hidden);
-			String id2 = scripter.addText(xPos, yPos-5, name);
+			String id2 = scripter.addText(xPos, yPos-5, name, "black", hidden);
 			String id3 = scripter.addText(xPos+15, yPos+25, value + "", "black",  hidden);
 			
 			ids.add(id1);
