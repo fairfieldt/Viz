@@ -7,7 +7,7 @@ public class Variable implements Drawable
 	private String color = "black";
 	private boolean isReference = false;
 	private boolean isParam = false;
-	private ArrayList<String> ids;
+	protected ArrayList<String> ids;
 	
 	
 	private boolean hidden = false;
@@ -38,6 +38,11 @@ public class Variable implements Drawable
 		this.isReference = true;
 		this.isParam = isParam;
 		setReference(ref);
+	}
+	
+	public boolean getHidden()
+	{
+		return hidden;
 	}
 	
 	public void setReference(Variable ref)
