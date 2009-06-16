@@ -56,7 +56,7 @@ public class TomTest {
 		scripter.startSlide();
 		scripter.startPar();
 			//Move a copy down
-			moveCopy(var2, var4);
+			moveCopy(var2, var3);
 		scripter.endPar();
 		scripter.endSlide();
 		
@@ -86,7 +86,7 @@ public class TomTest {
 		System.out.println("Moving x: " + moveX + " and Y: " + moveY);
 		try
 		{
-			scripter.addTranslate(moveX, moveY, lastCopy);
+			scripter.addTranslate(-moveX, -moveY, lastCopy);
 		}
 		catch (Exception e)
 		{
