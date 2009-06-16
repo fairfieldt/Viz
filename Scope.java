@@ -70,6 +70,15 @@ public class Scope implements Drawable
 	public void setHidden(boolean isHidden)
 	{
 		hidden = isHidden;
+		
+		//added this so if you set hidden after you added vars, the vars are still hidden
+		//TODO: should this be just for setting hidden true or for both true and false?
+		if (hidden)
+			for (Variable v : vars)
+			{
+				v.setHidden(true);
+			}
+			
 	}
 	
 	public void setSize(int sizeX, int sizeY)
