@@ -1111,6 +1111,8 @@ public class XAALScripter {
 		currentSlide.addContent(narrative);
 	}
 	
+	
+	
 	/**
 	 * Adds a pseudocode URL to the current slide
 	 * @param url the URL of the page to be displayed in the pseudocode pane.
@@ -1165,7 +1167,11 @@ public class XAALScripter {
 		
 	}
 	
-	private void createQuestion(String question, String[] choices, String[] answers){}
+	
+	private void createQuestion(String question, String[] choices, String[] answers)
+	{
+		
+	}
 	
 	public void createQuestion(String question, boolean answer)
 	{
@@ -1186,6 +1192,7 @@ public class XAALScripter {
 	{
 		
 	}
+	
 	
 	
 	/**
