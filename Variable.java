@@ -11,7 +11,7 @@ public class Variable implements Drawable
 	
 	
 	private boolean hidden = false;
-	private boolean isParam = false;	
+	
 	private int xPos;
 	private int yPos;
 
@@ -36,11 +36,9 @@ public class Variable implements Drawable
 		ids = new ArrayList<String>();
 		this.name = name;
 		this.isReference = true;
-<<<<<<< HEAD:Variable.java
-		this.isParam = true;
-=======
+
 		this.isParam = isParam;
->>>>>>> d4c20088adf189f908f2005ccd376b60fdc4b31a:Variable.java
+
 		setReference(ref);
 	}
 	
@@ -108,11 +106,6 @@ public class Variable implements Drawable
 	public String getName()
 	{
 		return name;
-	}
-	
-	public boolean getIsParam()
-	{
-		return isParam;
 	}
 
 	public void draw(XAALScripter scripter)
