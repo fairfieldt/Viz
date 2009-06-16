@@ -2,38 +2,45 @@ import java.util.*;
 
 public class Variable implements Drawable
 {
-	private String name;
+	protected String name;
 	private int value;
 	private String color = "black";
 	private boolean isReference = false;
+	private boolean isParam = false;
 	private ArrayList<String> ids;
+	
 	
 	private boolean hidden = false;
 	private boolean isParam = false;	
 	private int xPos;
 	private int yPos;
 
-	private int length = 0;
+	protected int length = 0;
 	
 	private int copies = 1;
 	
 	private Variable ref =  null;
 	
-	public Variable(String name, int value)
+	public Variable(String name, int value, boolean isParam)
 	{
 		ids = new ArrayList<String>();
 		this.name = name;
 		this.value = value;
 		this.isReference = false;
+		this.isParam = isParam;
 		this.length = (name.length() * 10) + 80;
 	}
 	
-	public Variable(String name, Variable ref)
+	public Variable(String name, Variable ref, boolean isParam)
 	{
 		ids = new ArrayList<String>();
 		this.name = name;
 		this.isReference = true;
+<<<<<<< HEAD:Variable.java
 		this.isParam = true;
+=======
+		this.isParam = isParam;
+>>>>>>> d4c20088adf189f908f2005ccd376b60fdc4b31a:Variable.java
 		setReference(ref);
 	}
 	
@@ -96,6 +103,11 @@ public class Variable implements Drawable
 	public String getName()
 	{
 		return name;
+	}
+	
+	public boolean getIsParam()
+	{
+		return isParam;
 	}
 
 	public void draw(XAALScripter scripter)

@@ -57,7 +57,17 @@ public class TomTest {
 		scripter.startSlide();
 		scripter.startPar();
 			//Move a copy down
+<<<<<<< HEAD:TomTest.java
 			moveCopy(var2, var4);
+=======
+
+
+			moveCopy(var2, var3);
+
+
+
+
+>>>>>>> d4c20088adf189f908f2005ccd376b60fdc4b31a:TomTest.java
 		scripter.endPar();
 		scripter.endSlide();
 		
