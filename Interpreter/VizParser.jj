@@ -4,6 +4,7 @@
 		LOOKAHEAD = 2;
 		FORCE_LA_CHECK = true;
 		             
+		               
 	}
 
 	PARSER_BEGIN(VizParser)
@@ -27,12 +28,11 @@
 				{
 					System.out.println(f);
 					ArrayList<String> params = funs.get(f).getParameters();
-					/*for (String p : params)
+					for (String p : params)
 					{
 						System.out.println(" " + p);
-					}*/
+					}
 				}
-				//node.dump("");
 			}
 			catch (Exception e)
 			{
@@ -129,17 +129,26 @@
 		<VAR> varDecl() <SEMI> | funDecl()
 	}
 
-	void varDecl():
-	{/*@bgen(jjtree) varDecl */
-  ASTvarDecl jjtn000 = new ASTvarDecl(JJTVARDECL);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
+	void varDecl()         :
+	{/*@bgen(jjtree) VarDecl */
+                ASTVarDecl jjtn000 = new ASTVarDecl(JJTVARDECL);
+                boolean jjtc000 = true;
+                jjtree.openNodeScope(jjtn000);
 /*@egen*/
+		Token t;
 	}
-	{/*@bgen(jjtree) varDecl */
+	{/*@bgen(jjtree) VarDecl */
                 try {
 /*@egen*/
-		<ID> (<LTBCR> <RTBCR>)? <EQL> varDeclP()/*@bgen(jjtree)*/
+		id() (<LTBCR> <RTBCR>)? <EQL> varDeclP()/*@bgen(jjtree)*/
+                {
+                  jjtree.closeNodeScope(jjtn000, true);
+                  jjtc000 = false;
+                }
+/*@egen*/
+		{
+			
+		}/*@bgen(jjtree)*/
                 } catch (Throwable jjte000) {
                   if (jjtc000) {
                     jjtree.clearNodeScope(jjtn000);
@@ -160,6 +169,40 @@
                   }
                 }
 /*@egen*/ 
+	}
+	
+	void id()    :
+	{/*@bgen(jjtree) Id */
+  ASTId jjtn000 = new ASTId(JJTID);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
+/*@egen*/
+		
+	}
+	{/*@bgen(jjtree) Id */
+                try {
+/*@egen*/
+		var()/*@bgen(jjtree)*/
+                } catch (Throwable jjte000) {
+                  if (jjtc000) {
+                    jjtree.clearNodeScope(jjtn000);
+                    jjtc000 = false;
+                  } else {
+                    jjtree.popNode();
+                  }
+                  if (jjte000 instanceof RuntimeException) {
+                    throw (RuntimeException)jjte000;
+                  }
+                  if (jjte000 instanceof ParseException) {
+                    throw (ParseException)jjte000;
+                  }
+                  throw (Error)jjte000;
+                } finally {
+                  if (jjtc000) {
+                    jjtree.closeNodeScope(jjtn000, true);
+                  }
+                }
+/*@egen*/
 	}
 	
 	void varDeclP()      :
@@ -257,17 +300,17 @@
 		 expression() <SEMI> |  <VAR> varDecl() <SEMI>
 	}
 
-	void call():
-	{/*@bgen(jjtree) call */
-  ASTcall jjtn000 = new ASTcall(JJTCALL);
+	void call()      :
+	{/*@bgen(jjtree) Call */
+  ASTCall jjtn000 = new ASTCall(JJTCALL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
 /*@egen*/
 	}
-	{/*@bgen(jjtree) call */
+	{/*@bgen(jjtree) Call */
                 try {
 /*@egen*/
-		<LTPRN> args() <RTPRN>/*@bgen(jjtree)*/
+		<ID> <LTPRN> args() <RTPRN>/*@bgen(jjtree)*/
                 } catch (Throwable jjte000) {
                   if (jjtc000) {
                     jjtree.clearNodeScope(jjtn000);
@@ -290,17 +333,17 @@
 /*@egen*/
 	}
 
-	void var():
-	{/*@bgen(jjtree) var */
-  ASTvar jjtn000 = new ASTvar(JJTVAR);
+	void var()     :
+	{/*@bgen(jjtree) Var */
+  ASTVar jjtn000 = new ASTVar(JJTVAR);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
 /*@egen*/
 	}
-	{/*@bgen(jjtree) var */
+	{/*@bgen(jjtree) Var */
                 try {
 /*@egen*/
-		(<LTBCR> expression() <RTBCR>)?/*@bgen(jjtree)*/
+		<ID> (<LTBCR> expression() <RTBCR>)?/*@bgen(jjtree)*/
                 } catch (Throwable jjte000) {
                   if (jjtc000) {
                     jjtree.clearNodeScope(jjtn000);
@@ -360,7 +403,7 @@
 	{
 	}
 	{
-		<ID> call() | <ID> var() (assignment())? (op() expression())? | <ID> var() (op() expression())?| (<NUM> (op() expression())?) 
+		 call() |  var() (assignment())? (op() expression())? | var() (op() expression())?| (<NUM> (op() expression())?) 
 	}	
 	
 
@@ -374,7 +417,7 @@
 	{/*@bgen(jjtree) args */
                 try {
 /*@egen*/
-		<ID> var() (<COMMA> args())? | <NUM> (<COMMA> args())?/*@bgen(jjtree)*/
+		var() (<COMMA> args())? | <NUM> (<COMMA> args())?/*@bgen(jjtree)*/
                 } catch (Throwable jjte000) {
                   if (jjtc000) {
                     jjtree.clearNodeScope(jjtn000);

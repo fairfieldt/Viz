@@ -3,6 +3,7 @@
 		LOOKAHEAD = 2;
 		FORCE_LA_CHECK = true;
 		MULTI = true;
+		VISITOR = true;
 	}
 
 	PARSER_BEGIN(VizParser)
@@ -23,12 +24,11 @@
 				{
 					System.out.println(f);
 					ArrayList<String> params = funs.get(f).getParameters();
-					/*for (String p : params)
+					for (String p : params)
 					{
 						System.out.println(" " + p);
-					}*/
+					}
 				}
-				//node.dump("");
 			}
 			catch (Exception e)
 			{
@@ -94,11 +94,23 @@
 		<VAR> varDecl() <SEMI> | funDecl()
 	}
 
-	void varDecl():
+	void varDecl() #VarDecl:
 	{
+		Token t;
 	}
 	{
-		<ID> (<LTBCR> <RTBCR>)? <EQL> varDeclP() 
+		id() (<LTBCR> <RTBCR>)? <EQL> varDeclP()
+		{
+			
+		} 
+	}
+	
+	void id() #Id:
+	{
+		
+	}
+	{
+		var()
 	}
 	
 	void varDeclP() #void:
@@ -165,18 +177,18 @@
 		 expression() <SEMI> |  <VAR> varDecl() <SEMI>
 	}
 
-	void call():
+	void call() #Call:
 	{
 	}
 	{
-		<LTPRN> args() <RTPRN>
+		<ID> <LTPRN> args() <RTPRN>
 	}
 
-	void var():
+	void var() #Var:
 	{
 	}
 	{
-		(<LTBCR> expression() <RTBCR>)?
+		<ID> (<LTBCR> expression() <RTBCR>)?
 	}
 
 	void assignment():
@@ -190,7 +202,7 @@
 	{
 	}
 	{
-		<ID> call() | <ID> var() (assignment())? (op() expression())? | <ID> var() (op() expression())?| (<NUM> (op() expression())?) 
+		 call() |  var() (assignment())? (op() expression())? | var() (op() expression())?| (<NUM> (op() expression())?) 
 	}	
 	
 
@@ -198,7 +210,7 @@
 	{
 	}
 	{
-		<ID> var() (<COMMA> args())? | <NUM> (<COMMA> args())?
+		var() (<COMMA> args())? | <NUM> (<COMMA> args())?
 	}
 
 	ArrayList<String> params():

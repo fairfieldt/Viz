@@ -4,26 +4,28 @@ public interface VizParserTreeConstants
   public int JJTPROGRAM = 0;
   public int JJTVOID = 1;
   public int JJTVARDECL = 2;
-  public int JJTFUNCTION = 3;
-  public int JJTCALL = 4;
-  public int JJTVAR = 5;
-  public int JJTASSIGNMENT = 6;
-  public int JJTARGS = 7;
-  public int JJTPARAMS = 8;
-  public int JJTOP = 9;
+  public int JJTID = 3;
+  public int JJTFUNCTION = 4;
+  public int JJTCALL = 5;
+  public int JJTVAR = 6;
+  public int JJTASSIGNMENT = 7;
+  public int JJTARGS = 8;
+  public int JJTPARAMS = 9;
+  public int JJTOP = 10;
 
 
   public String[] jjtNodeName = {
     "program",
     "void",
-    "varDecl",
+    "VarDecl",
+    "Id",
     "Function",
-    "call",
-    "var",
+    "Call",
+    "Var",
     "assignment",
     "args",
     "params",
     "op",
   };
 }
-/* JavaCC - OriginalChecksum=56110f0d675fe51e4647d087849aedc7 (do not edit this line) */
+/* JavaCC - OriginalChecksum=88e0fe6a67db829db2d9acd507bd8400 (do not edit this line) */
