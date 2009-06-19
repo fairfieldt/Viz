@@ -1,4 +1,4 @@
-
+package Interpreter;
 import java.util.*;
 
 public class SymbolTable
@@ -22,7 +22,7 @@ public class SymbolTable
 		}
 		else
 		{
-			retVal = previous.get(varName).getValue();
+			retVal = previous.get(varName);
 		}
 		return retVal;
 	}
