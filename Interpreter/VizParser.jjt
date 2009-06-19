@@ -198,7 +198,7 @@
 		<EQL> expression()
 	}
 
-	void expression() #void:
+	void expression() #Expression:
 	{
 	}
 	{
