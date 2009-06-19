@@ -1,4 +1,4 @@
-
+package Interpreter;
 import java.util.*;
 
 public class ASTFunction extends SimpleNode

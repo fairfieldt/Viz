@@ -4,9 +4,11 @@
 		FORCE_LA_CHECK = true;
 		MULTI = true;
 		VISITOR = true;
+		NODE_PACKAGE = "Interpreter";
 	}
 
 	PARSER_BEGIN(VizParser)
+	package Interpreter;
 	
 	import java.util.*;
 	
