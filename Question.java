@@ -2,26 +2,33 @@
 
 public abstract class Question implements Drawable {
 	
-	private static int qNum = 0;
-	protected String id;
+	protected int slideId = -1;
 	
 	protected String questionText;
 	
 	protected Question(String questionText)
 	{
 		this.questionText = questionText;
-		id = "question" + qNum;
-		qNum++;
+		setup();
 	}
+	
+	protected Question(String questionText, int slideId)
+	{
+		this.questionText = questionText;
+		this.slideId = slideId;
+		setup();
+	}
+	
+	protected abstract void setup();
 	
 	//TODO: look at this
 	public void setQuestionText(String questionText){
         this.questionText = questionText.trim();
     }
 	
-	public String getId()
+	public int getSlideId()
 	{
-		return id;
+		return slideId;
 	}
 	
 	public abstract void draw(XAALScripter scripter);

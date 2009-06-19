@@ -13,6 +13,8 @@ public class EricTest {
 	public static XAALScripter scripter;
 	public static void main(String[] args) throws Exception 
 	{
+		ArrayList<Question> questions = new ArrayList<Question>();
+		
 		scripter = new XAALScripter();
 		
 		Scope global = new Scope("Global", "blue", true);
@@ -48,14 +50,16 @@ public class EricTest {
 		scripter.endPar();	
 		scripter.endSlide();
 		
-		scripter.startSlide();
+		int slide = scripter.startSlide();
+		TFQuestion q = new TFQuestion("what's the answer?", slide);
+		questions.add(q);
 		scripter.startPar();
 			showScope(foo);
 			showVar(var4);
 			showVar(var5);
 		scripter.endPar();
 		scripter.endSlide();
-		
+		q.setAnswer(true);
 		scripter.startSlide();
 		scripter.startPar();
 			//Move a copy down
@@ -70,6 +74,10 @@ public class EricTest {
 		
 		scripter.endSlide();
 		
+		for (Question q2 : questions)
+		{
+			q2.draw(scripter);
+		}
 		
 		FileWriter writer = new FileWriter("C:\\Users\\Eric\\Desktop\\tomxaal.xaal");
 		
