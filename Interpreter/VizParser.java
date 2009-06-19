@@ -27,14 +27,15 @@
                 }
 
   static final public Node program() throws ParseException {
-         /*@bgen(jjtree) program */
-  ASTprogram jjtn000 = new ASTprogram(JJTPROGRAM);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
+         /*@bgen(jjtree) Program */
+                ASTProgram jjtn000 = new ASTProgram(JJTPROGRAM);
+                boolean jjtc000 = true;
+                jjtree.openNodeScope(jjtn000);ASTDeclarationList dl;
     try {
-      declarationList();
+      dl = declarationList();
                   jjtree.closeNodeScope(jjtn000, true);
                   jjtc000 = false;
+                        dl.setParent(jjtn000);
                         {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
                   if (jjtc000) {
@@ -58,26 +59,80 @@
     throw new Error("Missing return statement in function");
   }
 
-  static final public void declarationList() throws ParseException {
-    declaration();
-    if (jj_2_1(2)) {
-      declarationList();
-    } else {
-      ;
+  static final public ASTDeclarationList declarationList() throws ParseException {
+         /*@bgen(jjtree) DeclarationList */
+                ASTDeclarationList jjtn000 = new ASTDeclarationList(JJTDECLARATIONLIST);
+                boolean jjtc000 = true;
+                jjtree.openNodeScope(jjtn000);ASTDeclaration decl;
+    try {
+      decl = declaration();
+      if (jj_2_1(2)) {
+        declarationList();
+      } else {
+        ;
+      }
+                  jjtree.closeNodeScope(jjtn000, true);
+                  jjtc000 = false;
+                        decl.setParent(jjtn000);
+                        {if (true) return jjtn000;}
+    } catch (Throwable jjte000) {
+                  if (jjtc000) {
+                    jjtree.clearNodeScope(jjtn000);
+                    jjtc000 = false;
+                  } else {
+                    jjtree.popNode();
+                  }
+                  if (jjte000 instanceof RuntimeException) {
+                    {if (true) throw (RuntimeException)jjte000;}
+                  }
+                  if (jjte000 instanceof ParseException) {
+                    {if (true) throw (ParseException)jjte000;}
+                  }
+                  {if (true) throw (Error)jjte000;}
+    } finally {
+                  if (jjtc000) {
+                    jjtree.closeNodeScope(jjtn000, true);
+                  }
     }
+    throw new Error("Missing return statement in function");
   }
 
-  static final public void declaration() throws ParseException {
-    if (jj_2_2(2)) {
-      jj_consume_token(VAR);
-      varDecl();
-      jj_consume_token(SEMI);
-    } else if (jj_2_3(2)) {
-      funDecl();
-    } else {
-      jj_consume_token(-1);
-      throw new ParseException();
+  static final public ASTDeclaration declaration() throws ParseException {
+         /*@bgen(jjtree) Declaration */
+  ASTDeclaration jjtn000 = new ASTDeclaration(JJTDECLARATION);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
+    try {
+      if (jj_2_2(2)) {
+        jj_consume_token(VAR);
+        varDecl();
+        jj_consume_token(SEMI);
+      } else if (jj_2_3(2)) {
+        funDecl();
+      } else {
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+    } catch (Throwable jjte000) {
+                  if (jjtc000) {
+                    jjtree.clearNodeScope(jjtn000);
+                    jjtc000 = false;
+                  } else {
+                    jjtree.popNode();
+                  }
+                  if (jjte000 instanceof RuntimeException) {
+                    {if (true) throw (RuntimeException)jjte000;}
+                  }
+                  if (jjte000 instanceof ParseException) {
+                    {if (true) throw (ParseException)jjte000;}
+                  }
+                  {if (true) throw (Error)jjte000;}
+    } finally {
+                  if (jjtc000) {
+                    jjtree.closeNodeScope(jjtn000, true);
+                  }
     }
+    throw new Error("Missing return statement in function");
   }
 
   static final public void varDecl() throws ParseException {
@@ -345,40 +400,64 @@
   }
 
   static final public void expression() throws ParseException {
-    if (jj_2_16(2)) {
-      call();
-    } else if (jj_2_17(2)) {
-      var();
-      if (jj_2_12(2)) {
-        assignment();
+         /*@bgen(jjtree) Expression */
+  ASTExpression jjtn000 = new ASTExpression(JJTEXPRESSION);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
+    try {
+      if (jj_2_16(2)) {
+        call();
+      } else if (jj_2_17(2)) {
+        var();
+        if (jj_2_12(2)) {
+          assignment();
+        } else {
+          ;
+        }
+        if (jj_2_13(2)) {
+          op();
+          expression();
+        } else {
+          ;
+        }
+      } else if (jj_2_18(2)) {
+        var();
+        if (jj_2_14(2)) {
+          op();
+          expression();
+        } else {
+          ;
+        }
+      } else if (jj_2_19(2)) {
+        jj_consume_token(NUM);
+        if (jj_2_15(2)) {
+          op();
+          expression();
+        } else {
+          ;
+        }
       } else {
-        ;
+        jj_consume_token(-1);
+        throw new ParseException();
       }
-      if (jj_2_13(2)) {
-        op();
-        expression();
-      } else {
-        ;
-      }
-    } else if (jj_2_18(2)) {
-      var();
-      if (jj_2_14(2)) {
-        op();
-        expression();
-      } else {
-        ;
-      }
-    } else if (jj_2_19(2)) {
-      jj_consume_token(NUM);
-      if (jj_2_15(2)) {
-        op();
-        expression();
-      } else {
-        ;
-      }
-    } else {
-      jj_consume_token(-1);
-      throw new ParseException();
+    } catch (Throwable jjte000) {
+                   if (jjtc000) {
+                     jjtree.clearNodeScope(jjtn000);
+                     jjtc000 = false;
+                   } else {
+                     jjtree.popNode();
+                   }
+                   if (jjte000 instanceof RuntimeException) {
+                     {if (true) throw (RuntimeException)jjte000;}
+                   }
+                   if (jjte000 instanceof ParseException) {
+                     {if (true) throw (ParseException)jjte000;}
+                   }
+                   {if (true) throw (Error)jjte000;}
+    } finally {
+                   if (jjtc000) {
+                     jjtree.closeNodeScope(jjtn000, true);
+                   }
     }
   }
 
@@ -673,14 +752,6 @@
     finally { jj_save(25, xla); }
   }
 
-  static private boolean jj_3_18() {
-    if (jj_3R_10()) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_14()) jj_scanpos = xsp;
-    return false;
-  }
-
   static private boolean jj_3_8() {
     if (jj_3R_6()) return true;
     return false;
@@ -853,14 +924,14 @@
     return false;
   }
 
-  static private boolean jj_3R_7() {
-    if (jj_scan_token(EQL)) return true;
-    if (jj_3R_5()) return true;
+  static private boolean jj_3_1() {
+    if (jj_3R_1()) return true;
     return false;
   }
 
-  static private boolean jj_3_1() {
-    if (jj_3R_1()) return true;
+  static private boolean jj_3R_7() {
+    if (jj_scan_token(EQL)) return true;
+    if (jj_3R_5()) return true;
     return false;
   }
 
@@ -913,11 +984,6 @@
     return false;
   }
 
-  static private boolean jj_3R_1() {
-    if (jj_3R_13()) return true;
-    return false;
-  }
-
   static private boolean jj_3_9() {
     if (jj_3R_5()) return true;
     if (jj_scan_token(SEMI)) return true;
@@ -934,9 +1000,22 @@
     return false;
   }
 
+  static private boolean jj_3R_1() {
+    if (jj_3R_13()) return true;
+    return false;
+  }
+
   static private boolean jj_3_14() {
     if (jj_3R_8()) return true;
     if (jj_3R_5()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_18() {
+    if (jj_3R_10()) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_14()) jj_scanpos = xsp;
     return false;
   }
 

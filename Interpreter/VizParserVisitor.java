@@ -2,15 +2,18 @@
 public interface VizParserVisitor
 {
   public Object visit(SimpleNode node, Object data);
-  public Object visit(ASTprogram node, Object data);
+  public Object visit(ASTProgram node, Object data);
+  public Object visit(ASTDeclarationList node, Object data);
+  public Object visit(ASTDeclaration node, Object data);
   public Object visit(ASTVarDecl node, Object data);
   public Object visit(ASTId node, Object data);
   public Object visit(ASTFunction node, Object data);
   public Object visit(ASTCall node, Object data);
   public Object visit(ASTVar node, Object data);
   public Object visit(ASTassignment node, Object data);
+  public Object visit(ASTExpression node, Object data);
   public Object visit(ASTargs node, Object data);
   public Object visit(ASTparams node, Object data);
   public Object visit(ASTop node, Object data);
 }
-/* JavaCC - OriginalChecksum=3e5bf2ec84af31f93ba29ddd56f75495 (do not edit this line) */
+/* JavaCC - OriginalChecksum=9f084d871fb6edb5ab9e94b1ed7f72c1 (do not edit this line) */

@@ -68,27 +68,34 @@
 	}
 
 
-	Node program():
+	Node program() #Program:
 	{
+		ASTDeclarationList dl;
 	}
 	{
 		
-		declarationList()
+		dl = declarationList()
 		{
-				
+			dl.setParent(jjtThis);	
 			return jjtThis;
 		}
 	}
 
-	void declarationList() #void:
+	ASTDeclarationList declarationList() #DeclarationList:
 	{
+		ASTDeclaration decl;
 	}
 	{
-		declaration() (declarationList())?
+		decl = declaration() (declarationList())?
+		{
+			decl.setParent(jjtThis);
+			return jjtThis;
+		}
 	}
 
-	void declaration() #void:
+	ASTDeclaration declaration() #Declaration:
 	{
+		
 	}
 	{
 		<VAR> varDecl() <SEMI> | funDecl()
