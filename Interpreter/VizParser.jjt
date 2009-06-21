@@ -20,9 +20,17 @@
 			{
 				VizParser vp = new VizParser(System.in);
 				ASTProgram program = vp.program();
+				ASTDeclarationList dl = (ASTDeclarationList) program.jjtGetChild(0);
+				for (int i = 0; i < dl.jjtGetNumChildren(); i++)
+				{
+					System.out.println(dl.jjtGetChild(i));
+				}
 				System.out.println("SuccessfullyParsed");
 				HashMap<String, ASTFunction> funs = Global.getFunctions();
 				SymbolTable table = Global.getCurrentSymbolTable();
+				
+				System.out.println("Dumping: \n");
+				program.dump(">");
 
 			}
 			catch (Exception e)
@@ -71,7 +79,7 @@
 		
 		dl = declarationList()
 		{
-			System.out.println(dl);
+			System.out.println("There are " + dl.jjtGetNumChildren() + " global declarations");
 			dl.jjtSetParent(jjtThis);	
 			return jjtThis;
 		}
@@ -83,21 +91,20 @@
 		ASTDeclarationList dl = null;
 	}
 	{
-		decl = declaration() ( dl = declarationList())?
+		declaration() ( declarationListP())?
 		{
-			System.out.println(decl);
-			decl.jjtSetParent(jjtThis);
-			System.out.println("Added decl's parent");
-			if (dl != null)
-			{
-				int numChildren = dl.jjtGetNumChildren();
-				System.out.println("Number of children: " + numChildren);
-				for (int i = 0; i < numChildren; i++)
-				{
-					(dl.jjtGetChild(i)).jjtSetParent(jjtThis);
-				}
-			}
 			return jjtThis;
+		}
+	}
+	
+	void declarationListP() #void:
+	{
+	
+	}
+	{
+		declaration() (declarationListP())?
+		{
+		
 		}
 	}
 	
@@ -127,18 +134,11 @@
 		Token t;
 	}
 	{
-		id() (<LTBCR> <RTBCR>)? <EQL> varDeclP()
+		t = <ID> (<LTBCR> <RTBCR>)? <EQL> varDeclP()
 		{
+			jjtThis.setName(t.image);
 			return jjtThis;
 		} 
-	}
-	
-	void id() #Id:
-	{
-		
-	}
-	{
-		var()
 	}
 	
 	void varDeclP() #void:
@@ -149,11 +149,18 @@
 	}
 	
 
-	void arrayDecl() #void:
+	void arrayDecl() #ArrayDeclaration:
 	{
 	}
 	{
-		num() (<COMMA> arrayDecl())?
+		num() (<COMMA> arrayDeclP())?
+	}
+	
+	void arrayDeclP() #void:
+	{
+	}
+	{
+		num() (<COMMA> arrayDeclP())?
 	}
 
 	ASTFunction funDecl() #Function:
@@ -171,7 +178,7 @@
 			}
 			if(Global.addFunction(jjtThis))
 			{
-				System.out.println("Successfully added a function");
+				//System.out.println("Successfully added a function");
 			}
 			return jjtThis;
 		}
@@ -209,7 +216,7 @@
 	{
 	}
 	{
-		<ID> <LTPRN> args() <RTPRN>
+		<ID> <LTPRN> (args())? <RTPRN>
 	}
 
 	void var() #Var:
@@ -223,14 +230,15 @@
 	{
 	}
 	{
-		<EQL> expression()
+		var() <EQL> expression()
 	}
 
 	void expression() #Expression:
 	{
+		ASTVar variable;
 	}
 	{
-		 call() |  var() (assignment())? (op() expression())? | var() (op() expression())?| (num() (op() expression())?) 
+		 call() |   assignment() |  op() | num() | var()
 	}	
 	
 
@@ -238,10 +246,17 @@
 	{
 	}
 	{
-		var() (<COMMA> args())? | num() (<COMMA> args())?
+		var() (<COMMA> argsP())?
+	}
+	
+	void argsP() #void:
+	{
+	}
+	{
+		var() (<COMMA> argsP())?
 	}
 
-	ArrayList<String> params():
+	ArrayList<String> params() #void:
 	{
 		ArrayList<String> names = new ArrayList<String>();
 		Token newName;
@@ -250,16 +265,16 @@
 		newName = <ID> (<COMMA> names = params())?
 		{
 			names.add(newName.image);
-			System.out.println("Returning names: " + names.size());
+			//System.out.println("Returning names: " + names.size());
 			return names;
 		}
 	}
 	
-	void op():
+	void op() #Op:
 	{
 	}
 	{
-		<PLUS> | <MINUS>
+		(var() | num()) (<PLUS> | <MINUS>) expression()
 	}
 	
 	void num() #Num:

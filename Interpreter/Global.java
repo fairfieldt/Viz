@@ -28,7 +28,7 @@ public class Global
 	
 	public static boolean addFunction(ASTFunction fun)
 	{
-		System.out.println("Adding a function");
+		//System.out.println("Adding a function");
 		if (functions.containsKey(fun.getName()))
 		{
 			System.out.println("Found key " + fun.getName());
