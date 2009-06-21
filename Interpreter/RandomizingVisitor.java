@@ -14,7 +14,7 @@ public class RandomizingVisitor implements VizParserVisitor {
 	}
 
 	@Override
-	public Object visit(ASTprogram node, Object data) {
+	public Object visit(ASTProgram node, Object data) {
 		// add 1-3 var decls
 		Random r = new Random();
 		int numOfVars = r.nextInt(3) + 1;
@@ -225,6 +225,24 @@ public class RandomizingVisitor implements VizParserVisitor {
 		Random r = new Random();
 		int rand = r.nextInt(array.length);
 		return array[rand];
+	}
+
+	@Override
+	public Object visit(ASTDeclarationList node, Object data) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object visit(ASTDeclaration node, Object data) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object visit(ASTNum node, Object data) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	
