@@ -6,4 +6,9 @@ public class ASTProgram extends SimpleNode
 	{
 		super(id);
 	}
+	
+	public String getCode()
+	{
+		return ((ASTDeclarationList)jjtGetChild(0)).getCode();
+	}
 }

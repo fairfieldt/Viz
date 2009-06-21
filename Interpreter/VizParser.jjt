@@ -31,6 +31,8 @@
 				
 				System.out.println("Dumping: \n");
 				program.dump(">");
+				
+				System.out.println(program.getCode());
 
 			}
 			catch (Exception e)
@@ -227,7 +229,7 @@
 		<ID> (<LTBCR> expression() <RTBCR>)?
 	}
 
-	void assignment():
+	void assignment() #Assignment:
 	{
 	}
 	{
@@ -273,9 +275,13 @@
 	
 	void op() #Op:
 	{
+		Token t;
 	}
 	{
-		(var() | num()) (<PLUS> | <MINUS>) expression()
+		(var() | num()) ( t = <PLUS> | t = <MINUS>) expression()
+		{
+			jjtThis.setOp(t.image);
+		}
 	}
 	
 	void num() #Num:

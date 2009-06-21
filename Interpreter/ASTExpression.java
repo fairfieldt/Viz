@@ -10,6 +10,11 @@ public class ASTExpression extends SimpleNode {
   public ASTExpression(VizParser p, int id) {
     super(p, id);
   }
+  
+  public String getCode()
+  {
+  	return jjtGetChild(0).getCode();
+  }
 
 
   /** Accept the visitor. **/
