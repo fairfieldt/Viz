@@ -23,17 +23,7 @@
 				System.out.println("SuccessfullyParsed");
 				HashMap<String, ASTFunction> funs = Global.getFunctions();
 				SymbolTable table = Global.getCurrentSymbolTable();
-				System.out.println("Got funs: " + funs.size());
-				for (String f : funs.keySet())
-				{
-					System.out.println(f);
-					ArrayList<String> params = funs.get(f).getParameters();
-					for (String p : params)
-					{
-						System.out.println(" " + p);
-					}
-				}
-				System.out.println(program.jjtGetNumChildren());
+
 			}
 			catch (Exception e)
 			{
