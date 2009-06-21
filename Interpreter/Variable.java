@@ -5,6 +5,6 @@ public interface Variable
 {
 	public int getValue();
 	
-	public void setValue();
+	public void setValue(int value);
 
 }
