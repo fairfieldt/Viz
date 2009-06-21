@@ -22,6 +22,7 @@
 				ASTProgram program = vp.program();
 				System.out.println("SuccessfullyParsed");
 				HashMap<String, ASTFunction> funs = Global.getFunctions();
+				SymbolTable table = Global.getCurrentSymbolTable();
 				System.out.println("Got funs: " + funs.size());
 				for (String f : funs.keySet())
 				{

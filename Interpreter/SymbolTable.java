@@ -36,4 +36,16 @@ public class SymbolTable
 		vars.put(varName, v);
 		return true;
 	}
+	
+	public HashSet<String> getCurrentVarNames()
+	{
+		//TODO: is this a copy of the keys or references?
+		HashSet<String> variables = new HashSet<String>(vars.keySet());
+		
+		if (previous != null)
+			variables.addAll(previous.getCurrentVarNames());
+		
+		return variables;
+	
+	}
 }

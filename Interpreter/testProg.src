@@ -1,8 +1,20 @@
-var x = 3;
-var z[] = {1,2,3};
+var x = 2;
+var y = 3;
+var z[] = { 2,4,5,6};
 
-def foo(x, y)
+def main(a)
 {
+
+var z = 2;
+f(1,2,3);
+}
+
+def f (a,b,c)
+{
+z[a] = 3;
+b = 2 - 5;
+}
+
 	var x = 5;
 	var z=x+y+5;
 	foo(x[5+x]);
@@ -14,3 +26,4 @@ def main()
 	var q = 5;
 	foo(x,3);
 }
+
