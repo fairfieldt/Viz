@@ -746,6 +746,8 @@ public class XAALScripter {
 	 */
 	public int startSlide() throws SlideException
 	{
+		slideNum++;
+		
 		if (inSlide())
 			throw new SlideException("A slide has already been started. " +
 					"It must be ended before you can create another.");
@@ -770,7 +772,7 @@ public class XAALScripter {
 		animation.addContent(currentSlide);
 		
 		currentSlide = null;
-		slideNum++;
+		
 	}
 	
 	/**

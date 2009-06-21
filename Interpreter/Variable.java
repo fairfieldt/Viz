@@ -1,3 +1,4 @@
+package Interpreter;
 import java.util.*;
 
 public interface Variable
