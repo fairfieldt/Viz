@@ -3,12 +3,24 @@
 package Interpreter;
 
 public class ASTNum extends SimpleNode {
+
+	private int value;
   public ASTNum(int id) {
     super(id);
   }
 
   public ASTNum(VizParser p, int id) {
     super(p, id);
+  }
+  
+  public void setValue(int value)
+  {
+  	this.value = value;
+  }
+  
+  public int getValue()
+  {
+  	return this.value;
   }
 
 
