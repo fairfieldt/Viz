@@ -19,8 +19,11 @@
 			try
 			{
 				VizParser vp = new VizParser(System.in);
-				vp.program();
+				Node n = vp.program();
+				VizParserVisitor r = new RandomizingVisitor();
+				n.visit(r, null);
 				HashMap<String, ASTFunction> funs = Global.getFunctions();
+				SymbolTable table = Global.getCurrentSymbolTable();
 				System.out.println("Got funs: " + funs.size());
 				for (String f : funs.keySet())
 				{
