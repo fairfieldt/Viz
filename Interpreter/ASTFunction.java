@@ -41,9 +41,22 @@ public class ASTFunction extends SimpleNode
 	{
 		return this.name;
 	}
-	
+
 	public SymbolTable getSymbolTable()
 	{
 		return localScopeSymbolTable;
 	}
+
+	public String getCode()
+	{
+		String code = "def " + this.name + "(";
+		for (int i = 0; i < parameters.size(); i++)
+		{
+			code += parameters.get(i) + (i < parameters.size() -1 ?  ", " : "");
+		}
+		code += ")\n{\n" + jjtGetChild(0).getCode() + "\n}\n";
+		
+		return code;
+	}
+
 }

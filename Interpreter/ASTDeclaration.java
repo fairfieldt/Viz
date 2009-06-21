@@ -6,5 +6,10 @@ public class ASTDeclaration extends SimpleNode
 	{
 		super(id);
 	}
+	
+	public String getCode()
+	{
+		return jjtGetChild(0).getCode();
+	}
 
 }
