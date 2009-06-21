@@ -18,7 +18,7 @@ public class ASTNum extends SimpleNode {
   	this.value = value;
   }
   
-  public String getValue()
+  public int getValue()
   {
   	return this.value;
   }
