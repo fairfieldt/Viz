@@ -60,6 +60,7 @@
 		| <PLUS: "+" >
 		| <MINUS: "-" >
 		| <EQL: "=" >
+		| <FILL: "<FILL>" >
 	}
 
 	SKIP:
@@ -195,7 +196,7 @@
 	{
 	}
 	{
-		statement() (statementListP())?
+		statement() (statementListP())? | <FILL>
 	}
 	
 	void statementListP() #void:
