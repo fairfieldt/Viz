@@ -1,3 +1,5 @@
+package Interpreter;
+
 public class ASTDeclaration extends SimpleNode
 {
 	public ASTDeclaration(int id)
