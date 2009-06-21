@@ -2,7 +2,7 @@ package Interpreter;
 
 import java.util.*;
 
-public class RandomizingVisitor implements VizParserVisitor {
+public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConstants {
 
 	
 	String[] possVars = {"g","m","n", "v", "w"};
@@ -15,50 +15,26 @@ public class RandomizingVisitor implements VizParserVisitor {
 
 	@Override
 	public Object visit(ASTProgram node, Object data) {
+		ASTDeclarationList innerDecl = (ASTDeclarationList)node.jjtGetChild(0);
+		
 		// add 1-3 var decls
 		Random r = new Random();
 		int numOfVars = r.nextInt(3) + 1;
 		
-		SymbolTable symbols;
+		SymbolTable symbols = Global.getSymbolTable();
 		for (int i = 0; i < numOfVars; i++)
 		{
-			symbols = Global.getSymbolTable();
-			
-			int varId = r.nextInt();
-			ASTVarDecl var = new ASTVarDecl(varId);
-			var.jjtSetParent(node);
-			
 			String varName = getRandomItem(possVars);
 			while(symbols.get(varName) != -255)
 			{
 				varName = getRandomItem(possVars);
 			}
 			
-			var.setName(varName);
-			//TODO: how do I get a Variable to put into the symbolTable
-			
-			ASTExpression exp = new ASTExpression(r.nextInt());
-			
-			exp.jjtSetParent(var);
-			
-			ASTNum num = new ASTNum(r.nextInt());
-			
-			num.jjtSetParent(exp);
-			
-			num.setValue(r.nextInt(5)+1);
-			
-			exp.jjtAddChild(num, 0);
-			
-			var.jjtAddChild(exp, 0);
-			
-			//add var to ASTprogram
-			node.jjtAddChild(var, i);
-			
+			createVarDecl(innerDecl,varName, r.nextInt(5)+1, i, ASTDeclaration.class);
 		}
 		
 		//TODO: add an array
-		
-		node.childrenAccept(this, null);
+	
 		
 		return null;
 	}
@@ -69,14 +45,11 @@ public class RandomizingVisitor implements VizParserVisitor {
 		return null;
 	}
 
-	@Override
-	public Object visit(ASTId node, Object data) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 	@Override
 	public Object visit(ASTFunction node, Object data) {
+		node.jjtOpen();
 		if (node.getName().equals("main"))
 		{
 			visitMain(node, data);
@@ -85,6 +58,7 @@ public class RandomizingVisitor implements VizParserVisitor {
 		{
 			visitFunc(node, data);
 		}
+		node.jjtClose();
 		return null;
 	}
 
@@ -118,17 +92,6 @@ public class RandomizingVisitor implements VizParserVisitor {
 		return null;
 	}
 
-	@Override
-	public Object visit(ASTparams node, Object data) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Object visit(ASTop node, Object data) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 	@Override
 	public Object visit(ASTDeclarationList node, Object data) {
@@ -148,6 +111,29 @@ public class RandomizingVisitor implements VizParserVisitor {
 		return null;
 	}
 	
+	@Override
+	public Object visit(ASTArrayDeclaration node, Object data) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object visit(ASTStatementList node, Object data) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object visit(ASTStatement node, Object data) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object visit(ASTOp node, Object data) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	/**
 	 * this limits the entire randomizer to one function other than main
@@ -157,6 +143,7 @@ public class RandomizingVisitor implements VizParserVisitor {
 	 */
 	private Object visitMain(ASTFunction node, Object data)
 	{
+		ASTStatementList innerStatement = (ASTStatementList)node.jjtGetChild(0);
 		// add 0-2 var decls
 		Random r = new Random();
 		int numOfVars = r.nextInt(3);
@@ -164,35 +151,9 @@ public class RandomizingVisitor implements VizParserVisitor {
 		SymbolTable symbols;
 		for (int i = 0; i < numOfVars; i++)
 		{
-			symbols = Global.getSymbolTable();
-			
-			int varId = r.nextInt();
-			ASTVarDecl var = new ASTVarDecl(varId);
-			var.jjtSetParent(node);
-			
 			//TODO: how do we decide which var names to use in here?
 			String varName = getRandomItem(possVars);
-			
-			
-			var.setName(varName);
-			//TODO: how do I get a Variable to put into the symbolTable
-			
-			ASTExpression exp = new ASTExpression(r.nextInt());
-			
-			exp.jjtSetParent(var);
-
-			ASTNum num = new ASTNum(r.nextInt());
-			
-			num.jjtSetParent(exp);
-			
-			num.setValue(r.nextInt(5)+1);
-			
-			exp.jjtAddChild(num, 0);
-			
-			var.jjtAddChild(exp, 0);
-			
-			//add var to ASTprogram
-			node.jjtAddChild(var, i);
+			createVarDecl(innerStatement,varName, r.nextInt(5)+1, i, ASTStatement.class);
 			
 		}
 		// TODO: add 0-1 array decl
@@ -218,7 +179,7 @@ public class RandomizingVisitor implements VizParserVisitor {
 		
 		//decide on the number of params the second func will have.
 		
-		HashSet<String> varNames = node.getSymbolNames();
+		HashSet<String> varNames = node.getSymbolTable().getCurrentVarNames();
 		
 		//if true 3 params, else 2
 		if (r.nextBoolean())
@@ -233,7 +194,7 @@ public class RandomizingVisitor implements VizParserVisitor {
 				parameters[i] = getRandomItem(varNameArray);
 			}
 
-			call.addParams(parameters);
+			call.addArgs(parameters);
 			
 			funcs.get(callName).addParams("x","y","z");
 		}
@@ -308,20 +269,6 @@ public class RandomizingVisitor implements VizParserVisitor {
 		int rand = r.nextInt(array.length);
 		return array[rand];
 	}
-	
-	/**
-	 * 
-	 * @return an op node with addition or subtraction
-	 */
-	private ASTop getRandomOpNode()
-	{
-		Random r = new Random();
-		ASTop op = new ASTop(r.nextInt());
-		if (r.nextBoolean())
-			op.setOp("+");
-		else
-			op.setOp("-");
-	}
 
 	/**
 	 * 
@@ -343,4 +290,73 @@ public class RandomizingVisitor implements VizParserVisitor {
 		
 	}
 */
+	/**
+	 * 
+	 * @return an op node with addition or subtraction
+	 */
+	private ASTOp getRandomOpNode()
+	{
+		/*
+		Random r = new Random();
+		ASTop op = new ASTop(r.nextInt());
+		if (r.nextBoolean())
+			op.setOp("+");
+		else
+			op.setOp("-");*/
+		return null;
+	}
+	
+	/**
+	 * Creates an ASTVarDecl in parent. Assumes that the parent is one step below an 
+	 * ASTFunction or an ASTProgram. 
+	 * @param parent the node that will contain the new ASTVarDecl.
+	 * @param varName name of the variable
+	 * @param value an integer that will be held in the variable.
+	 * @param indexInParent the index in whatever list parent is.
+	 * @param surroundingClass either ASTStatement or ASTDeclaration, depending on what you want
+	 */
+	private <T> void createVarDecl(Node parent, String varName, 
+			int value, int indexInParent, T surroundingClass)
+	{
+		Node surroundingNode = null;
+		if (surroundingClass instanceof ASTDeclaration)
+			surroundingNode = new ASTDeclaration(JJTDECLARATION);
+		else
+			surroundingNode = new ASTStatement(JJTSTATEMENT);
+		
+		surroundingNode.jjtSetParent(parent);
+		parent.jjtAddChild(surroundingNode, indexInParent);
+		
+		
+		ASTVarDecl var = new ASTVarDecl(JJTVARDECL);
+
+		
+		var.jjtSetParent(surroundingNode);
+		surroundingNode.jjtAddChild(var, 0);
+		
+		var.setName(varName);
+		
+		ASTExpression exp = new ASTExpression(JJTEXPRESSION);
+
+		
+		exp.jjtSetParent(var);
+		var.jjtAddChild(exp, 0);
+		
+		ASTNum num = new ASTNum(JJTNUM);
+	
+		
+		num.jjtSetParent(exp);
+		exp.jjtAddChild(num, 0);
+		
+		num.setValue(value);
+		
+		if (parent.jjtGetParent() instanceof ASTProgram)
+			Global.getSymbolTable().put(varName, new ByValVariable(value));
+		else
+			((ASTFunction)parent.jjtGetParent()).getSymbolTable().put(
+					varName, new ByValVariable(value));
+
+
+
+	}
 }

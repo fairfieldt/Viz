@@ -42,5 +42,8 @@ public class ASTFunction extends SimpleNode
 		return this.name;
 	}
 	
-	
+	public SymbolTable getSymbolTable()
+	{
+		return localScopeSymbolTable;
+	}
 }
