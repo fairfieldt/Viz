@@ -28,8 +28,19 @@ public class ASTFunction extends SimpleNode
 	{
 		this.parameters.add(name);
 	}
+	
+	public void addParams(String...names)
+	{
+		for (String name : names)
+		{
+			this.parameters.add(name);
+		}
+	}
+	
 	public String getName()
 	{
 		return this.name;
 	}
+	
+	
 }

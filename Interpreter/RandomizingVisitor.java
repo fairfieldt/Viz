@@ -14,7 +14,7 @@ public class RandomizingVisitor implements VizParserVisitor {
 	}
 
 	@Override
-	public Object visit(ASTprogram node, Object data) {
+	public Object visit(ASTProgram node, Object data) {
 		// add 1-3 var decls
 		Random r = new Random();
 		int numOfVars = r.nextInt(3) + 1;
@@ -130,6 +130,25 @@ public class RandomizingVisitor implements VizParserVisitor {
 		return null;
 	}
 	
+	@Override
+	public Object visit(ASTDeclarationList node, Object data) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object visit(ASTDeclaration node, Object data) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object visit(ASTNum node, Object data) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
 	/**
 	 * this limits the entire randomizer to one function other than main
 	 * @param node
@@ -181,6 +200,7 @@ public class RandomizingVisitor implements VizParserVisitor {
 		// add funcCall
 		
 		ASTCall call = new ASTCall(r.nextInt());
+		call.jjtSetParent(node);
 		
 		HashMap<String, ASTFunction> funcs = Global.getFunctions();
 		
@@ -198,25 +218,49 @@ public class RandomizingVisitor implements VizParserVisitor {
 		
 		//decide on the number of params the second func will have.
 		
-		HashSet<String> varNames = node.
+		HashSet<String> varNames = node.getSymbolNames();
 		
 		//if true 3 params, else 2
 		if (r.nextBoolean())
 		{
+			String[] parameters = new String[3];
+			String[] varNameArray = new String[varNames.size()]; 
+			varNames.toArray(varNameArray);
 			
-			call.addParams();
+			//TODO: get it so there's repeated params sometimes
+			for (int i = 0; i < 3; i++)
+			{
+				parameters[i] = getRandomItem(varNameArray);
+			}
+
+			call.addParams(parameters);
+			
+			funcs.get(callName).addParams("x","y","z");
 		}
 		else
 		{
-			call.addParams()
+			String[] parameters = new String[2];
+			String[] varNameArray = new String[varNames.size()]; 
+			varNames.toArray(varNameArray);
+			
+			//TODO: get it so there's repeated params sometimes
+			for (int i = 0; i < 2; i++)
+			{
+				parameters[i] = getRandomItem(varNameArray);
+			}
+			
+			call.addParams(parameters);
+			funcs.get(callName).addParams("x", "y");
 		}
 		
+		node.jjtAddChild(call, node.jjtGetNumChildren());
 		
 		return null;
 	}
 	
 	private Object visitFunc(ASTFunction node, Object data)
 	{
+		
 		return null;
 	}
 	
@@ -226,7 +270,25 @@ public class RandomizingVisitor implements VizParserVisitor {
 		int rand = r.nextInt(array.length);
 		return array[rand];
 	}
-	
-	
 
+	/**
+	 * 
+	 * @param set HashSet of T to get and remove from
+	 * @param num number of items to remove from set
+	 * @return an array of T
+	 */
+	/*
+	private <T> T[] getAndRemoveRandomly (T[] set, int num)
+	{
+		Random r = new Random();
+		ArrayList<T> list = new ArrayList<T>(num);
+		for (int i = 0; i < num; i++)
+		{
+			int rNum = r.nextInt();
+			set.
+		}
+		
+		
+	}
+*/
 }
