@@ -243,7 +243,7 @@ public class RandomizingVisitor implements VizParserVisitor {
 			String[] varNameArray = new String[varNames.size()]; 
 			varNames.toArray(varNameArray);
 			
-			//TODO: get it so there's repeated params sometimes
+			//TODO: get it so there's repeated params more often
 			for (int i = 0; i < 2; i++)
 			{
 				parameters[i] = getRandomItem(varNameArray);
@@ -260,6 +260,44 @@ public class RandomizingVisitor implements VizParserVisitor {
 	
 	private Object visitFunc(ASTFunction node, Object data)
 	{
+		// add 0-1 var decls
+		Random r = new Random();
+		int numOfVars = r.nextInt(2);
+		
+		SymbolTable symbols;
+		for (int i = 0; i < numOfVars; i++)
+		{
+			symbols = Global.getSymbolTable();
+			
+			int varId = r.nextInt();
+			ASTVarDecl var = new ASTVarDecl(varId);
+			var.jjtSetParent(node);
+			
+			//TODO: how do we decide which var names to use in here?
+			String varName = getRandomItem(possVars);
+			
+			
+			var.setName(varName);
+			//TODO: how do I get a Variable to put into the symbolTable
+			
+			ASTExpression exp = new ASTExpression(r.nextInt());
+			
+			exp.jjtSetParent(var);
+
+			ASTNum num = new ASTNum(r.nextInt());
+			
+			num.jjtSetParent(exp);
+			
+			num.setValue(r.nextInt(5)+1);
+			
+			exp.jjtAddChild(num, 0);
+			
+			var.jjtAddChild(exp, 0);
+			
+			//add var to ASTprogram
+			node.jjtAddChild(var, i);
+			
+		}
 		
 		return null;
 	}
@@ -269,6 +307,20 @@ public class RandomizingVisitor implements VizParserVisitor {
 		Random r = new Random();
 		int rand = r.nextInt(array.length);
 		return array[rand];
+	}
+	
+	/**
+	 * 
+	 * @return an op node with addition or subtraction
+	 */
+	private ASTop getRandomOpNode()
+	{
+		Random r = new Random();
+		ASTop op = new ASTop(r.nextInt());
+		if (r.nextBoolean())
+			op.setOp("+");
+		else
+			op.setOp("-");
 	}
 
 	/**
