@@ -1,0 +1,55 @@
+f
+main
+There are 5 global declarations
+Declaration
+Declaration
+Declaration
+Declaration
+Declaration
+SuccessfullyParsed
+Dumping: 
+
+>Program
+> DeclarationList
+>  Declaration
+>   VarDecl
+>    Expression
+>     Num
+>  Declaration
+>   VarDecl
+>    Expression
+>     Num
+>  Declaration
+>   VarDecl
+>    ArrayDeclaration
+>     Num
+>     Num
+>     Num
+>     Num
+>  Declaration
+>   Function
+>    Expression
+>     assignment
+>      Var
+>       Expression
+>        Var
+>      Expression
+>       Num
+>    Expression
+>     assignment
+>      Var
+>      Expression
+>       Op
+>        Num
+>        Expression
+>         Num
+>  Declaration
+>   Function
+>    VarDecl
+>     Expression
+>      Num
+>    Expression
+>     Call
+>      args
+>       Var
+>       Var
