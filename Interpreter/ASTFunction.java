@@ -36,6 +36,7 @@ public class ASTFunction extends SimpleNode
 			this.parameters.add(name);
 		}
 	}
+	
 	public String getName()
 	{
 		return this.name;
