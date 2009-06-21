@@ -191,21 +191,21 @@
 		<LTBCE> statementList() <RTBCE>
 	}
 
-	void statementList() #void:
+	void statementList() #StatementList:
 	{
 	}
 	{
-		[statement() statementListP()]
+		statement() (statementListP())?
 	}
 	
 	void statementListP() #void:
 	{
 	}
 	{
-		statementList()
+		statement() (statementListP())?
 	}
 
-	void statement() #void:
+	void statement() #Statement:
 	{
 	}
 	{
