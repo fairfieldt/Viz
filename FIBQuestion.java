@@ -4,13 +4,21 @@ import java.util.*;
 
 public class FIBQuestion extends Question implements Drawable {
 
-	String[] choices;
 	ArrayList<String> answers;
 	
-	public FIBQuestion(String questionText, String[] choices)
+	public FIBQuestion(String questionText)
 	{
 		super(questionText);
-		this.choices = choices;
+	}
+	
+	public FIBQuestion(String questionText, int slideId)
+	{
+		super(questionText, slideId);
+	}
+	
+	@Override
+	protected void setup()
+	{
 		answers = new ArrayList<String>();
 	}
 	
@@ -21,8 +29,15 @@ public class FIBQuestion extends Question implements Drawable {
 	
 	@Override
 	public void draw(XAALScripter scripter) {
-		// TODO Auto-generated method stub
-
+		String[] answerArray = new String[answers.size()];
+		answers.toArray(answerArray);
+		
+		try {
+			scripter.addFibQuestion(questionText, getSlideId(), answerArray);
+		} catch (SlideException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

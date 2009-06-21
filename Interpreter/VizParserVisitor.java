@@ -15,5 +15,6 @@ public interface VizParserVisitor
   public Object visit(ASTargs node, Object data);
   public Object visit(ASTparams node, Object data);
   public Object visit(ASTop node, Object data);
+  public Object visit(ASTNum node, Object data);
 }
-/* JavaCC - OriginalChecksum=9f084d871fb6edb5ab9e94b1ed7f72c1 (do not edit this line) */
+/* JavaCC - OriginalChecksum=28a41f8652451b79002287e2cca20127 (do not edit this line) */

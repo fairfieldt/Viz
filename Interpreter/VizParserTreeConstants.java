@@ -15,6 +15,7 @@ public interface VizParserTreeConstants
   public int JJTARGS = 11;
   public int JJTPARAMS = 12;
   public int JJTOP = 13;
+  public int JJTNUM = 14;
 
 
   public String[] jjtNodeName = {
@@ -32,6 +33,7 @@ public interface VizParserTreeConstants
     "args",
     "params",
     "op",
+    "Num",
   };
 }
-/* JavaCC - OriginalChecksum=dfae5bec22d29c81109cf9247ed24013 (do not edit this line) */
+/* JavaCC - OriginalChecksum=4031d646b6eafab88dfa412bf2b96bf6 (do not edit this line) */

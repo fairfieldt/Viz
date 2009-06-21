@@ -18,9 +18,9 @@ public class SymbolTable
 		int retVal = -255;
 		if (vars.containsKey(varName))
 		{
-			retVal = vars.get(varName);
+			retVal = vars.get(varName).getValue();
 		}
-		else
+		else if (previous != null)
 		{
 			retVal = previous.get(varName);
 		}

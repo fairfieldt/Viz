@@ -19,6 +19,8 @@ public class XAALScripter {
 	private int triangleNum = 0;
 	private int arrowNum = 0;
 	
+	private int slideNum = 0;
+	
 	private Element currentSlide = null;
 	private Element currentPar = null;
 	
@@ -40,6 +42,9 @@ public class XAALScripter {
 		
 		Element animation = createElement("animation");
 		xaalRoot.addContent(animation);
+		
+		Element questions = new Element("questions", jhaveNS);
+		xaalRoot.addContent(questions);
 		
 		document.setRootElement(xaalRoot);
 	}
@@ -737,14 +742,17 @@ public class XAALScripter {
 	/**
 	 * Begins a slide for the animation. Corresponds to the seq element.
 	 * @throws SlideException
+	 * @returns the id number of the current slide.
 	 */
-	public void startSlide() throws SlideException
+	public int startSlide() throws SlideException
 	{
 		if (inSlide())
 			throw new SlideException("A slide has already been started. " +
 					"It must be ended before you can create another.");
 		
 		currentSlide = createElement("seq");
+		
+		return slideNum;
 	}
 	
 	/**
@@ -762,6 +770,7 @@ public class XAALScripter {
 		animation.addContent(currentSlide);
 		
 		currentSlide = null;
+		slideNum++;
 	}
 	
 	/**
@@ -1130,6 +1139,31 @@ public class XAALScripter {
 	 */
 	public void addTFQuestion(String question, boolean answer) throws SlideException
 	{
+		addTFQuestion(question, slideNum, answer);
+	}
+	
+	/**
+	 * 
+	 * @param question
+	 * @param slideId
+	 * @param answer
+	 * @throws SlideException
+	 */
+	public void addTFQuestion(String question, int slideId, boolean answer) throws SlideException
+	{
+		Element questions = questionsElem();
+		
+		Element q = createQuestion("TFQUESTION", slideId, question);
+		
+		Element ao = new Element("answer_option", jhaveNS);
+		
+		ao.setAttribute("is_correct", "yes");
+		
+		ao.setText(answer + "");
+		
+		q.addContent(ao);
+		
+		questions.addContent(q);
 		
 	}
 	
@@ -1140,7 +1174,34 @@ public class XAALScripter {
 	 */
 	public void addFibQuestion(String question, String...answers) throws SlideException
 	{
+		addFibQuestion(question, slideNum, answers);
+	}
+	
+	/**
+	 * 
+	 * @param question
+	 * @param slideId
+	 * @param answers
+	 * @throws SlideException
+	 */
+	public void addFibQuestion(String question, int slideId, String...answers) throws SlideException
+	{
+		Element questionsElem = questionsElem();
 		
+		Element q = createQuestion("FIBQUESTION", slideId, question);
+		
+		Element aElem;
+		for (String answer : answers)
+		{
+			aElem = new Element("answer_option", jhaveNS);
+			
+			aElem.setText(answer);
+			
+			q.addContent(aElem);
+		}
+		
+		questionsElem.addContent(q);
+
 	}
 	
 	/**
@@ -1152,7 +1213,32 @@ public class XAALScripter {
 	public void addMCQuestion(String question, String[] choices,  
 			int answer) throws SlideException
 	{
+		addMCQuestion(question, slideNum, choices, answer);
+	}
+	
+	public void addMCQuestion(String question, int slideId, String[] choices,  
+			int answer) throws SlideException
+	{
+		Element questionsElem = questionsElem();
 		
+		Element q = createQuestion("MCQUESTION", slideId, question);
+		
+		Element aElem;
+		for(int i=0; i < choices.length; i++)
+		{
+			aElem = new Element("answer_option", jhaveNS);
+			
+			if (i == answer)
+				aElem.setAttribute("is_correct", "yes");
+			else
+				aElem.setAttribute("is_correct", "no");
+			
+			aElem.setText(choices[i]);
+		
+			q.addContent(aElem);
+		}
+		
+		questionsElem.addContent(q);
 	}
 	
 	/**
@@ -1164,35 +1250,65 @@ public class XAALScripter {
 	public void	addMSQuestion(String question, String[] choices, 
 			int...answers) throws SlideException
 	{
-		
+		addMSQuestion(question, slideNum, choices, answers);
 	}
 	
-	
-	private void createQuestion(String question, String[] choices, String[] answers)
+	public void	addMSQuestion(String question, int slideId, String[] choices, 
+			int...answers) throws SlideException
 	{
+		Element questionsElem = questionsElem();
 		
+		Element q = createQuestion("MSQUESTION", slideId, question);
+		
+		Element aElem;
+		for(int i=0; i < choices.length; i++)
+		{
+			aElem = new Element("answer_option", jhaveNS);
+			
+			boolean found = false;
+			
+			for( int j = 0; j < answers.length; j++)
+			{
+				if (answers[j] == i)
+				{
+					found = true;
+					break;
+				}
+			}
+			
+			if (found)
+				aElem.setAttribute("is_correct", "yes");
+			else
+				aElem.setAttribute("is_correct", "no");
+			
+			aElem.setText(choices[i]);
+		
+			q.addContent(aElem);
+		}
+		
+		questionsElem.addContent(q);
 	}
 	
-	public void createQuestion(String question, boolean answer)
+	
+	private Element createQuestion(String type, int slideId, String question)
 	{
+		Element qElem = new Element("question");
 		
+		qElem.setAttribute("type", type);
+		qElem.setAttribute("id", slideId+"");
+		
+		Element text = new Element("question_text", jhaveNS);
+		text.setText(question);
+		
+		qElem.addContent(text);
+		
+		return qElem;
 	}
 	
-	public void createQuestion(String question, String[] answers)
+	private Element questionsElem()
 	{
-		
+		return document.getRootElement().getChild("questions", jhaveNS);
 	}
-	
-	public void createQuestion(String question, String[] choices, int answer)
-	{
-		
-	}
-	
-	public void createQuestion(String question, String[] choices, int...answers)
-	{
-		
-	}
-	
 	
 	
 	/**
