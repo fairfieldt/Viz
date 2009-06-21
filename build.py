@@ -2,8 +2,9 @@
 import os
 
 def build():
-	os.system("jjtree Interpreter/VizParser.jjt")
-	os.system("javacc Interpreter/VizParser.jj")
+	os.system("rm Interpreter/*.class")
+	os.system("jjtree -OUTPUT_DIRECTORY=Interpreter Interpreter/VizParser.jjt")
+	os.system("javacc -OUTPUT_DIRECTORY=Interpreter Interpreter/VizParser.jj")
 	os.system("javac Interpreter/VizParser.java")
 #	os.system("java VizParser < testProg.src")
 	print "Rebuilt and executed"
