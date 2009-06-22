@@ -28,7 +28,7 @@ public class ASTCall extends SimpleNode {
   	arg.jjtSetParent(args);
   	
   }
-
+  
   public String getCode()
   {
   	return name + "(" + jjtGetChild(0).getCode() + ");";

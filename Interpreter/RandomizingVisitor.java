@@ -75,23 +75,10 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 	}
 
 	@Override
-	public Object visit(ASTassignment node, Object data) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Object visit(ASTExpression node, Object data) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public Object visit(ASTargs node, Object data) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	
 	@Override
 	public Object visit(ASTDeclarationList node, Object data) {
@@ -135,6 +122,18 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		return null;
 	}
 	
+	@Override
+	public Object visit(ASTAssignment node, Object data) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object visit(ASTArgs node, Object data) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	/**
 	 * this limits the entire randomizer to one function other than main
 	 * @param node
@@ -148,11 +147,16 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		Random r = new Random();
 		int numOfVars = r.nextInt(3);
 		
-		SymbolTable symbols;
+		SymbolTable symbols = node.getSymbolTable();
 		for (int i = 0; i < numOfVars; i++)
 		{
 			//TODO: how do we decide which var names to use in here?
 			String varName = getRandomItem(possVars);
+			while(symbols.get(varName, true) != -255)
+			{
+				varName = getRandomItem(possVars);
+			}
+			
 			createVarDecl(innerStatement,varName, r.nextInt(5)+1, i, ASTStatement.class);
 			
 		}
@@ -160,8 +164,9 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		
 		// add funcCall
 		
-		ASTCall call = new ASTCall(r.nextInt());
-		call.jjtSetParent(node);
+		ASTCall call = new ASTCall(JJTCALL);
+		call.jjtSetParent(innerStatement);
+		innerStatement.jjtAddChild(call, innerStatement.jjtGetNumChildren());
 		
 		HashMap<String, ASTFunction> funcs = Global.getFunctions();
 		
@@ -194,27 +199,32 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 				parameters[i] = getRandomItem(varNameArray);
 			}
 
-			call.addArgs(parameters);
+			
 			
 			funcs.get(callName).addParams("x","y","z");
 		}
 		else
 		{
-			String[] parameters = new String[2];
 			String[] varNameArray = new String[varNames.size()]; 
 			varNames.toArray(varNameArray);
 			
 			//TODO: get it so there's repeated params more often
 			for (int i = 0; i < 2; i++)
 			{
-				parameters[i] = getRandomItem(varNameArray);
+				//TODO: is this right?
+				ASTVar var = new ASTVar(JJTVAR);
+				
+				var.setName(getRandomItem(varNameArray));
+				
+				call.addArg(var);
+				
 			}
 			
-			call.addParams(parameters);
+			
 			funcs.get(callName).addParams("x", "y");
 		}
 		
-		node.jjtAddChild(call, node.jjtGetNumChildren());
+		
 		
 		return null;
 	}
@@ -225,39 +235,17 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		Random r = new Random();
 		int numOfVars = r.nextInt(2);
 		
-		SymbolTable symbols;
+		SymbolTable symbols = node.getSymbolTable();
+		
 		for (int i = 0; i < numOfVars; i++)
 		{
-			symbols = Global.getSymbolTable();
-			
-			int varId = r.nextInt();
-			ASTVarDecl var = new ASTVarDecl(varId);
-			var.jjtSetParent(node);
-			
-			//TODO: how do we decide which var names to use in here?
 			String varName = getRandomItem(possVars);
+			while(symbols.get(varName, true) != -255)
+			{
+				varName = getRandomItem(possVars);
+			}
 			
-			
-			var.setName(varName);
-			//TODO: how do I get a Variable to put into the symbolTable
-			
-			ASTExpression exp = new ASTExpression(r.nextInt());
-			
-			exp.jjtSetParent(var);
-
-			ASTNum num = new ASTNum(r.nextInt());
-			
-			num.jjtSetParent(exp);
-			
-			num.setValue(r.nextInt(5)+1);
-			
-			exp.jjtAddChild(num, 0);
-			
-			var.jjtAddChild(exp, 0);
-			
-			//add var to ASTprogram
-			node.jjtAddChild(var, i);
-			
+			createVarDecl(node.jjtGetChild(0),varName, r.nextInt(5)+ 1, i, ASTStatement.class);
 		}
 		
 		return null;
@@ -355,8 +343,6 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		else
 			((ASTFunction)parent.jjtGetParent()).getSymbolTable().put(
 					varName, new ByValVariable(value));
-
-
-
 	}
+	
 }
