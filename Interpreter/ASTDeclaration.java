@@ -9,7 +9,7 @@ public class ASTDeclaration extends SimpleNode
 	
 	public String getCode()
 	{
-		return jjtGetChild(0).getCode();
+		return jjtGetChild(0).getCode() + "\n";
 	}
 
 }

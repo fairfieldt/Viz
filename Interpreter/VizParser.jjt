@@ -217,9 +217,13 @@
 
 	void call() #Call:
 	{
+		Token t;
 	}
 	{
-		<ID> <LTPRN> (args())? <RTPRN>
+		t = <ID> <LTPRN> (args())? <RTPRN>
+		{
+			jjtThis.setName(t.image);
+		}
 	}
 
 	void var() #Var:

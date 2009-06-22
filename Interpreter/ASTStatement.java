@@ -12,7 +12,7 @@ public class ASTStatement extends SimpleNode {
   
   public String getCode()
   {
-	return "\t" + jjtGetChild(0).getCode() + ";";
+	return "\n\t" + jjtGetChild(0).getCode();
   }
 
 
