@@ -66,5 +66,5 @@ public class SymbolTable
 	{
 		return new HashSet<String>(vars.keySet());
 	}
-	}
+	
 }
