@@ -171,10 +171,14 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		// TODO: add 0-1 array decl
 		
 		// add funcCall
+		ASTStatement surroundingStmt = new ASTStatement(JJTSTATEMENT);
+		surroundingStmt.jjtSetParent(innerStatement);
+		innerStatement.jjtAddChild(surroundingStmt, innerStatement.jjtGetNumChildren());
+		
 		
 		ASTCall call = new ASTCall(JJTCALL);
-		call.jjtSetParent(innerStatement);
-		innerStatement.jjtAddChild(call, innerStatement.jjtGetNumChildren());
+		call.jjtSetParent(surroundingStmt);
+		surroundingStmt.jjtAddChild(call, surroundingStmt.jjtGetNumChildren());
 		
 		HashMap<String, ASTFunction> funcs = Global.getFunctions();
 		
