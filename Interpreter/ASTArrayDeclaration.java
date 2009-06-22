@@ -11,6 +11,18 @@ public class ASTArrayDeclaration extends SimpleNode {
     super(p, id);
   }
 
+  public String getCode()
+  {
+  	String code = "{";
+  	int numMembers = jjtGetNumChildren();
+  	
+  	for (int i = 0; i < numMembers; i++)
+  	{
+  		code += jjtGetChild(i).getCode() + (i < numMembers -1 ? ", " : "");
+  	}
+  	code += "}";
+  	return code;
+  }
 
   /** Accept the visitor. **/
   public Object jjtAccept(VizParserVisitor visitor, Object data) {
