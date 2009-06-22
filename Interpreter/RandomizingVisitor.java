@@ -14,7 +14,12 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 			this.visit((ASTProgram)node, null);
 		else if (node instanceof ASTFunction)
 			this.visit((ASTFunction)node, null);
-		
+		else if (node instanceof ASTDeclarationList)
+			this.visit((ASTDeclarationList)node, null);
+		else if (node instanceof ASTStatementList)
+			this.visit((ASTStatementList)node, null);
+		else if (node instanceof ASTDeclaration)
+			this.visit((ASTDeclaration)node, null);
 		return null;
 	}
 
@@ -35,7 +40,7 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 				varName = getRandomItem(possVars);
 			}
 			
-			createVarDecl(innerDecl,varName, r.nextInt(5)+1, i, ASTDeclaration.class);
+			createVarDecl(innerDecl,varName, r.nextInt(5)+1, i, ASTDeclaration.class, true);
 		}
 		
 		//TODO: add an array
@@ -49,8 +54,6 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-
 
 	@Override
 	public Object visit(ASTFunction node, Object data) {
@@ -87,13 +90,13 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 	
 	@Override
 	public Object visit(ASTDeclarationList node, Object data) {
-		// TODO Auto-generated method stub
+		node.childrenAccept(this, null);
 		return null;
 	}
 
 	@Override
 	public Object visit(ASTDeclaration node, Object data) {
-		// TODO Auto-generated method stub
+		node.childrenAccept(this, null);
 		return null;
 	}
 
@@ -111,7 +114,7 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 
 	@Override
 	public Object visit(ASTStatementList node, Object data) {
-		// TODO Auto-generated method stub
+		node.childrenAccept(this, null);
 		return null;
 	}
 
@@ -194,18 +197,20 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		//if true 3 params, else 2
 		if (r.nextBoolean())
 		{
-			String[] parameters = new String[3];
 			String[] varNameArray = new String[varNames.size()]; 
 			varNames.toArray(varNameArray);
 			
 			//TODO: get it so there's repeated params sometimes
 			for (int i = 0; i < 3; i++)
 			{
-				parameters[i] = getRandomItem(varNameArray);
+				//TODO: is this right?
+				ASTVar var = new ASTVar(JJTVAR);
+				
+				var.setName(getRandomItem(varNameArray));
+				
+				call.addArg(var);
 			}
 
-			
-			
 			funcs.get(callName).addParams("x","y","z");
 		}
 		else
@@ -221,10 +226,8 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 				
 				var.setName(getRandomItem(varNameArray));
 				
-				call.addArg(var);
-				
+				call.addArg(var);			
 			}
-			
 			
 			funcs.get(callName).addParams("x", "y");
 		}
@@ -236,6 +239,7 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 	
 	private Object visitFunc(ASTFunction node, Object data)
 	{
+		
 		// add 0-1 var decls
 		Random r = new Random();
 		int numOfVars = r.nextInt(2);
@@ -337,6 +341,12 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		return null;
 	}
 	
+	private <T> void createVarDecl(Node parent, String varName, 
+			int value, int indexInParent, T surroundingClass)
+	{
+		createVarDecl(parent, varName, value, indexInParent, surroundingClass, false);
+	}
+	
 	/**
 	 * Creates an ASTVarDecl in parent. Assumes that the parent is one step below an 
 	 * ASTFunction or an ASTProgram. 
@@ -347,7 +357,7 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 	 * @param surroundingClass either ASTStatement or ASTDeclaration, depending on what you want
 	 */
 	private <T> void createVarDecl(Node parent, String varName, 
-			int value, int indexInParent, T surroundingClass)
+			int value, int indexInParent, T surroundingClass, boolean addSafely)
 	{
 		Node surroundingNode = null;
 		if (surroundingClass == ASTDeclaration.class)
@@ -356,14 +366,17 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 			surroundingNode = new ASTStatement(JJTSTATEMENT);
 		
 		surroundingNode.jjtSetParent(parent);
-		parent.jjtAddChildSafe(surroundingNode, indexInParent);
+		if (addSafely)
+			parent.jjtAddChildSafe(surroundingNode, indexInParent);
+		else
+			parent.jjtAddChild(surroundingNode, indexInParent);
 		
 		
 		ASTVarDecl var = new ASTVarDecl(JJTVARDECL);
 
 		
 		var.jjtSetParent(surroundingNode);
-		surroundingNode.jjtAddChildSafe(var, 0);
+		surroundingNode.jjtAddChild(var, 0);
 		
 		var.setName(varName);
 		
@@ -371,13 +384,13 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 
 		
 		exp.jjtSetParent(var);
-		var.jjtAddChildSafe(exp, 0);
+		var.jjtAddChild(exp, 0);
 		
 		ASTNum num = new ASTNum(JJTNUM);
 	
 		
 		num.jjtSetParent(exp);
-		exp.jjtAddChildSafe(num, 0);
+		exp.jjtAddChild(num, 0);
 		
 		num.setValue(value);
 		
