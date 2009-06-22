@@ -171,7 +171,7 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		HashMap<String, ASTFunction> funcs = Global.getFunctions();
 		
 		Set<String> keys = funcs.keySet();
-		String callName;
+		String callName = null;
 		Iterator<String> iter = keys.iterator();
 		while(iter.hasNext())
 		{
