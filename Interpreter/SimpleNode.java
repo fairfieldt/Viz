@@ -37,6 +37,35 @@ public class SimpleNode implements Node {
     }
     children[i] = n;
   }
+  
+  
+  public void jjtAddChildSafe(Node n, int i) {
+	  if (children == null) 
+	    {
+	      children = new Node[i + 1];
+	    } 
+	    else if (i >= children.length) 
+	    {
+	      Node c[] = new Node[i + 1];
+	      System.arraycopy(children, 0, c, 0, children.length);
+	      children = c;
+	    }
+
+	  
+	  
+	
+		  Node c[] = new Node[children.length + 1];
+	      
+		  System.arraycopy(children, 0, c, 0, i);
+	      
+		  c[i] = n;
+	      
+		  System.arraycopy(children, i, c, i+1, children.length - i);
+	      children = c;
+	      
+	 
+	   
+  }
 
   public Node jjtGetChild(int i) {
     return children[i];

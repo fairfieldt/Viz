@@ -20,6 +20,12 @@
 			{
 				VizParser vp = new VizParser(System.in);
 				ASTProgram program = vp.program();
+				System.out.println("Before Visitor");
+				System.out.println("Dumping: \n");
+				program.dump(">");
+				System.out.println("After Visitor");
+				RandomizingVisitor visit = new RandomizingVisitor();
+                                program.jjtAccept(visit, null);
 				ASTDeclarationList dl = (ASTDeclarationList) program.jjtGetChild(0);
 				for (int i = 0; i < dl.jjtGetNumChildren(); i++)
 				{
@@ -28,7 +34,7 @@
 				System.out.println("SuccessfullyParsed");
 				HashMap<String, ASTFunction> funs = Global.getFunctions();
 				SymbolTable table = Global.getCurrentSymbolTable();
-				
+
 				System.out.println("Dumping: \n");
 				program.dump(">");
 				
