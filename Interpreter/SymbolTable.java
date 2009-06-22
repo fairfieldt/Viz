@@ -7,7 +7,7 @@ public class SymbolTable
 	private HashMap<String, Variable> vars;
 	
 	private SymbolTable previous;
-	
+	private String name = "";
 	public SymbolTable(SymbolTable previous)
 	{
 		this.previous = previous;
@@ -17,6 +17,11 @@ public class SymbolTable
 	public int get(String varName)
 	{
 		return get(varName, false);
+	}
+	
+	public void setName(String name)
+	{
+		this.name = name;
 	}
 	
 	/**
@@ -71,5 +76,15 @@ public class SymbolTable
 	public HashSet<String> getLocalVarNames()
 	{
 		return new HashSet<String>(vars.keySet());
+	}
+	
+	public String toString()
+	{
+		String code = "Variables:\n";
+		for (String key : vars.keySet())
+		{
+			code += key + ":" + vars.get(key).getValue() + "\n";
+		}
+		return code;
 	}
 }

@@ -24,8 +24,7 @@
 				System.out.println("Dumping: \n");
 				program.dump(">");
 				System.out.println("After Visitor");
-				RandomizingVisitor visit = new RandomizingVisitor();
-                                program.jjtAccept(visit, null);
+
 				ASTDeclarationList dl = (ASTDeclarationList) program.jjtGetChild(0);
 				for (int i = 0; i < dl.jjtGetNumChildren(); i++)
 				{
@@ -45,6 +44,8 @@
 				InterpretVisitor iv = new InterpretVisitor();
 				
 				program.jjtAccept(iv, null);
+				
+				System.out.println(Global.getString());
 			}
 			catch (Exception e)
 			{
@@ -203,7 +204,7 @@
 			for (String p : parameters)
 			{
 				//FIXME: multiple variable types
-				global.getCurrentSymbolTable().put(p, new ByValVariable(255));
+				Global.getCurrentSymbolTable().put(p, new ByValVariable(255));
 				jjtThis.addParameter(p);
 			}
 			if(Global.addFunction(jjtThis))

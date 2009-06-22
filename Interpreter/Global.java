@@ -26,6 +26,11 @@ public class Global
 		return currentSymbolTable;
 	}
 	
+	public static void setCurrentSymbolTable(SymbolTable table)
+	{
+		currentSymbolTable = table;
+	}
+	
 	public static boolean addFunction(ASTFunction fun)
 	{
 		//System.out.println("Adding a function");
@@ -36,5 +41,17 @@ public class Global
 		}
 		functions.put(fun.getName(), fun);
 		return true;
+	}
+	
+	public static String getString()
+	{
+		String code = "Functions:\n\t";
+		for (String key : functions.keySet())
+		{
+			code += key + "\n\t";
+		}
+		code += "\n" + symbolTable.toString();
+		
+		return code;
 	}
 }

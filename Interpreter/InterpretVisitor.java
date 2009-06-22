@@ -76,6 +76,11 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		}	
 	}
 	
+	public void handleArrayDeclaration(ASTArrayDeclaration node)
+	{
+	
+	}
+	
 	public void handleStatementList(ASTStatementList node)
 	{
 		int numStatements = node.jjtGetNumChildren();
