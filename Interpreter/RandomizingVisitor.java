@@ -7,6 +7,11 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 	
 	String[] possVars = {"g","m","n", "v", "w"};
 	
+	final double chanceOfNumToVar = 1.0/10.0;
+	final double chanceOfAssignToOp = 1.5/10.0;
+	final double chanceOfPlusToMinus = 1.0/2.0;
+	final int largestPossibleRandomInt = 5;
+	
 	@Override
 	public Object visit(SimpleNode node, Object data) {
 		
@@ -243,13 +248,20 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 	
 	private Object visitFunc(ASTFunction node, Object data)
 	{
+		ASTStatementList innerStmtList = (ASTStatementList)node.jjtGetChild(0);
+		
+		SymbolTable symbols = node.getSymbolTable();
+		
+		//have to add params to the the SymbolTable
+		for (String param : node.getParameters())
+		{
+			symbols.put(param, new ByValVariable(0));
+		}
 		
 		// add 0-1 var decls
 		Random r = new Random();
 		int numOfVars = r.nextInt(2);
-		
-		SymbolTable symbols = node.getSymbolTable();
-		
+				
 		for (int i = 0; i < numOfVars; i++)
 		{
 			String varName = getRandomItem(possVars);
@@ -258,14 +270,141 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 				varName = getRandomItem(possVars);
 			}
 			
-			createVarDecl(node.jjtGetChild(0),varName, r.nextInt(5)+ 1, i, ASTStatement.class);
+			createVarDecl(innerStmtList,varName, r.nextInt(5)+ 1, i, ASTStatement.class);
 		}
 		
+		
 		//start making some crazy assignment statements
-		String[] varNames = new String[symbols.getCurrentVarNames().size()];
-		symbols.getCurrentVarNames().toArray(varNames);
+		
+		
+		// between 4 - 6 assignment statements
+		int numOfAssgnStmts = r.nextInt(3) + 4;
+		
+		for (int i = 0; i < numOfAssgnStmts; i++)
+		{
+			if (assignOrOp()) //a basic assignment statement
+			{
+				createBasicAssign(innerStmtList, symbols, numOfVars + i);
+			}
+			else // assignment with operations
+			{
+				createOpAssign(innerStmtList, symbols, numOfVars + i);
+			}
+		}
+		
 		
 		return null;
+	}
+	
+	private void createBasicAssign(ASTStatementList parent, SymbolTable symbols, 
+			int index)
+	{
+		ASTStatement stmt = new ASTStatement(JJTSTATEMENT);
+		stmt.jjtSetParent(parent);
+		parent.jjtAddChild(stmt, index);
+		
+		ASTExpression enclosingExp = new ASTExpression(JJTEXPRESSION);
+		enclosingExp.jjtSetParent(stmt);
+		stmt.jjtAddChild(enclosingExp, 0);
+		
+		ASTAssignment assign = new ASTAssignment(JJTASSIGNMENT);
+		assign.jjtSetParent(enclosingExp);
+		enclosingExp.jjtAddChild(assign, 0);
+		
+		ASTVar var = new ASTVar(JJTVAR);
+		var.jjtSetParent(assign);
+		assign.jjtAddChild(var, 0);
+		
+		String[] varNames = new String[symbols.getCurrentVarNames().size()];
+		symbols.getCurrentVarNames().toArray(varNames);
+		var.setName(getRandomItem(varNames));
+		
+		ASTExpression numExp = new ASTExpression(JJTEXPRESSION);
+		numExp.jjtSetParent(assign);
+		assign.jjtAddChild(numExp, 1);
+		
+		ASTNum num = new ASTNum(JJTNUM);
+		num.jjtSetParent(numExp);
+		numExp.jjtAddChild(num, 0);
+		
+		num.setValue(randNum());
+	}
+	
+	private void createOpAssign(ASTStatementList parent, SymbolTable symbols, 
+			int index)
+	{
+		ASTStatement stmt = new ASTStatement(JJTSTATEMENT);
+		stmt.jjtSetParent(parent);
+		parent.jjtAddChild(stmt, index);
+		
+		ASTExpression enclosingExp = new ASTExpression(JJTEXPRESSION);
+		enclosingExp.jjtSetParent(stmt);
+		stmt.jjtAddChild(enclosingExp, 0);
+		
+		ASTAssignment assign = new ASTAssignment(JJTASSIGNMENT);
+		assign.jjtSetParent(enclosingExp);
+		enclosingExp.jjtAddChild(assign, 0);
+		
+		ASTVar var = new ASTVar(JJTVAR);
+		var.jjtSetParent(assign);
+		assign.jjtAddChild(var, 0);
+		
+		String[] varNames = new String[symbols.getCurrentVarNames().size()];
+		symbols.getCurrentVarNames().toArray(varNames);
+		var.setName(getRandomItem(varNames));
+		
+		ASTExpression rhsExp = new ASTExpression(JJTEXPRESSION);
+		rhsExp.jjtSetParent(assign);
+		assign.jjtAddChild(rhsExp, 1);
+		
+		ASTOp opExp = new ASTOp(JJTOP);
+		opExp.jjtSetParent(rhsExp);
+		rhsExp.jjtAddChild(opExp, 0);
+		
+		if (plusOrMinus())
+			opExp.setOp("+");
+		else
+			opExp.setOp("-");
+		
+		if(numOrVar()) //num
+		{
+			ASTNum num = new ASTNum(JJTNUM);
+			num.jjtSetParent(opExp);
+			opExp.jjtAddChild(num, 0);
+			
+			num.setValue(randNum());
+		}
+		else //var
+		{
+			ASTVar midVar = new ASTVar(JJTVAR);
+			midVar.jjtSetParent(opExp);
+			opExp.jjtAddChild(midVar, 0);
+			
+			midVar.setName(getRandomItem(varNames));
+		}
+		
+		//we're on to the second half of the op expression
+		
+		ASTExpression lastExp = new ASTExpression(JJTEXPRESSION);
+		lastExp.jjtSetParent(opExp);
+		opExp.jjtAddChild(lastExp, 1);
+		
+		if(numOrVar()) //num
+		{
+			ASTNum num = new ASTNum(JJTNUM);
+			num.jjtSetParent(lastExp);
+			lastExp.jjtAddChild(num, 0);
+			
+			num.setValue(randNum());
+		}
+		else //var
+		{
+			ASTVar lastVar = new ASTVar(JJTVAR);
+			lastVar.jjtSetParent(lastExp);
+			lastExp.jjtAddChild(lastVar, 0);
+			
+			lastVar.setName(getRandomItem(varNames));
+		}
 	}
 	
 	private <T> T getRandomItem(T[] array)
@@ -277,73 +416,15 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 
 	/**
 	 * 
-	 * @param set HashSet of T to get and remove from
-	 * @param num number of items to remove from set
-	 * @return an array of T
+	 * @return random int between 1 and the largestPossibleRandomInt final, inclusive.
 	 */
-	/*
-	private <T> T[] getAndRemoveRandomly (T[] set, int num)
+	private int randNum()
 	{
 		Random r = new Random();
-		ArrayList<T> list = new ArrayList<T>(num);
-		for (int i = 0; i < num; i++)
-		{
-			int rNum = r.nextInt();
-			set.
-		}
-		
-		
-	}
-*//*
-	private ASTStatement createRandStmt(Node parent, SymbolTable symbols, int index)
-	{/*
-		ASTStatement statement = new ASTStatement(JJTSTATEMENT);
-		
-		statement.jjtSetParent(parent);
-		parent.jjtAddChild(statement, index);
-		
-		String[] varNames = new String[symbols.getCurrentVarNames().size()];
-		
-		symbols.getCurrentVarNames().toArray(varNames);
-		
-		ASTExpression stateChild = new ASTExpression(JJTEXPRESSION);
-		
-		stateChild.jjtSetParent(statement);
-		statement.jjtAddChild(stateChild, 0);
-		//TODO: this needs to have a chance of being numbers not vars
-		/*
-		ASTAssignment assignStmt = createRandAssign(getRandomItem(varNames), 
-				getRandomItem(varNames),
-				getRandomItem(varNames));
-		
-		assignStmt.jjtSetParent(stateChild);
-		stateChild.jjtAddChild(assignStmt, 0);
-		
-		return statement;
-		
-	}*/
-	
-	private ASTAssignment createRandAssign(String lhs, String rhs1, String rhs2)
-	{
-		return null;
+		return r.nextInt(largestPossibleRandomInt) + 1;
 	}
 	
 	
-	/**
-	 * 
-	 * @return an op node with addition or subtraction
-	 */
-	private ASTOp getRandomOpNode()
-	{
-		
-		Random r = new Random();
-		ASTOp op = new ASTOp(r.nextInt());
-		if (r.nextBoolean())
-			op.setOp("+");
-		else
-			op.setOp("-");
-		return null;
-	}
 	
 	private <T> void createVarDecl(Node parent, String varName, 
 			int value, int indexInParent, T surroundingClass)
@@ -403,6 +484,38 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		else
 			((ASTFunction)parent.jjtGetParent()).getSymbolTable().put(
 					varName, new ByValVariable(value));
+	}
+	
+	/**
+	 * 
+	 * @return true for num, false for var.
+	 */
+	private boolean numOrVar()
+	{
+		return binDecision(chanceOfNumToVar);
+	}
+	
+	/**
+	 * 
+	 * @return true for assignment with operators, 
+	 * false for basic assignment.
+	 */
+	private boolean assignOrOp()
+	{
+		return binDecision(chanceOfAssignToOp);
+	}
+	
+	private boolean plusOrMinus()
+	{
+		return binDecision(chanceOfPlusToMinus);
+	}
+	
+	private boolean binDecision(double probability)
+	{
+		Random r = new Random();
+		double test = r.nextDouble();
+		
+		return test <= probability;
 	}
 	
 }
