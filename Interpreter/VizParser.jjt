@@ -224,9 +224,16 @@
 
 	void var() #Var:
 	{
+		Token t;
+		boolean isArray = false;
+		
 	}
 	{
-		<ID> (<LTBCR> expression() <RTBCR>)?
+		t = <ID> (<LTBCR> isArray = expression() <RTBCR> )?
+		{
+			jjtThis.setName(t.image);
+			jjtThis.setIsArray(isArray);
+		}
 	}
 
 	void assignment() #Assignment:
@@ -236,12 +243,17 @@
 		var() <EQL> expression()
 	}
 
-	void expression() #Expression:
+	boolean expression() #Expression:
 	{
 		ASTVar variable;
 	}
 	{
-		 call() |   assignment() |  op() | num() | var()
+		 call() {return true;} |
+		 assignment() {return true;} |
+		 op() {return true;} | 
+		 num() {return true;} | 
+		 var(){ return true;}
+		 
 	}	
 	
 
@@ -286,8 +298,12 @@
 	
 	void num() #Num:
 	{
+		Token t;
 	}
 	{
-		<NUM>	
+		 t = <NUM>
+		 {
+		 	jjtThis.setValue(Integer.parseInt(t.image));
+		 }	
 	}
 

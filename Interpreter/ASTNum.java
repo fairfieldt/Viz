@@ -23,6 +23,11 @@ public class ASTNum extends SimpleNode {
   	return this.value;
   }
 
+  public String getCode()
+  {
+  	System.out.println("adding num to code: " + value);
+  	return this.value + "";
+  }
 
   /** Accept the visitor. **/
   public Object jjtAccept(VizParserVisitor visitor, Object data) {
