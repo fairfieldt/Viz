@@ -50,6 +50,12 @@ public class SymbolTable
 		return true;
 	}
 	
+	public void setValue(String name, int value)
+	{
+		Variable v = vars.get(name);
+		v.setValue(value);
+	}
+	
 	public HashSet<String> getCurrentVarNames()
 	{
 		//TODO: is this a copy of the keys or references?

@@ -31,8 +31,6 @@ public class ASTVar extends SimpleNode {
 
   public String getCode()
   {
-  	System.out.println(isArray);
-  	System.out.println(jjtGetNumChildren());
   	return this.name  + (isArray ? "[" + jjtGetChild(0).getCode() + "]" : "");
   }
   /** Accept the visitor. **/

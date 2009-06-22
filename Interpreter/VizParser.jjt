@@ -31,9 +31,14 @@
 				
 				System.out.println("Dumping: \n");
 				program.dump(">");
-				
+				System.out.println("________________\n");
 				System.out.println(program.getCode());
-
+				
+				System.out.println("\n\n Testing Interpret Visitor");
+				
+				InterpretVisitor iv = new InterpretVisitor();
+				
+				program.jjtAccept(iv, null);
 			}
 			catch (Exception e)
 			{
@@ -82,7 +87,7 @@
 		
 		dl = declarationList()
 		{
-			System.out.println("There are " + dl.jjtGetNumChildren() + " global declarations");
+			//System.out.println("There are " + dl.jjtGetNumChildren() + " global declarations");
 			dl.jjtSetParent(jjtThis);	
 			return jjtThis;
 		}
@@ -135,13 +140,26 @@
 	ASTVarDecl varDecl() #VarDecl:
 	{
 		Token t;
+		boolean isArray = false;
 	}
 	{
-		t = <ID> (<LTBCR> <RTBCR>)? <EQL> varDeclP()
+		t = <ID> (isArray = arrayBrackets())? <EQL> varDeclP()
 		{
 			jjtThis.setName(t.image);
+			Global.getCurrentSymbolTable().put(t.image, new ByValVariable(-255));
+			jjtThis.setIsArray(isArray);
 			return jjtThis;
 		} 
+	}
+	
+	boolean arrayBrackets() #void:
+	{
+	}
+	{
+		<LTBCR> <RTBCR>
+		{
+			return true;
+		}
 	}
 	
 	void varDeclP() #void:
@@ -174,9 +192,12 @@
 	{
 		<DEF> name = <ID> <LTPRN> (parameters =  params())? <RTPRN> compoundStatement()
 		{
+			Global.setCurrentSymbolTable(jjtThis.getSymbolTable());
 			jjtThis.setName(name.image);
 			for (String p : parameters)
 			{
+				//FIXME: multiple variable types
+				global.getCurrentSymbolTable().put(p, new ByValVariable(255));
 				jjtThis.addParameter(p);
 			}
 			if(Global.addFunction(jjtThis))
