@@ -24,7 +24,12 @@ public class ASTVar extends SimpleNode {
   {
   	this.isArray = isArray;
   }
-  public String getName(String name)
+  
+  public boolean getIsArray()
+  {
+  	return this.isArray;
+  }
+  public String getName()
   {
   	return this.name;
   }

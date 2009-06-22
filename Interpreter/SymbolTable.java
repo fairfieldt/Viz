@@ -80,7 +80,7 @@ public class SymbolTable
 	
 	public String toString()
 	{
-		String code = "Variables:\n";
+		String code = name + ":\n";
 		for (String key : vars.keySet())
 		{
 			code += key + ":" + vars.get(key).getValue() + "\n";

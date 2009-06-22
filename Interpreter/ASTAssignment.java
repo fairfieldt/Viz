@@ -3,6 +3,7 @@
 package Interpreter;
 
 public class ASTAssignment extends SimpleNode {
+  private String name;
   public ASTAssignment(int id) {
     super(id);
   }
@@ -19,6 +20,15 @@ public class ASTAssignment extends SimpleNode {
   	return code;
   }
 
+  public void setName(String name)
+  {
+  	this.name = name;
+  }
+  
+  public String getName()
+  {
+  	return this.name;
+  }
 
   /** Accept the visitor. **/
   public Object jjtAccept(VizParserVisitor visitor, Object data) {

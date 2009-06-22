@@ -19,7 +19,7 @@
 			try
 			{
 				VizParser vp = new VizParser(System.in);
-				ASTProgram program = vp.program();
+				ASTProgram program = (ASTProgram)vp.program();
 				System.out.println("Before Visitor");
 				System.out.println("Dumping: \n");
 				program.dump(">");
@@ -86,9 +86,9 @@
 	}
 
 
-	ASTProgram program() #Program:
+	SimpleNode program() #Program:
 	{
-		ASTDeclarationList dl;
+		SimpleNode dl;
 	}
 	{
 		
@@ -96,19 +96,18 @@
 		{
 			//System.out.println("There are " + dl.jjtGetNumChildren() + " global declarations");
 			dl.jjtSetParent(jjtThis);	
-			return jjtThis;
+			return (SimpleNode) jjtThis;
 		}
 	}
 
-	ASTDeclarationList declarationList() #DeclarationList:
+	SimpleNode declarationList() #DeclarationList:
 	{
-		ASTDeclaration decl;
-		ASTDeclarationList dl = null;
+		SimpleNode dl = null;
 	}
 	{
 		declaration() ( declarationListP())?
 		{
-			return jjtThis;
+			return (SimpleNode)jjtThis;
 		}
 	}
 	
@@ -125,10 +124,10 @@
 	
 	
 
-	ASTDeclaration declaration() #Declaration:
+	SimpleNode declaration() #Declaration:
 	{
-		ASTFunction fun;
-		ASTVarDecl varDecl;
+		SimpleNode fun;
+		SimpleNode varDecl;
 	}
 	{
 		<VAR> varDecl = varDecl() <SEMI>
@@ -138,13 +137,12 @@
 		}
 		| fun =  funDecl()
 		{
-			System.out.println(fun.getName());
 			fun.jjtSetParent(jjtThis);
-			return jjtThis;
+			return (SimpleNode)jjtThis;
 		}
 	}
 
-	ASTVarDecl varDecl() #VarDecl:
+	SimpleNode varDecl() #VarDecl:
 	{
 		Token t;
 		boolean isArray = false;
@@ -155,7 +153,7 @@
 			jjtThis.setName(t.image);
 			Global.getCurrentSymbolTable().put(t.image, new ByValVariable(-255));
 			jjtThis.setIsArray(isArray);
-			return jjtThis;
+			return (SimpleNode) jjtThis;
 		} 
 	}
 	
@@ -191,7 +189,7 @@
 		num() (<COMMA> arrayDeclP())?
 	}
 
-	ASTFunction funDecl() #Function:
+	SimpleNode funDecl() #Function:
 	{
 		Token name;
 		ArrayList<String> parameters = new ArrayList<String>();
@@ -211,7 +209,7 @@
 			{
 				//System.out.println("Successfully added a function");
 			}
-			return jjtThis;
+			return (SimpleNode) jjtThis;
 		}
 	}
 
@@ -254,7 +252,7 @@
 		}
 	}
 
-	void var() #Var:
+	String var() #Var:
 	{
 		Token t;
 		boolean isArray = false;
@@ -265,14 +263,16 @@
 		{
 			jjtThis.setName(t.image);
 			jjtThis.setIsArray(isArray);
+			return t.image;
 		}
 	}
 
 	void assignment() #Assignment:
 	{
+		String name = "";
 	}
 	{
-		var() <EQL> expression()
+		name = var() <EQL> expression()
 	}
 
 	boolean expression() #Expression:
