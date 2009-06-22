@@ -25,7 +25,6 @@ public class ASTNum extends SimpleNode {
 
   public String getCode()
   {
-  	System.out.println("adding num to code: " + value);
   	return this.value + "";
   }
 

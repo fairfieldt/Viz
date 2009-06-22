@@ -11,4 +11,9 @@ public class ASTProgram extends SimpleNode
 	{
 		return ((ASTDeclarationList)jjtGetChild(0)).getCode();
 	}
+	
+	public Object jjtAccept(VizParserVisitor visitor, Object data)
+	{
+		return visitor.visit(this, data);
+	}
 }

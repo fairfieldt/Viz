@@ -21,13 +21,18 @@ public class ASTVarDecl extends SimpleNode
   		this.isArray = isArray;
   	}
   	
+  	public boolean getIsArray()
+  	{
+  		return this.isArray;
+  	}
+  	
   	public void setName(String name)
   	{
   		this.name = name;
   	}
   	
   	
-  	public String getName(String name)
+  	public String getName()
   	{
   		return this.name;
   	}

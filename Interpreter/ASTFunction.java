@@ -22,6 +22,7 @@ public class ASTFunction extends SimpleNode
 	public void setName(String name)
 	{
 		this.name = name;
+		localScopeSymbolTable.setName(name);
 	}
 	
 	public void addParameter(String name)
