@@ -84,6 +84,13 @@ public class EricTest {
 		writer.write(scripter.toString());
 		
 		writer.close();
+		
+		String test = "var x = 5;\n\n" + "def main()\n" + "{\n" + "   foo(x, y, x);\n" + "}\n\n"
+		+ "def foo()\n" + "{\n" + "   x = 4;\n" + "}";
+		
+		PsuedoSerializer psuedo = new PsuedoSerializer(test, "test");
+		
+		System.out.println(psuedo.toPsuedoPage(3));
 	}
 	
 	public static void moveCopy(Variable var1, Variable var2)
