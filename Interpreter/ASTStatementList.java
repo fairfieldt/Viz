@@ -15,7 +15,7 @@ public class ASTStatementList extends SimpleNode {
   	String code = "";
   	for (int i = 0; i < jjtGetNumChildren(); i++)
   	{
-  		code += jjtGetChild(i).getCode() + "\n";
+  		code += jjtGetChild(i).getCode();
   	}
   	return code;
   }

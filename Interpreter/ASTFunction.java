@@ -54,7 +54,7 @@ public class ASTFunction extends SimpleNode
 		{
 			code += parameters.get(i) + (i < parameters.size() -1 ?  ", " : "");
 		}
-		code += ")\n{\n" + jjtGetChild(0).getCode() + "\n}\n";
+		code += ")\n{" + jjtGetChild(0).getCode() + "\n}\n";
 		
 		return code;
 	}

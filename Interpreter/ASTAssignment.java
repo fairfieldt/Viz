@@ -15,7 +15,7 @@ public class ASTAssignment extends SimpleNode {
   {
   	System.out.println(jjtGetChild(1));
   	String code = jjtGetChild(0).getCode() + " = ";
-  	code += jjtGetChild(1).getCode();
+  	code += jjtGetChild(1).getCode() + ";";
   	
   	return code;
   }

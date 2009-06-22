@@ -31,7 +31,7 @@ public class ASTCall extends SimpleNode {
   
   public String getCode()
   {
-  	return "\t" + name + "(" + jjtGetChild(0).getCode() + ")";
+  	return name + "(" + jjtGetChild(0).getCode() + ");";
   }
 
   /** Accept the visitor. **/

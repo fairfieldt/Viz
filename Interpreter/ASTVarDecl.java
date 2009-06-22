@@ -35,7 +35,7 @@ public class ASTVarDecl extends SimpleNode
   	public String getCode()
   	{
   		return "var " + this.name + (isArray ? "[]" : "") + 
-  			" = " + jjtGetChild(0).getCode() + ";\n"; 
+  			" = " + jjtGetChild(0).getCode() + ";"; 
   	}
 }
 
