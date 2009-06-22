@@ -13,6 +13,7 @@ public class ASTExpression extends SimpleNode {
   
   public String getCode()
   {
+  	System.out.println("Expression calling child of type " + jjtGetChild(0));
   	return jjtGetChild(0).getCode();
   }
 

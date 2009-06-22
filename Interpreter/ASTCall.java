@@ -29,6 +29,10 @@ public class ASTCall extends SimpleNode {
   	
   }
 
+  public String getCode()
+  {
+  	return "\t" + name + "(" + jjtGetChild(0).getCode() + ")";
+  }
 
   /** Accept the visitor. **/
   public Object jjtAccept(VizParserVisitor visitor, Object data) {
