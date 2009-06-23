@@ -1,3 +1,4 @@
+package viz;
 import java.util.*;
 
 public class Variable implements Drawable
@@ -8,7 +9,9 @@ public class Variable implements Drawable
 	private boolean isReference = false;
 	private boolean isParam = false;
 	protected ArrayList<String> ids;
+	private Queue<Integer> copiesToMake;
 	
+	private LinkedList<String> copiesOwned;
 	
 	private boolean hidden = false;
 	
@@ -29,6 +32,7 @@ public class Variable implements Drawable
 		this.isReference = false;
 		this.isParam = isParam;
 		this.length = (name.length() * 10) + 80;
+		copiesToMake = new LinkedList<Integer>();
 	}
 	
 	public Variable(String name, Variable ref, boolean isParam)
@@ -78,10 +82,23 @@ public class Variable implements Drawable
 		return color;
 	}
 	
+	public int getValue()
+	{
+		return value;
+	}
+	
+	public void setValue(int value)
+	{
+		this.value = value;
+	}
+	
 	public void addCopy()
 	{
+		copiesToMake.offer(new Integer(value));
+		//TODO: don't think this should be here
 		copies++;
 	}
+	
 	public int getLength()
 	{
 		return this.length;
@@ -133,11 +150,22 @@ public class Variable implements Drawable
 		{
 			String id1 = scripter.addRectangle(xPos, yPos, length, 40, color,  hidden);
 			String id2 = scripter.addText(xPos, yPos-5, name, "black", hidden);
-			String id3 = scripter.addText(xPos+15, yPos+25, value + "", "black",  hidden);
+			//String id3 = scripter.addText(xPos+15, yPos+25, value + "", "black",  hidden);
 			
 			ids.add(id1);
 			ids.add(id2);
-			ids.add(id3);
+			//ids.add(id3);
+			
+			do 
+			{
+				Integer temp = copiesToMake.poll();
+				if (temp == null)
+					break;
+				
+				String newId = scripter.addText(xPos+15, yPos+25, temp.toString(), "black", hidden);
+				copiesOwned.offer(newId);
+				
+			} while(true);
 			for (int i = 0; i < copies; i++)
 			{
 				ids.add(scripter.addText(xPos+15, yPos+25, value + "", "black", hidden));

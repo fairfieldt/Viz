@@ -1,3 +1,4 @@
+package viz;
 import java.util.*;
 
 public class Scope implements Drawable

@@ -1,3 +1,4 @@
+package viz;
 import java.util.ArrayList;
 
 public class MCQuestion extends Question implements Drawable {

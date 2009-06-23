@@ -1,3 +1,4 @@
+package viz;
 public interface QuestionTypes
 {
 	public static final int QUESTION_REASON_BEGIN = 0;

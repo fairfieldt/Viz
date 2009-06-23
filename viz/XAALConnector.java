@@ -1,9 +1,13 @@
+package viz;
+
 import java.util.*;
 
 public class XAALConnector {
 
 	private static LinkedList<String> scopeColors;
 	private int currentSnapNum;
+	
+	private Queue<FutureAction> actions;
 	
 	static {
 		scopeColors = new LinkedList<String>();
@@ -16,15 +20,22 @@ public class XAALConnector {
 	HashMap<UUID, Variable> varToVar;
 	HashMap<String, Scope> scopes;
 	ArrayList<Question> questions;
+	Scope globalScope;
 	
+	String[] psuedoCode;
+	String title;
+	PsuedoSerializer psuedo;
 	
-	public XAALConnector()
+	public XAALConnector(String[] psuedoCode, String title)
 	{
 		scripter = new XAALScripter();
 		varToVar = new HashMap<UUID, Variable>();
 		scopes = new HashMap<String, Scope>();
 		questions = new ArrayList<Question>();
 		currentSnapNum = 0;
+		this.psuedoCode = psuedoCode;
+		this.title = title;
+		this.psuedo = new PsuedoSerializer(psuedoCode, title);
 	}
 	
 	/**
@@ -40,6 +51,9 @@ public class XAALConnector {
 		Scope retScope = new Scope(name, scopeColors.pop(), isGlobal);
 		
 		scopes.put(name, retScope);
+		
+		if (isGlobal)
+			globalScope = retScope;
 		
 		//add scope to parent if parent exists
 		if(!isGlobal)
@@ -71,6 +85,8 @@ public class XAALConnector {
 	{
 		Variable v = new Variable(varName, var.getValue(), false);
 		
+		setVarValue(v, var.getValue());
+		
 		varToVar.put(var.getUUID(), v);
 		
 		scopes.get(scope).addVariable(v);
@@ -101,6 +117,7 @@ public class XAALConnector {
 		ArrayList<Variable> params = scope.getParams();
 		for (Variable v : params)
 		{
+			//TODO: add the first id
 			ArrayList<String> paramIds = v.getIds();
 			for (String id : paramIds)
 			{
@@ -172,9 +189,47 @@ public class XAALConnector {
 		if (currentSnapNum < 0)
 			return false;
 		
+		q.setSlideId(currentSnapNum);
+		
 		questions.add(q);
 		
 		return true;
+	}
+	
+	
+	public boolean moveValue (Interpreter.Variable from, Interpreter.Variable to)
+	{
+		if (currentSnapNum < 0)
+			return false;
+		
+		Variable fromVar = varToVar.get(from.getUUID());
+		Variable toVar = varToVar.get(to.getUUID());
+		
+		//add a copy of the currentValue to fromVar
+		fromVar.addCopy();
+		actions.offer(new FutureAction(fromVar, toVar, currentSnapNum));
+		
+		setVarValue(toVar, fromVar.getValue(), false);
+		
+		return true;
+	}
+	
+	/**
+	 * by default add a copy to the list
+	 * @param var
+	 * @param value
+	 */
+	public void setVarValue(Variable var, int value)
+	{
+		setVarValue(var, value, true);
+	}
+	
+	private void setVarValue(Variable var, int value, boolean addCopy)
+	{
+		var.setValue(value);
+		
+		if (addCopy)
+			var.addCopy();
 	}
 
 	private void privStartSnap()
@@ -191,5 +246,18 @@ public class XAALConnector {
 	
 	private void privEndPar()
 	{
+	}
+	
+	/**
+	 * where the magic happens
+	 * @param filename
+	 */
+	public void draw(String filename)
+	{
+	
+		//first calls draw on the global scope which then draws all of the children
+		globalScope.draw(scripter);
+		
+		//perform and write future actions to the scripter
 	}
 }

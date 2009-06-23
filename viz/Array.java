@@ -1,3 +1,4 @@
+package viz;
 
 
 public class Array extends Variable implements Drawable {

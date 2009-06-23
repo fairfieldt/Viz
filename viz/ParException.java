@@ -1,3 +1,4 @@
+package viz;
 
 public class ParException extends XAALScripterException {
 

@@ -1,3 +1,4 @@
+package viz;
 import java.util.LinkedList;
 
 import Interpreter.SymbolTable;

@@ -1,3 +1,4 @@
+package viz;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -6,9 +7,9 @@ public class PsuedoSerializer {
 	String[] psuedoLines;
 	String title;
 	
-	public PsuedoSerializer(String psuedocode, String title)
+	public PsuedoSerializer(String[] psuedocode, String title)
 	{
-		psuedoLines = psuedocode.split("\r\n|\r|\n");
+		psuedoLines = psuedocode;
 		this.title = title;
 	}
 	
@@ -17,9 +18,9 @@ public class PsuedoSerializer {
 		return psuedoLines;
 	}
 	
-	public void setPsuedocode(String code)
+	public void setPsuedocode(String[] code)
 	{
-		psuedoLines = code.split("\r\n|\r|\n");
+		psuedoLines = code;
 	}
 	
 	public String getTitle()

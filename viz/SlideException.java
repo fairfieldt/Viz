@@ -1,3 +1,4 @@
+package viz;
 
 public class SlideException extends XAALScripterException {
 

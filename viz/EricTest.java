@@ -1,7 +1,10 @@
+package viz;
+import java.io.FileWriter;
+
 import java.io.*;
 import java.util.*;
 
-public class TomTest {
+public class EricTest {
 
 	/**
 	 * @param args
@@ -11,13 +14,13 @@ public class TomTest {
 	public static XAALScripter scripter;
 	public static void main(String[] args) throws Exception 
 	{
+		ArrayList<Question> questions = new ArrayList<Question>();
+		
 		scripter = new XAALScripter();
 		
 		Scope global = new Scope("Global", "blue", true);
-
 		Variable var1 = new Variable("x", 3, false);
 		Variable var2 = new Variable("y", 12, false);
-
 		var2.addCopy();
 		global.addVariable(var1);
 		global.addVariable(var2);
@@ -29,17 +32,12 @@ public class TomTest {
 		global.addScope(main);
 		
 		Scope foo = new Scope("foo", "green", false);
-
 		Variable var4 = new Variable("q", 0, true);
-		Variable var5 = new Variable("p", 1, false);
-
+		Variable var5 = new Array("p", new int[]{1,3,4}, false);
 		foo.setHidden(true);
-		
-		var4.setIsParam(true);
-		
-
 		foo.addVariable(var4);
 		foo.addVariable(var5);
+		
 		global.addScope(foo);
 		global.draw(scripter);
 		
@@ -53,14 +51,16 @@ public class TomTest {
 		scripter.endPar();	
 		scripter.endSlide();
 		
-		scripter.startSlide();
+		int slide = scripter.startSlide();
+		TFQuestion q = new TFQuestion("what's the answer?", slide);
+		questions.add(q);
 		scripter.startPar();
 			showScope(foo);
 			showVar(var4);
 			showVar(var5);
 		scripter.endPar();
 		scripter.endSlide();
-		
+		q.setAnswer(true);
 		scripter.startSlide();
 		scripter.startPar();
 			//Move a copy down
@@ -71,16 +71,27 @@ public class TomTest {
 
 
 
-
 		scripter.endPar();
+		
 		scripter.endSlide();
 		
+		for (Question q2 : questions)
+		{
+			q2.draw(scripter);
+		}
 		
-		FileWriter writer = new FileWriter("/home/fairfieldt/Documents/!test.xaal");
+		FileWriter writer = new FileWriter("C:\\Users\\Eric\\Desktop\\tomxaal.xaal");
 		
 		writer.write(scripter.toString());
 		
 		writer.close();
+		
+		String test = "var x = 5;\n\n" + "def main()\n" + "{\n" + "   foo(x, y, x);\n" + "}\n\n"
+		+ "def foo()\n" + "{\n" + "   x = 4;\n" + "}";
+		
+		//PsuedoSerializer psuedo = new PsuedoSerializer(test, "test");
+		
+		//System.out.println(psuedo.toPsuedoPage(3));
 	}
 	
 	public static void moveCopy(Variable var1, Variable var2)
@@ -88,21 +99,20 @@ public class TomTest {
 		ArrayList<String> ids = var1.getIds();
 		String lastCopy = ids.get(ids.size() -1 );
 		System.out.println("Moving " + lastCopy);
-		System.out.println(var1.getName() + " " + var2.getName());
 		int startX = var1.getXPos();
 		int startY = var1.getYPos();
 		
 		int endX = var2.getXPos();
 		int endY = var2.getYPos();
 		
-		int moveX = endX - startX;
-		int moveY = endY - startY;
+		int moveX = startX - endX;
+		int moveY = startY - endY;
 		System.out.println("Startx: " + startX + " endx: " + endX);
 		System.out.println("Starty: " + startY + " endy: " + endY);
 		System.out.println("Moving x: " + moveX + " and Y: " + moveY);
 		try
 		{
-			scripter.addTranslate(moveX, moveY, lastCopy);
+			scripter.addTranslate(-moveX, -moveY, lastCopy);
 		}
 		catch (Exception e)
 		{
@@ -145,3 +155,4 @@ public class TomTest {
 	}
 
 }
+

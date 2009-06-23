@@ -1,3 +1,4 @@
+package viz;
 
 public class XAALScripterException extends Exception {
 
