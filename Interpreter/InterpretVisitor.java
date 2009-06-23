@@ -163,7 +163,8 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	public void handleStatement(ASTStatement node)
 	{
 		node.jjtGetChild(0).jjtAccept(this, null);
-		//update();
+		System.out.println(node.getCode());
+		update();
 	}
 	
 	public Integer handleCall(ASTCall node)
