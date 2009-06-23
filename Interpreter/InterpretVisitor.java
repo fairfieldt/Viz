@@ -22,7 +22,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 				handleDeclarationList((ASTDeclarationList)node);
 				break;
 			case JJTDECLARATION:
-				handleDeclaration((ASTDeclaration)node);
+				retVal = handleDeclaration((ASTDeclaration)node);
 				break;
 			case JJTVARDECL:
 				handleVarDecl((ASTVarDecl)node);
@@ -82,11 +82,16 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		int numDecls = node.jjtGetNumChildren();
 		for (int i = 0; i < numDecls; i++)
 		{
-			node.jjtGetChild(i).jjtAccept(this, null);
+			//A Declaration returned false which means we ran.
+			if(((Boolean)node.jjtGetChild(i).jjtAccept(this, null)) == false)
+			{
+				return;
+			}
 		}
 	}
 	
-	public void handleDeclaration(ASTDeclaration node)
+	//returning false means we're done executing now.
+	public Boolean handleDeclaration(ASTDeclaration node)
 	{
 		//System.out.println("Visiting decl");
 		SimpleNode child = (SimpleNode) node.jjtGetChild(0);
@@ -94,13 +99,15 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		{
 			ASTFunction main = Global.getFunction("main");
 			main.jjtAccept(this, null);
+			return false;
 		}
 		else
 		{
 			node.jjtGetChild(0).jjtAccept(this, null);
-
-			update();
+			//update();
+			return true;
 		}	
+		
 	}
 	
 	public void handleVarDecl(ASTVarDecl node)
@@ -156,7 +163,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	public void handleStatement(ASTStatement node)
 	{
 		node.jjtGetChild(0).jjtAccept(this, null);
-		update();
+		//update();
 	}
 	
 	public Integer handleCall(ASTCall node)
@@ -309,6 +316,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
   	
   	public void leaveScope()
   	{
+  		System.out.println("Leaving scope " + Global.getCurrentSymbolTable().getName());
   		Global.setCurrentSymbolTable(Global.getCurrentSymbolTable().getPrevious());
   	}
 }
