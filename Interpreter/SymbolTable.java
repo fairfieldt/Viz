@@ -81,7 +81,7 @@ public class SymbolTable
 		}
 		else
 		{
-			System.out.println("error! variable not found");
+			System.out.println("error! variable not found: " + name);
 		}
 	}
 	

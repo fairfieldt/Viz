@@ -21,11 +21,18 @@
 				Global.getSymbolTable().setName("Global");
 				VizParser vp = new VizParser(System.in);
 				ASTProgram program = (ASTProgram)vp.program();
-				/*
+				
 				System.out.println("Dumping: \n");
 				program.dump(">");
-				*/
+				
+				
+				RandomizingVisitor rv = new RandomizingVisitor();
+				
+				program.jjtAccept(rv, null);
 
+				System.out.println("Dumping: \n");
+				program.dump(">");
+				
 				System.out.println("SuccessfullyParsed");
 				HashMap<String, ASTFunction> funs = Global.getFunctions();
 				SymbolTable table = Global.getCurrentSymbolTable();
@@ -196,7 +203,6 @@
 			for (String p : parameters)
 			{
 				//FIXME: multiple variable types
-				Global.getCurrentSymbolTable().put(p, new ByValVariable(255));
 				jjtThis.addParameter(p);
 			}
 			if(Global.addFunction(jjtThis))

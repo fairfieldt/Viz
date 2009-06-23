@@ -317,7 +317,12 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		
 		String[] varNames = new String[symbols.getCurrentVarNames().size()];
 		symbols.getCurrentVarNames().toArray(varNames);
-		var.setName(getRandomItem(varNames));
+		
+		// Tom added this to fix some null problems
+		String randomName = getRandomItem(varNames);
+		
+		var.setName(randomName);
+		assign.setName(randomName);
 		
 		ASTExpression numExp = new ASTExpression(JJTEXPRESSION);
 		numExp.jjtSetParent(assign);
@@ -351,7 +356,12 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		
 		String[] varNames = new String[symbols.getCurrentVarNames().size()];
 		symbols.getCurrentVarNames().toArray(varNames);
-		var.setName(getRandomItem(varNames));
+		
+		//again, Tom added this to fix some null problems
+		String randomName = getRandomItem(varNames);
+		
+		var.setName(randomName);
+		assign.setName(randomName);
 		
 		ASTExpression rhsExp = new ASTExpression(JJTEXPRESSION);
 		rhsExp.jjtSetParent(assign);

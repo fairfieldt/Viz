@@ -98,7 +98,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		else
 		{
 			node.jjtGetChild(0).jjtAccept(this, null);
-			System.out.println("Is this breaking?");
+
 			update();
 		}	
 	}
@@ -124,7 +124,13 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	{	
 		//Get the function's symbol table, set it's previous to the
 		// calling function's, and then set it to current.
+		
+		
 		SymbolTable currentSymbolTable = node.getSymbolTable();
+		for (String p : node.getParameters())
+		{
+			currentSymbolTable.put(p, new ByValVariable(-255));
+		}
 		currentSymbolTable.setPrevious(Global.getCurrentSymbolTable());
 		Global.setCurrentSymbolTable(currentSymbolTable);
 
