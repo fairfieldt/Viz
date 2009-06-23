@@ -3,6 +3,7 @@ import java.util.*;
 public class XAALConnector {
 
 	private static LinkedList<String> scopeColors;
+	private int currentSnapNum;
 	
 	static {
 		scopeColors = new LinkedList<String>();
@@ -14,6 +15,7 @@ public class XAALConnector {
 	XAALScripter scripter;
 	HashMap<UUID, Variable> varToVar;
 	HashMap<String, Scope> scopes;
+	ArrayList<Question> questions;
 	
 	
 	public XAALConnector()
@@ -21,6 +23,8 @@ public class XAALConnector {
 		scripter = new XAALScripter();
 		varToVar = new HashMap<UUID, Variable>();
 		scopes = new HashMap<String, Scope>();
+		questions = new ArrayList<Question>();
+		currentSnapNum = 0;
 	}
 	
 	/**
@@ -72,7 +76,7 @@ public class XAALConnector {
 		scopes.get(scope).addVariable(v);
 	}
 	
-	//TODO: should the snaps be created in here?
+	
 	public void showScope(String s)
 	{
 		privStartSnap();
@@ -135,6 +139,43 @@ public class XAALConnector {
 		privEndSnap();
 	}
 	
+	public boolean startSnap(int lineNum)
+	{
+		if (currentSnapNum >= 0)
+			return false;
+			
+		try {
+			currentSnapNum = scripter.startSlide();
+		} catch (SlideException e) {
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean endSnap()
+	{
+		if (currentSnapNum < 0)
+			return false;
+		
+		try {
+			scripter.endSlide();
+		} catch (SlideException e) {
+			return false;
+		}
+		currentSnapNum = -1;
+		return true;
+	}
+	
+	
+	public boolean addQuestion(Question q)
+	{
+		if (currentSnapNum < 0)
+			return false;
+		
+		questions.add(q);
+		
+		return true;
+	}
 
 	private void privStartSnap()
 	{

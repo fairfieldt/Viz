@@ -31,5 +31,10 @@ public abstract class Question implements Drawable {
 		return slideId;
 	}
 	
+	public void setSlideId(int slide)
+	{
+		slideId = slide;
+	}
+	
 	public abstract void draw(XAALScripter scripter);
 }
