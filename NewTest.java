@@ -15,8 +15,14 @@ public class NewTest
 		
 			System.out.println("Successfully Parsed");
 			System.out.println("________________\n");
-			System.out.println(program.getCode());
+			program.buildCode();
+			
+			System.out.println(program.getPseudocode().length);
 		
+			for (String s : program.getPseudocode())
+			{
+				System.out.println(s);
+			}
 			System.out.println("\n\n Testing Interpret Visitor");
 		
 			InterpretVisitor iv = new InterpretVisitor();

@@ -3,6 +3,9 @@ import java.util.*;
 
 public class Global
 {
+	//Line number for pseudocode.
+	public static int lineNumber = 1;
+	
 	private static SymbolTable symbolTable = new SymbolTable(null);
 	private static HashMap<String,ASTFunction> functions = new HashMap<String, ASTFunction>();
 	

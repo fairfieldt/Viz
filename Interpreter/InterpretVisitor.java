@@ -1,11 +1,13 @@
 package Interpreter;
 import java.util.*;
 
-public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstants
+public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstants, UpdateReasons
 {
+	public static final int LINE_NUMBER_END = -1;
 
-	public void update()
+	public void update(int lineNumber, int reason)
 	{
+		System.out.println("Update on " + lineNumber);
 		System.out.println(Global.getCurrentSymbolTable().toString());
 	}
 	public Object visit(SimpleNode node, Object data)
@@ -70,9 +72,10 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	{
 		//System.out.println("visiting program");
 		Global.setCurrentSymbolTable(Global.getSymbolTable()); //set current symbol table to the global one
-		update();
+		update(1, UPDATE_REASON_BEGIN);
 		
 		node.jjtGetChild(0).jjtAccept(this, null);
+		update(LINE_NUMBER_END, UPDATE_REASON_END);
 		System.out.println("Done");
 	}
 	
@@ -142,7 +145,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		Global.setCurrentSymbolTable(currentSymbolTable);
 
 		System.out.println("Executing function: " + node.getName());
-		
+		update(node.getLineNumber(), UPDATE_REASON_FUNCTION);
 		node.jjtGetChild(0).jjtAccept(this, null);
 		leaveScope();
 	}
@@ -164,7 +167,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	{
 		node.jjtGetChild(0).jjtAccept(this, null);
 		System.out.println(node.getCode());
-		update();
+		update(node.getLineNumber(), UPDATE_REASON_STATEMENT);
 	}
 	
 	public Integer handleCall(ASTCall node)

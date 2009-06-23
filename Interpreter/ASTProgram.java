@@ -1,15 +1,29 @@
 package Interpreter;
 
+import java.util.*;
+
 public class ASTProgram extends SimpleNode
 {
+	private String[] pseudocode;
+	private boolean codeBuilt = false;
 	public ASTProgram(int id)
 	{
 		super(id);
 	}
 	
-	public String getCode()
+	//Can only call this once
+	public void buildCode()
 	{
-		return ((ASTDeclarationList)jjtGetChild(0)).getCode();
+		if (!codeBuilt)
+		{
+			pseudocode = ((ASTDeclarationList)jjtGetChild(0)).getCode().split("\n");
+			codeBuilt = true;
+		}
+	}
+	
+	public String[] getPseudocode()
+	{
+		return pseudocode;
 	}
 	
 	public Object jjtAccept(VizParserVisitor visitor, Object data)

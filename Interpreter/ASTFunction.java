@@ -6,6 +6,7 @@ public class ASTFunction extends SimpleNode
 	private ArrayList<String> parameters;
 	private String name;
 	private SymbolTable localScopeSymbolTable;
+	private int lineNumber = -1;
 	
 	public ASTFunction(int id)
 	{
@@ -23,6 +24,16 @@ public class ASTFunction extends SimpleNode
 	{
 		this.name = name;
 		localScopeSymbolTable.setName(name);
+	}
+	
+	public int getLineNumber()
+	{
+		return lineNumber;
+	}
+	
+	public void setLineNumber(int lineNumber)
+	{
+		this.lineNumber = lineNumber;
 	}
 	
 	public void addParameter(String name)
@@ -57,7 +68,7 @@ public class ASTFunction extends SimpleNode
 		{
 			code += parameters.get(i) + (i < parameters.size() -1 ?  ", " : "");
 		}
-		code += ")\n{" + jjtGetChild(0).getCode() + "\n}\n";
+		code += ")\n" + Global.lineNumber++ + ". {" + jjtGetChild(0).getCode() + "\n" + Global.lineNumber++ + ". }";
 		
 		return code;
 	}

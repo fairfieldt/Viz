@@ -1,6 +1,7 @@
 package Interpreter;
+import java.util.*;
 
-public class ByValVariable extends AbstractVariable implements Variable
+public class ByValVariable /*extends AbstractVariable*/ implements Variable
 {
 	private int value;
 	
@@ -18,5 +19,10 @@ public class ByValVariable extends AbstractVariable implements Variable
 	public void setValue(int value)
 	{
 		this.value = value;
+	}
+	
+	public UUID getUUID()
+	{
+		return new UUID(12l, 13l);
 	}
 }

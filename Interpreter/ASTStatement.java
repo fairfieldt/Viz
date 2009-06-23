@@ -2,6 +2,9 @@
 package Interpreter;
 
 public class ASTStatement extends SimpleNode {
+
+  private int lineNumber = -1;
+  
   public ASTStatement(int id) {
     super(id);
   }
@@ -10,9 +13,18 @@ public class ASTStatement extends SimpleNode {
     super(p, id);
   }
   
+  public int getLineNumber()
+  {
+  	return this.lineNumber;
+  }
   public String getCode()
   {
-	return "\n\t" + jjtGetChild(0).getCode();
+  	//if lineNumber == -1 we haven't set yet, so set it and increment the global line counter.  Otherwise do nothing
+  	if (this.lineNumber == -1)
+  	{
+  		this.lineNumber = Global.lineNumber++;
+  	}
+	return "\n" + this.lineNumber + ".\t" + jjtGetChild(0).getCode();
   }
 
 
