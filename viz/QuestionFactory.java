@@ -2,49 +2,95 @@ package viz;
 import java.util.*;
 import Interpreter.*;
 
-public class QuestionFactory implements QuestionTypes
+public class QuestionFactory implements UpdateReasons
 {
+
+	private HashMap<String, Question> endQuestions;
 	public QuestionFactory()
 	{
-
+		endQuestions = new HashMap<String, Question>();
 	}
 	
-	public Question getQuestion(int reason)
+	public void addQuestion(int lineNumber, int reason)
 	{
 		switch (reason)
 		{
-			case QUESTION_REASON_BEGIN:
-				return getBeginQuestion();
-			case QUESTION_REASON_CALL:
-				return getCallQuestion();
-			case QUESTION_REASON_STATEMENT:
-				return getStatementQuestion();
-			case QUESTION_REASON_END:
-				return getEndQuestion();
+			case UPDATE_REASON_BEGIN:
+				addBeginQuestion();
+				break;
+			case UPDATE_REASON_CALL:
+				addCallQuestion();
+				addAnswers(lineNumber, reason);
+				break;
+			case UPDATE_REASON_STATEMENT:
+				addStatementQuestion();
+				addAnswers(lineNumber, reason);
+				break;
+			case UPDATE_REASON_END:
+				addEndQuestion();
+				addAnswers(lineNumber, reason);
+				break;
 			default:
 				System.out.println("Unknown reason for question");
-				return null;
 		}
 	}
 	
-	public Question getBeginQuestion()
+	public void addBeginQuestion()
 	{
-		return null;
+		String var = getGlobalVar();
+		FIBQuestion question = new FIBQuestion("What will the value of " + var + " when the program has finished executing?");
+		endQuestions.put(var, question);
 	}
 	
-	public Question getCallQuestion()
+	
+	public void addCallQuestion()
 	{
-		return null;
+		
 	}
 	
-	public Question getStatementQuestion()
+	public void addStatementQuestion()
 	{
-		return null;
+	
 	}
 	
-	public Question getEndQuestion()
+	public void addEndQuestion()
 	{
-		return null;
+		
 	}
+	
+	private void addAnswers(int lineNumber, int reason)
+	{
+		switch (reason)
+		{
+			case UPDATE_REASON_END:
+			
+				for (String key : endQuestions.keySet())
+				{
+					Question q = endQuestions.get(key);
+					if (q.getClass().getName().equals("viz.FIBQuestion"))
+					{
+					
+						int answer = Global.getCurrentSymbolTable().get(key);
+						((FIBQuestion)q).addAnswer(answer + "");
+					}
+				}
+				break;
+			default:
+				System.out.println("No answers to add for this reason");
+		}		
+	}
+	
+	private String getGlobalVar()
+	{
+		HashSet<String> varNames = Global.getSymbolTable().getCurrentVarNames();
+		return getRandomMember(varNames);
+	}
+	
+	private String getRandomMember(HashSet<String> varNames)
+	{
+		Random r = new Random();
+		return (String)varNames.toArray()[r.nextInt(varNames.size())];
+	}
+	
 		
 }

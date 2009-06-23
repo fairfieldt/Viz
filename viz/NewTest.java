@@ -25,8 +25,11 @@ public class NewTest
 				System.out.println(s);
 			}
 			System.out.println("\n\n Testing Interpret Visitor");
-		
+			
+			QuestionFactory questionFactory = new QuestionFactory();
+			
 			InterpretVisitor iv = new InterpretVisitor();
+			iv.setQuestionFactory(questionFactory);
 			program.jjtAccept(iv, null);
 
 		}
@@ -34,8 +37,5 @@ public class NewTest
 		{
 			System.out.println(e);
 		}
-		
-		
-		QuestionFactory questionFactory = new QuestionFactory();
 	}
 }

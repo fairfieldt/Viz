@@ -32,6 +32,11 @@ public abstract class Question implements Drawable {
 		return slideId;
 	}
 	
+	public String getText()
+	{
+		return this.questionText;
+	}
+	
 	public void setSlideId(int slide)
 	{
 		slideId = slide;
