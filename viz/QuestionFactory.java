@@ -35,6 +35,11 @@ public class QuestionFactory implements UpdateReasons
 		}
 	}
 	
+	public ArrayList<Question> getQuestions()
+	{
+		return endQuestions;
+	}
+	
 	public void addBeginQuestion()
 	{
 		String var = getGlobalVar();
