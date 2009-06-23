@@ -28,6 +28,7 @@ public class Global
 	
 	public static void setCurrentSymbolTable(SymbolTable table)
 	{
+		System.out.println("Setting current Symbol Table to " + table);
 		currentSymbolTable = table;
 	}
 	

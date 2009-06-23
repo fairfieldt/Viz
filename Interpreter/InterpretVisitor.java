@@ -6,13 +6,13 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 
 	public void update()
 	{
-		System.out.println(Global.getString());
+		System.out.println(Global.getCurrentSymbolTable().toString());
 	}
 	public Object visit(SimpleNode node, Object data)
 	{
 		int id = node.getId();
 		Object retVal = null;
-		System.out.println(id);
+
 		switch (id)
 		{
 			case JJTPROGRAM:
@@ -25,7 +25,6 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 				handleDeclaration((ASTDeclaration)node);
 				break;
 			case JJTVARDECL:
-				System.out.println("Vardecl!");
 				handleVarDecl((ASTVarDecl)node);
 				break;
 			case JJTARRAYDECLARATION:
@@ -69,15 +68,17 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	
 	public void handleProgram(ASTProgram node)
 	{
-		System.out.println("visiting program");
+		//System.out.println("visiting program");
 		Global.setCurrentSymbolTable(Global.getSymbolTable()); //set current symbol table to the global one
 		update();
+		
 		node.jjtGetChild(0).jjtAccept(this, null);
+		System.out.println("Done");
 	}
 	
 	public void handleDeclarationList(ASTDeclarationList node)
 	{
-		System.out.println("Visiting declList");
+		//System.out.println("Visiting declList");
 		int numDecls = node.jjtGetNumChildren();
 		for (int i = 0; i < numDecls; i++)
 		{
@@ -87,24 +88,24 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	
 	public void handleDeclaration(ASTDeclaration node)
 	{
-		System.out.println("Visiting decl");
+		//System.out.println("Visiting decl");
 		SimpleNode child = (SimpleNode) node.jjtGetChild(0);
 		if (child.getId() == JJTFUNCTION)
 		{
-			System.out.println("Ok, got to functions");
 			ASTFunction main = Global.getFunction("main");
 			main.jjtAccept(this, null);
 		}
 		else
 		{
 			node.jjtGetChild(0).jjtAccept(this, null);
+			System.out.println("Is this breaking?");
 			update();
 		}	
 	}
 	
 	public void handleVarDecl(ASTVarDecl node)
 	{
-		System.out.println("Visiting var decl");
+		//System.out.println("Visiting var decl");
 		String name = node.getName();
 		if (node.getIsArray())
 		{
@@ -115,15 +116,22 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		{
 			Integer value =(Integer) node.jjtGetChild(0).jjtAccept(this, null);
 			SymbolTable s = Global.getCurrentSymbolTable();
-			System.out.println("S: " + s);
 			s.setValue(name, value);
-			System.out.println("Value of " + name + " is " + Global.getCurrentSymbolTable().get(name));
 		}	
 	}
 	
 	public void handleFunction(ASTFunction node)
-	{
+	{	
+		//Get the function's symbol table, set it's previous to the
+		// calling function's, and then set it to current.
+		SymbolTable currentSymbolTable = node.getSymbolTable();
+		currentSymbolTable.setPrevious(Global.getCurrentSymbolTable());
+		Global.setCurrentSymbolTable(currentSymbolTable);
+
+		System.out.println("Executing function: " + node.getName());
+		
 		node.jjtGetChild(0).jjtAccept(this, null);
+		leaveScope();
 	}
 	public void handleArrayDeclaration(ASTArrayDeclaration node)
 	{
@@ -147,7 +155,10 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	
 	public Integer handleCall(ASTCall node)
 	{
+		//Get the correct function head node
 		ASTFunction fun = Global.getFunction(node.getName());
+		System.out.println("Calling: " + fun.getName());
+		//Get the parameters and put the correct values in the symbolTable
 		SymbolTable st = fun.getSymbolTable();
 		ArrayList<String> parameters = fun.getParameters();
 		ArrayList<Integer> args = (ArrayList<Integer>) node.jjtGetChild(0).jjtAccept(this, null);
@@ -155,6 +166,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		{
 			st.setValue(parameters.get(i), args.get(i));
 		}
+		fun.jjtAccept(this, null);
 		return 0;
 	}
 	
@@ -162,7 +174,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	{
 		if (node.getIsArray())
 		{
-			System.out.println("Not implemented");
+			System.out.println(" Array not implemented");
 			return 99;
 		}
 		return Global.getCurrentSymbolTable().get(node.getName());
@@ -172,6 +184,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	{
 		String name = node.getName();
 		Integer value = (Integer)node.jjtGetChild(1).jjtAccept(this, null);
+
 		Global.getCurrentSymbolTable().setValue(name, value);
 	}
 	
@@ -286,5 +299,10 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
   	public Object visit(ASTNum node, Object data)
   	{
   		return handleNum(node);
+  	}
+  	
+  	public void leaveScope()
+  	{
+  		Global.setCurrentSymbolTable(Global.getCurrentSymbolTable().getPrevious());
   	}
 }

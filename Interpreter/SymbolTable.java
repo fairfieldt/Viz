@@ -6,7 +6,7 @@ public class SymbolTable
 {
 	private HashMap<String, Variable> vars;
 	
-	private SymbolTable previous;
+	private SymbolTable previous = null;
 	private String name = "";
 	public SymbolTable(SymbolTable previous)
 	{
@@ -19,11 +19,28 @@ public class SymbolTable
 		return get(varName, false);
 	}
 	
+	public Variable getVariable(String varName)
+	{
+		Variable v = null;
+		if (vars.containsKey(varName))
+		{
+			v = vars.get(varName);
+		}
+		else if (previous != null)
+		{
+			v = previous.getVariable(varName);
+		}
+		return v;
+	}
+	
 	public void setName(String name)
 	{
 		this.name = name;
 	}
-	
+	public void setPrevious(SymbolTable previous)
+	{
+		this.previous = previous;
+	}
 	/**
 	 * Gets an int representing a var in the symbol table.
 	 * @param varName name of the var to look for.
@@ -57,8 +74,15 @@ public class SymbolTable
 	
 	public void setValue(String name, int value)
 	{
-		Variable v = vars.get(name);
-		v.setValue(value);
+		Variable v = getVariable(name);
+		if (v != null)
+		{
+			v.setValue(value);
+		}
+		else
+		{
+			System.out.println("error! variable not found");
+		}
 	}
 	
 	public HashSet<String> getCurrentVarNames()
@@ -73,6 +97,11 @@ public class SymbolTable
 	
 	}
 	
+	public SymbolTable getPrevious()
+	{
+		return previous;
+	}
+	
 	public HashSet<String> getLocalVarNames()
 	{
 		return new HashSet<String>(vars.keySet());
@@ -80,10 +109,15 @@ public class SymbolTable
 	
 	public String toString()
 	{
-		String code = name + ":\n";
+		String code = "Scope " + name + ":\n";
 		for (String key : vars.keySet())
 		{
 			code += key + ":" + vars.get(key).getValue() + "\n";
+		}
+		
+		if (previous != null)
+		{
+			code += previous.toString();
 		}
 		return code;
 	}
