@@ -1,12 +1,12 @@
 package Interpreter;
-import java.util.*;
 
-public class ByValVariable implements Variable
+public class ByValVariable extends AbstractVariable implements Variable
 {
 	private int value;
 	
 	public ByValVariable(int value)
 	{
+		super();
 		this.value = value;
 	}
 	
