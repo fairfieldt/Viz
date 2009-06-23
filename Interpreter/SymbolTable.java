@@ -19,6 +19,20 @@ public class SymbolTable
 		return get(varName, false);
 	}
 	
+	//TODO: This and get should share their code
+	public Variable getAsVariable(String varName)
+	{
+		Variable retVal = null;
+		
+		if (vars.containsKey(varName))
+			retVal = vars.get(varName);
+		else if (previous != null)
+			retVal = previous.getAsVariable(varName);
+		
+		return retVal;
+			
+	}
+	
 	public void setName(String name)
 	{
 		this.name = name;
