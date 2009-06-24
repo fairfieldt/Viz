@@ -161,7 +161,7 @@ public class Scope implements Drawable
 		
 		ids.add(id1);
 		ids.add(id3);
-
+		
 		sizeVariables();
 		for (Variable v : vars)
 		{
