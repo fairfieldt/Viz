@@ -177,7 +177,9 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		Global.setCurrentSymbolTable(currentSymbolTable);
 
 		//Drawing Stuff:
-			connector.addScope(currentSymbolTable, currentSymbolTable.getName(), currentSymbolTable.getPrevious().getName());
+		connector.addScope(currentSymbolTable, currentSymbolTable.getName(), currentSymbolTable.getPrevious().getName());
+			
+		connector.startSnap(
 		System.out.println("Executing function: " + node.getName());
 		update(node.getLineNumber(), UPDATE_REASON_FUNCTION);
 		node.jjtGetChild(0).jjtAccept(this, null);
