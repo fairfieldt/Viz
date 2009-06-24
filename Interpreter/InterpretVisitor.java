@@ -188,6 +188,10 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	public void handleStatement(ASTStatement node)
 	{
 		node.jjtGetChild(0).jjtAccept(this, null);
+		if (((SimpleNode)node.jjtGetChild(0)).getId() == JJTCALL)
+		{
+			((ASTCall)(node.jjtGetChild(0))).setLineNumber(node.getLineNumber());
+		}
 		System.out.println(node.getCode());
 		update(node.getLineNumber(), UPDATE_REASON_STATEMENT);
 	}
@@ -205,6 +209,21 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		{
 			st.setValue(parameters.get(i), args.get(i));
 		}
+		
+		//Drawing Stuff
+		connector.startSnap(node.getLineNumber());
+			connector.startPar();
+			
+			connector.showScope(Global.getCurrentSymbolTable().getName());
+			HashMap<String, Variable> localVars = Global.getCurrentSymbolTable().getLocalVariables();
+			for (String key : localVars.keySet())
+			{
+				connector.showVar(localVars.get(key));
+			}
+			
+			connector.endPar();
+		connector.endSnap();
+				
 		fun.jjtAccept(this, null);
 		return 0;
 	}

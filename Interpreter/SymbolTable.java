@@ -33,6 +33,11 @@ public class SymbolTable
 		return v;
 	}
 	
+	public HashMap<String, Variable> getLocalVariables()
+	{
+		return vars;
+	}
+	
 	public String getName()
 	{	
 		return this.name;

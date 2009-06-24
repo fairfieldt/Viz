@@ -4,6 +4,7 @@ package Interpreter;
 public class ASTCall extends SimpleNode implements VizParserTreeConstants{
 
 	private String name;
+	private int lineNumber;
   public ASTCall(int id) {
     super(id);
   }
@@ -20,6 +21,16 @@ public class ASTCall extends SimpleNode implements VizParserTreeConstants{
   public String getName()
   {
   	return this.name;
+  }
+  
+  public void setLineNumber(int lineNumber)
+  {
+  	this.lineNumber = lineNumber;
+  }
+  
+  public int getLineNumber()
+  {
+  	return this.lineNumber;
   }
   
   public void addArg(ASTVar arg)
