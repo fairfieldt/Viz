@@ -39,20 +39,22 @@ public class PsuedoSerializer {
 		final String less_than_in_uri = "%2625lt;";
 		
 		String content = "<html><head><title>" + title + 
-			"</title></head><body><h1>" + title + "</h1>";
+			"</title></head><body><h1>" + title + "</h1><pre>";
 		
 		for (int i = 0; i < psuedoLines.length; i++)
 		{
 			if (i == lineNum-1)
-				content += "<div style=\"color:red\">";
+				content += "<span style=\"color:red\">";
 			
-			content += "<pre>" + psuedoLines[i] + "</pre>";
+			content += psuedoLines[i];
 			
 			if (i == lineNum-1)
-				content += "</div>";
+				content += "</span>";
+			
+			content += "\n";
 		}
 		
-		content += "</body></html>";
+		content += "</pre></body></html>";
 		//System.out.println(content);
 		URI uri = null;
 		
