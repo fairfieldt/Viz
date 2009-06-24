@@ -251,6 +251,8 @@
 		t = <ID> <LTPRN> (args())? <RTPRN>
 		{
 			jjtThis.setName(t.image);
+			jjtThis.addArgs(((ASTArgs)jjtThis.jjtGetChild(0)).getArgs());
+			
 		}
 	}
 

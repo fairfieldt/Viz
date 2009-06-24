@@ -2,7 +2,11 @@
 /* JavaCCOptions:MULTI=true,NODE_USES_PARSER=false,VISITOR=true,TRACK_TOKENS=false,NODE_PREFIX=AST,NODE_EXTENDS=,NODE_FACTORY= */
 package Interpreter;
 
+import java.util.*;
+
 public class ASTArgs extends SimpleNode {
+
+  private ArrayList<String> args = new ArrayList<String>();
   public ASTArgs(int id) {
     super(id);
   }
@@ -10,12 +14,18 @@ public class ASTArgs extends SimpleNode {
   public ASTArgs(VizParser p, int id) {
     super(p, id);
   }
+  
+  public ArrayList<String> getArgs()
+  {
+  	return args;
+  }
 
   public String getCode()
   {
   	String code = "";
   	for (int i = 0; i < jjtGetNumChildren(); i++)
   	{
+  		args.add(((ASTVar)(jjtGetChild(i))).getName());
   		code += jjtGetChild(i).getCode() + (i < jjtGetNumChildren() -1 ? ", " : "");
   	}
   	return code;

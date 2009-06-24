@@ -1,11 +1,14 @@
-
 package Interpreter;
+
+import java.util.*;
 
 public class ASTCall extends SimpleNode implements VizParserTreeConstants{
 
 	private String name;
 	private int lineNumber;
+	private ArrayList<String> args = new ArrayList<String>();
   public ASTCall(int id) {
+  
     super(id);
   }
 
@@ -13,6 +16,15 @@ public class ASTCall extends SimpleNode implements VizParserTreeConstants{
     super(p, id);
   }
   
+  public void addArgs(ArrayList<String> args)
+  {
+  	this.args = args;
+  }
+  
+  public ArrayList<String> getArgs()
+  {
+  	return this.args;
+  }
   public void setName(String name)
   {
   	this.name = name;
