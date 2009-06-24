@@ -31,7 +31,6 @@ public class Global
 	
 	public static void setCurrentSymbolTable(SymbolTable table)
 	{
-		System.out.println("Setting current Symbol Table to\n" + table);
 		currentSymbolTable = table;
 	}
 	

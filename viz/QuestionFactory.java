@@ -82,7 +82,7 @@ public class QuestionFactory implements UpdateReasons
 				}
 				break;
 			default:
-				System.out.println("No answers to add for this reason");
+				//System.out.println("No answers to add for this reason");
 		}		
 	}
 	

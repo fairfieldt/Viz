@@ -58,7 +58,7 @@ public class Variable implements Drawable
 	
 	public void setPosition(int xPos, int yPos)
 	{
-		System.out.println("Setting position of " + name + " to " + xPos + "," + yPos);
+		System.out.println("Setting position of... " + name + " to " + xPos + "," + yPos);
 		this.xPos = xPos;
 		this.yPos = yPos;
 	}

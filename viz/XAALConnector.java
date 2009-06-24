@@ -87,14 +87,12 @@ public class XAALConnector {
 	
 	public void addVariable(Interpreter.Variable var, String varName, String scope)
 	{
-		System.out.println(var.getValue());
 		Variable v = new Variable(varName, var.getValue(), false);
 
 		setVarValue(v, var.getValue());
-		System.out.println("Past setVarValue");
 
 		varToVar.put(var.getUUID(), v);
-		System.out.println("Getting scope: " + scope);
+
 		for (String key : scopes.keySet())
 		{
 			System.out.println(key);
@@ -300,7 +298,7 @@ public class XAALConnector {
 			var.addCopy();
 		
 		var.addCopy();
-		System.out.println("About to add to action");
+
 		actions.offer(new FutureAction(value, var, currentSnapNum));
 		
 	}
