@@ -1,14 +1,22 @@
 package Interpreter;
+import viz.*;
 import java.util.*;
 
 public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstants, UpdateReasons
 {
+	private QuestionFactory questionFactory;
 	public static final int LINE_NUMBER_END = -1;
+
+	public void setQuestionFactory(QuestionFactory questionFactory)
+	{
+		this.questionFactory = questionFactory;
+	}
 
 	public void update(int lineNumber, int reason)
 	{
 		System.out.println("Update on " + lineNumber);
 		System.out.println(Global.getCurrentSymbolTable().toString());
+		questionFactory.addQuestion(lineNumber, reason);
 	}
 	public Object visit(SimpleNode node, Object data)
 	{
