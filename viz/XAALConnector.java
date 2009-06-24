@@ -91,7 +91,11 @@ public class XAALConnector {
 		System.out.println("Past setVarValue");
 
 		varToVar.put(var.getUUID(), v);
-		System.out.println("Past varTovar");
+		System.out.println("Getting scope: " + scope);
+		for (String key : scopes.keySet())
+		{
+			System.out.println(key);
+		}
 		scopes.get(scope).addVariable(v);
 	}
 	
