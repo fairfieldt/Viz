@@ -399,9 +399,10 @@ public class XAALConnector {
     
     //hide copy2
     scripter.addHide(copy2);
-    
+    scripter.reclosePar();
     //perform the move!!!
     
+    scripter.startPar();
     int startX = from.getXPos();
     int startY = from.getYPos();
     int endX = to.getXPos();
@@ -419,7 +420,7 @@ public class XAALConnector {
     to.setValue(from.getValue());
     
     //reclose the par
-    scripter.reclosePar();
+    scripter.endPar();
     //reclose the slide
     scripter.recloseSlide();
     }
