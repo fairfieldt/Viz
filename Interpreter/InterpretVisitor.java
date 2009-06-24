@@ -5,11 +5,17 @@ import java.util.*;
 public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstants, UpdateReasons
 {
 	private QuestionFactory questionFactory;
+	private XAALConnector connector;
 	public static final int LINE_NUMBER_END = -1;
 
 	public void setQuestionFactory(QuestionFactory questionFactory)
 	{
 		this.questionFactory = questionFactory;
+	}
+	
+	public void setXAALConnector(XAALConnector xc)
+	{
+		this.connector = xc;
 	}
 
 	public void update(int lineNumber, int reason)
@@ -82,6 +88,9 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		Global.setCurrentSymbolTable(Global.getSymbolTable()); //set current symbol table to the global one
 		update(1, UPDATE_REASON_BEGIN);
 		
+		//Drawing Stuff
+		connector.addScope(Global.getSymbolTable(), "Global", null);
+		
 		node.jjtGetChild(0).jjtAccept(this, null);
 		update(LINE_NUMBER_END, UPDATE_REASON_END);
 		System.out.println("Done");
@@ -135,6 +144,11 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 			Integer value =(Integer) node.jjtGetChild(0).jjtAccept(this, null);
 			SymbolTable s = Global.getCurrentSymbolTable();
 			s.setValue(name, value);
+			
+			//Drawing Stuff
+			System.out.println("Adding a variable");
+			connector.addVariable(s.getVariable(name), name, s.getName());
+			System.out.println("Done adding a variable");
 		}	
 	}
 	

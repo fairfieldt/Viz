@@ -18,7 +18,7 @@ public class NewTest
 			System.out.println("________________\n");
 			program.buildCode();
 			
-			System.out.println(program.getPseudocode().length);
+			XAALConnector xc = new XAALConnector(program.getPseudocode(), "foo");
 		
 			for (String s : program.getPseudocode())
 			{
@@ -29,6 +29,7 @@ public class NewTest
 			QuestionFactory questionFactory = new QuestionFactory();
 			
 			InterpretVisitor iv = new InterpretVisitor();
+			iv.setXAALConnector(xc);
 			iv.setQuestionFactory(questionFactory);
 			program.jjtAccept(iv, null);
 

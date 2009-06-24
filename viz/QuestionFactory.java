@@ -35,9 +35,10 @@ public class QuestionFactory implements UpdateReasons
 		}
 	}
 	
-	public ArrayList<Question> getQuestions()
+	public Question[] getQuestions()
 	{
-		return endQuestions;
+	
+		return ((Question[])endQuestions.entrySet().toArray());
 	}
 	
 	public void addBeginQuestion()

@@ -53,28 +53,28 @@ public class XAALConnector {
 		scopes.put(name, retScope);
 		
 		if (isGlobal)
+		{
 			globalScope = retScope;
-		
-		//add scope to parent if parent exists
-		if(!isGlobal)
+		}
+		else
+		{
 			scopes.get(parent).addScope(retScope);
-		
+		}
 		//Global never starts hidden
 		retScope.setHidden(!isGlobal);
 		
 		String[] symbolNames = new String[symbols.getLocalVarNames().size()];
-		symbols.getLocalVarNames().toArray(symbolNames);
-		
+		symbolNames = symbols.getLocalVarNames().toArray(symbolNames);
+
 		for(String s : symbolNames)
 		{
 			Variable v = new Variable(name, symbols.get(s), true);
 			retScope.addVariable(v);
-			
-			Interpreter.Variable iv = symbols.getVariable(name);
-			
+			Interpreter.Variable iv = symbols.getVariable(s);
+			System.out.println(iv);
 			varToVar.put(iv.getUUID(), v);
-			
-			//if (iv instanceof ByVarVariable)
+
+			//if (iv instanceof ByVarVariable)	
 				//do nothing
 			//else (iv instanceof ByRefVariable)
 				//set reference
@@ -83,10 +83,11 @@ public class XAALConnector {
 	
 	public void addVariable(Interpreter.Variable var, String varName, String scope)
 	{
+		System.out.println(var.getValue());
 		Variable v = new Variable(varName, var.getValue(), false);
-		
+
 		setVarValue(v, var.getValue());
-		
+
 		varToVar.put(var.getUUID(), v);
 		
 		scopes.get(scope).addVariable(v);

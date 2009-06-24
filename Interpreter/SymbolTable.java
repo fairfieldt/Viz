@@ -7,7 +7,7 @@ public class SymbolTable
 	private HashMap<String, Variable> vars;
 	
 	private SymbolTable previous = null;
-	private String name = "";
+	private String name = "Global";
 	public SymbolTable(SymbolTable previous)
 	{
 		this.previous = previous;
