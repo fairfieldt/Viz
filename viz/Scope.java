@@ -129,7 +129,7 @@ public class Scope implements Drawable
 				}
 				else 
 				{
-					v.setPosition(currentVarXPos + 25, currentVarYPos +90);
+					v.setPosition(currentVarXPos + 25, currentVarYPos +100);
 				}
 				currentVarXPos += v.getLength() + 10;
 			System.out.println("Size var " + v.getName() + " to x: " +  xPos + " y: " + yPos);
