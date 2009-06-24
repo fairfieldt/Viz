@@ -259,15 +259,15 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 
 		ArrayList<String> parameters = fun.getParameters();		
 		ArrayList<Integer> args = (ArrayList<Integer>) node.jjtGetChild(0).jjtAccept(this, null);
+		ArrayList<String> argNames = ((ASTArgs)node.jjtGetChild(0)).getArgs();
 		for (int i = 0; i < args.size(); i++)
 		{
-			Variable v = new ByValVariable(args.get(i));
+			Variable v = (ByValVariable)st.getVariable(argNames.get(i));
 			v.setParam();
-			st.put(parameters.get(i), v);
 		}
 		System.out.println("Added params");
 
-		ArrayList<String> argNames = ((ASTArgs)node.jjtGetChild(0)).getArgs();
+
 		System.out.println("params: " + parameters.size() + " args: " + argNames.size());
 		HashMap<String, String> pa = new HashMap<String, String>(); //Maps args to params
 		for (int i = 0; i < parameters.size(); i++)

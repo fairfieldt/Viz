@@ -201,7 +201,7 @@
 		<DEF> name = <ID> <LTPRN> (parameters =  params())? <RTPRN> compoundStatement()
 		{
 			jjtThis.setName(name.image);
-			
+
 			for (String p : parameters)
 			{
 				//FIXME: multiple variable types
@@ -322,7 +322,7 @@
 		newName = <ID> (<COMMA> names = params())?
 		{
 			names.add(newName.image);
-			//System.out.println("Returning names: " + names.size());
+
 			return names;
 		}
 	}

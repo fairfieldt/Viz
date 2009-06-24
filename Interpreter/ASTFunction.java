@@ -41,8 +41,10 @@ public class ASTFunction extends SimpleNode
 		this.parameters.add(name);
 		ByValVariable v = new ByValVariable(-255);
 		v.setParam();
+		System.out.println("intASTFunction");
 		if(!this.localScopeSymbolTable.put(name, v))
 		{
+			System.out.println("failed but making it true anyway");
 			v = (ByValVariable)this.localScopeSymbolTable.getVariable(name);
 			v.setParam();
 		}
@@ -52,7 +54,7 @@ public class ASTFunction extends SimpleNode
 	{
 		for (String name : names)
 		{
-			this.parameters.add(name);
+			addParameter(name);
 		}
 	}
 	
