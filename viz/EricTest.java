@@ -1,11 +1,21 @@
 package viz;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
 import Interpreter.*;
 
 public class EricTest
 {
 	public static void main(String[] args)
 	{
-		VizParser parser = new VizParser(System.in);
+		FileInputStream stream = null;
+		try {
+			stream = new FileInputStream(args[0]);
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		VizParser parser = new VizParser(stream);
 		try
 		{
 			ASTProgram program = (ASTProgram)parser.program();
