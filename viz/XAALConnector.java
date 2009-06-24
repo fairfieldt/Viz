@@ -279,7 +279,7 @@ public class XAALConnector {
 		//first calls draw on the global scope which then draws all of the children
 		globalScope.draw(scripter);
 		System.out.println("Drew global scope");
-		System.out.println(scripter.toString());
+		//System.out.println(scripter.toString());
 		//perform and write future actions to the scripter
 		FutureAction action = null;
 		do
