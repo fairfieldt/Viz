@@ -97,6 +97,11 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		
 		//Drawing Stuff
 		connector.addScope(Global.getSymbolTable(), "Global", null);
+		connector.startSnap(1);
+		connector.startPar();
+			connector.showScope("Global");
+		connector.endPar();
+		connector.endSnap();
 		
 		node.jjtGetChild(0).jjtAccept(this, null);
 		update(LINE_NUMBER_END, UPDATE_REASON_END);
