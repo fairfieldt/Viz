@@ -35,6 +35,7 @@ public class QuestionFactory implements UpdateReasons
 		String param = getRandomMember(paramToArg.keySet());
 		String arg = paramToArg.get(param);
 		TFQuestion question;
+		//question hinges on only 1 arg per var
 		question = new TFQuestion("If the evaluation strategy were call by reference instead of call by value, the value of " +
 			arg + " would have changed when " + funName + " returns.");
 		question.setExpectedValue(Global.getCurrentSymbolTable().get(arg));
@@ -52,7 +53,7 @@ public class QuestionFactory implements UpdateReasons
 		TFQuestion question;
 		if (arg != null)
 		{
-			question = new TFQuestion(arg + "'s value will have changed after the next line of code executes");
+			question = new TFQuestion("The variable passed as a parameter , " + arg + " will have it's value changed after the next line of code executes");
 			question.setAnswer(false);
 		}
 		else if (Global.getSymbolTable().get(leftHandVar) != -255)
@@ -93,7 +94,7 @@ public class QuestionFactory implements UpdateReasons
 					System.out.println(endQuestions.size());
 					Question q = endQuestions.get(key);
 
-					int answer = Global.getCurrentSymbolTable().get(key);
+					int answer = Global.getSymbolTable().get(key);
 					((FIBQuestion)q).addAnswer(answer + "");
 					System.out.println(q.getText() + "answer: " + answer);
 				}
