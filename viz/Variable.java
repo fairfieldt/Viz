@@ -33,6 +33,7 @@ public class Variable implements Drawable
 		this.isParam = isParam;
 		this.length = (name.length() * 10) + 80;
 		copiesToMake = new LinkedList<Integer>();
+		copiesOwned = new LinkedList<String>();
 	}
 	
 	public Variable(String name, Variable ref, boolean isParam)
