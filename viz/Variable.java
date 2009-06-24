@@ -31,7 +31,7 @@ public class Variable implements Drawable
 		this.value = value;
 		this.isReference = false;
 		this.isParam = isParam;
-		this.length = (name.length() * 10) + 80;
+		this.length = (name.length() * 10) + 40;
 		copiesToMake = new LinkedList<Integer>();
 		copiesOwned = new LinkedList<String>();
 	}
@@ -163,7 +163,7 @@ public class Variable implements Drawable
 		}
 		else
 		{
-			String id1 = scripter.addRectangle(xPos, yPos, length, 40, color,  hidden);
+			String id1 = scripter.addRectangle(xPos, yPos, 40, 40, color,  hidden);
 			String id2 = scripter.addText(xPos, yPos-5, name, "black", hidden);
 			//String id3 = scripter.addText(xPos+15, yPos+25, value + "", "black",  hidden);
 			
