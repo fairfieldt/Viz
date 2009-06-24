@@ -105,6 +105,8 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		
 		node.jjtGetChild(0).jjtAccept(this, null);
 		update(LINE_NUMBER_END, UPDATE_REASON_END);
+		
+		//TODO Write the last snap nicely
 		System.out.println("Done");
 	}
 	
@@ -194,7 +196,6 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 			v.setParam();
 			currentSymbolTable.put(p, v);
 		}
-		currentSymbolTable.setPrevious(Global.getCurrentSymbolTable());
 		Global.setCurrentSymbolTable(currentSymbolTable);
 
 		//Drawing Stuff:
@@ -312,13 +313,16 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	{
 		String name = node.getName();
 		Integer value = (Integer)node.jjtGetChild(1).jjtAccept(this, null);
-
+		System.out.println("!!1!!" + Global.getCurrentSymbolTable().getName());
+		System.out.println(Global.getCurrentSymbolTable().getPrevious().getName());
 		Global.getCurrentSymbolTable().setValue(name, value);
 		
 		//Drawing stuff. snap and par should be opened from enclosing statement
+		
 		connector.addQuestion(questionFactory.addAssignmentQuestion(Global.getCurrentParamToArg(), name));
 		connector.endPar();
-		
+		connector.endSnap();
+		connector.startSnap(node.getLineNumber());
 		connector.startPar();
 		
 		connector.modifyVar(Global.getCurrentSymbolTable().getVariable(name), value);
@@ -444,7 +448,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
   	public void leaveScope()
   	{
   		System.out.println("Leaving scope " + Global.getCurrentSymbolTable().getName());
-  		Global.setCurrentSymbolTable(Global.getCurrentSymbolTable().getPrevious());
+
   		update(-1, UPDATE_REASON_LEAVEFUN);
   	}
 }
