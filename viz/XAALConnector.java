@@ -1,5 +1,7 @@
 package viz;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 public class XAALConnector {
@@ -39,7 +41,8 @@ public class XAALConnector {
 	}
 	
 	/**
-	 * Add a scope to the visualization. Also adds its parameters.
+	 * Add a scope to the visualization. Also adds its parameters. 
+	 * Assumes that the local symbol table has only the parameters, nothing else.
 	 * @param symbols
 	 * @param name
 	 * @param parent
@@ -93,7 +96,7 @@ public class XAALConnector {
 		scopes.get(scope).addVariable(v);
 	}
 	
-	
+	/*
 	public void showScope(String s)
 	{
 		
@@ -129,6 +132,22 @@ public class XAALConnector {
 			}
 		}
 		
+	}*/
+	
+	/**
+	 * TODO: check if you're actually on a slide
+	 */
+	public void showScope(String s)
+	{
+		actions.offer(new FutureAction(true, s, currentSnapNum));
+	}
+	
+	/**
+	 * TODO: check if you're actually on a slide
+	 */
+	public void hideScope(String s)
+	{
+		actions.offer(new FutureAction(false, s, currentSnapNum));
 	}
 	
 	/**
@@ -266,6 +285,7 @@ public class XAALConnector {
 		setVarValue(var, value, true);
 	}
 	
+	//TODO: I don't know why I'm adding the copy twice
 	private void setVarValue(Variable var, int value, boolean addCopy)
 	{
 		var.setValue(value);
@@ -278,21 +298,6 @@ public class XAALConnector {
 		
 	}
 
-	private void privStartSnap()
-	{
-	}
-	
-	private void privEndSnap()
-	{
-	}
-	
-	private void privStartPar()
-	{
-	}
-	
-	private void privEndPar()
-	{
-	}
 	
 	/**
 	 * where the magic happens
@@ -312,24 +317,41 @@ public class XAALConnector {
 			if (action == null)
 				break;
 			
-			if(action.isShowOrHide())// its a show or hide action
+			if (action.getScope() == null) // its a variable
 			{
-				if (action.isShow()) // its a show action
+				if(action.isShowOrHide())// its a show or hide action
 				{
-					writeVarShow(action);
+					if (action.isShow()) // its a show action
+					{
+						writeVarShow(action);
+					}
+					else // its a hide action
+					{
+						writeVarHide(action);
+					}
 				}
-				else // its a hide action
+				else if(action.getNewValue() == -1) // this is a movement from one var to another
 				{
-					writeVarHide(action);
+					writeMove(action);
+				}
+				else // a variable is being set by a constant
+				{
+					writeVarModify(action);
 				}
 			}
-			else if(action.getNewValue() == -1) // this is a movement from one var to another
+			else // its a scope
 			{
-				writeMove(action);
-			}
-			else // a variable is being set by a constant
-			{
-				writeVarModify(action);
+				if (action.isShowOrHide()) // its a show or hide action
+				{
+					if (action.isShow())// its a show action
+					{
+						writeScopeShow(action);
+					}
+					else// its a hide action
+					{
+					
+					}
+				}
 			}
 			
 		} while (true);
@@ -342,6 +364,18 @@ public class XAALConnector {
 		}
 		
 		//write to the file
+		FileWriter writer;
+		try {
+			writer = new FileWriter(filename);
+		
+			writer.write(scripter.toString());
+		
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 
@@ -477,7 +511,7 @@ public class XAALConnector {
 	 * ... show all the ids
 	 * 2. pop the copy of current value from the variable
 	 * 3. show the value.
-	 * 4. give ownership of this copy BACK to the variable (its a hack)
+	 * 4. give ownership of this copy BACK to the variable (its a HACK)
 	 * 5. reclose par
 	 * 5.5 reclose slide
 	 * @param action
@@ -534,7 +568,7 @@ public class XAALConnector {
 	 * ... hide all the ids
 	 * 2. pop the copy of current value from the variable
 	 * 3. hide the value.
-	 * 4. give ownership of this copy BACK to the variable (its a hack)
+	 * 4. give ownership of this copy BACK to the variable (its a HACK)
 	 * 5. reclose par
 	 * 5.5 reclose slide
 	 * @param action
@@ -581,6 +615,43 @@ public class XAALConnector {
 		catch (Exception e)
 		{
 			//we're in trouble
+		}
+	}
+	
+	/**
+	 * TODO: make sure that all the params and values are shown correctly, 
+	 * its possible they might not be
+	 * 
+	 * 1. reopen the slide
+	 * 1.5. reopen the par
+	 * 2. show all the ids
+	 * 3. loop through the params as follow:
+	 * 		4. show all of the params ids
+	 * 		5. pop a copy of the params value
+	 * 		6. show the copy
+	 * 		7. give ownership of the copy back to the param HACK
+	 * 8. reclose the par
+	 * 8.5 reclose the slide
+	 * @param action
+	 */
+	private void writeScopeShow(FutureAction action)
+	{
+		try {
+			// reopen a slide
+			scripter.reopenSlide(action.getSnapNum());
+			
+			// reopen par
+			scripter.reopenPar();
+			
+			
+			
+			scripter.reclosePar();
+			
+			scripter.recloseSlide();
+		}
+		catch (Exception e)
+		{
+			
 		}
 	}
 }

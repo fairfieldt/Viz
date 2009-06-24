@@ -8,9 +8,11 @@ public class FutureAction {
 	private int newValue = -1;
 	
 	//if true show, else hide
-	boolean showHide = false;
+	private boolean showHide = false;
 	
-	boolean showOrHide = false;
+	private boolean showOrHide = false;
+	
+	private String scope = null;
 	
 	public FutureAction(Variable from, Variable to, int snapNum)
 	{
@@ -30,6 +32,16 @@ public class FutureAction {
 	public FutureAction(boolean show, Variable v, int snapNum)
 	{
 		this.to = v;
+		showOrHide = true;
+		
+		showHide = show;
+		
+		this.snapNum = snapNum;
+	}
+	
+	public FutureAction(boolean show, String scope, int snapNum)
+	{
+		this.scope = scope;
 		showOrHide = true;
 		
 		showHide = show;
@@ -75,6 +87,11 @@ public class FutureAction {
 	public void setNewValue(int newValue)
 	{
 		this.newValue = newValue;
+	}
+	
+	public String getScope()
+	{
+		return scope;
 	}
 	
 	public boolean isShowOrHide()
