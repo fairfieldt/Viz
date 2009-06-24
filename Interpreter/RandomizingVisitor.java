@@ -12,6 +12,11 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 	final double chanceOfPlusToMinus = 1.0/2.0;
 	final int largestPossibleRandomInt = 5;
 	
+	final int maxVarDeclsInGlobal = 3;
+	final int minVarDeclsInGlobal = 1;
+	
+	
+	
 	@Override
 	public Object visit(SimpleNode node, Object data) {
 		
@@ -37,7 +42,7 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		
 		// add 1-3 var decls
 		Random r = new Random();
-		int numOfVars = r.nextInt(3) + 1;
+		int numOfVars = r.nextInt(maxVarDeclsInGlobal) + minVarDeclsInGlobal;
 		
 		SymbolTable symbols = Global.getSymbolTable();
 		for (int i = 0; i < numOfVars; i++)
@@ -48,10 +53,11 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 				varName = getRandomItem(possVars);
 			}
 			
-			createVarDecl(innerDecl,varName, r.nextInt(5)+1, i, ASTDeclaration.class, true);
+			createVarDecl(innerDecl,varName, r.nextInt(largestPossibleRandomInt)+1, i, ASTDeclaration.class, true);
 		}
 		
 		//TODO: add an array
+		
 	
 		visitMain(findChildFuncOfProg(node, "main"), null);
 		visitFunc(findChildFuncOfProg(node, "foo"), null);
