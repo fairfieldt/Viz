@@ -205,6 +205,12 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 			((ASTCall)(node.jjtGetChild(0))).setLineNumber(node.getLineNumber());
 		}
 		//System.out.println(node.getCode());
+		
+		//Drawing
+		connector.startSnap(node.getLineNumber());
+			connector.startPar();
+			connector.endPar();
+		connector.endSnap();
 		update(node.getLineNumber(), UPDATE_REASON_STATEMENT);
 	}
 	
