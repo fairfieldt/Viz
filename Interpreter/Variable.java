@@ -8,5 +8,9 @@ public interface Variable
 	public void setValue(int value);
 	
 	public UUID getUUID();
+	
+	public void setParam();
+	
+	public boolean isParam();
 
 }

@@ -147,6 +147,13 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 			
 			//Drawing Stuff
 			connector.addVariable(s.getVariable(name), name, s.getName());
+			
+			//If we're not in Global, this should be a snapshot
+			if (Global.getCurrentSymbolTable() != Global.getSymbolTable())
+			{
+				System.out.println("Adding a varDecl not in global");
+			}//connector.startSnap(node.
+			
 		}	
 	}
 	
@@ -210,7 +217,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 			st.setValue(parameters.get(i), args.get(i));
 		}
 		
-		//Drawing Stuff
+		//Drawing 
 		connector.startSnap(node.getLineNumber());
 			connector.startPar();
 			

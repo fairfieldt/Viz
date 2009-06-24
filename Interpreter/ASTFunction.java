@@ -39,7 +39,9 @@ public class ASTFunction extends SimpleNode
 	public void addParameter(String name)
 	{
 		this.parameters.add(name);
-		this.localScopeSymbolTable.put(name, new ByValVariable(-255));
+		ByValVariable v = new ByValVariable(-255);
+		v.setParam();
+		this.localScopeSymbolTable.put(name, v);
 	}
 	
 	public void addParams(String...names)
