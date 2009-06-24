@@ -8,6 +8,8 @@ public class SimpleNode implements Node {
   protected int id;
   protected Object value;
   protected VizParser parser;
+  
+  protected int lineNumber;
 
   public SimpleNode(int i) {
     id = i;
@@ -21,6 +23,16 @@ public class SimpleNode implements Node {
   public int getId()
   {
   	return this.id;
+  }
+  
+    public void setLineNumber(int lineNumber)
+  {
+  	this.lineNumber = lineNumber;
+  }
+  
+  public int getLineNumber()
+  {
+  	return this.lineNumber;
   }
 
   public void jjtOpen() {
