@@ -136,7 +136,7 @@ public class Scope implements Drawable
 		}
 	}
 	
-	ArrayList<Variable> getParams()
+	public ArrayList<Variable> getParams()
 	{
 		ArrayList<Variable> params = new ArrayList<Variable>();
 		

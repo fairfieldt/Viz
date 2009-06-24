@@ -72,7 +72,7 @@ public class XAALConnector {
 
 		for(String s : symbolNames)
 		{
-			Variable v = new Variable(name, symbols.get(s), true);
+			Variable v = new Variable(s, symbols.get(s), true);
 			retScope.addVariable(v);
 			Interpreter.Variable iv = symbols.getVariable(s);
 			
@@ -99,44 +99,6 @@ public class XAALConnector {
 		}
 		scopes.get(scope).addVariable(v);
 	}
-	
-	/*
-	public void showScope(String s)
-	{
-		
-		Scope scope = scopes.get(s);
-		
-		ArrayList<String> ids = scope.getIds();
-		
-		for (String id : ids)
-		{
-			try {
-				scripter.addShow(id);
-			} catch (SlideException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-		
-		
-		ArrayList<Variable> params = scope.getParams();
-		for (Variable v : params)
-		{
-			//TODO: add the first id
-			ArrayList<String> paramIds = v.getIds();
-			for (String id : paramIds)
-			{
-				try {
-					scripter.addShow(id);
-				} catch (SlideException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-		
-	}*/
 	
 	/**
 	 * TODO: check if you're actually on a slide
@@ -355,7 +317,7 @@ public class XAALConnector {
 					}
 					else// its a hide action
 					{
-					
+						writeScopeHide(action);
 					}
 				}
 			}
@@ -631,7 +593,7 @@ public class XAALConnector {
 	 * 1. reopen the slide
 	 * 1.5. reopen the par
 	 * 2. show all the ids
-	 * 3. loop through the params as follow:
+	 * 3. loop through the params as follows:
 	 * 		4. show all of the params ids
 	 * 		5. pop a copy of the params value
 	 * 		6. show the copy
@@ -649,10 +611,105 @@ public class XAALConnector {
 			// reopen par
 			scripter.reopenPar();
 			
+			Scope scope = scopes.get(action.getScope());
 			
+			//show all the ids
+			for (String id : scope.getIds())
+			{
+				scripter.addShow(id);
+			}
 			
+			ArrayList<Variable> params = scope.getParams();
+			
+			//loop through the params
+			for (Variable param : params)
+			{
+				// show all param's ids
+				for (String id : param.getIds())
+				{
+					scripter.addShow(id);
+				}
+				
+				//pop a copy of param's value
+				String copy = param.popCopyId();
+				
+				//show the copy
+				scripter.addShow(copy);
+				
+				//give ownership of copy back to param
+				param.receiveCopyOwnership(copy);
+			}
+			
+			//reclose par
 			scripter.reclosePar();
 			
+			//reclose slide
+			scripter.recloseSlide();
+		}
+		catch (Exception e)
+		{
+			
+		}
+	}
+	
+	/**
+	 * TODO: make sure that all the params and values are shown correctly, 
+	 * its possible they might not be
+	 * 
+	 * 1. reopen the slide
+	 * 1.5. reopen the par
+	 * 2. hide all the ids
+	 * 3. loop through the params as follows:
+	 * 		4. hide all of the params ids
+	 * 		5. pop a copy of the params value
+	 * 		6. hide the copy
+	 * 		7. give ownership of the copy back to the param HACK
+	 * 8. reclose the par
+	 * 8.5 reclose the slide
+	 * @param action
+	 */
+	private void writeScopeHide(FutureAction action)
+	{
+		try {
+			// reopen a slide
+			scripter.reopenSlide(action.getSnapNum());
+			
+			// reopen par
+			scripter.reopenPar();
+			
+			Scope scope = scopes.get(action.getScope());
+			
+			//show all the ids
+			for (String id : scope.getIds())
+			{
+				scripter.addHide(id);
+			}
+			
+			ArrayList<Variable> params = scope.getParams();
+			
+			//loop through the params
+			for (Variable param : params)
+			{
+				// show all param's ids
+				for (String id : param.getIds())
+				{
+					scripter.addHide(id);
+				}
+				
+				//pop a copy of param's value
+				String copy = param.popCopyId();
+				
+				//show the copy
+				scripter.addHide(copy);
+				
+				//give ownership of copy back to param
+				param.receiveCopyOwnership(copy);
+			}
+			
+			//reclose par
+			scripter.reclosePar();
+			
+			//reclose slide
 			scripter.recloseSlide();
 		}
 		catch (Exception e)
