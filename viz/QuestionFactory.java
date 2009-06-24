@@ -11,13 +11,12 @@ public class QuestionFactory implements UpdateReasons
 		endQuestions = new HashMap<String, Question>();
 	}
 	
-	public void addQuestion(int lineNumber, int reason)
+	public Question addQuestion(int lineNumber, int reason)
 	{
 		switch (reason)
 		{
 			case UPDATE_REASON_BEGIN:
-				addBeginQuestion();
-				break;
+				return addBeginQuestion();
 			case UPDATE_REASON_CALL:
 				addCallQuestion();
 				addAnswers(lineNumber, reason);
@@ -33,6 +32,8 @@ public class QuestionFactory implements UpdateReasons
 			default:
 				System.out.println("Unknown reason for question");
 		}
+		
+		return null;
 	}
 	
 	public Question[] getQuestions()
@@ -41,11 +42,11 @@ public class QuestionFactory implements UpdateReasons
 		return ((Question[])endQuestions.entrySet().toArray());
 	}
 	
-	public void addBeginQuestion()
+	public Question addBeginQuestion()
 	{
 		String var = getGlobalVar();
 		FIBQuestion question = new FIBQuestion("What will the value of " + var + " when the program has finished executing?");
-		endQuestions.put(var, question);
+		return question;
 	}
 	
 	

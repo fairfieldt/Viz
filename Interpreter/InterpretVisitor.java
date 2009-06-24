@@ -121,6 +121,9 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 			connector.addScope(main.getSymbolTable(), "main", "Global");
 			connector.startSnap(Global.getFunction("main").getLineNumber());
 			connector.startPar();
+				//connector.addQuestion((Question)(questionFactory.getQuestions()[0]));
+			connector.endPar();
+			connector.startPar();
 				connector.showScope("main");
 			connector.endPar();
 			connector.endSnap();
