@@ -96,8 +96,6 @@ public class XAALConnector {
 	
 	public void showScope(String s)
 	{
-		privStartSnap();
-		privStartPar();
 		
 		Scope scope = scopes.get(s);
 		
@@ -131,8 +129,6 @@ public class XAALConnector {
 			}
 		}
 		
-		privEndPar();
-		privEndSnap();
 	}
 	
 	/**
@@ -180,6 +176,38 @@ public class XAALConnector {
 		}
 		currentSnapNum = -1;
 		return true;
+	}
+	
+	public boolean startPar()
+	{
+		if (currentSnapNum < 0)
+			return false;
+		
+		try {
+			scripter.startPar();
+		} catch (Exception e)
+		{
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean endPar()
+	{
+		if (currentSnapNum < 0)
+			return false;
+		
+		try
+		{
+			scripter.endPar();
+		}
+		catch (Exception e)
+		{
+			return false;
+		}
+			
+		return true;	
 	}
 	
 	
@@ -288,11 +316,11 @@ public class XAALConnector {
 			{
 				if (action.isShow()) // its a show action
 				{
-					
+					writeVarShow(action);
 				}
 				else // its a hide action
 				{
-					
+					writeVarHide(action);
 				}
 			}
 			else if(action.getNewValue() == -1) // this is a movement from one var to another
@@ -446,6 +474,7 @@ public class XAALConnector {
 	/**
 	 * 1. reopening the slide
 	 * 1.5 reopen par
+	 * ... show all the ids
 	 * 2. pop the copy of current value from the variable
 	 * 3. show the value.
 	 * 4. give ownership of this copy BACK to the variable (its a hack)
@@ -463,6 +492,21 @@ public class XAALConnector {
 			scripter.reopenPar();
 			
 			Variable v = action.getTo();
+			
+			//show all the ids
+			ArrayList<String> ids = v.getIds();
+			for (String id : ids)
+			{
+				try
+				{
+					scripter.addShow(id);
+				}
+				catch (Exception e)
+				{
+					System.out.println(e);
+				}
+			}
+			
 			
 			// pop copy of current value
 			String copy = v.popCopyId();
@@ -487,6 +531,7 @@ public class XAALConnector {
 	/**
 	 * 1. reopening the slide
 	 * 1.5 reopen par
+	 * ... hide all the ids
 	 * 2. pop the copy of current value from the variable
 	 * 3. hide the value.
 	 * 4. give ownership of this copy BACK to the variable (its a hack)
@@ -504,6 +549,20 @@ public class XAALConnector {
 			scripter.reopenPar();
 			
 			Variable v = action.getTo();
+			
+			//hide all the ids
+			ArrayList<String> ids = v.getIds();
+			for (String id : ids)
+			{
+				try
+				{
+					scripter.addHide(id);
+				}
+				catch (Exception e)
+				{
+					System.out.println(e);
+				}
+			}
 			
 			// pop copy of current value
 			String copy = v.popCopyId();
