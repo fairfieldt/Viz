@@ -65,7 +65,7 @@ public class XAALConnector {
       scopes.get(parent).addScope(retScope);
     }
     //Global never starts hidden
-    retScope.setHidden(!isGlobal);
+    retScope.setHidden(true);
     
     String[] symbolNames = new String[symbols.getLocalVarNames().size()];
     symbolNames = symbols.getLocalVarNames().toArray(symbolNames);
