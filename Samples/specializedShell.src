@@ -1,0 +1,11 @@
+var q = 3;
+
+def foo(x, y)
+{
+<FILL>
+}
+
+def main()
+{
+<FILL>
+}

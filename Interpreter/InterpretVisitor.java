@@ -5,6 +5,7 @@ import java.util.*;
 public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstants, UpdateReasons
 {
 	private QuestionFactory questionFactory;
+	private ArrayList<Question> startQuestions = new ArrayList<Question>();
 	private XAALConnector connector;
 	public static final int LINE_NUMBER_END = -1;
 
@@ -22,7 +23,13 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	{
 		System.out.println("Update on " + lineNumber);
 		//System.out.println(Global.getCurrentSymbolTable().toString());
-		questionFactory.addQuestion(lineNumber, reason);
+		startQuestions.add(questionFactory.addQuestion(lineNumber, reason));
+	}
+	
+	private Question getStartQuestion()
+	{
+		//FIXME random
+		return startQuestions.get(0);
 	}
 	public Object visit(SimpleNode node, Object data)
 	{
@@ -121,7 +128,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 			connector.addScope(main.getSymbolTable(), "main", "Global");
 			connector.startSnap(Global.getFunction("main").getLineNumber());
 			connector.startPar();
-				//connector.addQuestion((Question)(questionFactory.getQuestions()[0]));
+				connector.addQuestion(getStartQuestion());
 			connector.endPar();
 			connector.startPar();
 				connector.showScope("main");

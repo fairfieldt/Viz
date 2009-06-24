@@ -1,0 +1,11 @@
+var i[] = {1,2,3,4};
+
+def foo()
+{
+<FILL>
+}
+
+def main()
+{
+<FILL>
+}

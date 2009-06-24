@@ -1,0 +1,15 @@
+var x = 33;
+
+
+def foo(z,x,y)
+{
+	var q = 3;
+	z = q + 3 - z;
+}
+
+def main()
+{
+	var m = 11;
+	var z = 12;
+	foo(m,m,m);
+}
