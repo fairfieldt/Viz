@@ -775,6 +775,31 @@ public class XAALScripter {
 		currentSlide = null;
 		
 	}
+	//slideIds start at 1 NOT 0
+	public void reopenSlide(int slideId)
+	{
+		Element animation = document.getRootElement().getChild("animation", defaultNS);
+		List slides = animation.getChildren();
+		
+		currentSlide = (Element)slides.get(slideId-1);
+	}
+	
+	public void recloseSlide()
+	{
+		currentSlide = null;
+	}
+	
+	public void reopenPar()
+	{
+		Element par = currentSlide.getChild("par", defaultNS);
+		
+		currentPar = par;
+	}
+	
+	public void reclosePar()
+	{
+		currentPar = null;
+	}
 	
 	/**
 	 * Tells us if a slide has been started but not ended.

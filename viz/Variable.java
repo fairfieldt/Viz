@@ -99,6 +99,20 @@ public class Variable implements Drawable
 		copies++;
 	}
 	
+	public String popCopyId()
+	{
+		return copiesOwned.pop();
+	}
+	
+	/**
+	 * Allows this variable to own the copy designated by id
+	 * @param id
+	 */
+	public void receiveCopyOwnership(String id)
+	{
+		copiesOwned.addFirst(id);
+	}
+	
 	public int getLength()
 	{
 		return this.length;

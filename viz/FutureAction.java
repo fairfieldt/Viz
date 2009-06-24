@@ -1,16 +1,39 @@
 package viz;
-//TODO: only handles moves now
+//TODO: clean this god forsaken mess up
 public class FutureAction {
 	
 	private Variable from;
 	private Variable to;
 	private int snapNum;
-	private int assign;
+	private int newValue = -1;
 	
-	public FutureAction(Variable from, Variable to, int SnapNum)
+	//if true show, else hide
+	boolean showHide = false;
+	
+	boolean showOrHide = false;
+	
+	public FutureAction(Variable from, Variable to, int snapNum)
 	{
 		this.from = from;
 		this.to = to;
+		this.snapNum = snapNum;
+	}
+	
+	public FutureAction(int newValue, Variable to, int snapNum)
+	{
+		this.newValue = newValue;
+		this.to = to;
+		this.snapNum = snapNum;
+	}
+	
+	
+	public FutureAction(boolean show, Variable v, int snapNum)
+	{
+		this.to = v;
+		showOrHide = true;
+		
+		showHide = show;
+		
 		this.snapNum = snapNum;
 	}
 	
@@ -42,5 +65,25 @@ public class FutureAction {
 	public void setSnapNum(int snapNum)
 	{
 		this.snapNum = snapNum;
+	}
+	
+	public int getNewValue()
+	{
+		return  newValue;
+	}
+	
+	public void setNewValue(int newValue)
+	{
+		this.newValue = newValue;
+	}
+	
+	public boolean isShowOrHide()
+	{
+		return showOrHide;
+	}
+	
+	public boolean isShow()
+	{
+		return showHide;
 	}
 }
