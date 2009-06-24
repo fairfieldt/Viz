@@ -32,7 +32,14 @@ public class TFQuestion extends Question implements Drawable {
 	
 	public void flipAnswer()
 	{
-		this.answer = !this.answer;
+		if(this.answer)
+		{
+			this.answer = false;
+		}
+		else
+		{
+			this.answer = true;
+		}
 	}
 	
 	public void setExpectedValue(int value)

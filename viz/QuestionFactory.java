@@ -89,6 +89,7 @@ public class QuestionFactory implements UpdateReasons
 	
 	public void addAnswers(int lineNumber, int reason)
 	{
+		System.out.println("Adding answers");
 		switch (reason)
 		{
 			case UPDATE_REASON_END:
@@ -97,17 +98,18 @@ public class QuestionFactory implements UpdateReasons
 				{
 					System.out.println(endQuestions.size());
 					Question q = endQuestions.get(key);
-					if (q.getClass().getName().equals("viz.FIBQuestion"))
-					{
-					
-						int answer = Global.getCurrentSymbolTable().get(key);
-						((FIBQuestion)q).addAnswer(answer + "");
-						System.out.println(q.getText() + "answer: " + answer);
-					}
+
+					int answer = Global.getCurrentSymbolTable().get(key);
+					((FIBQuestion)q).addAnswer(answer + "");
+					System.out.println(q.getText() + "answer: " + answer);
 				}
+
 				break;
-			case UPDATE_REASON_LEAVEFUN:
+
 			case UPDATE_REASON_ASSIGNMENT:
+				System.out.println("Leave assignment");
+			case UPDATE_REASON_LEAVEFUN:
+
 				System.out.println("Leave func question updates");
 				for (String key : callQuestions.keySet())
 				{
@@ -119,9 +121,10 @@ public class QuestionFactory implements UpdateReasons
 						{
 							System.out.println("We werent' expecting that:\n" + key + "'s value was " +
 							answer + " and we thought it should be " + ((TFQuestion)q).getExpectedValue());
+							System.out.println("Current answer: " + ((TFQuestion)q).getAnswer());
 							((TFQuestion)q).flipAnswer();
-							System.out.println("New answer is " + ((TFQuestion)q).getAnswer());
 						}
+						System.out.println("New answer is " + ((TFQuestion)q).getAnswer());
 					}
 				}
 				break;
