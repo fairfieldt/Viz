@@ -191,11 +191,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		//Drawing the actually running
 		connector.startSnap(node.getLineNumber());
 			connector.startPar();
-			HashMap<String, Variable> localVars = currentSymbolTable.getLocalVariables();
-			for (String key : localVars.keySet())
-			{
-				connector.showVar(localVars.get(key));
-			}
+			
 			connector.endPar();
 		connector.endSnap();
 			
