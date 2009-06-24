@@ -7,7 +7,7 @@ public class XAALConnector {
 	private static LinkedList<String> scopeColors;
 	private int currentSnapNum;
 	
-	private Queue<FutureAction> actions;
+	private LinkedList<FutureAction> actions;
 	
 	static {
 		scopeColors = new LinkedList<String>();
@@ -36,6 +36,7 @@ public class XAALConnector {
 		this.psuedoCode = psuedoCode;
 		this.title = title;
 		this.psuedo = new PsuedoSerializer(psuedoCode, title);
+		actions = new LinkedList<FutureAction>();
 	}
 	
 	/**
@@ -71,7 +72,7 @@ public class XAALConnector {
 			Variable v = new Variable(name, symbols.get(s), true);
 			retScope.addVariable(v);
 			Interpreter.Variable iv = symbols.getVariable(s);
-			System.out.println(iv);
+			
 			varToVar.put(iv.getUUID(), v);
 
 			//if (iv instanceof ByVarVariable)	
@@ -87,9 +88,10 @@ public class XAALConnector {
 		Variable v = new Variable(varName, var.getValue(), false);
 
 		setVarValue(v, var.getValue());
+		System.out.println("Past setVarValue");
 
 		varToVar.put(var.getUUID(), v);
-		
+		System.out.println("Past varTovar");
 		scopes.get(scope).addVariable(v);
 	}
 	
@@ -274,6 +276,7 @@ public class XAALConnector {
 			var.addCopy();
 		
 		var.addCopy();
+		System.out.println("About to add to action");
 		actions.offer(new FutureAction(value, var, currentSnapNum));
 		
 	}
