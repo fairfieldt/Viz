@@ -79,7 +79,7 @@ public class XAALConnector {
 				Variable v = new Variable(s, symbols.get(s), true);
 				retScope.addVariable(v);
 				//add a copy of the original
-				v.addCopy();
+				//v.addCopy();
 				
 				varToVar.put(iv.getUUID(), v);
 			}
@@ -392,7 +392,8 @@ public class XAALConnector {
 		String copy2 = to.popCopyId(); 
 		
 		//hide copy2
-		scripter.addHide(copy2);
+		if (copy2 != null)
+			scripter.addHide(copy2);
 		
 		//perform the move!!!
 		
@@ -632,8 +633,9 @@ public class XAALConnector {
 			//loop through the params
 			for (Variable param : params)
 			{
+				ArrayList<String> ids = param.getIds();
 				// show all param's ids
-				for (String id : param.getIds())
+				for (String id : ids)
 				{
 					scripter.addShow(id);
 				}
