@@ -4,6 +4,7 @@ package viz;
 public class TFQuestion extends Question implements Drawable {
 
 	boolean answer;
+	private int expectedValue;
 	
 	public TFQuestion(String questionText)
 	{
@@ -22,6 +23,21 @@ public class TFQuestion extends Question implements Drawable {
 	public void setAnswer(boolean answer)
 	{
 		this.answer = answer;
+	}
+	
+	public void flipAnswer()
+	{
+		this.answer = !this.answer;
+	}
+	
+	public void setExpectedValue(int value)
+	{
+		expectedValue = value;
+	}
+	
+	public int getExpectedValue()
+	{
+		return expectedValue;
 	}
 	
 	@Override

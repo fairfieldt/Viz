@@ -100,8 +100,9 @@ public class Scope implements Drawable
 		int subScopeYSize = (sizeY-50) / (scopes.size()+1);
 		System.out.println("SubSize:: " + subScopeYSize);
 		System.out.println("Scopes.size: " + scopes.size());
-		for (Scope s : scopes)
+		for (int i = scopes.size(); i > 0; i--)
 		{
+			Scope s = scopes.get(i-1);
 			System.out.println("SubSize: " + subScopeYSize);
 			s.setPosition(subScopeXPos, subScopeYPos);
 			s.setSize(sizeX - 20, subScopeYSize);

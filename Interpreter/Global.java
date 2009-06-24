@@ -11,9 +11,21 @@ public class Global
 	
 	private static SymbolTable currentSymbolTable = symbolTable;
 	
+	private static HashMap<String, String> currentParamToArg;
+	
 	public static SymbolTable getSymbolTable()
 	{
 		return symbolTable;
+	}
+	
+	public static HashMap<String, String> getCurrentParamToArg()
+	{
+		return currentParamToArg;
+	}
+	
+	public static void setCurrentParamToArg(HashMap<String, String> pa)
+	{
+		currentParamToArg = pa;
 	}
 	
 	public static ASTFunction getFunction(String name)

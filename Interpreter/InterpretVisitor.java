@@ -23,7 +23,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	{
 		System.out.println("Update on " + lineNumber);
 		//System.out.println(Global.getCurrentSymbolTable().toString());
-		startQuestions.add(questionFactory.addQuestion(lineNumber, reason));
+		questionFactory.addAnswers(lineNumber, reason);
 	}
 	
 	private Question getStartQuestion()
@@ -128,7 +128,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 			connector.addScope(main.getSymbolTable(), "main", "Global");
 			connector.startSnap(Global.getFunction("main").getLineNumber());
 			connector.startPar();
-				connector.addQuestion(getStartQuestion());
+				connector.addQuestion(questionFactory.addBeginQuestion());
 			connector.endPar();
 			connector.startPar();
 				connector.showScope("main");
@@ -266,16 +266,19 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 
 		ArrayList<String> argNames = ((ASTArgs)node.jjtGetChild(0)).getArgs();
 		System.out.println("params: " + parameters.size() + " args: " + argNames.size());
+		HashMap<String, String> pa = new HashMap<String, String>(); //Maps args to params
 		for (int i = 0; i < parameters.size(); i++)
 		{
-			System.out.println(parameters.get(i) + ":" + argNames.get(i));
+			pa.put(parameters.get(i), argNames.get(i));
 		}
+		Global.setCurrentParamToArg(pa);
 		
 		//Drawing Stuff
 		connector.addScope(fun.getSymbolTable(), fun.getName(), "Global");
 		connector.startSnap(node.getLineNumber());
 			connector.startPar();
 				connector.showScope(node.getName());
+				connector.addQuestion(questionFactory.addCallQuestion(argNames, fun.getName()));
 			connector.endPar();
 			
 			connector.startPar();
