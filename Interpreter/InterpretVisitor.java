@@ -118,7 +118,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		if (child.getId() == JJTFUNCTION)
 		{
 			ASTFunction main = Global.getFunction("main");
-			
+			connector.addScope(main.getSymbolTable(), "main", "Global");
 			connector.startSnap(Global.getFunction("main").getLineNumber());
 			connector.startPar();
 				connector.showScope("main");
@@ -186,7 +186,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		Global.setCurrentSymbolTable(currentSymbolTable);
 
 		//Drawing Stuff:
-		connector.addScope(currentSymbolTable, currentSymbolTable.getName(), "Global");
+		//connector.addScope(currentSymbolTable, currentSymbolTable.getName(), "Global");
 		System.out.println("Added scope " + currentSymbolTable.getName());
 		//Drawing the actually running
 		connector.startSnap(node.getLineNumber());
@@ -258,6 +258,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		}
 		
 		//Drawing Stuff
+		connector.addScope(fun.getSymbolTable(), fun.getName(), "Global");
 		connector.startSnap(node.getLineNumber());
 			connector.startPar();
 				connector.showScope(node.getName());
