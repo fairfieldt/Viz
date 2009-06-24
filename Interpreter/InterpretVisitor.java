@@ -21,7 +21,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	public void update(int lineNumber, int reason)
 	{
 		System.out.println("Update on " + lineNumber);
-		System.out.println(Global.getCurrentSymbolTable().toString());
+		//System.out.println(Global.getCurrentSymbolTable().toString());
 		questionFactory.addQuestion(lineNumber, reason);
 	}
 	public Object visit(SimpleNode node, Object data)
@@ -146,9 +146,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 			s.setValue(name, value);
 			
 			//Drawing Stuff
-			System.out.println("Adding a variable");
 			connector.addVariable(s.getVariable(name), name, s.getName());
-			System.out.println("Done adding a variable");
 		}	
 	}
 	
@@ -194,7 +192,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		{
 			((ASTCall)(node.jjtGetChild(0))).setLineNumber(node.getLineNumber());
 		}
-		System.out.println(node.getCode());
+		//System.out.println(node.getCode());
 		update(node.getLineNumber(), UPDATE_REASON_STATEMENT);
 	}
 	
