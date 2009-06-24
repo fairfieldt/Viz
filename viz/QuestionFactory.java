@@ -30,15 +30,16 @@ public class QuestionFactory implements UpdateReasons
 	}
 	
 	
-	public Question addCallQuestion(ArrayList<String> args, String funName)
+	public Question addCallQuestion(HashMap<String, String> paramToArg, String funName)
 	{
-		String var = getRandomMember(args);
+		String param = getRandomMember(paramToArg.keySet());
+		String arg = paramToArg.get(param);
 		TFQuestion question;
 		question = new TFQuestion("If the evaluation strategy were call by reference instead of call by value, the value of " +
-			var + " would have changed when " + funName + " returns");
-		question.setExpectedValue(Global.getCurrentSymbolTable().get(var));
+			param + " would have changed when " + funName + " returns");
+		question.setExpectedValue(Global.getCurrentSymbolTable().get(arg));
 		question.setAnswer(false);
-		callQuestions.put(var, question);
+		callQuestions.put(arg, question);
 		
 		
 		return question;
@@ -69,7 +70,7 @@ public class QuestionFactory implements UpdateReasons
 		}
 		else
 		{
-			question = new TFQuestion("If the evaluation strategy were pass by reference instead of pass by value, would the outcome of executing the next line of code be the same?");
+			question = new TFQuestion("If the evaluation strategy were pass by reference instead of pass by value, the outcome of executing the next line of code be the same.");
 			question.setAnswer(true);
 		}
 		return question;
@@ -146,7 +147,7 @@ public class QuestionFactory implements UpdateReasons
 		return (String)varNames.toArray()[r.nextInt(varNames.size())];
 	}
 	
-	private String getRandomMember(ArrayList<String> varNames)
+	private String getRandomMember(Set<String> varNames)
 	{
 		Random r = new Random();
 		return (String)varNames.toArray()[r.nextInt(varNames.size())];
