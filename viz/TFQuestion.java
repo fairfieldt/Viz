@@ -25,6 +25,11 @@ public class TFQuestion extends Question implements Drawable {
 		this.answer = answer;
 	}
 	
+	public boolean getAnswer()
+	{
+		return this.answer;
+	}
+	
 	public void flipAnswer()
 	{
 		this.answer = !this.answer;

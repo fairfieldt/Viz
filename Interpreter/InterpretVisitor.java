@@ -318,8 +318,15 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 
 		Global.getCurrentSymbolTable().setValue(name, value);
 		
-		//Drawing stuff snap and par should be opened from enclosing statement
+		//Drawing stuff. snap and par should be opened from enclosing statement
+		connector.addQuestion(questionFactory.addAssignmentQuestion(Global.getCurrentParamToArg(), name));
+		connector.endPar();
+		
+		connector.startPar();
+		
 		connector.modifyVar(Global.getCurrentSymbolTable().getVariable(name), value);
+		
+		update(node.getLineNumber(), UPDATE_REASON_ASSIGNMENT);
 		
 	}
 	
@@ -441,5 +448,6 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
   	{
   		System.out.println("Leaving scope " + Global.getCurrentSymbolTable().getName());
   		Global.setCurrentSymbolTable(Global.getCurrentSymbolTable().getPrevious());
+  		update(-1, UPDATE_REASON_LEAVEFUN);
   	}
 }

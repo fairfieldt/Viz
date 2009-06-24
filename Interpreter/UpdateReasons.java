@@ -8,4 +8,5 @@ public interface UpdateReasons
 	public static final int UPDATE_REASON_STATEMENT = 3;
 	public static final int UPDATE_REASON_END = 4;
 	public static final int UPDATE_REASON_LEAVEFUN = 5;
+	public static final int UPDATE_REASON_ASSIGNMENT = 6;
 }

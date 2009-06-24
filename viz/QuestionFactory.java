@@ -63,7 +63,8 @@ public class QuestionFactory implements UpdateReasons
 		}
 		else if (Global.getSymbolTable().get(leftHandVar) != -255)
 		{
-			question = new TFQuestion("In the Global scope, " + arg + "'s value will have changed after the next line of code executes");
+			
+			question = new TFQuestion("In the Global scope, " + leftHandVar + "'s value will have changed after the next line of code executes");
 			if (Global.getCurrentSymbolTable().get(leftHandVar) != -255)
 			{
 				question.setAnswer(false);
@@ -106,6 +107,7 @@ public class QuestionFactory implements UpdateReasons
 				}
 				break;
 			case UPDATE_REASON_LEAVEFUN:
+			case UPDATE_REASON_ASSIGNMENT:
 				System.out.println("Leave func question updates");
 				for (String key : callQuestions.keySet())
 				{
@@ -115,7 +117,10 @@ public class QuestionFactory implements UpdateReasons
 						int answer = Global.getCurrentSymbolTable().get(key);
 						if (((TFQuestion)q).getExpectedValue() != answer)
 						{
+							System.out.println("We werent' expecting that:\n" + key + "'s value was " +
+							answer + " and we thought it should be " + ((TFQuestion)q).getExpectedValue());
 							((TFQuestion)q).flipAnswer();
+							System.out.println("New answer is " + ((TFQuestion)q).getAnswer());
 						}
 					}
 				}
