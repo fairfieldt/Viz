@@ -5,11 +5,18 @@ public class FutureAction {
 	private Variable from;
 	private Variable to;
 	private int snapNum;
-	private int assign;
+	private int newValue = -1;
 	
-	public FutureAction(Variable from, Variable to, int SnapNum)
+	public FutureAction(Variable from, Variable to, int snapNum)
 	{
 		this.from = from;
+		this.to = to;
+		this.snapNum = snapNum;
+	}
+	
+	public FutureAction(int newValue, Variable to, int snapNum)
+	{
+		this.newValue = newValue;
 		this.to = to;
 		this.snapNum = snapNum;
 	}
@@ -42,5 +49,15 @@ public class FutureAction {
 	public void setSnapNum(int snapNum)
 	{
 		this.snapNum = snapNum;
+	}
+	
+	public int getNewValue()
+	{
+		return  newValue;
+	}
+	
+	public void setNewValue(int newValue)
+	{
+		this.newValue = newValue;
 	}
 }

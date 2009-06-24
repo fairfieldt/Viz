@@ -163,9 +163,11 @@ public class XAALConnector {
 			
 		try {
 			currentSnapNum = scripter.startSlide();
+			scripter.addPseudocodeUrl(psuedo.toPsuedoPage(lineNum));
 		} catch (SlideException e) {
 			return false;
 		}
+		
 		return true;
 	}
 	
@@ -259,5 +261,105 @@ public class XAALConnector {
 		globalScope.draw(scripter);
 		
 		//perform and write future actions to the scripter
+		FutureAction action = null;
+		do
+		{
+			action = actions.poll();
+			if (action == null)
+				break;
+			
+			if(action.getNewValue() == -1) // this is a movement from one var to another
+			{
+				writeMove(action);
+			}
+			else // a variable is being set by a constant
+			{
+				
+			}
+			
+		} while (true);
+		
+		//write out all the questions
+		
+		for (Question q : questions)
+		{
+			q.draw(scripter);
+		}
+		
+		//write to the file
 	}
+	
+	/**
+	 * a move consists of:
+	 * 1. reopening the slide
+	 * 1.5 reopen par
+	 * 2. getting a copy from the first variable.
+	 * 3. performing a show on that copy.
+	 * 4. getting a copy from the second variable.
+	 * 5. hiding the copy from the second variable.
+	 * 6. perform the move
+	 * 7. give ownership to second variable.
+	 * 8. setting the value of the second variable to the new value.
+	 * 9. reclose par
+	 * 9.5 reclose slide
+	 * @param action
+	 */
+	private void writeMove(FutureAction action)
+	{
+		try {
+		// reopen a slide
+		scripter.reopenSlide(action.getSnapNum());
+		
+		// reopen par
+		scripter.reopenPar();
+		
+		Variable from = action.getFrom();
+		Variable to = action.getTo();
+		
+		//get copy for the first variable
+		String copy1 = from.popCopyId();
+		
+		//show copy1
+		scripter.addShow(copy1);
+		
+		// get copy from second variable
+		String copy2 = to.popCopyId(); 
+		
+		//hide copy2
+		scripter.addHide(copy2);
+		
+		//perform the move!!!
+		
+		int startX = from.getXPos();
+		int startY = from.getYPos();
+		int endX = to.getXPos();
+		int endY = to.getYPos();
+		
+		int moveX = startX - endX;
+		int moveY = startY - endY;
+		
+		scripter.addTranslate(-moveX, -moveY, copy1);
+		
+		// give ownership of copy1 to second variable.
+		to.receiveCopyOwnership(copy1);
+		
+		// set the value of 'to' to from's value
+		to.setValue(from.getValue());
+		
+		//reclose the par
+		scripter.reclosePar();
+		//reclose the slide
+		scripter.recloseSlide();
+		}
+		catch(Exception e)
+		{
+			
+		
+		}
+	
+		
+	} // after this method completes every variable's value must equal the head of 
+	//its copiesOwned queue
+	
+	
 }
