@@ -26,6 +26,7 @@ public class QuestionFactory implements UpdateReasons
 				addAnswers(lineNumber, reason);
 				break;
 			case UPDATE_REASON_END:
+				System.out.println("Updating at end");
 				addEndQuestion();
 				addAnswers(lineNumber, reason);
 				break;
@@ -46,6 +47,7 @@ public class QuestionFactory implements UpdateReasons
 	{
 		String var = getGlobalVar();
 		FIBQuestion question = new FIBQuestion("What will the value of " + var + " when the program has finished executing?");
+		endQuestions.put(var, question);
 		return question;
 	}
 	
@@ -70,7 +72,7 @@ public class QuestionFactory implements UpdateReasons
 		switch (reason)
 		{
 			case UPDATE_REASON_END:
-			
+				System.out.println("Ok, we're updating at the end");
 				for (String key : endQuestions.keySet())
 				{
 					Question q = endQuestions.get(key);
@@ -79,6 +81,7 @@ public class QuestionFactory implements UpdateReasons
 					
 						int answer = Global.getCurrentSymbolTable().get(key);
 						((FIBQuestion)q).addAnswer(answer + "");
+						System.out.println(q.getText() + "answer: " + answer);
 					}
 				}
 				break;
