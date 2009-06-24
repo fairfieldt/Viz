@@ -289,8 +289,8 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 				{
 					Variable v1 = Global.getCurrentSymbolTable().getVariable(argNames.get(i));
 					Variable v2 = st.getVariable(parameters.get(i));
-					v2.setParam();
 
+					System.out.println(v2.isParam());
 					connector.moveValue(v1, v2);
 				}
 			connector.endPar();
