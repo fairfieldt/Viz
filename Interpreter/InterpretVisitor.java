@@ -239,26 +239,38 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		System.out.println("Calling: " + fun.getName());
 		//Get the parameters and put the correct values in the symbolTable
 		SymbolTable st = fun.getSymbolTable();
-		ArrayList<String> parameters = fun.getParameters();
+
+		ArrayList<String> parameters = fun.getParameters();		
 		ArrayList<Integer> args = (ArrayList<Integer>) node.jjtGetChild(0).jjtAccept(this, null);
 		for (int i = 0; i < args.size(); i++)
 		{
-			st.setValue(parameters.get(i), args.get(i));
+			Variable v = new ByValVariable(args.get(i));
+			v.setParam();
+			st.put(parameters.get(i), v);
+		}
+		System.out.println("Added params");
+
+		ArrayList<String> argNames = ((ASTArgs)node.jjtGetChild(0)).getArgs();
+		System.out.println("params: " + parameters.size() + " args: " + argNames.size());
+		for (int i = 0; i < parameters.size(); i++)
+		{
+			System.out.println(parameters.get(i) + ":" + argNames.get(i));
 		}
 		
 		//Drawing Stuff
 		connector.startSnap(node.getLineNumber());
 			connector.startPar();
+				connector.showScope(node.getName());
+			connector.endPar();
 			
-			connector.showScope(node.getName());
-			/*
-			HashMap<String, Variable> localVars = Global.getCurrentSymbolTable().getLocalVariables();
-			for (String key : localVars.keySet())
-			{
-				connector.showVar(localVars.get(key));
-			}
-			*/
-			
+			connector.startPar();
+				for (int i = 0; i < parameters.size(); i++)
+				{
+					Variable v1 = Global.getCurrentSymbolTable().getVariable(argNames.get(i));
+					Variable v2 = st.getVariable(parameters.get(i));
+
+					connector.moveValue(v1, v2);
+				}
 			connector.endPar();
 		connector.endSnap();
 				
@@ -298,6 +310,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
  		{
  			args.add((Integer)node.jjtGetChild(i).jjtAccept(this, null));
  		}
+ 		node.gatherArgs();
  		return args;
  	}
 	

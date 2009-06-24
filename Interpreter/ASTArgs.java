@@ -19,13 +19,22 @@ public class ASTArgs extends SimpleNode {
   {
   	return args;
   }
+  
+  public void gatherArgs()
+  {
+  	System.out.println("Gathering args");
+  	for (int i = 0; i < jjtGetNumChildren(); i++)
+  	{
+  		System.out.println("Count: " + i + " " + jjtGetChild(i));
+  		args.add(((ASTVar)(jjtGetChild(i))).getName());
+  	}
+  }
 
   public String getCode()
   {
   	String code = "";
   	for (int i = 0; i < jjtGetNumChildren(); i++)
   	{
-  		args.add(((ASTVar)(jjtGetChild(i))).getName());
   		code += jjtGetChild(i).getCode() + (i < jjtGetNumChildren() -1 ? ", " : "");
   	}
   	return code;

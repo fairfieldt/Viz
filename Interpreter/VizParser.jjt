@@ -301,6 +301,9 @@
 	}
 	{
 		var() (<COMMA> argsP())?
+		{
+			jjtThis.gatherArgs();
+		}
 	}
 	
 	void argsP() #void:
