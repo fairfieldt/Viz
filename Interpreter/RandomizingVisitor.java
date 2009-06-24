@@ -29,6 +29,9 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 	}
 
 	@Override
+	/**
+	 * TODO: THIS RESTRICTS THE SECOND FUNCTION NAME TO FOO
+	 */
 	public Object visit(ASTProgram node, Object data) {
 		ASTDeclarationList innerDecl = (ASTDeclarationList)node.jjtGetChild(0);
 		
@@ -50,6 +53,8 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		
 		//TODO: add an array
 	
+		visitMain(findChildFuncOfProg(node, "main"), null);
+		visitFunc(findChildFuncOfProg(node, "foo"), null);
 		node.childrenAccept(this, null);
 		return null;
 	}
@@ -62,7 +67,7 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 
 	@Override
 	public Object visit(ASTFunction node, Object data) {
-		
+		/* do nothing for now
 		if (node.getName().equals("main"))
 		{
 			visitMain(node, data);
@@ -71,7 +76,7 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		{
 			visitFunc(node, data);
 		}
-		
+		*/ 
 		return null;
 	}
 
@@ -526,6 +531,35 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		double test = r.nextDouble();
 		
 		return test <= probability;
+	}
+	
+	private ASTFunction findChildFuncOfProg(ASTProgram node, String name)
+	{
+		ASTFunction ret = null;
+		
+		ASTDeclarationList list = (ASTDeclarationList)node.jjtGetChild(0);
+		
+		int numChild = list.jjtGetNumChildren();
+		
+		for (int i = 0; i < numChild; i++)
+		{
+			ASTDeclaration decl = (ASTDeclaration)list.jjtGetChild(i);
+			
+			Node child = decl.jjtGetChild(0);
+			if (child instanceof ASTFunction)
+			{
+				ASTFunction func = (ASTFunction)child;
+				
+				if (func.getName().equals(name))
+				{
+					ret = func;
+					break;
+				}
+			}
+			
+		}
+		
+		return ret;
 	}
 	
 }
