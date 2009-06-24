@@ -36,10 +36,10 @@ public class QuestionFactory implements UpdateReasons
 		String arg = paramToArg.get(param);
 		TFQuestion question;
 		question = new TFQuestion("If the evaluation strategy were call by reference instead of call by value, the value of " +
-			param + " would have changed when " + funName + " returns");
+			arg + " would have changed when " + funName + " returns.");
 		question.setExpectedValue(Global.getCurrentSymbolTable().get(arg));
 		question.setAnswer(false);
-		callQuestions.put(arg, question);
+		callQuestions.put(param, question);
 		
 		
 		return question;

@@ -18,6 +18,7 @@ public class ASTCall extends SimpleNode implements VizParserTreeConstants{
   
   public void addArgs(ArrayList<String> args)
   {
+  	System.out.println("Addargs called");
   	this.args = args;
   }
   
