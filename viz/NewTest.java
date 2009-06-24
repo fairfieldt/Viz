@@ -32,6 +32,8 @@ public class NewTest
 			iv.setXAALConnector(xc);
 			iv.setQuestionFactory(questionFactory);
 			program.jjtAccept(iv, null);
+			
+			xc.draw("real.xaal");
 
 		}
 		catch (Exception e)
