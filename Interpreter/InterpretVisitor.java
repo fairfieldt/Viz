@@ -119,7 +119,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		{
 			ASTFunction main = Global.getFunction("main");
 			
-			connector.startSnap(((ASTFunction)node.jjtGetChild(0)).getLineNumber());
+			connector.startSnap(Global.getFunction("main").getLineNumber());
 			connector.startPar();
 				connector.showScope("main");
 			connector.endPar();
@@ -161,6 +161,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 				System.out.println("Adding a varDecl not in global");
 				connector.startSnap(node.getLineNumber());
 					connector.startPar();
+						connector.showVar(Global.getCurrentSymbolTable().getVariable(name));
 					connector.endPar();
 				connector.endSnap();
 			}
@@ -177,7 +178,9 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		SymbolTable currentSymbolTable = node.getSymbolTable();
 		for (String p : node.getParameters())
 		{
-			currentSymbolTable.put(p, new ByValVariable(-255));
+			ByValVariable v = new ByValVariable(-255);
+			v.setParam();
+			currentSymbolTable.put(p, v);
 		}
 		currentSymbolTable.setPrevious(Global.getCurrentSymbolTable());
 		Global.setCurrentSymbolTable(currentSymbolTable);
