@@ -34,19 +34,12 @@ public class QuestionFactory implements UpdateReasons
 	{
 		String var = getRandomMember(args);
 		TFQuestion question;
-		if (Global.getSymbolTable().get(var) != - 255 && Global.getCurrentSymbolTable().get(var, true) == -255)
-		{
-			question = new TFQuestion("The value of " + var + " have changed when " + funName + " returns.");
-			question.setAnswer(false);
-		}
-		else
-		{
-				question = new TFQuestion("If the evaluation strategy were call by reference instead of call by value, the value of " +
-					var + " would have changed when " + funName + " returns");
-				question.setExpectedValue(Global.getCurrentSymbolTable().get(var));
-				question.setAnswer(false);
-				callQuestions.put(var, question);
-		}
+		question = new TFQuestion("If the evaluation strategy were call by reference instead of call by value, the value of " +
+			var + " would have changed when " + funName + " returns");
+		question.setExpectedValue(Global.getCurrentSymbolTable().get(var));
+		question.setAnswer(false);
+		callQuestions.put(var, question);
+		
 		
 		return question;
 		
@@ -65,7 +58,7 @@ public class QuestionFactory implements UpdateReasons
 		{
 			
 			question = new TFQuestion("In the Global scope, " + leftHandVar + "'s value will have changed after the next line of code executes");
-			if (Global.getCurrentSymbolTable().get(leftHandVar) != -255)
+			if (Global.getCurrentSymbolTable().get(leftHandVar, true) != -255)
 			{
 				question.setAnswer(false);
 			}
@@ -122,7 +115,10 @@ public class QuestionFactory implements UpdateReasons
 							System.out.println("We werent' expecting that:\n" + key + "'s value was " +
 							answer + " and we thought it should be " + ((TFQuestion)q).getExpectedValue());
 							System.out.println("Current answer: " + ((TFQuestion)q).getAnswer());
-							((TFQuestion)q).flipAnswer();
+							if(!((TFQuestion)q).getAnswer())
+							{
+								((TFQuestion)q).flipAnswer();
+							}
 						}
 						System.out.println("New answer is " + ((TFQuestion)q).getAnswer());
 					}

@@ -10,7 +10,7 @@ public class SymbolTable
 	private String name = "Global";
 	public SymbolTable(SymbolTable previous)
 	{
-		this.previous = previous;
+		this.previous = Global.getSymbolTable();
 		this.vars = new HashMap<String, Variable>();
 	}
 	
@@ -45,10 +45,6 @@ public class SymbolTable
 	public void setName(String name)
 	{
 		this.name = name;
-	}
-	public void setPrevious(SymbolTable previous)
-	{
-		this.previous = previous;
 	}
 	/**
 	 * Gets an int representing a var in the symbol table.
