@@ -72,12 +72,13 @@ public class XAALConnector {
 
 		for(String s : symbolNames)
 		{
+			Interpreter.Variable iv = symbols.getVariable(s);
 			// check if symbol s is param
-			if (symbols.getVariable(s).isParam())
+			if (iv.isParam())
 			{
 				Variable v = new Variable(s, symbols.get(s), true);
 				retScope.addVariable(v);
-				Interpreter.Variable iv = symbols.getVariable(s);
+				
 				
 				varToVar.put(iv.getUUID(), v);
 			}
