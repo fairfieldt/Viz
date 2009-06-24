@@ -359,8 +359,10 @@ public class XAALConnector {
    * a move consists of:
    * 1. reopening the slide
    * 1.5 reopen par
-   * 2. getting a copy from the first variable.
-   * 3. performing a show on that copy.
+   * 2. getting a copy1 from the first variable.
+   * 2.5 get a newCopy from the first Variable.
+   * 3. performing a show on newCopy.
+   * 3.5 give ownership of newCopy back to the first variable.
    * 4. getting a copy from the second variable.
    * 5. hiding the copy from the second variable.
    * 6. perform the move
@@ -385,8 +387,12 @@ public class XAALConnector {
     //get copy for the first variable
     String copy1 = from.popCopyId();
     
-    //show copy1
-    scripter.addShow(copy1);
+    // get a new coppy from the first variable.
+    String newCopy = from.popCopyId();
+    
+    //show newCopy
+    scripter.addShow(newCopy);
+    from.receiveCopyOwnership(newCopy);
     
     // get copy from second variable
     String copy2 = to.popCopyId();
