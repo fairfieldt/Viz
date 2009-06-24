@@ -78,7 +78,8 @@ public class XAALConnector {
 			{
 				Variable v = new Variable(s, symbols.get(s), true);
 				retScope.addVariable(v);
-				
+				//add a copy of the original
+				v.addCopy();
 				
 				varToVar.put(iv.getUUID(), v);
 			}
@@ -92,8 +93,10 @@ public class XAALConnector {
 	public void addVariable(Interpreter.Variable var, String varName, String scope)
 	{
 		Variable v = new Variable(varName, var.getValue(), false);
-
-		setVarValue(v, var.getValue());
+		
+		//addCopy of the original value
+		v.addCopy();
+		//setVarValue(v, var.getValue());
 
 		varToVar.put(var.getUUID(), v);
 
@@ -250,6 +253,7 @@ public class XAALConnector {
 	 * @param var
 	 * @param value
 	 */
+	/*
 	public void setVarValue(Variable var, int value)
 	{
 		setVarValue(var, value, true);
@@ -267,7 +271,7 @@ public class XAALConnector {
 
 		actions.offer(new FutureAction(value, var, currentSnapNum));
 		
-	}
+	}*/
 
 	
 	/**

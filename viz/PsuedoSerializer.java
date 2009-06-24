@@ -43,12 +43,12 @@ public class PsuedoSerializer {
 		
 		for (int i = 0; i < psuedoLines.length; i++)
 		{
-			if (i == lineNum)
+			if (i == lineNum-1)
 				content += "<div style=\"color:red\">";
 			
 			content += "<pre>" + psuedoLines[i] + "</pre>";
 			
-			if (i == lineNum)
+			if (i == lineNum-1)
 				content += "</div>";
 		}
 		
