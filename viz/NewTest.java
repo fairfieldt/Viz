@@ -33,7 +33,7 @@ public class NewTest
 			iv.setQuestionFactory(questionFactory);
 			program.jjtAccept(iv, null);
 			
-			xc.draw("real.xaal");
+			xc.draw("/home/fairfieldt/Documents/real.xaal");
 
 		}
 		catch (Exception e)

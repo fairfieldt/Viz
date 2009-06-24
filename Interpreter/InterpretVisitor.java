@@ -134,6 +134,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	{
 		//System.out.println("Visiting var decl");
 		String name = node.getName();
+		node.setLineNumber(((SimpleNode)node.jjtGetParent()).getLineNumber());
 		if (node.getIsArray())
 		{
 			//FIXME
@@ -152,7 +153,11 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 			if (Global.getCurrentSymbolTable() != Global.getSymbolTable())
 			{
 				System.out.println("Adding a varDecl not in global");
-			}//connector.startSnap(node.
+				connector.startSnap(node.getLineNumber());
+					connector.startPar();
+					connector.endPar();
+				connector.endSnap();
+			}
 			
 		}	
 	}
@@ -217,7 +222,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 			st.setValue(parameters.get(i), args.get(i));
 		}
 		
-		//Drawing 
+		//Drawing Stuff
 		connector.startSnap(node.getLineNumber());
 			connector.startPar();
 			
