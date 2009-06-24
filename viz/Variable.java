@@ -180,10 +180,11 @@ public class Variable implements Drawable
 				copiesOwned.offer(newId);
 				
 			} while(true);
+			/*
 			for (int i = 0; i < copies; i++)
 			{
 				ids.add(scripter.addText(xPos+15, yPos+25, value + "", "black", hidden));
-			}
+			}*/
 		}
 		
 	}
