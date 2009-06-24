@@ -217,16 +217,20 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	
 	public void handleStatement(ASTStatement node)
 	{
-		node.jjtGetChild(0).jjtAccept(this, null);
-		if (((SimpleNode)node.jjtGetChild(0)).getId() == JJTCALL)
-		{
-			((ASTCall)(node.jjtGetChild(0))).setLineNumber(node.getLineNumber());
-		}
+
 		//System.out.println(node.getCode());
 		
 		//Drawing
 		connector.startSnap(node.getLineNumber());
 			connector.startPar();
+		
+		//FIXME we'll see how this works	
+		node.jjtGetChild(0).jjtAccept(this, null);
+		if (((SimpleNode)node.jjtGetChild(0)).getId() == JJTCALL)
+		{
+			((ASTCall)(node.jjtGetChild(0))).setLineNumber(node.getLineNumber());
+		}
+			
 			connector.endPar();
 		connector.endSnap();
 		update(node.getLineNumber(), UPDATE_REASON_STATEMENT);
@@ -295,6 +299,10 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		Integer value = (Integer)node.jjtGetChild(1).jjtAccept(this, null);
 
 		Global.getCurrentSymbolTable().setValue(name, value);
+		
+		//Drawing stuff snap and par should be opened from enclosing statement
+		connector.modifyVar(Global.getCurrentSymbolTable().getVariable(name), value);
+		
 	}
 	
 	public Integer handleExpression(ASTExpression node)
