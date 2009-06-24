@@ -72,7 +72,7 @@ public class XAALConnector {
 
 		for(String s : symbolNames)
 		{
-			Variable v = new Variable(name, symbols.get(s), true);
+			Variable v = new Variable(s, symbols.get(s), true);
 			retScope.addVariable(v);
 			Interpreter.Variable iv = symbols.getVariable(s);
 			
