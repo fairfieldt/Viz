@@ -112,7 +112,7 @@ public class XAALConnector {
    */
   public void showScope(String s)
   {
-    actions.offer(new FutureAction(true, s, currentSnapNum));
+    actions.offer(new ShowHideScopeAction(true, s, currentSnapNum));
   }
   
   /**
@@ -120,7 +120,7 @@ public class XAALConnector {
    */
   public void hideScope(String s)
   {
-    actions.offer(new FutureAction(false, s, currentSnapNum));
+    actions.offer(new ShowHideScopeAction(false, s, currentSnapNum));
   }
   
   /**
@@ -131,14 +131,14 @@ public class XAALConnector {
   {
  
     Variable v = varToVar.get(var.getUUID());
-    actions.offer(new FutureAction(true, v, currentSnapNum));
+    actions.offer(new ShowHideVarAction(true, v, currentSnapNum));
   }
   
   // TODO: check if you're actually on a slide
   public void hideVar(Interpreter.Variable var)
   {
     Variable v = varToVar.get(var.getUUID());
-    actions.offer(new FutureAction(false, v, currentSnapNum));
+    actions.offer(new ShowHideVarAction(false, v, currentSnapNum));
   }
   
   public boolean startSnap(int lineNum)
@@ -226,7 +226,7 @@ public class XAALConnector {
     
     //add a copy of the currentValue to fromVar
     fromVar.addCopy();
-    actions.offer(new FutureAction(fromVar, toVar, currentSnapNum));
+    actions.offer(new MoveVarAction(fromVar, toVar, currentSnapNum));
     
     toVar.setValue(fromVar.getValue());
     
@@ -243,7 +243,7 @@ public class XAALConnector {
     
     v.addCopy();
     
-    actions.offer(new FutureAction(newValue, v, currentSnapNum));
+    actions.offer(new ModifyVarAction(newValue, v, currentSnapNum));
     return true;
     
   }
@@ -293,39 +293,39 @@ public class XAALConnector {
       if (action == null)
         break;
       
-      if (action.getScope() == null) // its a variable
+      if (action instanceof VarAction) // its a variable
       {
-        if(action.isShowOrHide())// its a show or hide action
+        if(action instanceof ShowHideVarAction)// its a show or hide action
         {
-          if (action.isShow()) // its a show action
+          if (((ShowHideVarAction)action).isShow()) // its a show action
           {
-            writeVarShow(action);
+            writeVarShow((ShowHideVarAction)action);
           }
           else // its a hide action
           {
-            writeVarHide(action);
+            writeVarHide((ShowHideVarAction)action);
           }
         }
-        else if(action.getNewValue() == -1) // this is a movement from one var to another
+        else if(action instanceof MoveVarAction) // this is a movement from one var to another
         {
-          writeMove(action);
+          writeMove((MoveVarAction)action);
         }
         else // a variable is being set by a constant
         {
-          writeVarModify(action);
+          writeVarModify((ModifyVarAction)action);
         }
       }
       else // its a scope
       {
-        if (action.isShowOrHide()) // its a show or hide action
+        if (action instanceof ShowHideScopeAction) // its a show or hide action
         {
-          if (action.isShow())// its a show action
+          if (((ShowHideScopeAction)action).isShow())// its a show action
           {
-            writeScopeShow(action);
+            writeScopeShow((ShowHideScopeAction)action);
           }
           else// its a hide action
           {
-            writeScopeHide(action);
+            writeScopeHide((ShowHideScopeAction)action);
           }
         }
       }
@@ -372,7 +372,7 @@ public class XAALConnector {
    * 9.5 reclose slide
    * @param action
    */
-  private void writeMove(FutureAction action)
+  private void writeMove(MoveVarAction action)
   {
     try {
     // reopen a slide
@@ -447,7 +447,7 @@ public class XAALConnector {
    * 8. reclose the par
    * 8.5 reclose the slide
    */
-  private void writeVarModify(FutureAction action)
+  private void writeVarModify(ModifyVarAction action)
   {
     try {
       // reopen a slide
@@ -499,7 +499,7 @@ public class XAALConnector {
    * 5.5 reclose slide
    * @param action
    */
-  private void writeVarShow(FutureAction action)
+  private void writeVarShow(ShowHideVarAction action)
   {
     try {
       // reopen a slide
@@ -556,7 +556,7 @@ public class XAALConnector {
    * 5.5 reclose slide
    * @param action
    */
-  private void writeVarHide(FutureAction action)
+  private void writeVarHide(ShowHideVarAction action)
   {
     try {
       // reopen a slide
@@ -617,7 +617,7 @@ public class XAALConnector {
    * 8.5 reclose the slide
    * @param action
    */
-  private void writeScopeShow(FutureAction action)
+  private void writeScopeShow(ShowHideScopeAction action)
   {
     try {
       // reopen a slide
@@ -683,7 +683,7 @@ public class XAALConnector {
    * 8.5 reclose the slide
    * @param action
    */
-  private void writeScopeHide(FutureAction action)
+  private void writeScopeHide(ShowHideScopeAction action)
   {
     try {
       // reopen a slide
