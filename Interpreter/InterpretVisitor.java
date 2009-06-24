@@ -118,6 +118,12 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		if (child.getId() == JJTFUNCTION)
 		{
 			ASTFunction main = Global.getFunction("main");
+			
+			connector.startSnap(((ASTFunction)node.jjtGetChild(0)).getLineNumber());
+			connector.startPar();
+				connector.showScope("main");
+			connector.endPar();
+			connector.endSnap();
 			main.jjtAccept(this, null);
 			return false;
 		}
@@ -177,9 +183,20 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		Global.setCurrentSymbolTable(currentSymbolTable);
 
 		//Drawing Stuff:
-		connector.addScope(currentSymbolTable, currentSymbolTable.getName(), currentSymbolTable.getPrevious().getName());
+		connector.addScope(currentSymbolTable, currentSymbolTable.getName(), "Global");
+		System.out.println("Added scope " + currentSymbolTable.getName());
+		//Drawing the actually running
+		connector.startSnap(node.getLineNumber());
+			connector.startPar();
+			HashMap<String, Variable> localVars = currentSymbolTable.getLocalVariables();
+			for (String key : localVars.keySet())
+			{
+				connector.showVar(localVars.get(key));
+			}
+			connector.endPar();
+		connector.endSnap();
 			
-		connector.startSnap(
+		
 		System.out.println("Executing function: " + node.getName());
 		update(node.getLineNumber(), UPDATE_REASON_FUNCTION);
 		node.jjtGetChild(0).jjtAccept(this, null);
@@ -234,7 +251,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		connector.startSnap(node.getLineNumber());
 			connector.startPar();
 			
-			connector.showScope(Global.getCurrentSymbolTable().getName());
+			connector.showScope(node.getName());
 			HashMap<String, Variable> localVars = Global.getCurrentSymbolTable().getLocalVariables();
 			for (String key : localVars.keySet())
 			{
