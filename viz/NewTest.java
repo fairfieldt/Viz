@@ -32,7 +32,8 @@ public class NewTest
 			iv.setXAALConnector(xc);
 			iv.setQuestionFactory(questionFactory);
 			program.jjtAccept(iv, null);
-			
+			System.out.println(Global.getFunction("foo").getParameters().size());
+			System.out.println(Global.getFunction("foo").getSymbolTable().getLocalVariables().size());
 			xc.draw("/home/fairfieldt/Documents/real.xaal");
 
 		}
