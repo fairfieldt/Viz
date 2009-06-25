@@ -39,7 +39,7 @@ public class PseudoSerializer {
 		final String less_than_in_uri = "%2625lt;";
 		
 		String content = "<html><head><title>" + title + 
-			"</title></head><body><h1>" + title + "</h1><pre>";
+			"</title></head><body><pre>";
 		
 		for (int i = 0; i < pseudoLines.length; i++)
 		{

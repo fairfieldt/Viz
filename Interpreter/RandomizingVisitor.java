@@ -10,7 +10,10 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 	final double chanceOfNumToVar = 1.0/10.0;
 	final double chanceOfAssignToOp = 1.5/10.0;
 	final double chanceOfPlusToMinus = 1.0/2.0;
+	final double chanceOfArrayDecl = 1.0/1.0;
+	
 	final int largestPossibleRandomInt = 5;
+	
 	
 	final int maxVarDeclsInGlobal = 3;
 	final int minVarDeclsInGlobal = 1;
@@ -56,8 +59,29 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 			createVarDecl(innerDecl,varName, r.nextInt(largestPossibleRandomInt)+1, i, ASTDeclaration.class, true);
 		}
 		
-		//TODO: add an array
+		//TODO: should an array decl always appear or just sometimes?
 		
+		if (addArrayDecl())
+		{ 
+			//between 3 and 5 array elems
+			int arrayElems = r.nextInt(3) + 3;
+			
+			int[] values = new int[arrayElems];
+			
+			for (int i = 0; i < arrayElems; i++)
+			{
+				values[i] = randNum();
+			}
+			
+			String varName = getRandomItem(possVars);
+			while(symbols.get(varName) != -255)
+			{
+				varName = getRandomItem(possVars);
+			}
+			
+			createArrayDecl(innerDecl, varName, values, numOfVars, ASTDeclaration.class, true);
+			
+		}
 	
 		visitMain(findChildFuncOfProg(node, "main"), null);
 		visitFunc(findChildFuncOfProg(node, "foo"), null);
@@ -507,6 +531,42 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 					varName, new ByValVariable(value));
 	}
 	
+	private <T> void createArrayDecl(Node parent, String varName, 
+			int[] values, int indexInParent, T surroundingClass, boolean addSafely)
+	{
+		Node surroundingNode = null;
+		if (surroundingClass == ASTDeclaration.class)
+			surroundingNode = new ASTDeclaration(JJTDECLARATION);
+		else
+			surroundingNode = new ASTStatement(JJTSTATEMENT);
+		
+		surroundingNode.jjtSetParent(parent);
+		if (addSafely)
+			parent.jjtAddChildSafe(surroundingNode, indexInParent);
+		else
+			parent.jjtAddChild(surroundingNode, indexInParent);
+		
+		ASTVarDecl varDecl = new ASTVarDecl(JJTVARDECL);
+		varDecl.jjtSetParent(surroundingNode);
+		surroundingNode.jjtAddChild(varDecl, 0);
+		
+		varDecl.setIsArray(true);
+		varDecl.setName(varName);
+		
+		ASTArrayDeclaration arrayDecl = new ASTArrayDeclaration(JJTARRAYDECLARATION);
+		arrayDecl.jjtSetParent(varDecl);
+		varDecl.jjtAddChild(arrayDecl, 0);
+		
+		for (int i = 0; i < values.length; i++)
+		{
+			ASTNum numNode = new ASTNum(JJTNUM);
+			numNode.jjtSetParent(arrayDecl);
+			arrayDecl.jjtAddChild(numNode, i);
+			
+			numNode.setValue(values[i]);
+		}
+	}
+	
 	/**
 	 * 
 	 * @return true for num, false for var.
@@ -529,6 +589,11 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 	private boolean plusOrMinus()
 	{
 		return binDecision(chanceOfPlusToMinus);
+	}
+	
+	private boolean addArrayDecl()
+	{
+		return binDecision(chanceOfArrayDecl);
 	}
 	
 	private boolean binDecision(double probability)
