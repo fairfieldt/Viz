@@ -26,7 +26,7 @@ public class XAALConnector {
   
   String[] psuedoCode;
   String title;
-  PsuedoSerializer psuedo;
+  PseudoSerializer pseudo;
   
   public XAALConnector(String[] psuedoCode, String title)
   {
@@ -37,7 +37,7 @@ public class XAALConnector {
     currentSnapNum = 0;
     this.psuedoCode = psuedoCode;
     this.title = title;
-    this.psuedo = new PsuedoSerializer(psuedoCode, title);
+    this.pseudo = new PseudoSerializer(psuedoCode, title);
     actions = new LinkedList<FutureAction>();
   }
   
@@ -148,7 +148,7 @@ public class XAALConnector {
       
     try {
       currentSnapNum = scripter.startSlide();
-      scripter.addPseudocodeUrl(psuedo.toPsuedoPage(lineNum));
+      scripter.addPseudocodeUrl(pseudo.toPseudoPage(lineNum));
     } catch (SlideException e) {
       return false;
     }

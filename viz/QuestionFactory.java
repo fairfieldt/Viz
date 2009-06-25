@@ -7,10 +7,12 @@ public class QuestionFactory implements UpdateReasons
 
 	private HashMap<String, Question> endQuestions;
 	private HashMap<String, Question> callQuestions;
+	private HashMap<String, Question> funcQuestions;
 	public QuestionFactory()
 	{
 		endQuestions = new HashMap<String, Question>();
 		callQuestions = new HashMap<String, Question>();
+		funcQuestions = new HashMap<String, Question>();
 	}
 	
 	
@@ -39,8 +41,10 @@ public class QuestionFactory implements UpdateReasons
 		question = new TFQuestion("If the evaluation strategy were call by reference instead of call by value, the value of " +
 			arg + " would have changed when " + funName + " returns.");
 		question.setExpectedValue(Global.getCurrentSymbolTable().get(arg));
+		System.out.println("In callQuestion: " + Global.getCurrentSymbolTable().getName());
 		question.setAnswer(false);
-		callQuestions.put(param, question);
+		question.setExpectedValue(Global.getCurrentSymbolTable().get(param));
+		funcQuestions.put(param, question);
 		
 		
 		return question;
@@ -103,6 +107,19 @@ public class QuestionFactory implements UpdateReasons
 
 			case UPDATE_REASON_ASSIGNMENT:
 				System.out.println("Leave assignment");
+				for (String key : funcQuestions.keySet())
+				{
+					Question q = funcQuestions.get(key);
+					
+					int answer = Global.getCurrentSymbolTable().get(key);
+					if (((TFQuestion)q).getExpectedValue() != answer)
+					{
+						if (!((TFQuestion)q).getAnswer())
+						{
+							((TFQuestion)q).flipAnswer();
+						}
+					}
+				}
 			case UPDATE_REASON_LEAVEFUN:
 
 				System.out.println("Leave func question updates");
