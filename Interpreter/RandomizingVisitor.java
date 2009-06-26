@@ -380,9 +380,11 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		
 		// Tom added this to fix some null problems
 		String randomName = getRandomItem(varNames);
-		while (randomName.equals(safeVar))
+		Variable testVar = symbols.getVariable(randomName);
+		while (randomName.equals(safeVar) || testVar.getIsArray())
 		{
 			randomName = getRandomItem(varNames);
+			testVar = symbols.getVariable(randomName);
 		}
 		
 		var.setName(randomName);
@@ -700,7 +702,7 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 			
 			randomName = getRandomItem(varNameArray);
 			testVar = symbols.getVariable(randomName);
-			while(!testVar.getIsArray())
+			while(testVar.getIsArray())
 			{
 				 randomName = getRandomItem(varNameArray);
 				 testVar = symbols.getVariable(randomName);
