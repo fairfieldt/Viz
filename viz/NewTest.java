@@ -12,10 +12,11 @@ public class NewTest
 
 			RandomizingVisitor rv = new RandomizingVisitor();
 				
-			//program.jjtAccept(rv, null);
+			program.jjtAccept(rv, null);
 		
 			System.out.println("Successfully Parsed");
 			System.out.println("________________\n");
+			System.out.println(program);
 			program.buildCode();
 			
 			program.dump("");
@@ -35,7 +36,7 @@ public class NewTest
 			program.jjtAccept(iv, null);
 			System.out.println(Global.getFunction("foo").getParameters().size());
 			System.out.println(Global.getFunction("foo").getSymbolTable().getLocalVariables().size());
-			xc.draw("/home/fairfieldt/Documents/real.xaal");
+			xc.draw("/home/fairfieldt/!real.xaal");
 
 		}
 		catch (Exception e)
