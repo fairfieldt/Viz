@@ -24,12 +24,10 @@ public class SymbolTable
 		Variable v = null;
 		if (vars.containsKey(varName))
 		{
-			System.out.println("found it in current scope");
 			v = vars.get(varName);
 		}
 		else if (previous != null)
 		{
-			System.out.println("Looking in previous");
 			v = previous.getVariable(varName);
 		}
 		else

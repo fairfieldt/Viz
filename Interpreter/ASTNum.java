@@ -4,7 +4,7 @@ package Interpreter;
 
 public class ASTNum extends SimpleNode {
 
-	private int value;
+	private int value = -3;
   public ASTNum(int id) {
     super(id);
   }
@@ -15,6 +15,7 @@ public class ASTNum extends SimpleNode {
   
   public void setValue(int value)
   {
+  	System.out.println("Ok, setting value to " + value);
   	this.value = value;
   }
   
