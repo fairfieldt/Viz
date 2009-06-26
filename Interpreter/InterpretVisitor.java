@@ -316,9 +316,12 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	{
 		if (node.getIsArray())
 		{
+			System.out.println(node.getName() + " is an array");
 			int index = (Integer) node.jjtGetChild(0).jjtAccept(this, null);
 			node.setIndex(index);
-			return Global.getCurrentSymbolTable().get(node.getName(), index);
+			int value = Global.getCurrentSymbolTable().get(node.getName(), index);
+			System.out.println(value);
+			return value;
 		}
 		return Global.getCurrentSymbolTable().get(node.getName());
 	}
@@ -328,6 +331,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		String name = node.getName();
 		System.out.println("Assigning to " + name);
 		Integer value = (Integer)node.jjtGetChild(1).jjtAccept(this, null);
+		System.out.println("Value!!!!!" + value);
 		int index = 0;
 		ByValVariable v = (ByValVariable) Global.getCurrentSymbolTable().getVariable(name);
 

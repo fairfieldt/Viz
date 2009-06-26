@@ -59,7 +59,17 @@ public class Array extends Variable implements Drawable {
 	
 	public String popCopyId(int index)
 	{
+		System.out.println("SSSSS");
+		for (String s : arrayCopiesOwned.get(index))
+		{
+			System.out.println(s);
+		}
 		return arrayCopiesOwned.get(index).pop();
+	}
+	
+	public String getCopyId(int index)
+	{
+		return arrayCopiesOwned.get(index).getFirst();
 	}
 	
 	/**
@@ -80,6 +90,12 @@ public class Array extends Variable implements Drawable {
 	public void draw(XAALScripter scripter) {
 		String label = scripter.addText(getXPos(), getYPos()-5, name, "black", getHidden());
 		ids.add(label);
+		System.out.println(label + " .....");
+		System.out.println("Draw!!!!!!!!!!!!");
+		for (int i = 0; i < arrayCopiesToMake.size(); i++)
+		{
+			System.out.println(arrayCopiesToMake.get(i).peek());
+		}
 		
 		int arrayXPos = getXPos();
 		for (int i = 0; i < values.size(); i++)
@@ -90,10 +106,11 @@ public class Array extends Variable implements Drawable {
 			String rectangle = 
 				scripter.addRectangle(indexXPos, getYPos(), 40, 40, getColor(), getHidden());
 			String id = 
-				scripter.addText(indexXPos + 15, getYPos() + 25, values.get(i) + "", "black", getHidden());
-			
+				scripter.addText(indexXPos + 15, getYPos() + 25, values.get(i) + "", "black", true);
+			System.out.println(rectangle);
+			System.out.println(id);
 			ids.add(rectangle);
-			ids.add(id);
+			//ids.add(id);
 			
 			do 
 			{
@@ -101,7 +118,7 @@ public class Array extends Variable implements Drawable {
 				if (temp == null)
 					break;
 				//test it always hidden
-				String newId = scripter.addText(indexXPos+15, yPos+25, temp.toString(), "black", true);
+				String newId = scripter.addText(indexXPos+15, yPos+25, temp.toString(), "black", true);			//System.out.println("New value: " + temp);
 				arrayCopiesOwned.get(i).offer(newId);
 				
 			} while(true);
