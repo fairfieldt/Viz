@@ -8,6 +8,7 @@ public class Array extends Variable implements Drawable {
 	private ArrayList<Queue<Integer>> copiesToMake;
 	
 	private ArrayList<LinkedList<String>> copiesOwned;
+	private ArrayList<Integer> xPositions;
 	
 	public Array(String name, ArrayList<Integer> values, boolean isParam)
 	{
@@ -24,9 +25,7 @@ public class Array extends Variable implements Drawable {
 			copiesOwned.add(new LinkedList<String>());
 		}
 		
-		
-		
-		
+		xPositions = new ArrayList<Integer>();
 	}
 	
 	/**
@@ -38,6 +37,11 @@ public class Array extends Variable implements Drawable {
 		return values;
 	}
 	
+	public int getValue (int index)
+	{
+		return values.get(index).intValue();
+	}
+	 
 	public void setElem(int index, int value)
 	{
 		values.set(index, value);
@@ -67,6 +71,11 @@ public class Array extends Variable implements Drawable {
 		copiesOwned.get(index).addFirst(id);
 	}
 	
+	public int getXPos(int index)
+	{
+		return xPositions.get(index).intValue();
+	}
+	
 	@Override
 	public void draw(XAALScripter scripter) {
 		String label = scripter.addText(getXPos(), getYPos()-5, name, "black", getHidden());
@@ -75,10 +84,13 @@ public class Array extends Variable implements Drawable {
 		int arrayXPos = getXPos();
 		for (int i = 0; i < values.size(); i++)
 		{
+			int indexXPos = arrayXPos + (i * 40);
+			xPositions.add(new Integer(indexXPos));
+			
 			String rectangle = 
-				scripter.addRectangle(arrayXPos + (i * 40), getYPos(), 40, 40, getColor(), getHidden());
+				scripter.addRectangle(indexXPos, getYPos(), 40, 40, getColor(), getHidden());
 			String id = 
-				scripter.addText(arrayXPos + (i * 40) + 15, getYPos() + 25, values.get(i) + "", "black", getHidden());
+				scripter.addText(indexXPos + 15, getYPos() + 25, values.get(i) + "", "black", getHidden());
 			
 			ids.add(rectangle);
 			ids.add(id);
@@ -89,7 +101,7 @@ public class Array extends Variable implements Drawable {
 				if (temp == null)
 					break;
 				
-				String newId = scripter.addText(xPos+15, yPos+25, temp.toString(), "black", hidden);
+				String newId = scripter.addText(indexXPos+15, yPos+25, temp.toString(), "black", hidden);
 				copiesOwned.get(i).offer(newId);
 				
 			} while(true);
