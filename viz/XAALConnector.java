@@ -244,20 +244,29 @@ public class XAALConnector {
     return true;
   }
   
-	public boolean moveValue(Interpreter.Variable from, int index1, Interpreter.Variable to, int index2)
-	{
- 		return true;
-	}
- 
-	public boolean moveValue(Interpreter.Variable from, int index1, Interpreter.Variable to)
-	{
- 		return true;
-	}
 
-	public boolean moveValue(Interpreter.Variable from, Interpreter.Variable to, int index2)
+ 
+	public boolean moveValue(Interpreter.Variable from, int fromIndex, Interpreter.Variable to)
 	{
-		return true;
+		 if (currentSnapNum < 0)
+		      return false;
+		    
+		 Variable fromVar = varToVar.get(from.getUUID());
+		 Variable toVar = varToVar.get(to.getUUID());
+		 
+		 Array fromArray = (Array)fromVar;
+		//add a copy of the currentValue to fromVar[fromIndex
+		 fromArray.addCopy(fromIndex);
+		 actions.offer(new MoveVarIndexAction(fromVar, fromIndex, toVar, currentSnapNum));
+		 
+		 toVar.setValue(fromArray.getValue(fromIndex));
+		 
+		 return true;
 	}
+	
+
+
+
   
   public boolean modifyVar(Interpreter.Variable iv, int newValue)
   {
@@ -276,33 +285,22 @@ public class XAALConnector {
   
 	public boolean modifyVar(Interpreter.Variable iv, int index, int newValue)
 	{
-		return true;
+		 if (currentSnapNum < 0)
+		      return false;
+		    
+		 Variable v = varToVar.get(iv.getUUID());
+		 Array vArray = (Array)v;
+		 
+		 vArray.setElem(index, newValue);
+		 
+		 vArray.addCopy(index);
+		 
+		 actions.offer(new ModifyVarIndexAction(newValue, v, index, currentSnapNum));
+		 
+		 return true;
 	}
   
-  /**
-   * by default add a copy to the list
-   * @param var
-   * @param value
-   */
-  /*
-  public void setVarValue(Variable var, int value)
-  {
-    setVarValue(var, value, true);
-  }
   
-  //TODO: I don't know why I'm adding the copy twice
-  private void setVarValue(Variable var, int value, boolean addCopy)
-  {
-    var.setValue(value);
-    
-    if (addCopy)
-      var.addCopy();
-    
-    var.addCopy();
- 
-    actions.offer(new FutureAction(value, var, currentSnapNum));
-    
-  }*/
  
   
   /**
@@ -339,11 +337,25 @@ public class XAALConnector {
         }
         else if(action instanceof MoveVarAction) // this is a movement from one var to another
         {
-          writeMove((MoveVarAction)action);
+        	if (action instanceof MoveVarIndexAction)
+        	{
+        		writeIndexMove((MoveVarIndexAction)action);
+        	}
+        	else
+        	{
+        		writeMove((MoveVarAction)action);
+        	}
         }
         else // a variable is being set by a constant
         {
-          writeVarModify((ModifyVarAction)action);
+        	if (action instanceof ModifyVarIndexAction)
+        	{
+        		writeIndexModify((ModifyVarIndexAction)action);
+        	}
+        	else
+        	{
+        		writeVarModify((ModifyVarAction)action);
+        	}
         }
       }
       else // its a scope
@@ -394,6 +406,7 @@ public class XAALConnector {
    * 2. getting a copy1 from the first variable.
    * 2.5 get a newCopy from the first Variable.
    * 3. performing a show on newCopy.
+   * 3.25 change color of newCopy
    * 3.5 give ownership of newCopy back to the first variable.
    * 4. getting a copy from the second variable.
    * 5. hiding the copy from the second variable.
@@ -402,6 +415,11 @@ public class XAALConnector {
    * 8. setting the value of the second variable to the new value.
    * 9. reclose par
    * 9.5 reclose slide
+   * 10. reopen next slide
+   * 10.5 reopen next par
+   * 11. turn off highlighting of copy1
+   * 12. reclose par
+   * 12.5 reclose slide
    * @param action
    */
   private void writeMove(MoveVarAction action)
@@ -478,6 +496,100 @@ public class XAALConnector {
   //its copiesOwned queue
   
   /**
+   * a move consists of:
+   * 1. reopening the slide
+   * 1.5 reopen par
+   * 2. getting a copy1 from the first variable at index.
+   * 2.5 get a newCopy from the first Variable at index.
+   * 3. performing a show on newCopy.
+   * 3.25 highlight copy1
+   * 3.5 give ownership of newCopy back to the first variable at index.
+   * 4. getting a copy from the second variable.
+   * 5. hiding the copy from the second variable.
+   * 6. perform the move
+   * 7. give ownership to second variable.
+   * 8. setting the value of the second variable to the new value.
+   * 9. reclose par
+   * 9.5 reclose slide
+   * 10. reopen next slide
+   * 10.5 reopen next par
+   * 11. unhighlight copy1
+   * 12. reclose par
+   * 12.5 reclose slide.
+   * @param action
+   */
+  private void writeIndexMove(MoveVarIndexAction action)
+  {
+	  try
+	  {
+		  scripter.reopenSlide(action.getSnapNum());
+	  	    
+	    // reopen par
+	    scripter.reopenPar();
+	    
+	    Array from = (Array)action.getFrom();
+	    Variable to = action.getTo();
+	    int fromIndex = action.getIndex();
+	    
+	    //get copy for the first variable
+	    String copy1 = from.popCopyId(fromIndex);
+	    
+	    // get a new copy from the first variable.
+	    String newCopy = from.popCopyId(fromIndex);
+	    
+	    //show newCopy
+	    scripter.addShow(newCopy);
+	    
+	    scripter.addChangeStyle(highlightColor, copy1);
+	    from.receiveCopyOwnership(newCopy);
+	    
+	    // get copy from second variable
+	    String copy2 = to.popCopyId();
+	    
+	    //hide copy2
+	    scripter.addHide(copy2);
+	    scripter.reclosePar();
+	    //perform the move!!!
+	    
+	    scripter.startPar();
+	    int startX = from.getXPos(fromIndex);
+	    int startY = from.getYPos();
+	    
+	    int endX = to.getXPos();
+	    int endY = to.getYPos();
+	    
+	    int moveX = startX - endX;
+	    int moveY = startY - endY;
+	    
+	    scripter.addTranslate(-moveX, -moveY, copy1);
+	    
+	    // give ownership of copy1 to second variable.
+	    to.receiveCopyOwnership(copy1);
+	    
+	    // set the value of 'to' to from's value
+	    to.setValue(from.getValue(fromIndex));
+	    
+	  //reclose the par
+	    scripter.endPar();
+	    //reclose the slide
+	    scripter.recloseSlide();
+	    // turn off highlighting on next slide
+	    scripter.reopenSlide(action.getSnapNum() + 1);
+	    scripter.reopenPar();
+	    
+	    scripter.addChangeStyle("black", copy1);
+	    
+	    scripter.reclosePar();
+	    scripter.recloseSlide();
+	    
+	  }
+	  catch (Exception e)
+	  {
+		  
+	  }
+  }
+  
+  /**
    * a modify consists of:
    * 1. reopening the slide
    * 1.5 reopen par
@@ -542,6 +654,11 @@ public class XAALConnector {
       //we're in trouble
     }
     
+  }
+  
+  public void writeIndexModify(ModifyVarIndexAction action)
+  {
+	  
   }
   
   /**
