@@ -11,6 +11,7 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 	final double chanceOfAssignToOp = 1.5/10.0;
 	final double chanceOfPlusToMinus = 1.0/2.0;
 	final double chanceOfArrayDecl = 1.0/1.0;
+	final double chanceOfArrayToVarOp = 1.5/10.0;
 	
 	final int largestPossibleRandomInt = 5;
 	
@@ -63,8 +64,8 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		
 		if (addArrayDecl())
 		{ 
-			//between 3 and 5 array elems
-			int arrayElems = r.nextInt(3) + 3;
+			
+			int arrayElems = 6;
 			
 			int[] values = new int[arrayElems];
 			
@@ -80,6 +81,7 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 			}
 			
 			createArrayDecl(innerDecl, varName, values, numOfVars, ASTDeclaration.class, true);
+			
 			
 		}
 	
@@ -247,10 +249,9 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 			//TODO: get it so there's repeated params sometimes
 			for (int i = 0; i < 3; i++)
 			{
-				//TODO: is this right?
 				ASTVar var = new ASTVar(JJTVAR);
 				
-				var.setName(getRandomItem(varNameArray));
+				createFooArg(var,node.getSymbolTable());
 				
 				call.addArg(var);
 			}
@@ -265,10 +266,9 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 			//TODO: get it so there's repeated params more often
 			for (int i = 0; i < 2; i++)
 			{
-				//TODO: is this right?
 				ASTVar var = new ASTVar(JJTVAR);
-				
-				var.setName(getRandomItem(varNameArray));
+
+				createFooArg(var,node.getSymbolTable());
 				
 				call.addArg(var);			
 			}
@@ -308,6 +308,23 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 			createVarDecl(innerStmtList,varName, r.nextInt(5)+ 1, i, ASTStatement.class);
 		}
 		
+		//choose a "safe variable" for use by the array index
+		
+		int numVars = Global.getCurrentSymbolTable().getCurrentVarNames().size();
+		String[] symbolNames = new String[numVars];
+		Global.getCurrentSymbolTable().getCurrentVarNames().toArray(symbolNames);
+		
+		String safeVarName = getRandomItem(symbolNames);
+		Variable safeVar = Global.getCurrentSymbolTable().
+								getVariable(safeVarName);
+		
+		while(safeVar.getIsArray())
+		{
+			safeVarName = getRandomItem(symbolNames);
+			safeVar = Global.getCurrentSymbolTable().
+				getVariable(safeVarName);
+		}
+		
 		
 		//start making some crazy assignment statements
 		
@@ -315,15 +332,25 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		// between 4 - 6 assignment statements
 		int numOfAssgnStmts = r.nextInt(3) + 4;
 		
+		//...one of which will be an array
+		int arrayStmt = r.nextInt(numOfAssgnStmts);
+		
 		for (int i = 0; i < numOfAssgnStmts; i++)
 		{
-			if (assignOrOp()) //a basic assignment statement
+			if (i == arrayStmt)
 			{
-				createBasicAssign(innerStmtList, symbols, numOfVars + i);
+				createOpAssign(innerStmtList, symbols, numOfVars + i, safeVarName, true);
 			}
-			else // assignment with operations
+			else // its not an array statement
 			{
-				createOpAssign(innerStmtList, symbols, numOfVars + i);
+				if (assignOrOp()) //a basic assignment statement
+				{
+					createBasicAssign(innerStmtList, symbols, numOfVars + i, safeVarName);
+				}
+				else // assignment with operations
+				{
+					createOpAssign(innerStmtList, symbols, numOfVars + i, safeVarName, false);
+				}
 			}
 		}
 		
@@ -332,7 +359,7 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 	}
 	
 	private void createBasicAssign(ASTStatementList parent, SymbolTable symbols, 
-			int index)
+			int index, String safeVar)
 	{
 		ASTStatement stmt = new ASTStatement(JJTSTATEMENT);
 		stmt.jjtSetParent(parent);
@@ -355,6 +382,10 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		
 		// Tom added this to fix some null problems
 		String randomName = getRandomItem(varNames);
+		while (randomName.equals(safeVar))
+		{
+			randomName = getRandomItem(varNames);
+		}
 		
 		var.setName(randomName);
 		assign.setName(randomName);
@@ -371,7 +402,7 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 	}
 	
 	private void createOpAssign(ASTStatementList parent, SymbolTable symbols, 
-			int index)
+			int index, String safeVar, boolean lhsArray)
 	{
 		ASTStatement stmt = new ASTStatement(JJTSTATEMENT);
 		stmt.jjtSetParent(parent);
@@ -389,14 +420,8 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		var.jjtSetParent(assign);
 		assign.jjtAddChild(var, 0);
 		
-		String[] varNames = new String[symbols.getCurrentVarNames().size()];
-		symbols.getCurrentVarNames().toArray(varNames);
-		
-		//again, Tom added this to fix some null problems
-		String randomName = getRandomItem(varNames);
-		
-		var.setName(randomName);
-		assign.setName(randomName);
+		createLHSOpExp(var, symbols, safeVar, lhsArray);
+		assign.setName(var.getName());
 		
 		ASTExpression rhsExp = new ASTExpression(JJTEXPRESSION);
 		rhsExp.jjtSetParent(assign);
@@ -406,16 +431,80 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		opExp.jjtSetParent(rhsExp);
 		rhsExp.jjtAddChild(opExp, 0);
 		
+		
+		createRHSOpExp(opExp, symbols);
+		
+	}
+	
+	private void createLHSOpExp(ASTVar var, SymbolTable symbols,
+			String safeVar, boolean lhsArray)
+	{
+		String[] varNames = new String[symbols.getCurrentVarNames().size()];
+		symbols.getCurrentVarNames().toArray(varNames);
+		
+		//again, Tom added this to fix some null problems
+		String randomName = getRandomItem(varNames);
+		Variable testVar = symbols.getVariable(randomName);
+		
+		if (lhsArray) //array value!
+		{
+			while (!testVar.getIsArray())
+			{
+				randomName = getRandomItem(varNames);
+				testVar = symbols.getVariable(randomName);
+			}
+			var.setName(randomName);
+			var.setIsArray(true);
+			
+			ASTExpression exp = new ASTExpression(JJTEXPRESSION);
+			exp.jjtSetParent(var);
+			var.jjtAddChild(exp, 0);
+			
+			ASTVar innerVar = new ASTVar(JJTVAR);
+			innerVar.jjtSetParent(exp);
+			exp.jjtAddChild(innerVar, 0);
+			
+			innerVar.setName(safeVar);
+		}
+		else //non array value
+		{
+			while (randomName.equals(safeVar) || testVar.getIsArray())
+			{
+				randomName = getRandomItem(varNames);
+				testVar = symbols.getVariable(randomName);
+			}
+		}
+		
+		var.setName(randomName);
+	}
+	
+	private void createRHSOpExp(ASTOp opExp, SymbolTable symbols)
+	{
 		if (plusOrMinus())
 			opExp.setOp("+");
 		else
 			opExp.setOp("-");
 		
+		createOperand(opExp, symbols, 0);
+		createOperand(opExp, symbols, 1);
+	}
+	
+	/**
+	 * 
+	 * @param opExp
+	 * @param symbols
+	 * @param index the index in the opExp, either 0 or 1
+	 */
+	private void createOperand(ASTOp opExp, SymbolTable symbols, int index)
+	{
+		String[] varNames = new String[symbols.getCurrentVarNames().size()];
+		symbols.getCurrentVarNames().toArray(varNames);
+		
 		if(numOrVar()) //num
 		{
 			ASTNum num = new ASTNum(JJTNUM);
 			num.jjtSetParent(opExp);
-			opExp.jjtAddChild(num, 0);
+			opExp.jjtAddChild(num, index);
 			
 			num.setValue(randNum());
 		}
@@ -423,32 +512,39 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		{
 			ASTVar midVar = new ASTVar(JJTVAR);
 			midVar.jjtSetParent(opExp);
-			opExp.jjtAddChild(midVar, 0);
+			opExp.jjtAddChild(midVar, index);
+			String varName = getRandomItem(varNames);
 			
-			midVar.setName(getRandomItem(varNames));
-		}
-		
-		//we're on to the second half of the op expression
-		
-		ASTExpression lastExp = new ASTExpression(JJTEXPRESSION);
-		lastExp.jjtSetParent(opExp);
-		opExp.jjtAddChild(lastExp, 1);
-		
-		if(numOrVar()) //num
-		{
-			ASTNum num = new ASTNum(JJTNUM);
-			num.jjtSetParent(lastExp);
-			lastExp.jjtAddChild(num, 0);
+			if (arrayOrVarOperand())// an array index
+			{
+				midVar.setIsArray(true);//its an array, duh
+				
+				Variable test = symbols.getVariable(varName);
+				while(!test.getIsArray())
+				{
+					varName = getRandomItem(varNames);
+					test = symbols.getVariable(varName);
+				}
+				
+				midVar.setName(varName);
+				
+				ASTExpression varChild = new ASTExpression(JJTEXPRESSION);
+				varChild.jjtSetParent(midVar);
+				midVar.jjtAddChild(varChild, 0);
+				
+				ASTNum indexStmt = new ASTNum(JJTNUM);
+				indexStmt.jjtSetParent(varChild);
+				varChild.jjtAddChild(indexStmt, 0);
+				
+				Random r = new Random();
+				int indexNum = r.nextInt(6);
+				indexStmt.setValue(indexNum);
+			}
+			else //just a var
+			{
+				midVar.setName(varName);
+			}
 			
-			num.setValue(randNum());
-		}
-		else //var
-		{
-			ASTVar lastVar = new ASTVar(JJTVAR);
-			lastVar.jjtSetParent(lastExp);
-			lastExp.jjtAddChild(lastVar, 0);
-			
-			lastVar.setName(getRandomItem(varNames));
 		}
 	}
 	
@@ -565,6 +661,67 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 			
 			numNode.setValue(values[i]);
 		}
+		
+		Variable arrayVar = new ByValVariable(0);
+		
+		arrayVar.setArray();
+		if (parent.jjtGetParent() instanceof ASTProgram)
+			Global.getSymbolTable().put(varName, arrayVar);
+		else
+			((ASTFunction)parent.jjtGetParent()).getSymbolTable().put(
+					varName, arrayVar);
+	}
+	
+	private void createFooArg(ASTVar var, SymbolTable symbols)
+	{
+		String[] varNameArray = new String[symbols.getCurrentVarNames().size()]; 
+		symbols.getCurrentVarNames().toArray(varNameArray);
+	
+		if (arrayOrVarOperand())
+		{
+			String randomName = null;
+			Variable testVar = null;
+			for (int j = 0; j < varNameArray.length; j++)
+			{
+				randomName = varNameArray[j];
+				testVar = symbols.getVariable(randomName);
+				if (testVar.getIsArray())
+					break;
+			}
+			
+			var.setName(randomName);
+			var.setIsArray(true);
+			
+			ASTExpression innerExp = new ASTExpression(JJTEXPRESSION);
+			innerExp.jjtSetParent(var);
+			var.jjtAddChild(innerExp, 0);
+			
+			ASTVar indexVar = new ASTVar(JJTVAR);
+			indexVar.jjtSetParent(innerExp);
+			innerExp.jjtAddChild(indexVar, 0);
+			
+			randomName = getRandomItem(varNameArray);
+			testVar = symbols.getVariable(randomName);
+			while(!testVar.getIsArray())
+			{
+				 randomName = getRandomItem(varNameArray);
+				 testVar = symbols.getVariable(randomName);
+			}
+			
+			indexVar.setName(randomName);
+		}
+		else
+		{
+			String randomName = getRandomItem(varNameArray);
+			Variable testVar = symbols.getVariable(randomName);
+			while(testVar.getIsArray())
+			{
+				 randomName = getRandomItem(varNameArray);
+				 testVar = symbols.getVariable(randomName);
+			}
+			//check for arrays
+			var.setName(randomName);
+		}
 	}
 	
 	/**
@@ -589,6 +746,11 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 	private boolean plusOrMinus()
 	{
 		return binDecision(chanceOfPlusToMinus);
+	}
+	
+	private boolean arrayOrVarOperand()
+	{
+		return binDecision(chanceOfArrayToVarOp);
 	}
 	
 	private boolean addArrayDecl()
