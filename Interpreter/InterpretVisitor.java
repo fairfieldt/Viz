@@ -23,7 +23,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	{
 		System.out.println("Update on " + lineNumber);
 		//System.out.println(Global.getCurrentSymbolTable().toString());
-		questionFactory.addAnswers(lineNumber, reason);
+		//questionFactory.addAnswers(lineNumber, reason);
 	}
 	
 	private Question getStartQuestion()
@@ -135,7 +135,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 			connector.addScope(main.getSymbolTable(), "main", "Global");
 			connector.startSnap(Global.getFunction("main").getLineNumber());
 			connector.startPar();
-				connector.addQuestion(questionFactory.addBeginQuestion());
+				//connector.addQuestion(questionFactory.addBeginQuestion());
 			connector.endPar();
 			connector.startPar();
 				connector.showScope("main");
@@ -158,29 +158,30 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		//System.out.println("Visiting var decl");
 		String name = node.getName();
 		node.setLineNumber(((SimpleNode)node.jjtGetParent()).getLineNumber());
+		SymbolTable s = Global.getCurrentSymbolTable();
+		System.out.println(node.getIsArray() + " about array");
 		if (node.getIsArray())
 		{
-			//FIXME
-			System.out.println("Array declaration unimplemented");
+			ByValVariable v = (ByValVariable) s.getVariable(name);
+			v.setArray();
+			ArrayList<Integer> values = (ArrayList<Integer>)node.jjtGetChild(0).jjtAccept(this, null);
+			System.out.println("Values: " + values);
+			v.setValues(values);
 		}
 		else
 		{
 			Integer value =(Integer) node.jjtGetChild(0).jjtAccept(this, null);
-			SymbolTable s = Global.getCurrentSymbolTable();
 			s.setValue(name, value);
-			
+		}
 			//Drawing Stuff
 			connector.addVariable(s.getVariable(name), name, s.getName());
 			
-			//If we're not in Global, this should be a snapshot
-
-			System.out.println("Adding a varDecl not in global");
+			//This is a snapshot
 			connector.startSnap(node.getLineNumber());
 				connector.startPar();
 					connector.showVar(Global.getCurrentSymbolTable().getVariable(name));
 				connector.endPar();
-			connector.endSnap();			
-		}	
+			connector.endSnap();	
 	}
 	
 	public void handleFunction(ASTFunction node)
@@ -214,9 +215,17 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		node.jjtGetChild(0).jjtAccept(this, null);
 		leaveScope();
 	}
-	public void handleArrayDeclaration(ASTArrayDeclaration node)
+	public ArrayList<Integer> handleArrayDeclaration(ASTArrayDeclaration node)
 	{
-	
+		ArrayList<Integer> values = new ArrayList<Integer>();
+		for (int i = 0; i < node.jjtGetNumChildren(); i++)
+		{
+			System.out.println(node.jjtGetChild(0));
+			Integer value = (Integer)node.jjtGetChild(0).jjtAccept(this, null);
+			System.out.println("Adding: " + value);
+			values.add(value);
+		}
+		return values;
 	}
 	
 	public void handleStatementList(ASTStatementList node)
@@ -224,6 +233,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		int numStatements = node.jjtGetNumChildren();
 		for (int i = 0; i < numStatements; i++)
 		{
+			System.out.println("Another statement");
 			node.jjtGetChild(i).jjtAccept(this, null);
 		}
 	}
@@ -301,8 +311,8 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	{
 		if (node.getIsArray())
 		{
-			System.out.println(" Array not implemented");
-			return 99;
+			int index = (Integer) node.jjtGetChild(0).jjtAccept(this, null);
+			return Global.getCurrentSymbolTable().get(node.getName(), index);
 		}
 		return Global.getCurrentSymbolTable().get(node.getName());
 	}
@@ -310,9 +320,21 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	public void handleAssignment(ASTAssignment node)
 	{
 		String name = node.getName();
+		System.out.println("Assigning to " + name);
 		Integer value = (Integer)node.jjtGetChild(1).jjtAccept(this, null);
-		System.out.println(Global.getCurrentSymbolTable().getPrevious().getName());
-		Global.getCurrentSymbolTable().setValue(name, value);
+		System.out.println("!!Value is " + value);
+		
+		ByValVariable v = (ByValVariable) Global.getCurrentSymbolTable().getVariable(name);
+		System.out.println(v);
+		if (v.getIsArray())
+		{
+			int index = (Integer) node.jjtGetChild(0).jjtGetChild(0).jjtAccept(this, null);
+			v.setValue(value, index);
+		}
+		else
+		{
+			Global.getCurrentSymbolTable().setValue(name, value);
+		}
 		
 		//Drawing stuff. snap and par should be opened from enclosing statement
 		
@@ -363,6 +385,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	
 	public Integer handleNum(ASTNum node)
 	{
+		System.out.println("Returning value of " + node.getValue());
 		return node.getValue();
 	}
 	public Object visit(ASTProgram node, Object data)

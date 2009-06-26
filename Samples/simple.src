@@ -1,9 +1,11 @@
 var x = 3;
 var y = x;
-
+var m[] = {1,2,3};
 def foo(q)
 {
 	var f = q;
+	m[0] = 12;
+	f =  m[1];
 	x = 5;
 }
 

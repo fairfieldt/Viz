@@ -333,11 +333,12 @@ public class XAALConnector {
     } while (true);
     
     //write out all the questions
-    
+
     for (Question q : questions)
     {
       q.draw(scripter);
     }
+    
     
     //write to the file
     FileWriter writer;

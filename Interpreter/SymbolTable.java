@@ -24,11 +24,17 @@ public class SymbolTable
 		Variable v = null;
 		if (vars.containsKey(varName))
 		{
+			System.out.println("found it in current scope");
 			v = vars.get(varName);
 		}
 		else if (previous != null)
 		{
+			System.out.println("Looking in previous");
 			v = previous.getVariable(varName);
+		}
+		else
+		{
+			System.out.println("Error!  Couldn't find variable");
 		}
 		return v;
 	}
@@ -65,6 +71,26 @@ public class SymbolTable
 		}
 		
 		return retVal;
+	}
+	
+	//This is the version to get an array value
+	public int get(String varName, int index, boolean localOnly)
+	{
+		int retVal = -255;
+		if (vars.containsKey(varName))
+		{
+			retVal = vars.get(varName).getValue(index);
+		}
+		else if (previous != null && !localOnly)
+		{
+			retVal = previous.get(varName, index);
+		}
+		return retVal;
+	}
+	
+	public int get(String varName, int index)
+	{
+		return get(varName, index, false);
 	}
 	
 	public boolean put(String varName, Variable v)
@@ -117,7 +143,20 @@ public class SymbolTable
 		String code = "Scope " + name + ":\n";
 		for (String key : vars.keySet())
 		{
-			code += key + ":" + vars.get(key).getValue() + "\n";
+			code += key + ":";
+			if (vars.get(key).getIsArray())
+			{
+				for (Integer value : vars.get(key).getValues())
+				{
+					code += " ";
+				}
+				code += "\n";
+			}
+			else
+			{
+			
+				code += vars.get(key).getValue() + "\n";
+			}
 		}
 		
 		if (previous != null)

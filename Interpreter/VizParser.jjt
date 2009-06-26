@@ -1,6 +1,6 @@
 	options
 	{
-		LOOKAHEAD = 2;
+		LOOKAHEAD = 5;
 		FORCE_LA_CHECK = true;
 		MULTI = true;
 		VISITOR = true;
@@ -153,7 +153,12 @@
 		t = <ID> (isArray = arrayBrackets())? <EQL> varDeclP()
 		{
 			jjtThis.setName(t.image);
-			Global.getCurrentSymbolTable().put(t.image, new ByValVariable(-255));
+			ByValVariable v = new ByValVariable(-255);
+			if (isArray)
+			{
+				v.setArray();
+			}
+			Global.getCurrentSymbolTable().put(t.image, v);
 			jjtThis.setIsArray(isArray);
 			return (SimpleNode) jjtThis;
 		} 
@@ -265,8 +270,10 @@
 	{
 		t = <ID> (<LTBCR> isArray = expression() <RTBCR> )?
 		{
+			System.out.println("Var");
 			jjtThis.setName(t.image);
 			jjtThis.setIsArray(isArray);
+			System.out.println(Global.getCurrentSymbolTable());
 			return t.image;
 		}
 	}
@@ -278,6 +285,7 @@
 	{
 		name = var() <EQL> expression()
 		{
+			System.out.println("Assignment: " + name);
 			jjtThis.setName(name);
 		}
 	}
@@ -288,10 +296,10 @@
 	}
 	{
 		 call() {return true;} |
-		 assignment() {return true;} |
-		 op() {return true;} | 
+		 assignment() {System.out.println("Assigment to var");return true;} |
+		 op() {System.out.println("Op to var");return true;} | 
 		 num() {return true;} | 
-		 var(){ return true;}
+		 var(){ System.out.println("Expression to var");return true;}
 		 
 	}	
 	
@@ -345,6 +353,7 @@
 	{
 		 t = <NUM>
 		 {
+		 	System.out.println("Num: " + t.image);
 		 	jjtThis.setValue(Integer.parseInt(t.image));
 		 }	
 	}
