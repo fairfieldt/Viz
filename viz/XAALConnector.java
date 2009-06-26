@@ -244,19 +244,19 @@ public class XAALConnector {
     return true;
   }
   
-	public boolean moveValue(variable, index, variable index)
+	public boolean moveValue(Interpreter.Variable from, int index1, Interpreter.Variable to, int index2)
 	{
- 
+ 		return true;
 	}
  
-	public boolean moveValue(variable, index, variable)
+	public boolean moveValue(Interpreter.Variable from, int index1, Interpreter.Variable to)
 	{
- 
+ 		return true;
 	}
 
-	public boolean moveValue(variable, variable, index)
+	public boolean moveValue(Interpreter.Variable from, Interpreter.Variable to, int index2)
 	{
-
+		return true;
 	}
   
   public boolean modifyVar(Interpreter.Variable iv, int newValue)
@@ -276,7 +276,7 @@ public class XAALConnector {
   
 	public boolean modifyVar(Interpreter.Variable iv, int index, int newValue)
 	{
-	
+		return true;
 	}
   
   /**
