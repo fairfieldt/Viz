@@ -16,10 +16,10 @@ public class NewTest
 		
 			System.out.println("Successfully Parsed");
 			System.out.println("________________\n");
-			System.out.println(program);
+
 			program.buildCode();
 			
-			program.dump("");
+			//program.dump("");
 			XAALConnector xc = new XAALConnector(program.getPseudocode(), "foo");
 		
 			for (String s : program.getPseudocode())
@@ -37,6 +37,10 @@ public class NewTest
 			System.out.println(Global.getFunction("foo").getParameters().size());
 			System.out.println(Global.getFunction("foo").getSymbolTable().getLocalVariables().size());
 			xc.draw("/home/fairfieldt/!real.xaal");
+						for (String line: program.getPseudocode())
+						{
+							System.out.println(line);
+						}
 
 		}
 		catch (Exception e)
