@@ -51,7 +51,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 				handleVarDecl((ASTVarDecl)node);
 				break;
 			case JJTARRAYDECLARATION:
-				handleArrayDeclaration((ASTArrayDeclaration)node);
+				retVal = handleArrayDeclaration((ASTArrayDeclaration)node);
 				break;
 			case JJTSTATEMENTLIST:
 				handleStatementList((ASTStatementList)node);
@@ -159,12 +159,13 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		String name = node.getName();
 		node.setLineNumber(((SimpleNode)node.jjtGetParent()).getLineNumber());
 		SymbolTable s = Global.getCurrentSymbolTable();
-		System.out.println(node.getIsArray() + " about array");
+		ArrayList<Integer> values;
 		if (node.getIsArray())
 		{
 			ByValVariable v = (ByValVariable) s.getVariable(name);
 			v.setArray();
-			ArrayList<Integer> values = (ArrayList<Integer>)node.jjtGetChild(0).jjtAccept(this, null);
+			System.out.println("BLAH" + node.jjtGetChild(0));
+			 values = (ArrayList<Integer>)handleArrayDeclaration((ASTArrayDeclaration)node.jjtGetChild(0));
 			System.out.println("Values: " + values);
 			v.setValues(values);
 		}
@@ -220,11 +221,10 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		ArrayList<Integer> values = new ArrayList<Integer>();
 		for (int i = 0; i < node.jjtGetNumChildren(); i++)
 		{
-			System.out.println(node.jjtGetChild(0));
 			Integer value = (Integer)node.jjtGetChild(0).jjtAccept(this, null);
-			System.out.println("Adding: " + value);
 			values.add(value);
 		}
+		System.out.println(values);
 		return values;
 	}
 	
@@ -233,7 +233,6 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		int numStatements = node.jjtGetNumChildren();
 		for (int i = 0; i < numStatements; i++)
 		{
-			System.out.println("Another statement");
 			node.jjtGetChild(i).jjtAccept(this, null);
 		}
 	}
@@ -275,7 +274,6 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		{
 			st.setValue(parameters.get(i), args.get(i));
 		}
-		System.out.println("params: " + parameters.size() + " args: " + argNames.size());
 		HashMap<String, String> pa = new HashMap<String, String>(); //Maps args to params
 		for (int i = 0; i < parameters.size(); i++)
 		{
@@ -297,7 +295,6 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 					Variable v1 = Global.getCurrentSymbolTable().getVariable(argNames.get(i));
 					Variable v2 = st.getVariable(parameters.get(i));
 
-					System.out.println(v2.isParam());
 					connector.moveValue(v1, v2);
 				}
 			connector.endPar();
@@ -322,10 +319,9 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		String name = node.getName();
 		System.out.println("Assigning to " + name);
 		Integer value = (Integer)node.jjtGetChild(1).jjtAccept(this, null);
-		System.out.println("!!Value is " + value);
 		
 		ByValVariable v = (ByValVariable) Global.getCurrentSymbolTable().getVariable(name);
-		System.out.println(v);
+
 		if (v.getIsArray())
 		{
 			int index = (Integer) node.jjtGetChild(0).jjtGetChild(0).jjtAccept(this, null);
@@ -385,7 +381,6 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	
 	public Integer handleNum(ASTNum node)
 	{
-		System.out.println("Returning value of " + node.getValue());
 		return node.getValue();
 	}
 	public Object visit(ASTProgram node, Object data)

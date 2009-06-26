@@ -19,17 +19,13 @@ public class ByValVariable extends AbstractVariable implements Variable
 	
 	public int getValue(int subscript)
 	{
-		System.out.println("Values: ");
-		for (Integer i : values)
-		{
-			System.out.println(i);
-		}
+		System.out.println("Getting index " + subscript);
 		if (!isArray)
 		{
 			System.out.println("Trying to access non-array as an array");
 			return -255;
 		}
-		if (values.size() -1 > subscript)
+		if (values.size() -1 < subscript)
 		{
 			System.out.println("Error, array index out of bounds");
 			return -255;
@@ -50,19 +46,16 @@ public class ByValVariable extends AbstractVariable implements Variable
 		if (isArray)
 		{
 			System.out.println("Setting index " + index + " to " + value);
-			System.out.println(values);
 			values.set(index, new Integer(value));
 		}
 		else
 		{
 			System.out.println("trying to index a non-array");
 		}
-		System.out.println("Returning from setValue");
 	}
 	
 	public void setArray()
 	{
-		System.out.println("An array!");
 		this.value = -1000;
 		this.isArray = true;
 	}

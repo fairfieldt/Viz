@@ -186,6 +186,7 @@
 	{
 	}
 	{
+		{System.out.println("ArrayDecl:::");}
 		num() (<COMMA> arrayDeclP())?
 	}
 	
@@ -193,6 +194,7 @@
 	{
 	}
 	{
+			{System.out.println("ArrayDecl:::");}
 		num() (<COMMA> arrayDeclP())?
 	}
 
@@ -353,7 +355,7 @@
 	{
 		 t = <NUM>
 		 {
-		 	System.out.println("Num: " + t.image);
+		 	System.out.println("Num: " + Integer.parseInt(t.image));
 		 	jjtThis.setValue(Integer.parseInt(t.image));
 		 }	
 	}
