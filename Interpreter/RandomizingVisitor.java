@@ -554,6 +554,13 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 			}
 			else //just a var
 			{
+				Variable test = symbols.getVariable(varName);
+				
+				while(test.getIsArray())
+				{
+					varName = getRandomItem(varNames);
+					test = symbols.getVariable(varName);
+				}
 				midVar.setName(varName);
 			}
 			
