@@ -320,12 +320,12 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		String name = node.getName();
 		System.out.println("Assigning to " + name);
 		Integer value = (Integer)node.jjtGetChild(1).jjtAccept(this, null);
-		
+		int index = 0;
 		ByValVariable v = (ByValVariable) Global.getCurrentSymbolTable().getVariable(name);
 
 		if (v.getIsArray())
 		{
-			int index = (Integer) node.jjtGetChild(0).jjtGetChild(0).jjtAccept(this, null);
+			index = (Integer) node.jjtGetChild(0).jjtGetChild(0).jjtAccept(this, null);
 			v.setValue(value, index);
 		}
 		else
@@ -340,8 +340,14 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		connector.endSnap();
 		connector.startSnap(node.getLineNumber());
 		connector.startPar();
-		
-		connector.modifyVar(Global.getCurrentSymbolTable().getVariable(name), value);
+			if (v.getIsArray())
+			{
+				connector.modifyVar(Global.getCurrentSymbolTable().getVariable(name), index, value);
+			}
+			else
+			{
+				connector.modifyVar(Global.getCurrentSymbolTable().getVariable(name), value);
+			}
 		
 		update(node.getLineNumber(), UPDATE_REASON_ASSIGNMENT);
 		
