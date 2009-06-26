@@ -5,7 +5,7 @@ public class Variable implements Drawable
 {
 	protected String name;
 	private int value;
-	private String color = "black";
+	protected String color = "black";
 	private boolean isReference = false;
 	private boolean isParam = false;
 	protected ArrayList<String> ids;
@@ -13,10 +13,10 @@ public class Variable implements Drawable
 	
 	private LinkedList<String> copiesOwned;
 	
-	private boolean hidden = false;
+	protected boolean hidden = false;
 	
-	private int xPos;
-	private int yPos;
+	protected int xPos;
+	protected int yPos;
 
 	protected int length = 0;
 	
