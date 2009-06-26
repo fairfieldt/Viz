@@ -310,19 +310,17 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		
 		//choose a "safe variable" for use by the array index
 		
-		int numVars = Global.getCurrentSymbolTable().getCurrentVarNames().size();
+		int numVars = symbols.getCurrentVarNames().size();
 		String[] symbolNames = new String[numVars];
-		Global.getCurrentSymbolTable().getCurrentVarNames().toArray(symbolNames);
+		symbols.getCurrentVarNames().toArray(symbolNames);
 		
 		String safeVarName = getRandomItem(symbolNames);
-		Variable safeVar = Global.getCurrentSymbolTable().
-								getVariable(safeVarName);
+		Variable safeVar = symbols.getVariable(safeVarName);
 		
 		while(safeVar.getIsArray())
 		{
 			safeVarName = getRandomItem(symbolNames);
-			safeVar = Global.getCurrentSymbolTable().
-				getVariable(safeVarName);
+			safeVar = symbols.getVariable(safeVarName);
 		}
 		
 		
