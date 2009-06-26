@@ -6,7 +6,7 @@ import java.util.*;
 
 public class ASTArgs extends SimpleNode {
 
-  private ArrayList<String> args = new ArrayList<String>();
+  private ArrayList<ASTVar> args = new ArrayList<ASTVar>();
   public ASTArgs(int id) {
     super(id);
   }
@@ -15,7 +15,7 @@ public class ASTArgs extends SimpleNode {
     super(p, id);
   }
   
-  public ArrayList<String> getArgs()
+  public ArrayList<ASTVar> getArgs()
   {
   	return args;
   }
@@ -25,8 +25,7 @@ public class ASTArgs extends SimpleNode {
   	System.out.println("Gathering args");
   	for (int i = 0; i < jjtGetNumChildren(); i++)
   	{
-  		System.out.println("Count: " + i + " " + jjtGetChild(i));
-  		args.add(((ASTVar)(jjtGetChild(i))).getName());
+  		args.add((ASTVar)jjtGetChild(i));
   	}
   }
 

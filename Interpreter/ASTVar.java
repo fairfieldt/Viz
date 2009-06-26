@@ -6,7 +6,7 @@ public class ASTVar extends SimpleNode {
   
   private String name;
   private boolean isArray = false;
-  
+  private int index;
   public ASTVar(int id) {
     super(id);
   }
@@ -25,6 +25,15 @@ public class ASTVar extends SimpleNode {
   	this.isArray = isArray;
   }
   
+  public void setIndex(int index)
+  {
+  	this.index = index;
+  }
+  
+  public int getIndex()
+  {
+  	return this.index;
+  }
   public boolean getIsArray()
   {
   	return this.isArray;

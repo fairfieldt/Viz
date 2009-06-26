@@ -6,7 +6,7 @@ public class ASTCall extends SimpleNode implements VizParserTreeConstants{
 
 	private String name;
 	private int lineNumber;
-	private ArrayList<String> args = new ArrayList<String>();
+	private ArrayList<ASTVar> args = new ArrayList<ASTVar>();
   public ASTCall(int id) {
   
     super(id);
@@ -16,13 +16,13 @@ public class ASTCall extends SimpleNode implements VizParserTreeConstants{
     super(p, id);
   }
   
-  public void addArgs(ArrayList<String> args)
+  public void addArgs(ArrayList<ASTVar> args)
   {
   	System.out.println("Addargs called");
   	this.args = args;
   }
   
-  public ArrayList<String> getArgs()
+  public ArrayList<ASTVar> getArgs()
   {
   	return this.args;
   }
