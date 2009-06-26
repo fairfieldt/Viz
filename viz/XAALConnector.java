@@ -4,10 +4,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
  
+//TODO: highlighting doesn't always work.
 public class XAALConnector {
  
   private static LinkedList<String> scopeColors;
   private int currentSnapNum;
+  
+  private final String highlightColor = "red";
   
   private LinkedList<FutureAction> actions;
   
@@ -393,6 +396,9 @@ public class XAALConnector {
     
     //show newCopy
     scripter.addShow(newCopy);
+    
+    //color newCopy
+    scripter.addChangeStyle(highlightColor, copy1);
     from.receiveCopyOwnership(newCopy);
     
     // get copy from second variable
@@ -423,6 +429,14 @@ public class XAALConnector {
     //reclose the par
     scripter.endPar();
     //reclose the slide
+    scripter.recloseSlide();
+    // turn off highlighting on next slide
+    scripter.reopenSlide(action.getSnapNum() + 1);
+    scripter.reopenPar();
+    
+    scripter.addChangeStyle("black", copy1);
+    
+    scripter.reclosePar();
     scripter.recloseSlide();
     }
     catch(Exception e)
@@ -471,6 +485,9 @@ public class XAALConnector {
       //show new copy
       scripter.addShow(newCopy);
       
+      //highlight the change
+      scripter.addChangeStyle(highlightColor, newCopy);
+      
       //give ownership of newCopy back to variable
       v.receiveCopyOwnership(newCopy);
       
@@ -480,6 +497,16 @@ public class XAALConnector {
       //reclose the par
       scripter.reclosePar();
       //reclose the slide
+      scripter.recloseSlide();
+      
+   // turn off highlighting on next slide
+      
+      scripter.reopenSlide(action.getSnapNum() + 1);
+      scripter.reopenPar();
+      
+      scripter.addChangeStyle("black", newCopy);
+      
+      scripter.reclosePar();
       scripter.recloseSlide();
     }
     catch (Exception e)
@@ -532,12 +559,23 @@ public class XAALConnector {
       //show copy
       scripter.addShow(copy);
       
+      scripter.addChangeStyle(highlightColor, copy);
+      
       // give ownership of the copy back
       v.receiveCopyOwnership(copy);
       
       //reclose the par
       scripter.reclosePar();
       //reclose the slide
+      scripter.recloseSlide();
+      
+      //turn off highlighting on the next slide.
+      scripter.reopenSlide(action.getSnapNum()+1);
+      scripter.reclosePar();
+      
+      scripter.addChangeStyle("black", copy);
+      
+      scripter.reopenPar();
       scripter.recloseSlide();
     }
     catch (Exception e)
