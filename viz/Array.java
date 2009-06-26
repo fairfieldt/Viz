@@ -1,34 +1,35 @@
 package viz;
 
+import java.util.*;
 
 public class Array extends Variable implements Drawable {
 	
-	int[] values;
+	ArrayList<Integer> values  = new ArrayList<Integer>();
 	
-	public Array(String name, int[] values, boolean isParam)
+	public Array(String name, ArrayList<Integer> values, boolean isParam)
 	{
 		super(name, 0, isParam);
 		this.values = values;
-		this.length = values.length*40;
+		this.length = values.size()*40;
 	}
 	
 	/**
 	 * 
 	 * @return a clone of the values.
 	 */
-	public int[] getValues()
+	public ArrayList<Integer> getValues()
 	{
-		return values.clone();
+		return values;
 	}
 	
 	public void setElem(int index, int value)
 	{
-		values[index] = value;
+		values.set(index, value);
 	}
 	
 	public int arrayLength()
 	{
-		return values.length;
+		return values.size();
 	}
 	
 	@Override
@@ -37,12 +38,12 @@ public class Array extends Variable implements Drawable {
 		ids.add(label);
 		
 		int arrayXPos = getXPos();
-		for (int i = 0; i < values.length; i++)
+		for (int i = 0; i < values.size(); i++)
 		{
 			String rectangle = 
 				scripter.addRectangle(arrayXPos + (i * 40), getYPos(), 40, 40, getColor(), getHidden());
 			String id = 
-				scripter.addText(arrayXPos + (i * 40) + 15, getYPos() + 25, values[i] + "", "black", getHidden());
+				scripter.addText(arrayXPos + (i * 40) + 15, getYPos() + 25, values.get(i) + "", "black", getHidden());
 			
 			ids.add(rectangle);
 			ids.add(id);

@@ -95,7 +95,15 @@ public class XAALConnector {
   
   public void addVariable(Interpreter.Variable var, String varName, String scope)
   {
-    Variable v = new Variable(varName, var.getValue(), false);
+    Variable v;
+    if (var.getIsArray())
+    {
+    	v = new Variable(varName, var.getValue(), false);
+    }
+    else
+    {
+    	v = new Array(varName, var.getValues(), false);
+    }
     
     //addCopy of the original value
     v.addCopy();

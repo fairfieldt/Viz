@@ -157,7 +157,7 @@ public class Scope implements Drawable
 		System.out.println("Drawing scope: " + name);
 		System.out.println("XPos: " + xPos + " YPos: " + yPos);
 		int captionLength = name.length() * 13;
-		String id1 = scripter.addRectangle(xPos, yPos, sizeX, sizeY, color, hidden);
+		String id1 = scripter.addRectangle(xPos, yPos, sizeX, sizeY, color, hidden, 6);
 		String id3 = scripter.addText(xPos+3, yPos-5, name, "black", hidden);
 		
 		ids.add(id1);
