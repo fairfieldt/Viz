@@ -99,14 +99,21 @@ public class XAALConnector {
     if (var.getIsArray())
     {
     	v = new Array(varName, var.getValues(), false);
+    	Array vArray = (Array)v;
+    	
+    	for (int i = 0; i < var.getValues().size(); i++)
+    	{
+    		vArray.addCopy(i);
+    	}
     }
     else
     {
     	v = new Variable(varName, var.getValue(), false);
+    	v.addCopy();
     }
     
     //addCopy of the original value
-    v.addCopy();
+    
     //setVarValue(v, var.getValue());
  
     varToVar.put(var.getUUID(), v);
@@ -759,32 +766,51 @@ public class XAALConnector {
           System.out.println(e);
         }
       }
-      
-      
-      // pop copy of current value
-      String copy = v.popCopyId();
-      
-      //show copy
-      scripter.addShow(copy);
-      
-      scripter.addChangeStyle(highlightColor, copy);
-      
-      // give ownership of the copy back
-      v.receiveCopyOwnership(copy);
-      
-      //reclose the par
-      scripter.reclosePar();
-      //reclose the slide
-      scripter.recloseSlide();
-      
-      //turn off highlighting on the next slide.
-      scripter.reopenSlide(action.getSnapNum()+1);
-      scripter.reclosePar();
-      
-      scripter.addChangeStyle("black", copy);
-      
-      scripter.reopenPar();
-      scripter.recloseSlide();
+      if (v instanceof Array)
+      {
+    	  Array vArray = (Array)v;
+    	  for (int i = 0; i < vArray.getValues().size(); i++)
+    	  {
+    		  String copy = vArray.popCopyId(i);
+    		  
+    		  scripter.addShow(copy);
+    		  
+    		  vArray.receiveCopyOwnership(copy, i);
+    		  
+    		
+    	  }
+    	  
+    	  scripter.reclosePar();
+	      //reclose the slide
+	      scripter.recloseSlide();
+      }
+      else
+      {
+	      // pop copy of current value
+	      String copy = v.popCopyId();
+	      
+	      //show copy
+	      scripter.addShow(copy);
+	      
+	      scripter.addChangeStyle(highlightColor, copy);
+	      
+	      // give ownership of the copy back
+	      v.receiveCopyOwnership(copy);
+	      
+	      //reclose the par
+	      scripter.reclosePar();
+	      //reclose the slide
+	      scripter.recloseSlide();
+	      
+	      //turn off highlighting on the next slide.
+	      scripter.reopenSlide(action.getSnapNum()+1);
+	      scripter.reclosePar();
+	      
+	      scripter.addChangeStyle("black", copy);
+	      
+	      scripter.reopenPar();
+	      scripter.recloseSlide();
+      }
     }
     catch (Exception e)
     {

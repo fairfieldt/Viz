@@ -5,9 +5,9 @@ import java.util.*;
 public class Array extends Variable implements Drawable {
 	
 	ArrayList<Integer> values  = new ArrayList<Integer>();
-	private ArrayList<Queue<Integer>> copiesToMake;
+	private ArrayList<Queue<Integer>> arrayCopiesToMake;
 	
-	private ArrayList<LinkedList<String>> copiesOwned;
+	private ArrayList<LinkedList<String>> arrayCopiesOwned;
 	private ArrayList<Integer> xPositions;
 	
 	public Array(String name, ArrayList<Integer> values, boolean isParam)
@@ -16,13 +16,13 @@ public class Array extends Variable implements Drawable {
 		this.values = values;
 		this.length = values.size()*40;
 		
-		copiesToMake = new ArrayList<Queue<Integer>>();
-		copiesOwned = new ArrayList<LinkedList<String>>();
+		arrayCopiesToMake = new ArrayList<Queue<Integer>>();
+		arrayCopiesOwned = new ArrayList<LinkedList<String>>();
 		
 		for (int i = 0; i < values.size(); i++)
 		{
-			copiesToMake.add(new LinkedList<Integer>());
-			copiesOwned.add(new LinkedList<String>());
+			arrayCopiesToMake.add(new LinkedList<Integer>());
+			arrayCopiesOwned.add(new LinkedList<String>());
 		}
 		
 		xPositions = new ArrayList<Integer>();
@@ -54,12 +54,12 @@ public class Array extends Variable implements Drawable {
 	
 	public void addCopy(int index)
 	{
-		copiesToMake.get(index).offer(new Integer(values.get(index)));
+		arrayCopiesToMake.get(index).offer(new Integer(values.get(index)));
 	}
 	
 	public String popCopyId(int index)
 	{
-		return copiesOwned.get(index).pop();
+		return arrayCopiesOwned.get(index).pop();
 	}
 	
 	/**
@@ -68,7 +68,7 @@ public class Array extends Variable implements Drawable {
 	 */
 	public void receiveCopyOwnership(String id, int index)
 	{
-		copiesOwned.get(index).addFirst(id);
+		arrayCopiesOwned.get(index).addFirst(id);
 	}
 	
 	public int getXPos(int index)
@@ -97,12 +97,12 @@ public class Array extends Variable implements Drawable {
 			
 			do 
 			{
-				Integer temp = copiesToMake.get(i).poll();
+				Integer temp = arrayCopiesToMake.get(i).poll();
 				if (temp == null)
 					break;
-				
-				String newId = scripter.addText(indexXPos+15, yPos+25, temp.toString(), "black", hidden);
-				copiesOwned.get(i).offer(newId);
+				//test it always hidden
+				String newId = scripter.addText(indexXPos+15, yPos+25, temp.toString(), "black", true);
+				arrayCopiesOwned.get(i).offer(newId);
 				
 			} while(true);
 		}
