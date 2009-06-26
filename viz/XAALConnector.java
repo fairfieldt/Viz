@@ -656,9 +656,72 @@ public class XAALConnector {
     
   }
   
+  /**
+   * a modify consists of:
+   * 1. reopening the slide
+   * 1.5 reopen par
+   * 2. pop the copy of the currentValue at index
+   * 3. hide this copy
+   * 4. pop the copy of the newValue at index
+   * 5. show the new copy
+   * 6. give ownership of this copy BACK to the variable (its a hack) at index
+   * 7. set the value of the variable at index to its new value
+   * 8. reclose the par
+   * 8.5 reclose the slide
+   */
   public void writeIndexModify(ModifyVarIndexAction action)
   {
-	  
+	  try {
+	      // reopen a slide
+	      scripter.reopenSlide(action.getSnapNum());
+	      
+	      // reopen par
+	      scripter.reopenPar();
+	      
+	      int toIndex = action.getIndex();
+	      
+	      Array v = (Array)action.getTo();
+	      
+	      // pop copy of current value
+	      String oldCopy = v.popCopyId(toIndex);
+	      
+	      //hide oldCopy
+	      scripter.addHide(oldCopy);
+	      
+	      // pop copy of new value
+	      String newCopy = v.popCopyId(toIndex);
+	      
+	      //show new copy
+	      scripter.addShow(newCopy);
+	      
+	      //highlight the change
+	      scripter.addChangeStyle(highlightColor, newCopy);
+	      
+	      //give ownership of newCopy back to variable
+	      v.receiveCopyOwnership(newCopy);
+	      
+	      //set the value of variable to its new value
+	      v.setElem(toIndex, action.getNewValue());
+	      
+	      //reclose the par
+	      scripter.reclosePar();
+	      //reclose the slide
+	      scripter.recloseSlide();
+	      
+	   // turn off highlighting on next slide
+	      
+	      scripter.reopenSlide(action.getSnapNum() + 1);
+	      scripter.reopenPar();
+	      
+	      scripter.addChangeStyle("black", newCopy);
+	      
+	      scripter.reclosePar();
+	      scripter.recloseSlide();
+	    }
+	    catch (Exception e)
+	    {
+	      //we're in trouble
+	    }
   }
   
   /**
