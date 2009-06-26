@@ -98,11 +98,11 @@ public class XAALConnector {
     Variable v;
     if (var.getIsArray())
     {
-    	v = new Variable(varName, var.getValue(), false);
+    	v = new Array(varName, var.getValues(), false);
     }
     else
     {
-    	v = new Array(varName, var.getValues(), false);
+    	v = new Variable(varName, var.getValue(), false);
     }
     
     //addCopy of the original value
