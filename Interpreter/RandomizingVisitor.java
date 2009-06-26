@@ -454,10 +454,19 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		if (lhsArray) //array value!
 		{
 			System.out.println(55);
-			while (!testVar.getIsArray())
+			
+			//HACK STARTS HERE FIXME
+			int count = 0;
+			while (!testVar.getIsArray() && count < 10)
 			{
 				randomName = getRandomItem(varNames);
 				testVar = symbols.getVariable(randomName);
+				count++;
+			}
+			if (count >= 10)
+			{
+				createLHSOpExp(var, symbols, safeVar, false);
+				return;
 			}
 			System.out.println(55);
 			var.setName(randomName);
@@ -532,25 +541,44 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 				midVar.setIsArray(true);//its an array, duh
 				
 				Variable test = symbols.getVariable(varName);
-				while(!test.getIsArray())
+				
+				//HACK STARTS HERE FIXME
+				int count = 0;
+				while(!test.getIsArray() && count < 10)
 				{
 					varName = getRandomItem(varNames);
 					test = symbols.getVariable(varName);
+					count++;
 				}
 				
-				midVar.setName(varName);
+				if (count < 0)
+				{
+					test = symbols.getVariable(varName);
 				
-				ASTExpression varChild = new ASTExpression(JJTEXPRESSION);
-				varChild.jjtSetParent(midVar);
-				midVar.jjtAddChild(varChild, 0);
+					while(test.getIsArray())
+					{
+						varName = getRandomItem(varNames);
+						test = symbols.getVariable(varName);
+					}
+					midVar.setName(varName);
+				}
+				else
+				{
+					midVar.setName(varName);
 				
-				ASTNum indexStmt = new ASTNum(JJTNUM);
-				indexStmt.jjtSetParent(varChild);
-				varChild.jjtAddChild(indexStmt, 0);
+					ASTExpression varChild = new ASTExpression(JJTEXPRESSION);
+					varChild.jjtSetParent(midVar);
+					midVar.jjtAddChild(varChild, 0);
+					
+					ASTNum indexStmt = new ASTNum(JJTNUM);
+					indexStmt.jjtSetParent(varChild);
+					varChild.jjtAddChild(indexStmt, 0);
 				
-				Random r = new Random();
-				int indexNum = r.nextInt(6);
-				indexStmt.setValue(indexNum);
+					Random r = new Random();
+					int indexNum = r.nextInt(6);
+					indexStmt.setValue(indexNum);
+				}
+				//HACK ENDS HERE???
 			}
 			else //just a var
 			{

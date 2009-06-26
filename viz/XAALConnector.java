@@ -444,7 +444,7 @@ public class XAALConnector {
     //get copy for the first variable
     String copy1 = from.popCopyId();
     
-    // get a new coppy from the first variable.
+    // get a new copy from the first variable.
     String newCopy = from.popCopyId();
     
     //show newCopy

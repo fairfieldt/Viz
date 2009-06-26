@@ -12,12 +12,13 @@ public class NewTest
 
 			RandomizingVisitor rv = new RandomizingVisitor();
 				
-			//program.jjtAccept(rv, null);
+			program.jjtAccept(rv, null);
 		
 			System.out.println("Successfully Parsed");
 			System.out.println("________________\n");
 
 			program.buildCode();
+			System.out.println("Built code");
 			
 			//program.dump("");
 			XAALConnector xc = new XAALConnector(program.getPseudocode(), "foo");
