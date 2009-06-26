@@ -186,7 +186,6 @@
 	{
 	}
 	{
-		{System.out.println("ArrayDecl:::");}
 		num() (<COMMA> arrayDeclP())?
 	}
 	
@@ -194,7 +193,6 @@
 	{
 	}
 	{
-			{System.out.println("ArrayDecl:::");}
 		num() (<COMMA> arrayDeclP())?
 	}
 

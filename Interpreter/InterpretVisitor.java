@@ -221,7 +221,8 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		ArrayList<Integer> values = new ArrayList<Integer>();
 		for (int i = 0; i < node.jjtGetNumChildren(); i++)
 		{
-			Integer value = (Integer)node.jjtGetChild(0).jjtAccept(this, null);
+			Integer value = (Integer)node.jjtGetChild(i).jjtAccept(this, null);
+			System.out.println("ff " + value);
 			values.add(value);
 		}
 		System.out.println(values);
@@ -381,6 +382,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	
 	public Integer handleNum(ASTNum node)
 	{
+		System.out.println("gg" + node.getValue());
 		return node.getValue();
 	}
 	public Object visit(ASTProgram node, Object data)
