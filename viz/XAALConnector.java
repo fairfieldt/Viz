@@ -244,6 +244,21 @@ public class XAALConnector {
     return true;
   }
   
+	public boolean moveValue(Interpreter.Variable from, int index1, Interpreter.Variable to, int index2)
+	{
+ 		return true;
+	}
+ 
+	public boolean moveValue(Interpreter.Variable from, int index1, Interpreter.Variable to)
+	{
+ 		return true;
+	}
+
+	public boolean moveValue(Interpreter.Variable from, Interpreter.Variable to, int index2)
+	{
+		return true;
+	}
+  
   public boolean modifyVar(Interpreter.Variable iv, int newValue)
   {
     if (currentSnapNum < 0)
@@ -258,6 +273,11 @@ public class XAALConnector {
     return true;
     
   }
+  
+	public boolean modifyVar(Interpreter.Variable iv, int index, int newValue)
+	{
+		return true;
+	}
   
   /**
    * by default add a copy to the list
