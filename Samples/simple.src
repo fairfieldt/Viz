@@ -4,7 +4,7 @@ var m[] = {3,2,3};
 def foo(q)
 {
 	var f = q;
-	m[0] = 12;
+	m[q] = 12;
 	f =  m[0];
 	x = 5;
 }
@@ -12,6 +12,6 @@ def foo(q)
 def main()
 {
 	var z = x + y;
-	foo(z);
+	foo(m[1]);
 }
 
