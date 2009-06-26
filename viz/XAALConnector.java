@@ -10,6 +10,8 @@ public class XAALConnector {
   private static LinkedList<String> scopeColors;
   private int currentSnapNum;
   
+  private final String highlightColor = "red";
+  
   private LinkedList<FutureAction> actions;
   
   static {
@@ -395,7 +397,7 @@ public class XAALConnector {
     scripter.addShow(newCopy);
     
     //color newCopy
-    scripter.addChangeStyle("red", copy1);
+    scripter.addChangeStyle(highlightColor, copy1);
     from.receiveCopyOwnership(newCopy);
     
     // get copy from second variable
@@ -483,7 +485,7 @@ public class XAALConnector {
       scripter.addShow(newCopy);
       
       //highlight the change
-      scripter.addChangeStyle("red", newCopy);
+      scripter.addChangeStyle(highlightColor, newCopy);
       
       //give ownership of newCopy back to variable
       v.receiveCopyOwnership(newCopy);
@@ -556,7 +558,7 @@ public class XAALConnector {
       //show copy
       scripter.addShow(copy);
       
-      scripter.addChangeStyle("red", copy);
+      scripter.addChangeStyle(highlightColor, copy);
       
       // give ownership of the copy back
       v.receiveCopyOwnership(copy);
