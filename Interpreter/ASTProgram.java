@@ -1,7 +1,5 @@
 package Interpreter;
 
-import java.util.*;
-
 public class ASTProgram extends SimpleNode
 {
 	private String[] pseudocode;
