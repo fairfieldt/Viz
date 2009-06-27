@@ -9,9 +9,15 @@ public class Scope implements Drawable
 	
 	private ArrayList<String> ids;
 
+<<<<<<< HEAD:viz/Scope.java
 	private int xPos = 50;
 	private int yPos = 50;
 	private int sizeX = 800;
+=======
+	private int xPos = 0;
+	private int yPos = 0;
+	private int sizeX = 600;
+>>>>>>> 490a4c7... Played with sizing and position of scopes and variables to make things prettier:viz/Scope.java
 	private int sizeY = 600;
 	
 	private int currentParamXPos = 50;
