@@ -218,7 +218,7 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		// add funcCall
 		ASTStatement surroundingStmt = new ASTStatement(JJTSTATEMENT);
 		surroundingStmt.jjtSetParent(innerStatement);
-		innerStatement.jjtAddChild(surroundingStmt, innerStatement.jjtGetNumChildren());
+		innerStatement.jjtAddChildSafe(surroundingStmt, innerStatement.jjtGetNumChildren());
 		
 		
 		ASTCall call = new ASTCall(JJTCALL);
@@ -638,7 +638,7 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		if (addSafely)
 			parent.jjtAddChildSafe(surroundingNode, indexInParent);
 		else
-			parent.jjtAddChild(surroundingNode, indexInParent);
+			parent.jjtAddChildSafe(surroundingNode, indexInParent);
 		
 		
 		ASTVarDecl var = new ASTVarDecl(JJTVARDECL);

@@ -23,8 +23,18 @@ public interface Node {
     list of children.  */
   public void jjtAddChild(Node n, int i);
   
+  /**
+   * The jjt prefix was driving me nuts.
+   */
+  public void addChild(Node n, int i);
+  
   /** Adds a node at i while moving everything from i forward one index */
   public void jjtAddChildSafe(Node n, int i);
+  
+  /**
+   * The jjt prefix was driving me nuts.
+   */
+  public void addChildSafe(Node n, int i);
 
   /** This method returns a child node.  The children are numbered
      from zero, left to right. */

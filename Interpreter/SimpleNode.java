@@ -45,6 +45,7 @@ public class SimpleNode implements Node {
   public Node jjtGetParent() { return parent; }
 
   public void jjtAddChild(Node n, int i) {
+	 n.jjtSetParent(this);
     if (children == null) {
       children = new Node[i + 1];
     } else if (i >= children.length) {
@@ -57,9 +58,13 @@ public class SimpleNode implements Node {
   
   
   public void jjtAddChildSafe(Node n, int i) {
+	  n.jjtSetParent(this);
 	  if (children == null) 
 	    {
 	      children = new Node[i + 1];
+	      //TODO should this always be children 0?
+	      children[0] = n;
+	      return;
 	    } 
 	    else if (i >= children.length) 
 	    {
@@ -82,6 +87,16 @@ public class SimpleNode implements Node {
 	      
 	 
 	   
+  }
+  
+  public void addChild(Node n, int i)
+  {
+	  jjtAddChild(n, i);
+  }
+  
+  public void addChildSafe(Node n, int i)
+  {
+	  jjtAddChildSafe(n, i);
   }
 
   public Node jjtGetChild(int i) {
