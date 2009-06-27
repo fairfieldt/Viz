@@ -43,7 +43,7 @@ public class TomTest {
 		foo.addVariable(var5);
 		global.addScope(foo);
 		global.draw(scripter);
-		//scripter.addCircle(15, 15, 50, "black", false, StrokeType.solid, 1);
+		
 		
 		//Start writing slides
 		
@@ -77,7 +77,7 @@ public class TomTest {
 		scripter.endSlide();
 		
 		
-		FileWriter writer = new FileWriter("C:\\Users\\Eric\\Desktop\\circle.xaal");
+		FileWriter writer = new FileWriter("/home/fairfieldt/Documents/!test.xaal");
 		
 		writer.write(scripter.toString());
 		

@@ -150,23 +150,14 @@ public class Variable implements Drawable
 		
 		if (this.isReference)
 		{
-			// rectangle
-			String id1 = scripter.addRectangle(xPos, yPos, 40, 40, color,  hidden);
-			//title
-			String id2 = scripter.addText(xPos, yPos-5, name, "black", hidden);
-			//pointer triangle
-			String id3 = scripter.addTriangle(xPos + 5, yPos + 5 , 30, "black", hidden, 
-					StrokeType.solid, 1, "black");
-			
+			String id1 = scripter.addTriangle(xPos, yPos, 40, color, hidden);
 			ids.add(id1);
-			ids.add(id2);
-			ids.add(id3);
 			if (ref != null)
 			{
-				String id4 = scripter.addArrow(id3, ref.getIds().get(0), false, hidden);
-				ids.add(id4);
-				//String id3 = scripter.addText(xPos, yPos-5, name, "black",  hidden);
-				//ids.add(id3);
+				String id2 = scripter.addArrow(id1, ref.getIds().get(0), 200, false, hidden);
+				ids.add(id2);
+				String id3 = scripter.addText(xPos, yPos-5, name, "black",  hidden);
+				ids.add(id3);
 			}
 
 		}

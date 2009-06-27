@@ -8,7 +8,7 @@ public class XAALScripter {
 	private final Namespace defaultNS = Namespace.getNamespace("http://www.cs.hut.fi/Research/SVG/XAAL");
 	
 	//TODO: change the namespace to a final namespace eventually
-	private final Namespace jhaveNS = Namespace.getNamespace("jhave","http://www.uwosh.edu/jhave/ns");
+	private final Namespace jhaveNS = Namespace.getNamespace("http://www.uwosh.edu/jhave/ns");
 	
 	public final int DEFAULT_FONT_SIZE = 16;
 	public final String DEFAULT_FONT_FAMILY = "Lucida Bright";
@@ -19,7 +19,6 @@ public class XAALScripter {
 	private int lineNum = 0;
 	private int triangleNum = 0;
 	private int arrowNum = 0;
-	private int circleNum = 0;
 	
 	private int slideNum = 0;
 	
@@ -34,7 +33,6 @@ public class XAALScripter {
 		
 		Namespace xsi = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
 		xaalRoot.addNamespaceDeclaration(xsi);
-		xaalRoot.addNamespaceDeclaration(jhaveNS);
 		
 		Attribute schemaLocation = new Attribute("schemaLocation", 
 				"http://www.cs.hut.fi/Research/SVG/XAAL xaal.xsd", xsi);
@@ -157,11 +155,6 @@ public class XAALScripter {
 		
 		rect.setAttribute("hidden", hidden + "");
 		
-		//set up jhave width and height EXTENSION
-		rect.setAttribute("shapeWidth", width + "", jhaveNS);
-		rect.setAttribute("shapeHeight", height + "", jhaveNS);
-		
-		
 		Element x1y1 = createElement("coordinate");
 		x1y1.setAttribute("x", x + "");
 		x1y1.setAttribute("y", y + "");
@@ -201,8 +194,6 @@ public class XAALScripter {
 		strokeElem.setAttribute("width", lineWidth + "");
 		strokeElem.setAttribute("type", strokeType.name());
 		style.addContent(strokeElem);
-		
-	
 		
 		rect.addContent(style);
 		
@@ -549,12 +540,6 @@ public class XAALScripter {
 	public String addTriangle(int x, int y, int width, String color, boolean hidden, 
 			StrokeType strokeType, int lineWidth)
 	{
-		return addTriangle(x, y , width, color, hidden, strokeType, lineWidth, null);
-	}
-	
-	public String addTriangle(int x, int y, int width, String color, boolean hidden, 
-			StrokeType strokeType, int lineWidth, String fillColor)
-	{
 		Element initial = document.getRootElement().getChild("initial", defaultNS);
 		
 		Element triangle = createElement("polyline");
@@ -564,9 +549,6 @@ public class XAALScripter {
 		triangle.setAttribute("id", idVal);
 		
 		triangle.setAttribute("hidden", hidden + "");
-		
-		//set jhave width EXTENSION
-		triangle.setAttribute("shapeWidth", width + "", jhaveNS);
 		
 		Element coordinate = createElement("coordinate");
 		coordinate.setAttribute("x", (x +(width/2)) + "");
@@ -604,62 +586,11 @@ public class XAALScripter {
 		stroke.setAttribute("width", lineWidth + "");
 		style.addContent(stroke);
 		
-		if (fillColor != null)
-		{
-			Element fillColorElem = createElement("fill-color");
-			fillColorElem.setAttribute("name", fillColor);
-			style.addContent(fillColorElem);
-		}
-		
 		triangle.addContent(style);
 		
 		initial.addContent(triangle);
 		
 		return idVal;
-	}
-	
-	//currently the xaal jhave visualizer can't handle circles so this just returns null
-	public String addCircle(int x, int y, int radius, String color, boolean hidden, 
-			StrokeType strokeType, int lineWidth)
-	{
-		/*
-		Element initial = document.getRootElement().getChild("initial", defaultNS);
-		
-		Element circle = createElement("circle");
-		
-		String idVal = "circle" + circleNum;
-		circleNum++;
-		circle.setAttribute("id", idVal);
-		
-		circle.setAttribute("hidden", hidden + "");
-		
-		Element center = createElement("center");
-		center.setAttribute("x", (x + radius) + "");
-		center.setAttribute("y", (y + radius) + "");
-		circle.addContent(center);
-		
-		Element radiusElem = createElement("radius");
-		radiusElem.setAttribute("length", radius + "");
-		circle.addContent(radiusElem);
-		/*
-		Element style = createElement("style");
-		
-		Element colorElem = createElement("color");
-		colorElem.setAttribute("name", color);
-		style.addContent(colorElem);
-		
-		Element stroke = createElement("stroke");
-		stroke.setAttribute("type", strokeType.name());
-		stroke.setAttribute("width", lineWidth + "");
-		style.addContent(stroke);
-		
-		circle.addContent(style);
-		
-		initial.addContent(circle);
-		
-		return idVal;
-		*/
-		return null;
 	}
 	
 	/**
@@ -672,7 +603,7 @@ public class XAALScripter {
 	 * @param isHidden should the arrow be hidden initially.
 	 * @return the String containing the id of the arrow added.
 	 */
-	public String addArrow(String originName, String destName, boolean isDashed, 
+	public String addArrow(String originName, String destName, int padding, boolean isDashed, 
 			boolean isHidden)
 	{
 		StrokeType type = StrokeType.solid;
@@ -680,7 +611,7 @@ public class XAALScripter {
 		if (isDashed)
 			type = StrokeType.dashed;
 		
-		return addArrow(originName, destName,  "black", isHidden, type, DEFAULT_STROKE_WIDTH);
+		return addArrow(originName, destName, padding, "black", isHidden, type, DEFAULT_STROKE_WIDTH);
 	}	
 	
 	/**
@@ -695,7 +626,7 @@ public class XAALScripter {
 	 * @param lineWidth the width of the line.
 	 * @return the String containing the id of the arrow added.
 	 */
-	public String addArrow(String originName, String destName, String color,
+	public String addArrow(String originName, String destName, int padding, String color,
 			boolean hidden, StrokeType strokeType, int lineWidth)
 	{
 		Element initial = document.getRootElement().getChild("initial", defaultNS);
@@ -727,16 +658,12 @@ public class XAALScripter {
 		int endY= 0;
 		try
 		{	
-			startX = startPos.getAttribute("x").getIntValue();  
-				//(origin.getAttribute("shapeWidth", jhaveNS).getIntValue() /2);
+			startX = startPos.getAttribute("x").getIntValue();
 			startY = startPos.getAttribute("y").getIntValue();
 			System.out.println("X: " + startX + " Y: " + startY);
 			
-			// TODO: fix this so that we get the correct vars
-			endX = endPos.getAttribute("x").getIntValue() + 
-				(dest.getAttribute("shapeWidth", jhaveNS).getIntValue() / 2);
-			endY = endPos.getAttribute("y").getIntValue() + 
-				(dest.getAttribute("shapeHeight", jhaveNS).getIntValue());
+			endX = endPos.getAttribute("x").getIntValue();
+			endY = endPos.getAttribute("y").getIntValue();
 			System.out.println("End X: " + endX + " End Y: " + endY);
 		}
 		catch (Exception e)
@@ -750,7 +677,7 @@ public class XAALScripter {
 		coordinate.setAttribute("x", startX + "");
 		coordinate.setAttribute("y", startY + "");
 		arrow.addContent(coordinate);
-		/*	
+				
 		coordinate = createElement("coordinate");
 		coordinate.setAttribute("x", (startX - padding) + "");
 		coordinate.setAttribute("y", startY + "");
@@ -760,7 +687,7 @@ public class XAALScripter {
 		coordinate.setAttribute("x", (startX - padding) + "");
 		coordinate.setAttribute("y", endY + "");
 		arrow.addContent(coordinate);
-			*/	
+				
 		coordinate = createElement("coordinate");
 		coordinate.setAttribute("x", endX + "");
 		coordinate.setAttribute("y", endY + "");
@@ -769,7 +696,7 @@ public class XAALScripter {
 
 		coordinate = new Element("coordinate");
 		coordinate.setAttribute("x", (endX -10) + "");
-		coordinate.setAttribute("y", (endY +10) + "");
+		coordinate.setAttribute("y", (endY -10) + "");
 
 		arrow.addContent(coordinate);
 				
@@ -780,7 +707,7 @@ public class XAALScripter {
 		
 
 		coordinate = new Element("coordinate");
-		coordinate.setAttribute("x", (endX +10) + "");
+		coordinate.setAttribute("x", (endX -10) + "");
 		coordinate.setAttribute("y", (endY +10) + "");
 
 		arrow.addContent(coordinate);
@@ -1394,7 +1321,7 @@ public class XAALScripter {
 	
 	private Element createQuestion(String type, int slideId, String question)
 	{
-		Element qElem = new Element("question", jhaveNS);
+		Element qElem = new Element("question");
 		
 		qElem.setAttribute("type", type);
 		qElem.setAttribute("id", slideId+"");
