@@ -166,9 +166,11 @@ public class Variable implements Drawable
 			String id1 = scripter.addRectangle(xPos, yPos, 40, 40, color,  hidden);
 			String id2 = scripter.addText(xPos, yPos-5, name, "black", hidden);
 			//String id3 = scripter.addText(xPos+15, yPos+25, value + "", "black",  hidden);
-			
+
 			ids.add(id1);
 			ids.add(id2);
+			System.out.println(id1);
+			System.out.println(id2);
 			//ids.add(id3);
 			
 			do 
