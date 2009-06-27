@@ -11,8 +11,8 @@ public class Scope implements Drawable
 
 	private int xPos = 50;
 	private int yPos = 50;
-	private int sizeX = 800;
-	private int sizeY = 600;
+	private int sizeX = 600;
+	private int sizeY = 450;
 	
 	private int currentParamXPos = 50;
 	private int currentParamYPos = 50;
@@ -97,7 +97,7 @@ public class Scope implements Drawable
 	{
 		int subScopeXPos = xPos + 10;
 		int subScopeYPos = yPos + 100;
-		int subScopeYSize = (sizeY-50) / (scopes.size()+1);
+		int subScopeYSize = (sizeY-10) / (scopes.size()+1);
 		System.out.println("SubSize:: " + subScopeYSize);
 		System.out.println("Scopes.size: " + scopes.size());
 		for (int i = scopes.size(); i > 0; i--)
@@ -106,7 +106,7 @@ public class Scope implements Drawable
 			System.out.println("SubSize: " + subScopeYSize);
 			s.setPosition(subScopeXPos, subScopeYPos);
 			s.setSize(sizeX - 20, subScopeYSize);
-			subScopeYPos += subScopeYSize + 60;
+			subScopeYPos += subScopeYSize + 40;
 		}		 		
 			
 	}
@@ -117,7 +117,7 @@ public class Scope implements Drawable
 		{
 			if (v.getIsParam())
 			{
-				v.setPosition(currentParamXPos + 25, currentParamYPos + 35);
+				v.setPosition(currentParamXPos + 25, currentParamYPos + 25);
 				currentParamXPos+=v.getLength() + 10;
 			}
 			else 
@@ -129,7 +129,7 @@ public class Scope implements Drawable
 				}
 				else 
 				{
-					v.setPosition(currentVarXPos + 25, currentVarYPos +100);
+					v.setPosition(currentVarXPos + 25, currentVarYPos +90);
 				}
 				currentVarXPos += v.getLength() + 10;
 			System.out.println("Size var " + v.getName() + " to x: " +  xPos + " y: " + yPos);
