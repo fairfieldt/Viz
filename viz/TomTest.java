@@ -18,7 +18,7 @@ public class TomTest {
 
 		Variable var1 = new Variable("x", 3, false);
 		Variable var2 = new Variable("y", 12, false);
-
+		var1.addCopy();
 		var2.addCopy();
 		global.addVariable(var1);
 		global.addVariable(var2);
@@ -77,7 +77,7 @@ public class TomTest {
 		scripter.endSlide();
 		
 		
-		FileWriter writer = new FileWriter("/home/fairfieldt/Documents/!test.xaal");
+		FileWriter writer = new FileWriter("C:\\Users\\Eric\\Desktop\\tomtest.xaal");
 		
 		writer.write(scripter.toString());
 		
