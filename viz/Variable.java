@@ -105,6 +105,11 @@ public class Variable implements Drawable
 		return copiesOwned.pop();
 	}
 	
+	public String peekCopyId()
+	{
+		return copiesOwned.peek();
+	}
+	
 	/**
 	 * Allows this variable to own the copy designated by id
 	 * @param id

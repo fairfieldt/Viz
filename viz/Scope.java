@@ -151,6 +151,22 @@ public class Scope implements Drawable
 		
 		return params;
 	}
+	
+	public ArrayList<Variable> getLocalVariables()
+	{
+		ArrayList<Variable> locals = new ArrayList<Variable>();
+		
+		for (Variable v : vars)
+		{
+			if (!v.getIsParam())
+			{
+				locals.add(v);
+			}
+		}
+		
+		return locals;
+	}
+	
 
 	public void draw(XAALScripter scripter)
 	{
