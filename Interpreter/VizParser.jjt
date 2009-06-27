@@ -305,10 +305,8 @@
 	{
 		t = <ID> (<LTBCR> isArray = expression() <RTBCR> )?
 		{
-			System.out.println("Var");
 			jjtThis.setName(t.image);
 			jjtThis.setIsArray(isArray);
-			System.out.println(Global.getCurrentSymbolTable());
 			return t.image;
 		}
 	}
@@ -419,7 +417,6 @@
 	{
 		 t = <NUM>
 		 {
-		 	System.out.println("Num: " + Integer.parseInt(t.image));
 		 	jjtThis.setValue(Integer.parseInt(t.image));
 		 }	
 	}

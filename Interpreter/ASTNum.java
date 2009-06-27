@@ -15,7 +15,6 @@ public class ASTNum extends SimpleNode {
   
   public void setValue(int value)
   {
-  	System.out.println("Ok, setting value to " + value);
   	this.value = value;
   }
   

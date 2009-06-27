@@ -37,7 +37,7 @@ public class NewTest
 			program.jjtAccept(iv, null);
 			System.out.println(Global.getFunction("foo").getParameters().size());
 			System.out.println(Global.getFunction("foo").getSymbolTable().getLocalVariables().size());
-			xc.draw("/home/fairfieldt/!real.xaal");
+			xc.draw("/home/fairfieldt/Documents/!real.xaal");
 						for (String line: program.getPseudocode())
 						{
 							System.out.println(line);

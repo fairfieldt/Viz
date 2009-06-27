@@ -84,13 +84,13 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 			
 			
 		}
-		System.out.println("0");
+
 		visitMain(findChildFuncOfProg(node, "main"), null);
-		System.out.println("1");
+
 		visitFunc(findChildFuncOfProg(node, "foo"), null);
-		System.out.println("2");
+
 		node.childrenAccept(this, null);
-		System.out.println("3");
+
 		return null;
 	}
 
@@ -286,7 +286,7 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 	
 	private Object visitFunc(ASTFunction node, Object data)
 	{
-		System.out.println(0);
+
 		ASTStatementList innerStmtList = (ASTStatementList)node.jjtGetChild(0);
 		
 		SymbolTable symbols = node.getSymbolTable();
@@ -294,10 +294,8 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		//have to add params to the the SymbolTable
 		for (String param : node.getParameters())
 		{
-			System.out.println("Adding a param");
 			symbols.put(param, new ByValVariable(0));
 		}
-		System.out.println(1);
 		// add 0-1 var decls
 		Random r = new Random();
 		int numOfVars = r.nextInt(2);
@@ -312,7 +310,6 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 			
 			createVarDecl(innerStmtList,varName, r.nextInt(5)+ 1, i, ASTStatement.class);
 		}
-		System.out.println(2);
 		//choose a "safe variable" for use by the array index
 		
 		int numVars = symbols.getCurrentVarNames().size();
@@ -321,13 +318,13 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		
 		String safeVarName = getRandomItem(symbolNames);
 		Variable safeVar = symbols.getVariable(safeVarName);
-		System.out.println(3);
+
 		while(safeVar.getIsArray())
 		{
 			safeVarName = getRandomItem(symbolNames);
 			safeVar = symbols.getVariable(safeVarName);
 		}
-		System.out.println(4);
+
 		//start making some crazy assignment statements
 		
 		
@@ -336,10 +333,9 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		
 		//...one of which will be an array
 		int arrayStmt = r.nextInt(numOfAssgnStmts);
-		System.out.println(5);
+
 		for (int i = 0; i < numOfAssgnStmts; i++)
 		{
-			System.out.println(0);
 			if (i == arrayStmt)
 			{
 				createOpAssign(innerStmtList, symbols, numOfVars + i, safeVarName, true);
@@ -356,7 +352,6 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 				}
 			}
 		}
-		System.out.println(6);
 		
 		return null;
 	}
@@ -453,9 +448,9 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		
 		if (lhsArray) //array value!
 		{
-			System.out.println(55);
 			
 			//HACK STARTS HERE FIXME
+			//Oh it's not so bad after all.
 			int count = 0;
 			while (!testVar.getIsArray() && count < 10)
 			{
@@ -468,7 +463,7 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 				createLHSOpExp(var, symbols, safeVar, false);
 				return;
 			}
-			System.out.println(55);
+
 			var.setName(randomName);
 			var.setIsArray(true);
 			
@@ -484,13 +479,11 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		}
 		else //non array value
 		{
-			System.out.println(33);
 			while (randomName.equals(safeVar) || testVar.getIsArray())
 			{
 				randomName = getRandomItem(varNames);
 				testVar = symbols.getVariable(randomName);
 			}
-			System.out.println(33);
 		}
 		
 		var.setName(randomName);
@@ -503,11 +496,8 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 		else
 			opExp.setOp("-");
 		
-		System.out.println(22);
 		createOperand(opExp, symbols, 0);
-		System.out.println(33);
 		createOperand(opExp, symbols, 1);
-		System.out.println(100);
 	}
 	
 	/**

@@ -5,7 +5,7 @@ import java.util.*;
 public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstants, UpdateReasons
 {
 	private QuestionFactory questionFactory;
-	private ArrayList<Question> startQuestions = new ArrayList<Question>();
+	private ArrayList<Question> startQuestions = new ArrayList<Question>();//FIXME use this?
 	private XAALConnector connector;
 	public static final int LINE_NUMBER_END = -1;
 
@@ -19,6 +19,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		this.connector = xc;
 	}
 
+	//FIXME use this?
 	public void update(int lineNumber, int reason)
 	{
 		System.out.println("Update on " + lineNumber);
@@ -26,6 +27,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		//questionFactory.addAnswers(lineNumber, reason);
 	}
 	
+	//FIXME use this?
 	private Question getStartQuestion()
 	{
 		//FIXME random
@@ -92,7 +94,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	public void handleProgram(ASTProgram node)
 	{
 		//System.out.println("visiting program");
-		Global.setCurrentSymbolTable(Global.getSymbolTable()); //set current symbol table to the global one
+		Global.setCurrentSymbolTable(Global.getSymbolTable()); 
 		update(1, UPDATE_REASON_BEGIN);
 		
 		//Drawing Stuff
@@ -107,6 +109,11 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		update(LINE_NUMBER_END, UPDATE_REASON_END);
 		
 		//TODO Write the last snap nicely
+		connector.startSnap(node.getPseudocode().length);
+			connector.startPar();
+				connector.hideScope("foo");
+			connector.endPar();
+		connector.endSnap();
 		System.out.println("Done");
 	}
 	
