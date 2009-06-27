@@ -11,7 +11,10 @@
 	package Interpreter;
 	
 	import java.util.*;
-	
+	/**
+	 * Class VizParser
+	 * @authors Tom Fairfield, Eric Schultz
+	 */
 	public class VizParser
 	{
 	
@@ -48,19 +51,25 @@
 		| "\r"
 	}
 
-	//The intial node. Has 1 child of type DeclarationList 
+	/**
+	 * The intial node. Has 1 child of type DeclarationList 
+	 * @returns the ASTProgram node created
+	 */
 	SimpleNode program() #Program:
 	{
 
 	}
 	{
-		
 		declarationList()
 		{
 			return (SimpleNode) jjtThis;
 		}
 	}
 
+	/**
+	 * A DeclarationList has N children of type Declaration.  
+	 * @returns the ASTDeclarationList node created
+	 */
 	SimpleNode declarationList() #DeclarationList:
 	{
 		SimpleNode dl = null;
@@ -72,6 +81,10 @@
 		}
 	}
 	
+	/**
+	* The second half of declarationList.  No node created so all
+	* nodes created in this scope are children of the DeclarationList
+	*/
 	void declarationListP() #void:
 	{
 	
@@ -84,36 +97,45 @@
 	}
 	
 	
-
+	/**
+	 * A declaration has 1 child of type ASTFunction or ASTVarDecl
+	 * @returns a Simplenode which is the ASTFunction or ASTVarDecl node created
+	 */
 	SimpleNode declaration() #Declaration:
 	{
-		SimpleNode fun;
-		SimpleNode varDecl;
+	
 	}
 	{
-		<VAR> varDecl = varDecl() <SEMI>
+		<VAR> varDecl() <SEMI>
 		{
-			varDecl.jjtSetParent(jjtThis);	
 			return jjtThis;
 		}
-		| fun =  funDecl()
+		| funDecl()
 		{
-			fun.jjtSetParent(jjtThis);
 			return (SimpleNode)jjtThis;
 		}
 	}
 
+	/**
+	 * A VarDecl knows the lefthand variable's name.
+	 * It has a child of type expression which is the righthand side
+	 * of the assignment
+	 * @returns the ASTVarDecl created
+	 */
 	SimpleNode varDecl() #VarDecl:
 	{
 		Token t;
-		boolean isArray = false;
+		boolean isArray = false;	//Assume it's not an array
 	}
 	{
 		t = <ID> (isArray = arrayBrackets())? <EQL> varDeclP()
 		{
 			jjtThis.setName(t.image);
+			
+			//Here we're created a variable to be put in the symbol table.
+			// VarDecls are always ByValVariables in Value, Reference, and C/R
 			ByValVariable v = new ByValVariable(-255);
-			if (isArray)
+			if (isArray)		
 			{
 				v.setArray();
 			}
@@ -123,6 +145,10 @@
 		} 
 	}
 	
+	/**
+	 * consumes the array brackets
+	 * @returns true so we know it's an array;
+	 */
 	boolean arrayBrackets() #void:
 	{
 	}
@@ -133,6 +159,11 @@
 		}
 	}
 	
+	/**
+	 * the second half of varDecl.  It doesn't create a node
+	 * so all children are children of VarDecl.  Goes to either
+	 * arrayDecl or an expression for the righthand side.
+	 */
 	void varDeclP() #void:
 	{
 	}
@@ -140,7 +171,11 @@
 		<LTBCE> arrayDecl() <RTBCE> | expression()
 	}
 	
-
+	/**
+	 * the righthand side of an array declaration
+	 * an ArrayDeclaration has N children of type ASTNum
+	 * which are the array values.
+	 */
 	void arrayDecl() #ArrayDeclaration:
 	{
 	}
@@ -148,6 +183,10 @@
 		num() (<COMMA> arrayDeclP())?
 	}
 	
+	/**
+	 * the second half of arrayDecl.  Doesn't create a node
+	 * so all children are children of the ASTArrayDecl.
+	 */
 	void arrayDeclP() #void:
 	{
 	}
@@ -155,6 +194,13 @@
 		num() (<COMMA> arrayDeclP())?
 	}
 
+	/**
+	 * a funDecl creates an ASTFunction for a function declaration.
+	 * It knows its name, a list of the parameter names, and its scope's
+	 * symbol Table.  
+ 	 * An ASTFunction has one child of type ASTStatementList
+ 	 * @returns the ASTFunction node created.
+	 */
 	SimpleNode funDecl() #Function:
 	{
 		Token name;
@@ -169,6 +215,8 @@
 			for (String p : parameters)
 			{
 				//FIXME: multiple variable types
+				// I'm not sure what this fixme means.  I think it's old but I'm
+				// going to leave it in now
 				jjtThis.addParameter(p);
 			}
 			if(Global.addFunction(jjtThis))
@@ -178,14 +226,24 @@
 			return (SimpleNode) jjtThis;
 		}
 	}
-
+	
+	/**
+	 * compoundStatement consumes the left and right {} and has one child
+	 * of type statementList.  It does not create a node so the statementList
+	 * has a parent of the ASTFunction.
+	 */
 	void compoundStatement() #void:
 	{
 	}
 	{
 		<LTBCE> statementList() <RTBCE>
 	}
-
+	
+	/**
+	 * Statementlist has N children of type ASTStatement.
+	 * It can alos have no children if the body of the function
+	 * is "<FILL>.  This allows for randomization.
+	 */
 	void statementList() #StatementList:
 	{
 	}
@@ -193,6 +251,10 @@
 		statement() (statementListP())? | <FILL>
 	}
 	
+	/**
+	 * The other half of statementList.  No node is created
+	 * so it's children have a parent of the ASTStatementList
+	 */
 	void statementListP() #void:
 	{
 	}
@@ -200,6 +262,10 @@
 		statement() (statementListP())?
 	}
 
+	/**
+	 * an ASTStatement has one child of type expression or varDecl
+	 * 
+	 */
 	void statement() #Statement:
 	{
 	}
@@ -207,6 +273,10 @@
 		 expression() <SEMI> |  <VAR> varDecl() <SEMI>
 	}
 
+	/**
+	 * an ASTCall represented a function call.  It knows the name of the
+	 * function it is calling as well as the ASTArgs it is being called with.
+	 */
 	void call() #Call:
 	{
 		Token t;
@@ -220,6 +290,12 @@
 		}
 	}
 
+	/**
+	 * an ASTVar is either a single variable or an array member.
+	 * it knows its name and, if it's an array, has a child of type 
+	 * ASTExpression which is the index.  
+	 * @returns the variable's name
+	 */
 	String var() #Var:
 	{
 		Token t;
@@ -237,6 +313,11 @@
 		}
 	}
 
+	/**
+	 * an assignment statement.  The ASTAssignment knows its name.
+	 * It has one child of type ASTExpression which is the righthand
+	 * side of the assignment.  
+	 */
 	void assignment() #Assignment:
 	{
 		String name = "";
@@ -244,42 +325,61 @@
 	{
 		name = var() <EQL> expression()
 		{
-			System.out.println("Assignment: " + name);
 			jjtThis.setName(name);
 		}
 	}
-
+	/**
+	 * an expression.  The ASTExpression has one child of type
+	 * call, assignment, op, num, or var.  
+	 * @returns true... for some reason.  
+	 */
 	boolean expression() #Expression:
 	{
 		ASTVar variable;
 	}
 	{
+		//FIXME:  Why do these all return true?  I don't remember. 
 		 call() {return true;} |
-		 assignment() {System.out.println("Assigment to var");return true;} |
-		 op() {System.out.println("Op to var");return true;} | 
+		 assignment() {return true;} |
+		 op() {return true;} | 
 		 num() {return true;} | 
-		 var(){ System.out.println("Expression to var");return true;}
+		 var(){return true;}
 		 
 	}	
 	
-
+	/**
+	 * The arguments to a function.  ASTArgs has N children of type ASTVar
+	 * It also saves references to the ASTVar children.  
+	 */
 	void args() #Args:
 	{
 	}
 	{
 		var() (<COMMA> argsP())?
 		{
+			//FIXME:  This can't be the best way to handle things.
+			// find a better way. 
 			jjtThis.gatherArgs();
 		}
 	}
-	
+	/**
+	 * the other half of args.  It doesn't create a node so
+	 * all children are children of the ASTArgs.
+	 */
 	void argsP() #void:
 	{
 	}
 	{
 		var() (<COMMA> argsP())?
 	}
-
+	
+	/**
+	 * function parameters.  This matches the parameters to a function.
+	 * No node is created, the children are children of the ASTFunction
+	 * @returns an ArrayList of the parameter names.
+	 */
+	
+	//FIXME: Is this going to bite me later?  Maybe do it more like args.  
 	ArrayList<String> params() #void:
 	{
 		ArrayList<String> names = new ArrayList<String>();
@@ -294,6 +394,10 @@
 		}
 	}
 	
+	/**
+	 * a +- expression.  the ASTOp knows its operation and has two children -
+	 * a left child of type ASTVar or ASTNum and a left side of type ASTExpression
+	 */
 	void op() #Op:
 	{
 		Token t;
@@ -305,6 +409,9 @@
 		}
 	}
 	
+	/**
+	 * A literal number value.  An ASTNum knows it's value.
+	 */
 	void num() #Num:
 	{
 		Token t;
