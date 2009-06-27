@@ -551,16 +551,22 @@ public class RandomizingVisitor implements VizParserVisitor, VizParserTreeConsta
 					count++;
 				}
 				
-				if (count < 0)
+				if (count >= 10 && !test.getIsArray())
 				{
+					//It's not gonna be an array after all.
+					//Just do the normal var stuff
+					midVar.setIsArray(false);
+
 					test = symbols.getVariable(varName);
-				
+
 					while(test.getIsArray())
 					{
 						varName = getRandomItem(varNames);
 						test = symbols.getVariable(varName);
 					}
+
 					midVar.setName(varName);
+
 				}
 				else
 				{

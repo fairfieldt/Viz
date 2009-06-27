@@ -678,7 +678,6 @@ public class XAALConnector {
    */
   public void writeIndexModify(ModifyVarIndexAction action)
   {
-  	System.out.println("Writing index modify");
 	  try {
 	      // reopen a slide
 	      scripter.reopenSlide(action.getSnapNum());
@@ -687,19 +686,18 @@ public class XAALConnector {
 	      scripter.reopenPar();
 	      
 	      int toIndex = action.getIndex();
-	      System.out.println("Modifying index " + toIndex);
+	      
 	      Array v = (Array)action.getTo();
 	      
 	      // pop copy of current value
 	      String oldCopy = v.popCopyId(toIndex);
-	      System.out.println("Current value = " + oldCopy);
+	      
 	      //hide oldCopy
 	      scripter.addHide(oldCopy);
 	      
 	      // pop copy of new value
-	      String newCopy = v.getCopyId(toIndex);
-
-	      System.out.println("New value " + newCopy);
+	      String newCopy = v.popCopyId(toIndex);
+	      
 	      //show new copy
 	      scripter.addShow(newCopy);
 	      
@@ -707,7 +705,7 @@ public class XAALConnector {
 	      scripter.addChangeStyle(highlightColor, newCopy);
 	      
 	      //give ownership of newCopy back to variable
-	      //v.receiveCopyOwnership(newCopy);
+	      v.receiveCopyOwnership(newCopy);
 	      
 	      //set the value of variable to its new value
 	      v.setElem(toIndex, action.getNewValue());
@@ -746,7 +744,6 @@ public class XAALConnector {
    */
   private void writeVarShow(ShowHideVarAction action)
   {
-  	System.out.println("Showing a var");
     try {
       // reopen a slide
       scripter.reopenSlide(action.getSnapNum());
@@ -760,7 +757,6 @@ public class XAALConnector {
       ArrayList<String> ids = v.getIds();
       for (String id : ids)
       {
-      	System.out.println("Showing id: " + id);
         try
         {
           scripter.addShow(id);
@@ -776,7 +772,7 @@ public class XAALConnector {
     	  for (int i = 0; i < vArray.getValues().size(); i++)
     	  {
     		  String copy = vArray.popCopyId(i);
-    		  System.out.println("Showing: " + copy + " on slide " + action.getSnapNum());
+    		  
     		  scripter.addShow(copy);
     		  
     		  vArray.receiveCopyOwnership(copy, i);

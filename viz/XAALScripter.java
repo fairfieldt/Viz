@@ -961,7 +961,6 @@ public class XAALScripter {
 	 */
 	public void addHide(String...ids) throws SlideException
 	{
-		System.out.println("Adding hide for " + ids[0]);
 		if (!inSlide())
 			throw new SlideException("You must create a slide before creating actions.");
 		

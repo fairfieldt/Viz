@@ -9,16 +9,16 @@ public class Scope implements Drawable
 	
 	private ArrayList<String> ids;
 
-	private int xPos = 0;
-	private int yPos = 0;
-	private int sizeX = 600;
+	private int xPos = 50;
+	private int yPos = 50;
+	private int sizeX = 800;
 	private int sizeY = 450;
 	
-	private int currentParamXPos = 0;
-	private int currentParamYPos = 0;
+	private int currentParamXPos = 50;
+	private int currentParamYPos = 50;
 	
-	private int currentVarXPos = 0;
-	private int currentVarYPos = 0;
+	private int currentVarXPos = 50;
+	private int currentVarYPos = 50;
 	
 	private String color = "black";
 	private boolean hidden = false;

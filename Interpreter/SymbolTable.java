@@ -77,7 +77,6 @@ public class SymbolTable
 		int retVal = -255;
 		if (vars.containsKey(varName))
 		{
-			System.out.println("found it!");
 			retVal = vars.get(varName).getValue(index);
 		}
 		else if (previous != null && !localOnly)
