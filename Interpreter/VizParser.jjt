@@ -14,46 +14,7 @@
 	
 	public class VizParser
 	{
-	/*
-		public static void main(String[] args)
-		{
-			try
-			{
-				Global.getSymbolTable().setName("Global");
-				VizParser vp = new VizParser(System.in);
-				ASTProgram program = (ASTProgram)vp.program();
-				
-				System.out.println("Dumping: \n");
-				program.dump(">");
-				
-				
-				RandomizingVisitor rv = new RandomizingVisitor();
-				
-				program.jjtAccept(rv, null);
-
-				System.out.println("Dumping: \n");
-				program.dump(">");
-				
-				System.out.println("SuccessfullyParsed");
-				HashMap<String, ASTFunction> funs = Global.getFunctions();
-				SymbolTable table = Global.getCurrentSymbolTable();
-				
-				System.out.println("________________\n");
-				System.out.println(program.getCode());
-				
-				System.out.println("\n\n Testing Interpret Visitor");
-				
-				InterpretVisitor iv = new InterpretVisitor();
-				
-				program.jjtAccept(iv, null);
-				
-			}
-			catch (Exception e)
-			{
-				System.out.println(e);
-			}
-		}
-		*/
+	
 	}
 
 	PARSER_END(VizParser)
@@ -87,17 +48,15 @@
 		| "\r"
 	}
 
-
+	//The intial node. Has 1 child of type DeclarationList 
 	SimpleNode program() #Program:
 	{
-		SimpleNode dl;
+
 	}
 	{
 		
-		dl = declarationList()
+		declarationList()
 		{
-			//System.out.println("There are " + dl.jjtGetNumChildren() + " global declarations");
-			dl.jjtSetParent(jjtThis);	
 			return (SimpleNode) jjtThis;
 		}
 	}
