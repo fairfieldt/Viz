@@ -314,13 +314,20 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 			connector.startPar();
 				for (int i = 0; i < parameters.size(); i++)
 				{ 	
-					Variable v1 = Global.getCurrentSymbolTable().getVariable(argNames.get(i).getName());				Variable v2 = st.getVariable(parameters.get(i));		
-	
-					((ByRefVariable)v2).setRef(((ByValVariable)v1)); //Now in interpreter we should be pointing correctly.  				
+					Variable v1 = Global.getCurrentSymbolTable().getVariable(argNames.get(i).getName());				Variable v2 = st.getVariable(parameters.get(i));
+					((ByRefVariable)v2).setRef(((ByValVariable)v1));		
+					if (v1.getIsArray())
+					{
+						connector.addVariableReference(v2, v1, argNames.get(i).getIndex());
+					}
+					else
+					{
+						connector.addVariableReference(v2, v1);	
+					}
+					 //Now in interpreter we should be pointing correctly.  				
 					
 					System.out.println("Adding a reference from " + argNames.get(i).getName() +
 						" to " + parameters.get(i));
-					connector.addVariableReference(v2, v1);
 				}
 				
 			connector.endPar();

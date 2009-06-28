@@ -12,5 +12,5 @@ def foo(q, p, s)
 def main()
 {
 	var z = 7;
-	foo(m[1], z, z);
+	foo(m[1], m[2], z);
 }
