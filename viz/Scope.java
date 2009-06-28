@@ -176,7 +176,7 @@ public class Scope implements Drawable
 		ids.add(id1);
 		ids.add(id3);
 		
-		Collections.reverse(this.params);
+		
 		
 		sizeVariables();
 		for (Variable v : params)
@@ -187,11 +187,24 @@ public class Scope implements Drawable
 		{
 			v.draw(scripter);
 		}
+		
 		sizeScopes();
-		for (Scope s : scopes)
+		
+		if (name.equals("Global"))
 		{
-			System.out.println("Drawing subScope");
-			s.draw(scripter);
+			//draw main
+			scopes.get(0).draw(scripter);
+			
+			//draw foo -- MUST BE THE LAST ONE
+			scopes.get(1).draw(scripter);
+		}
+		else
+		{
+			for (Scope s : scopes)
+			{
+				System.out.println("Drawing subScope");
+				s.draw(scripter);
+			}
 		}
 	}
 }

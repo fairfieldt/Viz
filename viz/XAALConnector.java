@@ -941,8 +941,9 @@ public class XAALConnector {
       
       Scope scope = scopes.get(action.getScope());
       
+      ArrayList<String> scopeIds = scope.getIds();
       //show all the ids
-      for (String id : scope.getIds())
+      for (String id : scopeIds)
       {
         scripter.addShow(id);
       }
@@ -952,20 +953,24 @@ public class XAALConnector {
       //loop through the params
       for (Variable param : params)
       {
+    	ArrayList<String> ids = param.getIds();
         // show all param's ids
-        for (String id : param.getIds())
+        for (String id : ids)
         {
           scripter.addShow(id);
         }
         
-        //pop a copy of param's value
-        String copy = param.popCopyId();
-        
-        //show the copy
-        scripter.addShow(copy);
-        
-        //give ownership of copy back to param
-        param.receiveCopyOwnership(copy);
+        if (!param.getIsReference())
+        {
+	        //pop a copy of param's value
+	        String copy = param.popCopyId();
+	        
+	        //show the copy
+	        scripter.addShow(copy);
+	        
+	        //give ownership of copy back to param
+	        param.receiveCopyOwnership(copy);
+        }
       }
       
       //reclose par
@@ -1006,9 +1011,9 @@ public class XAALConnector {
       scripter.reopenPar();
       
       Scope scope = scopes.get(action.getScope());
-      
+      ArrayList<String> scopeIds = scope.getIds();
       //show all the ids
-      for (String id : scope.getIds())
+      for (String id : scopeIds)
       {
         scripter.addHide(id);
       }
@@ -1018,20 +1023,23 @@ public class XAALConnector {
       //loop through the params
       for (Variable param : params)
       {
+    	  ArrayList<String> ids = param.getIds();
         // hide all param's ids
-        for (String id : param.getIds())
+        for (String id : ids)
         {
           scripter.addHide(id);
         }
-        
-        //pop a copy of param's value
-        String copy = param.popCopyId();
-        
-        //hide the copy
-        scripter.addHide(copy);
-        
-        //give ownership of copy back to param
-        param.receiveCopyOwnership(copy);
+        if (!param.getIsReference())
+        {
+	        //pop a copy of param's value
+	        String copy = param.popCopyId();
+	        
+	        //hide the copy
+	        scripter.addHide(copy);
+	        
+	        //give ownership of copy back to param
+	        param.receiveCopyOwnership(copy);
+        }
       }
       
       ArrayList<Variable> locals = scope.getLocalVariables();
