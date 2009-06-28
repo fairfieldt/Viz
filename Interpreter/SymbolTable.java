@@ -126,6 +126,35 @@ public class SymbolTable
 	
 	}
 	
+	public ArrayList<String> getCurrentVarNamesArray()
+	{
+		return new ArrayList<String>(getCurrentVarNames());
+	}
+	
+	public ArrayList<String> getCurrentVarNamesArray(VarRetrRest restrict)
+	{
+		ArrayList<String> retArray = new ArrayList<String>();
+		
+		for (String name : getCurrentVarNames())
+		{
+			Variable test = this.getVariable(name);
+			
+			if(test.isParam() && restrict == VarRetrRest.ParamOnly)
+				retArray.add(name);
+			
+			else if (test.getIsArray() && restrict == VarRetrRest.ArrayOnly)
+				retArray.add(name);
+			
+			else if (!test.getIsArray() && restrict ==  VarRetrRest.NotArrayOnly)
+				retArray.add(name);
+			
+			else
+				retArray.add(name);
+		}
+		
+		return retArray;
+	}
+	
 	public SymbolTable getPrevious()
 	{
 		return previous;
@@ -134,6 +163,11 @@ public class SymbolTable
 	public HashSet<String> getLocalVarNames()
 	{
 		return new HashSet<String>(vars.keySet());
+	}
+	
+	public ArrayList<String> getLocalVarNamesArray()
+	{
+		return new ArrayList<String>(getLocalVarNames());
 	}
 	
 	public String toString()

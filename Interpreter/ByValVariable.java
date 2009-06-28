@@ -126,5 +126,13 @@ public class ByValVariable extends AbstractVariable implements Variable
 		return this.values;
 	}
 		
+	/****** USED BY RANDOMIZER ******/
 	
+	public static ByValVariable createArrayVariable()
+	{
+		ByValVariable v = new ByValVariable(-255);
+		v.setArray();
+		
+		return v;
+	}
 }

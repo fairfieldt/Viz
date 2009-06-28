@@ -75,16 +75,9 @@ public class ASTVarDecl extends SimpleNode implements VizParserTreeConstants
   		
   		varDecl.setName(name);
   		
-  		ASTNum num = ASTNum.createNum(values[0]);
-  		
-  		ASTExpression exp = ASTExpression.createExpWithChild(num);
-  		
-  		//add all the nums to the exp
-  		for (int i = 1; i < values.length; i++)
-  		{
-  			num = ASTNum.createNum(values[i]);
-  			exp.addChildSafe(num, i);
-  		}
+  		ASTArrayDeclaration arrayDecl = ASTArrayDeclaration.createArrayDecl(values); 
+ 		
+  		varDecl.addChild(arrayDecl, 0);
   		
   		return varDecl;
   	}
