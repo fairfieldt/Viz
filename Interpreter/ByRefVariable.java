@@ -23,6 +23,11 @@ public class ByRefVariable extends AbstractVariable implements Variable
 		this.refIndex = index;
 	}	
 	
+	public int getRefIndex()
+	{
+		return this.refIndex;
+	}
+	
 	public ByValVariable getRef()
 	{
 		return this.ref;

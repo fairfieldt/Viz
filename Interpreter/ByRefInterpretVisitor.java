@@ -283,7 +283,16 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 			Variable vv = st.getVariable(parameters.get(i));
 			System.out.println(vv + " ");
 			ByRefVariable v = (ByRefVariable)st.getVariable(parameters.get(i));
-			v.setRef((ByValVariable)Global.getCurrentSymbolTable().getVariable(argNames.get(i).getName()));
+			ByValVariable ref = (ByValVariable)Global.getCurrentSymbolTable().getVariable(argNames.get(i).getName());
+			if (ref.getIsArray())
+			{
+				System.out.println("Setting ref to index " + argNames.get(i).getIndex());
+				v.setRef(ref, argNames.get(i).getIndex());
+			}
+			else
+			{
+				v.setRef(ref);
+			}
 		}
 		System.out.println("Set args");
 		HashMap<String, String> pa = new HashMap<String, String>(); //Maps args to params
@@ -323,23 +332,30 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 	
 	public Integer handleVar(ASTVar node)
 	{
+		Integer value;
+		Variable v = Global.getCurrentSymbolTable().getVariable(node.getName());
 		if (node.getIsArray())
 		{
 			int index = (Integer) node.jjtGetChild(0).jjtAccept(this, null);
 			node.setIndex(index);
-			return Global.getCurrentSymbolTable().get(node.getName(), index);
+			value = v.getValue(index);
 		}
-		return Global.getCurrentSymbolTable().get(node.getName());
+		else
+		{
+			value = v.getValue();
+		}
+		return value;
 	}
 	
 	public void handleAssignment(ASTAssignment node)
 	{
 		String name = node.getName();
-		System.out.println("Assigning to " + name);
+
 		Integer value = (Integer)node.jjtGetChild(1).jjtAccept(this, null);
+		System.out.println("Assigning to " + name + " value of " + value);
 		int index = 0;
 		Variable v = Global.getCurrentSymbolTable().getVariable(name);
-		System.out.println("V: " + v);
+
 		if (v.getIsArray())
 		{
 			index = (Integer) node.jjtGetChild(0).jjtGetChild(0).jjtAccept(this, null);
@@ -369,10 +385,18 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 			else 
 			{
 				ByRefVariable var = (ByRefVariable)Global.getCurrentSymbolTable().getVariable(name);
-				System.out.println("It's a reference variable.");
-				connector.modifyVar(
-						var.getRef(),
+				System.out.println("It's a reference variable named " + name);
+				ByValVariable val = var.getRef();
+				if (val.getIsArray())
+				{
+					connector.modifyVar(val, var.getRefIndex(), value);
+				}
+				else
+				{
+					connector.modifyVar(
+						val,
 						 value);
+				}
 			}
 		
 		update(node.getLineNumber(), UPDATE_REASON_ASSIGNMENT);

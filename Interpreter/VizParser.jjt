@@ -386,7 +386,7 @@
 	{
 		newName = <ID> (<COMMA> names = params())?
 		{
-			names.add(newName.image);
+			names.add(0, newName.image);
 
 			return names;
 		}

@@ -1,19 +1,30 @@
 package viz;
 import Interpreter.*;
+import java.io.*;
 
 public class RefTest
 {
 	public static void main(String[] args)
 	{
+		System.out.println("Starting");
 		Global.InterpreterType = InterpreterTypes.BY_REFERENCE;
-		VizParser parser = new VizParser(System.in);
+		BufferedReader br = null;
+		try
+		{
+			br = new BufferedReader(new FileReader(args[0]));
+		}
+		catch (Exception e)
+		{
+			System.out.println(e);
+		}
+		VizParser parser = new VizParser(br);
 		try
 		{
 			ASTProgram program = (ASTProgram)parser.program();
 
 			RandomizingVisitor rv = new RandomizingVisitor();
 				
-			program.jjtAccept(rv, null);
+			//program.jjtAccept(rv, null);
 		
 			System.out.println("Successfully Parsed");
 			System.out.println("________________\n");
