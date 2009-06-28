@@ -135,7 +135,8 @@ public class SymbolTable
 	{
 		ArrayList<String> retArray = new ArrayList<String>();
 		
-		for (String name : getCurrentVarNames())
+		ArrayList<String> currentVarNames = getCurrentVarNamesArray();
+		for (String name : currentVarNames)
 		{
 			Variable test = this.getVariable(name);
 			

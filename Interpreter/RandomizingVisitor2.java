@@ -222,6 +222,7 @@ public class RandomizingVisitor2 implements VizParserTreeConstants,
 		for(int i = 0; i < numVarDecls; i++)
 		{
 			ArrayList<String> badVars = localTable.getLocalVarNamesArray();
+			badVars = getBadLHSNames(localTable, badVars);
 			String name = getNewVarName(badVars);
 			int value = randomDeclInt();
 			
@@ -243,23 +244,26 @@ public class RandomizingVisitor2 implements VizParserTreeConstants,
 		
 		for (int i = 0; i < numAOStmts; i++)
 		{
+			ASTAssignment assign = null;
+			
 			if (i == posForArrayIndex)// the operation with teh array index
 			{
-				//c
+				assign = createIndexedAssign(localTable, safeIndexVars);
 			
 			}
 			else //non array index action
 			{
 				if(assignOrOp()) //basic assignment
 				{
-					ASTAssignment assign = createBasicAssign(localTable, safeIndexVars);
-					foo.addLogicalChild(assign, numVarDecls+ i);
+					assign = createBasicAssign(localTable, safeIndexVars);
 				}
 				else //assign with op
 				{
-					
+					assign = createOpAssign(localTable, safeIndexVars);
 				}
 			}
+			
+			foo.addLogicalChild(assign, numVarDecls + i);
 		}
 	}
 	
@@ -357,6 +361,53 @@ public class RandomizingVisitor2 implements VizParserTreeConstants,
 		ASTNum rhs = ASTNum.createNum(randomDeclInt());
 		
 		return ASTAssignment.createAssignment(lhs, rhs);
+	}
+	
+	private ASTAssignment createOpAssign(SymbolTable localTable, ArrayList<String> badNames)
+	{
+		return createOpAssign(localTable, badNames, null);
+	}
+	
+	private ASTAssignment createOpAssign(SymbolTable localTable, ArrayList<String> badNames, 
+			ASTVar lhs)
+	{
+		if (lhs == null)
+			lhs = createVar(localTable, badNames, true);
+		
+		Node rhs1 = createOperand(localTable);
+		Node rhs2 = createOperand(localTable);
+		
+		ValidOperations operator = ValidOperations.Sub;
+		if (plusOrMinus())
+			operator = ValidOperations.Add;
+		
+		ASTOp op = ASTOp.createOp(rhs1, rhs2, operator);
+		
+		return ASTAssignment.createAssignment(lhs, op);
+	}
+	
+	private ASTAssignment createIndexedAssign(SymbolTable localTable, ArrayList<String> safeVars)
+	{
+		ArrayList<String> arrays = localTable.getCurrentVarNamesArray(VarRetrRest.ArrayOnly);
+		
+		testArrayEmpty(arrays);
+		
+		testArrayVars(arrays, localTable);
+		
+		ASTVar lhs = ASTVar.createVarWithIndex(getRandomItem(arrays), getRandomItem(safeVars));
+		
+		return createOpAssign(localTable, null, lhs);
+	}
+	
+	private Node createOperand(SymbolTable localTable)
+	{
+		if (numOrVar()) //num
+		{
+			return ASTNum.createNum(randomDeclInt());
+		}
+		//var
+		
+		return createVar(localTable, null, true);
 	}
 	
 	private void addParamsToFoo(int numToAdd)
@@ -473,6 +524,10 @@ public class RandomizingVisitor2 implements VizParserTreeConstants,
 		return binDecision(chanceOfAssignToOp);
 	}
 	
+	private boolean plusOrMinus()
+	{
+		return binDecision(chanceOfPlusToMinus);
+	}
 	
 	private boolean binDecision(double probability)
 	{
@@ -554,6 +609,13 @@ public class RandomizingVisitor2 implements VizParserTreeConstants,
 			if (!symbols.getVariable(v).getIsArray())
 				throw new AssumptionFailedException();
 		}
+	}
+	
+	private void testArrayEmpty(ArrayList<String> vars)
+	{
+		if (vars.size() == 0)
+			throw new AssumptionFailedException();
+	
 	}
 	
 }

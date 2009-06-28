@@ -44,7 +44,7 @@ public class ASTOp extends SimpleNode implements VizParserTreeConstants{
   {
 	  this.addChild(ASTExpression.createExpWithChild(rhs), 1);
   }
-
+  
   /**
    * lhs can be Num or Var, rhs can be Num or Var
    */
