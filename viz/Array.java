@@ -9,6 +9,7 @@ public class Array extends Variable implements Drawable {
 	
 	private ArrayList<LinkedList<String>> arrayCopiesOwned;
 	private ArrayList<Integer> xPositions;
+	private ArrayList<String> indexRects;
 	
 	public Array(String name, ArrayList<Integer> values, boolean isParam)
 	{
@@ -26,6 +27,8 @@ public class Array extends Variable implements Drawable {
 		}
 		
 		xPositions = new ArrayList<Integer>();
+		
+		indexRects = new ArrayList<String>();
 	}
 	
 	/**
@@ -86,6 +89,11 @@ public class Array extends Variable implements Drawable {
 		return xPositions.get(index).intValue();
 	}
 	
+	public String getRect(int index)
+	{
+		return indexRects.get(index);
+	}
+	
 	@Override
 	public void draw(XAALScripter scripter) {
 		String label = scripter.addText(getXPos(), getYPos()-5, name, "black", getHidden());
@@ -105,6 +113,8 @@ public class Array extends Variable implements Drawable {
 			
 			String rectangle = 
 				scripter.addRectangle(indexXPos, getYPos(), 40, 40, getColor(), getHidden());
+			indexRects.add(rectangle);
+		
 			String id = 
 				scripter.addText(indexXPos + 15, getYPos() + 25, values.get(i) + "", "black", true);
 			System.out.println(rectangle);

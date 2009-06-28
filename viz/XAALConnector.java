@@ -133,7 +133,7 @@ public class XAALConnector {
   public void addVariableReference(Interpreter.Variable src, Interpreter.Variable  dest)
   {
   	Variable v1 = varToVar.get(src.getUUID());
-  	Variable v2 = varToVar.get(src.getUUID());
+  	Variable v2 = varToVar.get(dest.getUUID());
   	
   	if (v1 == null || v2 == null)
   	{
@@ -143,6 +143,22 @@ public class XAALConnector {
   	
   	v1.setReference(v2);
   	
+  }
+  
+  
+  public void addVariableReference(Interpreter.Variable src, Interpreter.Variable dest, 
+		  int index)
+  {
+	  Variable v1 = varToVar.get(src.getUUID());
+	  	Variable v2 = varToVar.get(dest.getUUID());
+	  	
+	  	if (v1 == null || v2 == null)
+	  	{
+	  		System.out.println("Bad variable");
+	  		return;
+	  	}
+	  	
+	  	v1.setReference(v2, index); 
   }
   
   /**

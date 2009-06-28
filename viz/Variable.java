@@ -22,6 +22,8 @@ public class Variable implements Drawable
 	
 	private Variable ref =  null;
 	
+	private int refIndex = -255;
+	
 	public Variable(String name, int value, boolean isParam)
 	{
 		ids = new ArrayList<String>();
@@ -53,6 +55,12 @@ public class Variable implements Drawable
 	public void setReference(Variable ref)
 	{
 		this.ref = ref;
+	}
+	
+	public void setReference(Variable ref, int index)
+	{
+		this.ref = ref;
+		this.refIndex = index;
 	}
 	
 	public void setPosition(int xPos, int yPos)
@@ -176,11 +184,19 @@ public class Variable implements Drawable
 			ids.add(id3);
 			if (ref != null)
 			{
-				System.out.println("Ref pointing to something");
-				String id4 = scripter.addArrow(id3, ref.getIds().get(0), false, hidden);
+				String id4 = null;
+				if (refIndex < 0)
+				{
+					System.out.println("Ref pointing to something");
+					id4 = scripter.addArrow(id3, ref.getIds().get(0), false, hidden);
+				}
+				else
+				{
+					Array arr = (Array) ref; 
+					System.out.println("Ref pointing to arrayIndex");
+					id4 = scripter.addArrow(id3, arr.getRect(refIndex), false, hidden);
+				}
 				ids.add(id4);
-				//String id3 = scripter.addText(xPos, yPos-5, name, "black",  hidden);
-				//ids.add(id3);
 			}
 
 		}
@@ -188,13 +204,11 @@ public class Variable implements Drawable
 		{
 			String id1 = scripter.addRectangle(xPos, yPos, 40, 40, color,  hidden);
 			String id2 = scripter.addText(xPos, yPos-5, name, "black", hidden);
-			//String id3 = scripter.addText(xPos+15, yPos+25, value + "", "black",  hidden);
 
 			ids.add(id1);
 			ids.add(id2);
 			System.out.println(id1);
 			System.out.println(id2);
-			//ids.add(id3);
 			
 			do 
 			{

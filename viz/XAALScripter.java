@@ -705,17 +705,7 @@ Element initial = document.getRootElement().getChild("initial", defaultNS);
 		coordinate.setAttribute("x", startX + "");
 		coordinate.setAttribute("y", startY + "");
 		arrow.addContent(coordinate);
-		/*	
-		coordinate = createElement("coordinate");
-		coordinate.setAttribute("x", (startX - padding) + "");
-		coordinate.setAttribute("y", startY + "");
-		arrow.addContent(coordinate);
-				
-		coordinate = createElement("coordinate");
-		coordinate.setAttribute("x", (startX - padding) + "");
-		coordinate.setAttribute("y", endY + "");
-		arrow.addContent(coordinate);
-			*/	
+			
 		coordinate = createElement("coordinate");
 		coordinate.setAttribute("x", endX + "");
 		coordinate.setAttribute("y", endY + "");
