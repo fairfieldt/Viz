@@ -338,7 +338,7 @@ public class XAALConnector {
 		 Variable v = varToVar.get(iv.getUUID());
 		 Array vArray = (Array)v;
 		 
-		 //vArray.setElem(index, newValue);
+		 vArray.setElem(index, newValue);
 		 
 		 vArray.addCopy(index);
 		 
