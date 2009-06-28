@@ -79,17 +79,24 @@ public class XAALConnector {
       // check if symbol s is param
       if (iv.isParam())
       {
-        Variable v = new Variable(s, symbols.get(s), true);
+      	Variable v;
+      	if (iv instanceof ByRefVariable)
+      	{
+      		v = new Variable(s, new Interpreter.Variable(-255), true);
+      	}
+      	else
+      	{	
+        	v = new Variable(s, symbols.get(s), true);
+        }
         retScope.addVariable(v);
         //add a copy of the original
         v.addCopy();
         
         varToVar.put(iv.getUUID(), v);
       }
-      //if (iv instanceof ByVarVariable)  
-        //do nothing
-      //else (iv instanceof ByRefVariable)
-        //set reference
+      if(iv instanceof ByRefVariable)
+      {
+	   v.
     }
   }
   
