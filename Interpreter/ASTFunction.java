@@ -39,15 +39,28 @@ public class ASTFunction extends SimpleNode
 	public void addParameter(String name)
 	{
 		this.parameters.add(name);
-		ByValVariable v = new ByValVariable(-255);
+		Variable v;
+		switch (Global.InterpreterType)
+		{
+			case InterpreterTypes.BY_VALUE:
+				v = new ByValVariable(-255);
+				break;
+			case InterpreterTypes.BY_REFERENCE:
+				v = new ByRefVariable(null);
+				break;
+			default:
+				v = new ByValVariable(-255);
+				System.out.println("Error, default interpreter type reached");
+		}
 		v.setParam();
 
 		if(!this.localScopeSymbolTable.put(name, v))
 		{
 			System.out.println("failed but making it true anyway");
-			v = (ByValVariable)this.localScopeSymbolTable.getVariable(name);
-			v.setParam();
+			v = this.localScopeSymbolTable.getVariable(name);
+			//v.setParam();
 		}
+
 	}
 	
 	public void addParams(String...names)

@@ -5,7 +5,7 @@ import java.util.UUID;
 public abstract class AbstractVariable implements Variable {
 
 	private UUID uuid;
-	private boolean isParam = false;
+	protected boolean isParam = false;
 	
 	protected AbstractVariable()
 	{

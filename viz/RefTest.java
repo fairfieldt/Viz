@@ -1,11 +1,11 @@
 package viz;
 import Interpreter.*;
 
-public class NewTest
+public class RefTest
 {
 	public static void main(String[] args)
 	{
-		Global.InterpreterType = InterpreterTypes.BY_VALUE;
+		Global.InterpreterType = InterpreterTypes.BY_REFERENCE;
 		VizParser parser = new VizParser(System.in);
 		try
 		{
@@ -32,7 +32,7 @@ public class NewTest
 			
 			QuestionFactory questionFactory = new QuestionFactory();
 			
-			InterpretVisitor iv = new InterpretVisitor();
+			ByRefInterpretVisitor iv = new ByRefInterpretVisitor();
 			iv.setXAALConnector(xc);
 			iv.setQuestionFactory(questionFactory);
 			program.jjtAccept(iv, null);
