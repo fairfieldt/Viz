@@ -2,12 +2,12 @@ package Interpreter;
 
 import java.util.*;
 
-public class RandomizingVisitor2 implements VizParserTreeConstants,
+public class RandomizingVisitor2<T extends AbstractVariable> implements VizParserTreeConstants,
 		VizParserVisitor
 {
 	Random rand = new Random();
 	
-	final String[] possVars = {"g","m","n", "v", "w", "x", "y", "z"};
+	final String[] possVars = {"g","i", "j", "k", "m","n", "v", "w"};
 	final String[] paramNames = {"x", "y", "z" };	
 	final int minVarDeclsInGlobal = 5;
 	final int maxVarDeclsInGlobal = 5;
@@ -75,6 +75,12 @@ public class RandomizingVisitor2 implements VizParserTreeConstants,
 		for (int i = 0; i < numArrayDecls; i++)
 		{
 			ArrayList<String> badNames = localTable.getCurrentVarNamesArray();
+			//the array name here CAN'T be a param name
+			for (int j = 0; j < paramNames.length; j++)
+			{
+				badNames.add(paramNames[j]);
+			}
+			
 			String newName = getNewVarName(badNames);
 			
 			ASTVarDecl arrayDecl = createArrayDecl(newName);
