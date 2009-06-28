@@ -5,6 +5,7 @@ public class Scope implements Drawable
 {
 	private String name;
 	private ArrayList<Variable> vars;
+	private ArrayList<Variable> params;
 	private ArrayList<Scope> scopes;
 	
 	private ArrayList<String> ids;
@@ -27,6 +28,7 @@ public class Scope implements Drawable
 	public Scope(String name, String color, boolean isGlobal)
 	{
 		vars = new ArrayList<Variable>();
+		params = new ArrayList<Variable>();
 		scopes = new ArrayList<Scope>();
 		ids = new ArrayList<String>();
 		this.name = name;
@@ -43,7 +45,15 @@ public class Scope implements Drawable
 			v.setHidden(true);
 		}
 		v.setColor(color);
-		this.vars.add(v);
+		
+		if (v.getIsParam())
+		{
+			params.add(v);
+		}
+		else 
+		{
+			this.vars.add(v);
+		}
 		
 	}
 	
@@ -115,25 +125,25 @@ public class Scope implements Drawable
 	{
 		for (Variable v : vars)
 		{
-			if (v.getIsParam())
+			if (isGlobal)
 			{
-				v.setPosition(currentParamXPos + 25, currentParamYPos + 25);
-				currentParamXPos+=v.getLength() + 10;
+				v.setPosition(currentVarXPos + 25, currentVarYPos +35);
+				
 			}
 			else 
 			{
-				if (isGlobal)
-				{
-					v.setPosition(currentVarXPos + 25, currentVarYPos +35);
-					
-				}
-				else 
-				{
-					v.setPosition(currentVarXPos + 25, currentVarYPos +90);
-				}
-				currentVarXPos += v.getLength() + 10;
-			System.out.println("Size var " + v.getName() + " to x: " +  xPos + " y: " + yPos);
+				v.setPosition(currentVarXPos + 25, currentVarYPos +90);
 			}
+			currentVarXPos += v.getLength() + 10;
+			System.out.println("Size var " + v.getName() + " to x: " +  xPos + " y: " + yPos);
+		}
+		
+		for (Variable v: params)
+		{
+			v.setPosition(currentParamXPos + 25, currentParamYPos + 25);
+			currentParamXPos+=v.getLength() + 10;
+			
+			System.out.println("Size param " + v.getName() + " to x: " +  xPos + " y: " + yPos);
 		}
 	}
 	
@@ -141,16 +151,19 @@ public class Scope implements Drawable
 	{
 		ArrayList<Variable> params = new ArrayList<Variable>();
 		
-		for (Variable v : vars)
+		for (Variable v : this.params)
 		{
-			if (v.getIsParam())
-			{
-				params.add(v);
-			}
+			params.add(v);
 		}
 		
 		return params;
 	}
+	
+	public ArrayList<Variable> getLocalVariables()
+	{
+		return vars;
+	}
+	
 
 	public void draw(XAALScripter scripter)
 	{
@@ -163,7 +176,13 @@ public class Scope implements Drawable
 		ids.add(id1);
 		ids.add(id3);
 		
+		Collections.reverse(this.params);
+		
 		sizeVariables();
+		for (Variable v : params)
+		{
+			v.draw(scripter);
+		}
 		for (Variable v : vars)
 		{
 			v.draw(scripter);

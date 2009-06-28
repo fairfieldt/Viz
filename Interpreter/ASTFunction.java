@@ -94,4 +94,23 @@ public class ASTFunction extends SimpleNode
 		return code;
 	}
 
+	/*************EVERYTHING BELOW HERE IS USED BY RANDOMIZINGVISITOR************/
+	
+	/**
+	 * While the function's child isn't actually a vardecl, arraydecl, assignment or call,
+	 * logically it is. This abstracts adding the child to the ASTFunction node.
+	 * 
+	 * EXPECTS VARDECL, ARRAYDECL, CALL, OR ASSIGNMENT, NOT DECLARATION!
+	 */
+	public boolean addLogicalChild(Node n, int i)
+	{
+		
+		Node stmtListNode = jjtGetChild(0);
+		
+		ASTStatement stmt = ASTStatement.createStmtWithChild(n);
+		
+		stmtListNode.addChildSafe(stmt, i);
+		
+		return true;
+	}
 }

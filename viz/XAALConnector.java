@@ -676,7 +676,7 @@ public class XAALConnector {
    * 8. reclose the par
    * 8.5 reclose the slide
    */
-  public void writeIndexModify(ModifyVarIndexAction action)
+  private void writeIndexModify(ModifyVarIndexAction action)
   {
   	System.out.println("Writing index modify");
 	  try {
@@ -982,7 +982,7 @@ public class XAALConnector {
       //loop through the params
       for (Variable param : params)
       {
-        // show all param's ids
+        // hide all param's ids
         for (String id : param.getIds())
         {
           scripter.addHide(id);
@@ -991,12 +991,26 @@ public class XAALConnector {
         //pop a copy of param's value
         String copy = param.popCopyId();
         
-        //show the copy
+        //hide the copy
         scripter.addHide(copy);
         
         //give ownership of copy back to param
         param.receiveCopyOwnership(copy);
       }
+      
+      ArrayList<Variable> locals = scope.getLocalVariables();
+      
+      //loop through the locals
+      for (Variable local : locals)
+      {
+    	  for (String id : local.getIds())
+    	  {
+    		  scripter.addHide(id);
+    	  }
+    	  
+    	  scripter.addHide(local.peekCopyId());
+      }
+      
       
       //reclose par
       scripter.reclosePar();

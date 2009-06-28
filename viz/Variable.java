@@ -20,8 +20,6 @@ public class Variable implements Drawable
 
 	protected int length = 0;
 	
-	private int copies = 1;
-	
 	private Variable ref =  null;
 	
 	public Variable(String name, int value, boolean isParam)
@@ -96,13 +94,16 @@ public class Variable implements Drawable
 	public void addCopy()
 	{
 		copiesToMake.offer(new Integer(value));
-		//TODO: don't think this should be here
-		copies++;
 	}
 	
 	public String popCopyId()
 	{
 		return copiesOwned.pop();
+	}
+	
+	public String peekCopyId()
+	{
+		return copiesOwned.peek();
 	}
 	
 	/**
