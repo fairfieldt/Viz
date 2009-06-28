@@ -1,6 +1,6 @@
 package Interpreter;
 
-public class ASTDeclaration extends SimpleNode
+public class ASTDeclaration extends SimpleNode implements VizParserTreeConstants
 {
 	private int lineNumber = -1;
 	
@@ -26,6 +26,17 @@ public class ASTDeclaration extends SimpleNode
 	public String getCode()
 	{
 		return jjtGetChild(0).getCode() + "\n";
+	}
+	
+	/*************EVERYTHING BELOW HERE IS USED BY RANDOMIZINGVISITOR************/
+	
+	public static ASTDeclaration createDeclWithChild(Node child)
+	{
+		ASTDeclaration decl = new ASTDeclaration(JJTDECLARATION);
+		
+		decl.addChild(child, 0);
+		
+		return decl;
 	}
 
 }
