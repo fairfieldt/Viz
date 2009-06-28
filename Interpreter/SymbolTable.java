@@ -139,17 +139,22 @@ public class SymbolTable
 		{
 			Variable test = this.getVariable(name);
 			
-			if(test.isParam() && restrict == VarRetrRest.ParamOnly)
-				retArray.add(name);
+			if(restrict == VarRetrRest.ParamOnly)
+			{
+				if (test.isParam())
+					retArray.add(name);
+			}
+			else if (restrict == VarRetrRest.ArrayOnly)
+			{
+				if (test.getIsArray())
+					retArray.add(name);
+			}
 			
-			else if (test.getIsArray() && restrict == VarRetrRest.ArrayOnly)
-				retArray.add(name);
-			
-			else if (!test.getIsArray() && restrict ==  VarRetrRest.NotArrayOnly)
-				retArray.add(name);
-			
-			else
-				retArray.add(name);
+			else if (restrict == VarRetrRest.NotArrayOnly)
+			{
+				if(!test.getIsArray())
+					retArray.add(name);
+			}
 		}
 		
 		return retArray;

@@ -68,5 +68,17 @@ public class ASTCall extends SimpleNode implements VizParserTreeConstants{
   public Object jjtAccept(VizParserVisitor visitor, Object data) {
     return visitor.visit(this, data);
   }
+  
+  
+  /*********** RANDOMIZING VISITOR *****/
+  
+  public static ASTCall createCall(String name)
+  {
+	  ASTCall call = new ASTCall(JJTCALL);
+	  
+	  call.setName(name);
+	  
+	  return call;
+  }
 }
 

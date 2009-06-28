@@ -74,7 +74,7 @@ public class XAALConnector {
     symbolNames = symbols.getLocalVarNames().toArray(symbolNames);
  
     for(String s : symbolNames)
-    {
+    {/*
       Interpreter.Variable iv = symbols.getVariable(s);
       // check if symbol s is param
       if (iv.isParam())
@@ -97,6 +97,7 @@ public class XAALConnector {
       if(iv instanceof ByRefVariable)
       {
 	   v.
+	   */
     }
   }
   

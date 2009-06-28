@@ -109,7 +109,7 @@ public class ASTFunction extends SimpleNode
 		
 		ASTStatement stmt = ASTStatement.createStmtWithChild(n);
 		
-		stmtListNode.addChildSafe(stmt, i);
+		stmtListNode.addChild(stmt, i);
 		
 		return true;
 	}

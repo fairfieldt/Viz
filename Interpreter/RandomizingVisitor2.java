@@ -8,12 +8,18 @@ public class RandomizingVisitor2 implements VizParserTreeConstants,
 	Random rand = new Random();
 	
 	final String[] possVars = {"g","m","n", "v", "w", "x", "y", "z"};
-	
+	final String[] paramNames = {"x", "y", "z" };	
 	final int minVarDeclsInGlobal = 3;
 	final int maxVarDeclsInGlobal = 5;
 	
 	final int minIntInDecl = 1;
 	final int maxIntInDecl = 5;
+	
+	final int minVarDeclsInMain = 0;
+	final int maxVarDeclsInMain = 1;
+	
+	final int minFooParams = 2;
+	final int maxFooParams = 3;
 	
 	
 	@Override
@@ -66,6 +72,9 @@ public class RandomizingVisitor2 implements VizParserTreeConstants,
 			localTable.put(newName, ByValVariable.createArrayVariable());
 		}
 		
+		visitMain(findChildFuncOfProg(node, "main"));
+		visitFoo(findChildFuncOfProg(node, "foo"));
+		
 		return node.childrenAccept(this, data);
 	}
 
@@ -76,7 +85,7 @@ public class RandomizingVisitor2 implements VizParserTreeConstants,
 
 	@Override
 	public Object visit(ASTDeclaration node, Object data) {
-		// TODO Auto-generated method stub
+		node.childrenAccept(this, null);
 		return null;
 	}
 
@@ -151,6 +160,42 @@ public class RandomizingVisitor2 implements VizParserTreeConstants,
 		return null;
 	}
 	
+	private void visitMain(ASTFunction main)
+	{
+		SymbolTable localTable = main.getSymbolTable();
+		int numVars = numOfMainVarDecls();
+		
+		for (int i = 0; i < numVars; i++)
+		{
+			ArrayList<String> badNames = localTable.getLocalVarNamesArray();
+			String name = getNewVarName(badNames);
+			int value = randomDeclInt();
+			 
+			ASTVarDecl newVarDecl = createVarDecl(name, value);
+			main.addLogicalChild(newVarDecl, i);
+			 
+			localTable.put(name, new ByValVariable(value));
+		}
+		
+		int numOfParams = numOfFooParams();
+		addParamsToFoo(numOfParams);
+		
+		ASTCall fooCall = ASTCall.createCall("foo");
+		main.addLogicalChild(fooCall, numVars);
+		
+		for (int i = 0; i < numOfParams; i++)
+		{
+			ASTVar var = createVar(localTable);
+			fooCall.addArg(var);
+		}
+		
+	}
+	
+	private void visitFoo(ASTFunction foo)
+	{
+		
+	}
+	
 	private ASTVarDecl createVarDecl(String name, int value)
 	{
 		return ASTVarDecl.createVarDecl(name, value);
@@ -175,7 +220,57 @@ public class RandomizingVisitor2 implements VizParserTreeConstants,
 		
 		return ret;
 	}
+	
+	private ASTVar createVar(SymbolTable table)
+	{
+		return createVar(table, null);
+	}
+	
+	private ASTVar createVar(SymbolTable table, ArrayList<String> bannedNames)
+	{
+		ArrayList<String> origVarNames = table.getCurrentVarNamesArray();
+		ArrayList<String> varNames = new ArrayList<String>();
+		
+		if (bannedNames != null)
+		{
+			
+		}
+		else
+		{
+			varNames = origVarNames;
+		}
+		
+		String randomVar = getRandomItem(varNames);
+		
+		Variable v = table.getVariable(randomVar);
+		
+		if (v.getIsArray())
+		{
+			ArrayList<String> nonArrayVars = table.getCurrentVarNamesArray(VarRetrRest.NotArrayOnly);
+			
+			testNonArrayVars(nonArrayVars, table);
+			
+			return ASTVar.createVarWithIndex(randomVar, getRandomItem(nonArrayVars));
+		}
 
+		return ASTVar.createVar(randomVar);
+
+	}
+	
+	private void addParamsToFoo(int numToAdd)
+	{
+		ASTFunction foo = Global.getFunctions().get("foo");
+		
+		String[] params = new String[numToAdd];
+		
+		for(int i = 0; i < numToAdd; i++)
+		{
+			params[i] = paramNames[i];
+		}
+		
+		foo.addParams(params);
+	}
+	
 	/**
 	 * random number between min and max inclusive
 	 * @param min
@@ -197,9 +292,19 @@ public class RandomizingVisitor2 implements VizParserTreeConstants,
 		return 1;
 	}
 	
+	private int numOfMainVarDecls()
+	{
+		return randomNum(minVarDeclsInMain, maxVarDeclsInMain);
+	}
+	
 	private int numOfArrayElems()
 	{
 		return 6;
+	}
+	
+	private int numOfFooParams()
+	{
+		return randomNum(minFooParams, maxFooParams);
 	}
 	
 	private int randomDeclInt()
@@ -232,8 +337,49 @@ public class RandomizingVisitor2 implements VizParserTreeConstants,
 		return items.get(rand.nextInt(items.size()));
 	}
 	
+	
+	private ASTFunction findChildFuncOfProg(ASTProgram node, String name)
+	{
+		ASTFunction ret = null;
+		
+		ASTDeclarationList list = (ASTDeclarationList)node.jjtGetChild(0);
+		
+		int numChild = list.jjtGetNumChildren();
+		
+		for (int i = 0; i < numChild; i++)
+		{
+			ASTDeclaration decl = (ASTDeclaration)list.jjtGetChild(i);
+			
+			Node child = decl.jjtGetChild(0);
+			if (child instanceof ASTFunction)
+			{
+				ASTFunction func = (ASTFunction)child;
+				
+				if (func.getName().equals(name))
+				{
+					ret = func;
+					break;
+				}
+			}
+			
+		}
+		
+		return ret;
+	}
+	
 	private void programNodeTest(ASTProgram node, SymbolTable symbolTable)
 	{
 		
 	}
+	
+	private void testNonArrayVars(ArrayList<String> vars, SymbolTable symbols)
+	{
+		for(String v : vars)
+		{
+			if (symbols.getVariable(v).getIsArray())
+				throw new AssumptionFailedException();
+		}
+	}
+	
+	
 }

@@ -55,7 +55,7 @@ public class ASTVar extends SimpleNode implements VizParserTreeConstants{
   
   	private void addIndex(Node indexNode)
   	{
-  		this.addChild(ASTDeclaration.createDeclWithChild(indexNode), 0);
+  		this.addChild(ASTExpression.createExpWithChild(indexNode), 0);
   	}
   	
 	public static ASTVar createVar(String name)
@@ -86,6 +86,8 @@ public class ASTVar extends SimpleNode implements VizParserTreeConstants{
 		ASTVar var = new ASTVar(JJTVAR);
 		
 		var.setName(name);	
+		
+		var.setIsArray(true);
 		
 		var.addIndex(indexNode);
 		
