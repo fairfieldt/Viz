@@ -71,6 +71,17 @@ public class Variable implements Drawable
 	{
 		this.isParam = isParam;
 	}
+	
+	public void setIsReference(boolean isReference)
+	{
+		this.isReference = isReference;
+	}
+	
+	public boolean getIsReference()
+	{
+		return this.isReference;
+	}
+	
 	public void setColor(String color)
 	{
 		this.color = color;
@@ -156,14 +167,16 @@ public class Variable implements Drawable
 			//title
 			String id2 = scripter.addText(xPos, yPos-5, name, "black", hidden);
 			//pointer triangle
-			String id3 = scripter.addTriangle(xPos + 5, yPos + 5 , 30, "black", hidden, 
+			String id3 = scripter.addTriangle(xPos + 16, yPos + 16 , 8, "black", hidden, 
 					StrokeType.solid, 1, "black");
+			//
 			
 			ids.add(id1);
 			ids.add(id2);
 			ids.add(id3);
 			if (ref != null)
 			{
+				System.out.println("Ref pointing to something");
 				String id4 = scripter.addArrow(id3, ref.getIds().get(0), false, hidden);
 				ids.add(id4);
 				//String id3 = scripter.addText(xPos, yPos-5, name, "black",  hidden);

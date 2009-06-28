@@ -74,15 +74,16 @@ public class XAALConnector {
     symbolNames = symbols.getLocalVarNames().toArray(symbolNames);
  
     for(String s : symbolNames)
-    {/*
+    {
       Interpreter.Variable iv = symbols.getVariable(s);
       // check if symbol s is param
       if (iv.isParam())
       {
       	Variable v;
-      	if (iv instanceof ByRefVariable)
+      	if (iv instanceof Interpreter.ByRefVariable)
       	{
-      		v = new Variable(s, new Interpreter.Variable(-255), true);
+      		v = new Variable(s, -255, true);
+      		v.setIsReference(true);
       	}
       	else
       	{	
@@ -94,10 +95,6 @@ public class XAALConnector {
         
         varToVar.put(iv.getUUID(), v);
       }
-      if(iv instanceof ByRefVariable)
-      {
-	   v.
-	   */
     }
   }
   
@@ -131,6 +128,21 @@ public class XAALConnector {
       System.out.println(key);
     }
     scopes.get(scope).addVariable(v);
+  }
+  
+  public void addVariableReference(Interpreter.Variable src, Interpreter.Variable  dest)
+  {
+  	Variable v1 = varToVar.get(src.getUUID());
+  	Variable v2 = varToVar.get(src.getUUID());
+  	
+  	if (v1 == null || v2 == null)
+  	{
+  		System.out.println("Bad variable");
+  		return;
+  	}
+  	
+  	v1.setReference(v2);
+  	
   }
   
   /**

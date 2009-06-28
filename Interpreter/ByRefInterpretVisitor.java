@@ -93,7 +93,7 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 	
 	public void handleProgram(ASTProgram node)
 	{
-		//System.out.println("visiting program");
+		System.out.println("visiting program");
 		Global.setCurrentSymbolTable(Global.getSymbolTable()); 
 		update(1, UPDATE_REASON_BEGIN);
 		
@@ -119,7 +119,7 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 	
 	public void handleDeclarationList(ASTDeclarationList node)
 	{
-		//System.out.println("Visiting declList");
+		System.out.println("Visiting declList");
 		int numDecls = node.jjtGetNumChildren();
 		for (int i = 0; i < numDecls; i++)
 		{
@@ -162,7 +162,7 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 	
 	public void handleVarDecl(ASTVarDecl node)
 	{
-		//System.out.println("Visiting var decl");
+		System.out.println("Visiting var decl");
 		String name = node.getName();
 		node.setLineNumber(((SimpleNode)node.jjtGetParent()).getLineNumber());
 		SymbolTable s = Global.getCurrentSymbolTable();
@@ -197,7 +197,7 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 		//Get the function's symbol table, set it's previous to the
 		// calling function's, and then set it to current.
 		
-		
+		System.out.println("Visiting function");
 		SymbolTable currentSymbolTable = node.getSymbolTable();
 		for (String p : node.getParameters())
 		{
@@ -292,7 +292,8 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 			pa.put(parameters.get(i), argNames.get(i).getName());
 		}
 		Global.setCurrentParamToArg(pa);
-		
+		//Ok lets set refs now	
+	
 		//Drawing Stuff
 		connector.addScope(fun.getSymbolTable(), fun.getName(), "Global");
 		connector.startSnap(node.getLineNumber());
@@ -303,19 +304,16 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 			
 			connector.startPar();
 				for (int i = 0; i < parameters.size(); i++)
-				{
-					Variable v1 = Global.getCurrentSymbolTable().getVariable(argNames.get(i).getName());
-					Variable v2 = st.getVariable(parameters.get(i));
-					if (v1.getIsArray())
-					{
-						int index = argNames.get(i).getIndex();
-						connector.moveValue(v1, index, v2);
-					}
-					else
-					{
-						connector.moveValue(v1, v2);
-					}
+				{ 	
+					Variable v1 = Global.getCurrentSymbolTable().getVariable(argNames.get(i).getName());				Variable v2 = st.getVariable(parameters.get(i));		
+	
+					((ByRefVariable)v2).setRef(((ByValVariable)v1)); //Now in interpreter we should be pointing correctly.  				
+					
+					System.out.println("Adding a reference from " + argNames.get(i).getName() +
+						" to " + parameters.get(i));
+					connector.addVariableReference(v2, v1);
 				}
+				
 			connector.endPar();
 		connector.endSnap();
 				
@@ -341,7 +339,7 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 		Integer value = (Integer)node.jjtGetChild(1).jjtAccept(this, null);
 		int index = 0;
 		Variable v = Global.getCurrentSymbolTable().getVariable(name);
-
+		System.out.println("V: " + v);
 		if (v.getIsArray())
 		{
 			index = (Integer) node.jjtGetChild(0).jjtGetChild(0).jjtAccept(this, null);
@@ -349,9 +347,9 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 		}
 		else
 		{
-			Global.getCurrentSymbolTable().setValue(name, value);
+			v.setValue(value);
 		}
-		
+		System.out.println("Ok, set value");
 		//Drawing stuff. snap and par should be opened from enclosing statement
 		
 		connector.addQuestion(questionFactory.addAssignmentQuestion(Global.getCurrentParamToArg(), name));
@@ -363,12 +361,22 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 			{
 				connector.modifyVar(Global.getCurrentSymbolTable().getVariable(name), index, value);
 			}
-			else
+			else if (v instanceof ByValVariable)
 			{
 				connector.modifyVar(Global.getCurrentSymbolTable().getVariable(name), value);
 			}
+			
+			else 
+			{
+				ByRefVariable var = (ByRefVariable)Global.getCurrentSymbolTable().getVariable(name);
+				System.out.println("It's a reference variable.");
+				connector.modifyVar(
+						var.getRef(),
+						 value);
+			}
 		
 		update(node.getLineNumber(), UPDATE_REASON_ASSIGNMENT);
+		System.out.println("Leaving assignment");
 		
 	}
 	

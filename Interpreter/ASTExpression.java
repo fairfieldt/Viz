@@ -13,6 +13,7 @@ public class ASTExpression extends SimpleNode implements VizParserTreeConstants
   
   public String getCode()
   {
+  	System.out.println("Getcode in expression");
   	return jjtGetChild(0).getCode();
   }
 

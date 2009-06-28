@@ -17,7 +17,8 @@ public class RefTest
 		
 			System.out.println("Successfully Parsed");
 			System.out.println("________________\n");
-
+			
+			program.dump("");
 			program.buildCode();
 			System.out.println("Built code");
 			

@@ -5,6 +5,7 @@ public class ByRefVariable extends AbstractVariable implements Variable
 {
 	//The ByValVariable we're referring to
 	private ByValVariable ref;
+	private int refIndex = -1;
 	
 	public ByRefVariable(ByValVariable ref)
 	{
@@ -16,6 +17,12 @@ public class ByRefVariable extends AbstractVariable implements Variable
 		this.ref = ref;
 	}
 	
+	public void setRef(ByValVariable ref, int index)
+	{
+		this.ref = ref;
+		this.refIndex = index;
+	}	
+	
 	public ByValVariable getRef()
 	{
 		return this.ref;
@@ -23,12 +30,20 @@ public class ByRefVariable extends AbstractVariable implements Variable
 	
 	public void setValue(int value)
 	{
+		System.out.println("ref: " + ref);
+		System.out.println("Setting value");
 		this.ref.setValue(value);
+		System.out.println("Done setting value");
 	}
 	
 	public int getValue()
 	{
-		return this.ref.getValue();
+		System.out.println("Getting value");
+		if (this.refIndex == -1) //Normal var
+		{
+			return this.ref.getValue();
+		}
+		return this.ref.getValue(refIndex);
 	}
 	
 	public void setParam()

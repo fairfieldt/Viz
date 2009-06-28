@@ -61,6 +61,7 @@ public class ASTCall extends SimpleNode implements VizParserTreeConstants{
   
   public String getCode()
   {
+  	System.out.println("GetCode in call");
   	return name + "(" + jjtGetChild(0).getCode() + ");";
   }
 
