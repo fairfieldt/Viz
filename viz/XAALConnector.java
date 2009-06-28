@@ -3,6 +3,8 @@ package viz;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+
+import Interpreter.Global;
  
 //TODO: highlighting doesn't always work.
 public class XAALConnector {
@@ -67,34 +69,36 @@ public class XAALConnector {
     {
       scopes.get(parent).addScope(retScope);
     }
-    //Global never starts hidden
+    
     retScope.setHidden(true);
     
-    String[] symbolNames = new String[symbols.getLocalVarNames().size()];
-    symbolNames = symbols.getLocalVarNames().toArray(symbolNames);
- 
-    for(String s : symbolNames)
+    if (!name.equals("Global")) // global's not in the function table so don't try to find it
     {
-      Interpreter.Variable iv = symbols.getVariable(s);
-      // check if symbol s is param
-      if (iv.isParam())
-      {
-      	Variable v;
-      	if (iv instanceof Interpreter.ByRefVariable)
-      	{
-      		v = new Variable(s, -255, true);
-      		v.setIsReference(true);
-      	}
-      	else
-      	{	
-        	v = new Variable(s, symbols.get(s), true);
-        }
-        retScope.addVariable(v);
-        //add a copy of the original
-        v.addCopy();
-        
-        varToVar.put(iv.getUUID(), v);
-      }
+	    Interpreter.ASTFunction func = Global.getFunction(name);
+	    
+	    ArrayList<String> params = func.getParameters();
+	    
+	    for (String p : params)
+	    {
+	    	Interpreter.Variable iv = symbols.getVariable(p);
+	    	Variable v;
+	    	
+	      	if (iv instanceof Interpreter.ByRefVariable)
+	      	{
+	      		v = new Variable(p, -255, true);
+	      		v.setIsReference(true);
+	      	}
+	      	else
+	      	{	
+	        	v = new Variable(p, symbols.get(p), true);
+	        }
+	        retScope.addVariable(v);
+	       
+	        //add a copy of the original
+	        v.addCopy();
+	        
+	        varToVar.put(iv.getUUID(), v);
+	    }
     }
   }
   

@@ -711,7 +711,7 @@ Element initial = document.getRootElement().getChild("initial", defaultNS);
 		coordinate.setAttribute("y", endY + "");
 		arrow.addContent(coordinate);
 				
-
+/*
 		coordinate = new Element("coordinate");
 		coordinate.setAttribute("x", (endX -10) + "");
 		coordinate.setAttribute("y", (endY +10) + "");
@@ -729,7 +729,7 @@ Element initial = document.getRootElement().getChild("initial", defaultNS);
 		coordinate.setAttribute("y", (endY +10) + "");
 
 		arrow.addContent(coordinate);
-		
+	*/	
 		arrow.setAttribute("hidden", hidden + "");
 		
 		Element style = createElement("style");
