@@ -22,9 +22,9 @@ public class RefTest
 		{
 			ASTProgram program = (ASTProgram)parser.program();
 
-			RandomizingVisitor rv = new RandomizingVisitor();
+			RandomizingVisitor2 rv = new RandomizingVisitor2();
 				
-			//program.jjtAccept(rv, null);
+			program.jjtAccept(rv, null);
 		
 			System.out.println("Successfully Parsed");
 			System.out.println("________________\n");
