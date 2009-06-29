@@ -239,7 +239,8 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 				e.printStackTrace();
 			}
 			
-			v.setValue(-255);
+			if (varClass != ByRefVariable.class)
+				v.setValue(-255);
 			
 			v.setParam();
 			

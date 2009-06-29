@@ -24,7 +24,7 @@ public class EricTest2 {
 		{
 			ASTProgram program = (ASTProgram)parser.program();
 
-			RandomizingVisitor2<Interpreter.ByValVariable> rv = new RandomizingVisitor2<Interpreter.ByValVariable>(Interpreter.ByValVariable.class);
+			RandomizingVisitor2<Interpreter.ByRefVariable> rv = new RandomizingVisitor2<Interpreter.ByRefVariable>(Interpreter.ByRefVariable.class);
 				
 			program.jjtAccept(rv, null);
 		
