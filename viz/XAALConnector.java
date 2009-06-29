@@ -118,6 +118,16 @@ public class XAALConnector {
     else
     {
     	v = new Variable(varName, var.getValue(), false);
+    	
+    	if (var instanceof Interpreter.ByCopyRestoreVariable)
+    	{
+    		v.setIsCopyRestore();
+    	}
+    	else if (var instanceof Interpreter.ByRefVariable)
+    	{
+    		v.setIsReference(true);
+    	}
+    	
     	v.addCopy();
     }
     
@@ -146,6 +156,7 @@ public class XAALConnector {
   	}
   	
   	v1.setReference(v2);
+  
   	
   }
   
@@ -162,7 +173,9 @@ public class XAALConnector {
 	  		return;
 	  	}
 	  	
-	  	v1.setReference(v2, index); 
+	  	v1.setReference(v2, index);
+	  	
+	  	
   }
   
   /**

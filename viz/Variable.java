@@ -84,7 +84,17 @@ public class Variable implements Drawable
 	{
 		this.ref = ref;
 		this.refIndex = index;
-		this.isReference = true;
+		
+	}
+	
+	public void setIsCopyRestore()
+	{
+		this.isCopyRestore = true;
+	}
+	
+	public boolean getIsCopyRestore()
+	{
+		return this.isCopyRestore;
 	}
 	
 	public void setPosition(int xPos, int yPos)
