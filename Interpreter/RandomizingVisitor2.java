@@ -267,6 +267,10 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 		ArrayList<String> safeIndexVars = new ArrayList<String>();
 		safeIndexVars.add(createSafeIndexVar(localTable));
 		
+		if (varClass == ByRefVariable.class)
+			safeIndexVars.addAll(createSafeIndexRefs(safeIndexVars, localTable));
+		
+		
 		int numAOStmts = numOfFooAOStmts();
 		
 		//this pos to use the ArrayIndex
@@ -381,6 +385,31 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 		testSafeIndexVars(safeVars, localTable);
 		
 		return getRandomItem(safeVars);
+	}
+	
+	private ArrayList<String> createSafeIndexRefs(ArrayList<String> safeIndexs, SymbolTable localTable)
+	{
+		ArrayList<String> ret = new ArrayList<String>();
+		
+		for (String s : safeIndexs)
+		{
+			Variable v = localTable.getVariable(s);
+			if (v instanceof ByRefVariable)
+			{
+				String name = localTable.getNameByVariable(v);
+				if(name != null)
+				{
+					ret.add(name);
+				}	
+				else
+				{
+					throw new AssumptionFailedException();
+				}
+				
+			}
+		}
+		
+		return ret;
 	}
 	
 	private ASTAssignment createBasicAssign(SymbolTable localTable, ArrayList<String> badNames)

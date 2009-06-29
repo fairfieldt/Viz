@@ -22,7 +22,7 @@ public class RefTest
 		{
 			ASTProgram program = (ASTProgram)parser.program();
 
-			RandomizingVisitor2 rv = new RandomizingVisitor2();
+			RandomizingVisitor2<Interpreter.ByRefVariable> rv = new RandomizingVisitor2<Interpreter.ByRefVariable>(Interpreter.ByRefVariable.class);
 				
 			program.jjtAccept(rv, null);
 		

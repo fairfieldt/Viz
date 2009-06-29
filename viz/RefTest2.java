@@ -1,5 +1,6 @@
 package viz;
 import Interpreter.*;
+
 import java.io.*;
 
 public class RefTest2
@@ -22,9 +23,9 @@ public class RefTest2
 		{
 			ASTProgram program = (ASTProgram)parser.program();
 
-			RandomizingVisitor rv = new RandomizingVisitor();
+			RandomizingVisitor2<Interpreter.ByRefVariable> rv = new RandomizingVisitor2<Interpreter.ByRefVariable>(Interpreter.ByRefVariable.class);
 				
-			//program.jjtAccept(rv, null);
+			program.jjtAccept(rv, null);
 		
 			System.out.println("Successfully Parsed");
 			System.out.println("________________\n");
@@ -50,12 +51,11 @@ public class RefTest2
 			program.jjtAccept(iv, null);
 			System.out.println(Global.getFunction("foo").getParameters().size());
 			System.out.println(Global.getFunction("foo").getSymbolTable().getLocalVariables().size());
-			xc.draw("C:\\Users\\Eric\\Desktop\\RefTest.xaal");
+			xc.draw("C:\\Users\\Eric\\Desktop\\byref.xaal");
 						for (String line: program.getPseudocode())
 						{
 							System.out.println(line);
 						}
-
 		}
 		catch (Exception e)
 		{

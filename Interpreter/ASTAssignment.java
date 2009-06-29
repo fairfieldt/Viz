@@ -43,6 +43,12 @@ public class ASTAssignment extends SimpleNode implements VizParserTreeConstants{
 	  
 	  assign.addChild(lhs, 0);
 	  
+	  if (lhs.getName() == null)
+		  throw new AssumptionFailedException();
+	  
+	  assign.setName(lhs.getName());
+	  
+	  
 	  assign.addChild(ASTExpression.createExpWithChild(rhs), 1);
 	  
 	  return assign;

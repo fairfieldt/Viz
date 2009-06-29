@@ -37,6 +37,25 @@ public class SymbolTable
 		return v;
 	}
 	
+	public String getNameByVariable(Variable v)
+	{
+		String ret = null;
+		
+		ArrayList<String> names = getCurrentVarNamesArray();
+		
+		for (String name : names)
+		{
+			Variable test = this.getVariable(name);
+			if (test == v)
+			{
+				ret = name;
+				break;
+			}
+		}
+		
+		return ret;
+	}
+	
 	public HashMap<String, Variable> getLocalVariables()
 	{
 		return vars;
