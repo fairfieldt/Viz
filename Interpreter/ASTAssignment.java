@@ -2,6 +2,7 @@ package Interpreter;
 
 public class ASTAssignment extends SimpleNode implements VizParserTreeConstants{
   private String name;
+  private int lineNumber;
   public ASTAssignment(int id) {
     super(id);
   }
@@ -10,11 +11,16 @@ public class ASTAssignment extends SimpleNode implements VizParserTreeConstants{
     super(p, id);
   }
   
+  public int getLineNumber()
+  {
+  	return lineNumber;
+  }
+  
   public String getCode()
   {
   	String code = jjtGetChild(0).getCode() + " = ";
   	code += jjtGetChild(1).getCode() + ";";
-  	
+  	this.lineNumber = Global.lineNumber - 1;
   	return code;
   }
 

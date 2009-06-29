@@ -354,6 +354,8 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 			connector.startPar();
 				for (int i = 0; i < parameters.size(); i++)
 				{
+					v1 = Global.getCurrentSymbolTable().getVariable(argNames.get(i).getName());				
+					v2 = (ByCopyRestoreVariable)st.getVariable(parameters.get(i));		
 					connector.moveValue(v2, v1);
 				}
 			connector.endPar();
