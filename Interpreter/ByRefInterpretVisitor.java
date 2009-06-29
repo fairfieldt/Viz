@@ -28,6 +28,7 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 		//We'll add a question some % of the time
 		if (chance > QUESTION_FREQUENCY)
 		{
+			/*
 			switch (reason)
 			{
 				case QUESTION_REASON_BEGIN:
@@ -39,8 +40,9 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 				case QUESTION_REASON_ASSIGNMENT:
 					assignmentQuestion = questionFactory.getAssignmentQuestion(lineNumber, varName);		
 					break;
-			}
+			}*/
 		}
+		return true;
 	}
 
 	//FIXME use this?
@@ -55,7 +57,8 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 	private Question getStartQuestion()
 	{
 		//FIXME random
-		return startQuestions.get(0);
+		return null;
+		//return startQuestions.get(0);
 	}
 	public Object visit(SimpleNode node, Object data)
 	{
@@ -381,7 +384,7 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 	public void handleAssignment(ASTAssignment node)
 	{
 		String name = node.getName();
-		boolean gotAQuestion = addQuestion(node.getLineNumber(), name, QUESTION_REASON_ASSIGNMENT);
+		//boolean gotAQuestion = addQuestion(node.getLineNumber(), name, QUESTION_REASON_ASSIGNMENT);
 		Integer value = (Integer)node.jjtGetChild(1).jjtAccept(this, null);
 		System.out.println("Assigning to " + name + " value of " + value);
 		int index = 0;
@@ -398,13 +401,14 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 		}
 		System.out.println("Ok, set value");
 		//Drawing stuff. snap and par should be opened from enclosing statement
+		/*
 		if (gotAQuestion)
 		{
 			connector.endPar();
 			connector.endSnap();
 			connector.startSnap(node.getLineNumber());
 			connector.startPar();
-		}
+		}*/
 			if (v.getIsArray())
 			{
 				connector.modifyVar(Global.getCurrentSymbolTable().getVariable(name), index, value);

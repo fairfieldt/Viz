@@ -628,7 +628,7 @@ public class XAALConnector {
 	    scripter.addShow(newCopy);
 	    
 	    scripter.addChangeStyle(highlightColor, copy1);
-	    from.receiveCopyOwnership(newCopy);
+	    from.receiveCopyOwnership(newCopy, fromIndex);
 	    
 	    // get copy from second variable
 	    String copy2 = to.popCopyId();
@@ -638,7 +638,12 @@ public class XAALConnector {
 	    scripter.reclosePar();
 	    //perform the move!!!
 	    
-	    scripter.startPar();
+	    boolean parExists = false;
+	    parExists = scripter.reopenPar(1);
+	    
+	    if (!parExists)
+	    	scripter.startPar();
+	    
 	    int startX = from.getXPos(fromIndex);
 	    int startY = from.getYPos();
 	    
@@ -662,7 +667,10 @@ public class XAALConnector {
 	    to.setValue(from.getValue(fromIndex));
 	    
 	  //reclose the par
-	    scripter.endPar();
+	    if (parExists)
+	    	scripter.reclosePar();
+	    else
+	    	scripter.endPar();
 	    //reclose the slide
 	    scripter.recloseSlide();
 	    // turn off highlighting on next slide
@@ -677,7 +685,7 @@ public class XAALConnector {
 	  }
 	  catch (Exception e)
 	  {
-		  
+		  System.out.println("this is bad");
 	  }
   }
   
@@ -715,8 +723,11 @@ public class XAALConnector {
 	    scripter.addHide(copy2);
 	    scripter.reclosePar();
 	    
+	    boolean parExists = false;
+	    parExists = scripter.reopenPar(1);
 	    
-	    scripter.startPar();
+	    if (!parExists)
+	    	scripter.startPar();
 	    int startX = from.getXPos();
 	    int startY = from.getYPos();
 	    
@@ -734,14 +745,17 @@ public class XAALConnector {
 	    scripter.addTranslate(-moveX, -moveY, copy1);
 	    
 	    // give ownership of copy1 to second variable.
-	    to.receiveCopyOwnership(copy1);
+	    to.receiveCopyOwnership(copy1, toIndex);
 	    
 	    // set the value of 'to' to from's value
 	    to.setElem(toIndex, from.getValue());
 	    
 	    
 	  //reclose the par
-	    scripter.endPar();
+	    if (parExists)
+	    	scripter.reclosePar();
+	    else
+	    	scripter.endPar();
 	    //reclose the slide
 	    scripter.recloseSlide();
 	    // turn off highlighting on next slide
