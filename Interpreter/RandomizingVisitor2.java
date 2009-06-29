@@ -44,8 +44,7 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 	public RandomizingVisitor2(Class<T> clazz)
 	{
 		varClass = clazz;
-		//this.intrCase = getIntrCase();
-		intrCase = InterestingCases.Aliasing;
+		this.intrCase = getIntrCase();
 	}
 	
 	
