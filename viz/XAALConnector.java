@@ -511,10 +511,22 @@ public class XAALConnector {
     //perform the move!!!
     
     scripter.startPar();
-    int startX = from.getXPos();
+    int startX = from.getXPos(); 
     int startY = from.getYPos();
+    
+    if (to.getIsCopyRestore()) //you've gotta take it from right box
+    {
+    	startX = from.getRightXPosCR();
+    }
+    
+   
     int endX = to.getXPos();
     int endY = to.getYPos();
+    
+    if (to.getIsCopyRestore()) //you've gotta take it from right box
+    {
+    	endX = to.getRightXPosCR();
+    }
     
     int moveX = startX - endX;
     int moveY = startY - endY;

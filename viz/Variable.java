@@ -181,6 +181,11 @@ public class Variable implements Drawable
 	{
 		return this.yPos;
 	}
+	
+	public int getRightXPosCR()
+	{
+		return this.xPos + 60;
+	}
 
 	public boolean getIsParam()
 	{
