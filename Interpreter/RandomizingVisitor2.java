@@ -37,6 +37,8 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 	final double chanceOfPlusToMinus = 1.0/2.0;
 	
 	final double chanceOfArrayInMain = 1.0/2.0;
+	final double chanceOfArrayInFoo = 1.0/2.0;
+	
 	
 	InterestingCases intrCase;
 	/**
@@ -125,19 +127,19 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 
 	@Override
 	public Object visit(ASTVarDecl node, Object data) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public Object visit(ASTArrayDeclaration node, Object data) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public Object visit(ASTFunction node, Object data) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
@@ -148,49 +150,49 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 
 	@Override
 	public Object visit(ASTStatement node, Object data) {
-		// TODO Auto-generated method stub
+	
 		return null;
 	}
 
 	@Override
 	public Object visit(ASTCall node, Object data) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public Object visit(ASTVar node, Object data) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public Object visit(ASTAssignment node, Object data) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public Object visit(ASTExpression node, Object data) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public Object visit(ASTArgs node, Object data) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public Object visit(ASTOp node, Object data) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public Object visit(ASTNum node, Object data) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 	
@@ -251,10 +253,10 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 			try {
 				v = (Variable)varClass.newInstance();
 			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
 			
@@ -281,7 +283,21 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 			localTable.put(name, new ByValVariable(value));
 		}
 		
-		//TODO: Add Array Declaration
+		
+		if (arrayInFoo())
+		{
+			ArrayList<String> badVars = localTable.getLocalVarNamesArray();
+			String name = getNewVarName(badVars);
+			
+			ASTVarDecl v = createArrayDecl(name);
+			foo.addLogicalChild(v, numVarDecls);
+			
+			localTable.put(name, ByValVariable.createArrayVariable());
+			
+			//increment so the AO statements are in the right place
+			numVarDecls++;
+		}
+		
 		
 		ArrayList<String> safeIndexVars = new ArrayList<String>();
 		safeIndexVars.add(createSafeIndexVar(localTable));
@@ -617,7 +633,7 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 		
 	}
 	
-	private <T> T getRandomItem(ArrayList<T> items)
+	private <S> S getRandomItem(ArrayList<S> items)
 	{
 		return items.get(rand.nextInt(items.size()));
 	}
@@ -649,6 +665,11 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 	private boolean arrayInMain()
 	{
 		return binDecision(chanceOfArrayInMain);
+	}
+	
+	private boolean arrayInFoo()
+	{
+		return binDecision(chanceOfArrayInFoo);
 	}
 	
 	private boolean binDecision(double probability)
