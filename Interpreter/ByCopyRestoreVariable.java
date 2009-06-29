@@ -8,6 +8,10 @@ public class ByCopyRestoreVariable extends AbstractVariable implements Variable
 	private int refIndex = -1;
 	private int value;
 	
+	public ByCopyRestoreVariable()
+	{
+	
+	}
 	public ByCopyRestoreVariable(ByValVariable ref)
 	{
 		setRef(ref);

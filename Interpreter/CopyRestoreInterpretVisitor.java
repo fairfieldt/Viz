@@ -201,7 +201,7 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 		SymbolTable currentSymbolTable = node.getSymbolTable();
 		for (String p : node.getParameters())
 		{
-			ByRefVariable v = new ByRefVariable(null);
+			ByCopyRestoreVariable v = new ByCopyRestoreVariable();
 			v.setParam();
 			currentSymbolTable.put(p, v);
 		}
@@ -282,7 +282,7 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 		{
 			Variable vv = st.getVariable(parameters.get(i));
 			System.out.println(vv + " ");
-			ByRefVariable v = (ByRefVariable)st.getVariable(parameters.get(i));
+			ByCopyRestoreVariable v = (ByCopyRestoreVariable)st.getVariable(parameters.get(i));
 			ByValVariable ref = (ByValVariable)Global.getCurrentSymbolTable().getVariable(argNames.get(i).getName());
 			if (ref.getIsArray())
 			{
@@ -316,7 +316,7 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 				{ 	
 					Variable v1 = Global.getCurrentSymbolTable().getVariable(argNames.get(i).getName());				Variable v2 = st.getVariable(parameters.get(i));		
 	
-					((ByRefVariable)v2).setRef(((ByValVariable)v1)); //Now in interpreter we should be pointing correctly.  				
+					//((ByRefVariable)v2).setRef(((ByValVariable)v1)); //Now in interpreter we should be pointing correctly.  				
 					
 					System.out.println("Adding a reference from " + argNames.get(i).getName() +
 						" to " + parameters.get(i));
@@ -522,7 +522,7 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
   	public void leaveScope()
   	{
   		System.out.println("Leaving scope " + Global.getCurrentSymbolTable().getName());
-
+		
   		update(-1, UPDATE_REASON_LEAVEFUN);
   	}
 }

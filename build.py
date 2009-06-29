@@ -6,7 +6,7 @@ def build():
 	os.system("rm viz/*.class")
 	os.system("jjtree -OUTPUT_DIRECTORY=Interpreter Interpreter/VizParser.jjt")
 	os.system("javacc -OUTPUT_DIRECTORY=Interpreter Interpreter/VizParser.jj")
-	os.system("javac viz/NewTest.java")
+	os.system("javac -g viz/NewTest.java")
 #	os.system("java VizParser < testProg.src")
 	print "Rebuilt"
 

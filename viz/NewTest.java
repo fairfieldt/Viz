@@ -1,12 +1,24 @@
 package viz;
 import Interpreter.*;
+import java.io.*;
 
 public class NewTest
 {
 	public static void main(String[] args)
 	{
 		Global.InterpreterType = InterpreterTypes.BY_VALUE;
-		VizParser parser = new VizParser(System.in);
+		
+		BufferedReader br = null;
+		try
+		{
+			br = new BufferedReader(new FileReader(args[0]));
+		}
+		catch (Exception e)
+		{
+			System.out.println(e);
+		}
+		
+		VizParser parser = new VizParser(br);
 		try
 		{
 			ASTProgram program = (ASTProgram)parser.program();
