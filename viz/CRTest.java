@@ -2,12 +2,12 @@ package viz;
 import Interpreter.*;
 import java.io.*;
 
-public class NewTest
+public class CRTest
 {
 	public static void main(String[] args)
 	{
-		Global.InterpreterType = InterpreterTypes.BY_VALUE;
-		
+		System.out.println("Starting");
+		Global.InterpreterType = InterpreterTypes.BY_COPY_RESTORE;
 		BufferedReader br = null;
 		try
 		{
@@ -17,19 +17,18 @@ public class NewTest
 		{
 			System.out.println(e);
 		}
-		
 		VizParser parser = new VizParser(br);
 		try
 		{
 			ASTProgram program = (ASTProgram)parser.program();
 
-			RandomizingVisitor rv = new RandomizingVisitor();
+			RandomizingVisitor2<ByRefVariable> rv = new RandomizingVisitor2<ByRefVariable>(ByRefVariable.class);
 				
 			program.jjtAccept(rv, null);
 		
 			System.out.println("Successfully Parsed");
 			System.out.println("________________\n");
-
+			
 			program.buildCode();
 			System.out.println("Built code");
 			
@@ -44,7 +43,7 @@ public class NewTest
 			
 			QuestionFactory questionFactory = new QuestionFactory();
 			
-			InterpretVisitor iv = new InterpretVisitor();
+			CopyRestoreInterpretVisitor iv = new CopyRestoreInterpretVisitor();
 			iv.setXAALConnector(xc);
 			iv.setQuestionFactory(questionFactory);
 			program.jjtAccept(iv, null);
