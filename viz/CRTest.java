@@ -2,12 +2,12 @@ package viz;
 import Interpreter.*;
 import java.io.*;
 
-public class RefTest
+public class CRTest
 {
 	public static void main(String[] args)
 	{
 		System.out.println("Starting");
-		Global.InterpreterType = InterpreterTypes.BY_REFERENCE;
+		Global.InterpreterType = InterpreterTypes.BY_COPY_RESTORE;
 		BufferedReader br = null;
 		try
 		{
@@ -29,7 +29,6 @@ public class RefTest
 			System.out.println("Successfully Parsed");
 			System.out.println("________________\n");
 			
-			program.dump("");
 			program.buildCode();
 			System.out.println("Built code");
 			
@@ -44,7 +43,7 @@ public class RefTest
 			
 			QuestionFactory questionFactory = new QuestionFactory();
 			
-			ByRefInterpretVisitor iv = new ByRefInterpretVisitor();
+			CopyRestoreInterpretVisitor iv = new CopyRestoreInterpretVisitor();
 			iv.setXAALConnector(xc);
 			iv.setQuestionFactory(questionFactory);
 			program.jjtAccept(iv, null);

@@ -39,6 +39,18 @@ public class ByCopyRestoreVariable extends AbstractVariable implements Variable
 		return this.refIndex;
 	}
 	
+	public void copyOut()
+	{
+		if (this.refIndex == -1)
+		{
+			this.ref.setValue(this.value);
+		}
+		else
+		{
+			this.ref.setValue(refIndex, value);
+		}
+	}
+	
 	public ByValVariable getRef()
 	{
 		return this.ref;
@@ -47,11 +59,7 @@ public class ByCopyRestoreVariable extends AbstractVariable implements Variable
 	public int getValue()
 	{
 		System.out.println("Getting value");
-		if (this.refIndex == -1) //Normal var
-		{
-			return this.ref.getValue();
-		}
-		return this.ref.getValue(refIndex);
+		return this.value;
 	}
 	
 	public void setParam()

@@ -48,6 +48,9 @@ public class ASTFunction extends SimpleNode
 			case InterpreterTypes.BY_REFERENCE:
 				v = new ByRefVariable(null);
 				break;
+			case InterpreterTypes.BY_COPY_RESTORE:
+				v = new ByCopyRestoreVariable();
+				break;
 			default:
 				v = new ByValVariable(-255);
 				System.out.println("Error, default interpreter type reached");

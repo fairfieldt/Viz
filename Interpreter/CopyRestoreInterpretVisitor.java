@@ -221,6 +221,13 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 		System.out.println("Executing function: " + node.getName());
 		update(node.getLineNumber(), UPDATE_REASON_FUNCTION);
 		node.jjtGetChild(0).jjtAccept(this, null);
+		
+		for (String p : node.getParameters())
+		{
+			((ByCopyRestoreVariable)currentSymbolTable.getVariable(p)).copyOut();
+		}
+		System.out.println("LEAVING");
+		System.out.println(Global.getCurrentSymbolTable());
 		leaveScope();
 	}
 	public ArrayList<Integer> handleArrayDeclaration(ASTArrayDeclaration node)
@@ -382,23 +389,14 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 				connector.modifyVar(Global.getCurrentSymbolTable().getVariable(name), value);
 			}
 			
-			else 
+			else
 			{
-				ByRefVariable var = (ByRefVariable)Global.getCurrentSymbolTable().getVariable(name);
-				System.out.println("It's a reference variable named " + name);
-				ByValVariable val = var.getRef();
-				if (val.getIsArray())
-				{
-					connector.modifyVar(val, var.getRefIndex(), value);
-				}
-				else
-				{
-					connector.modifyVar(
-						val,
-						 value);
-				}
+				ByCopyRestoreVariable var = 
+				(ByCopyRestoreVariable)Global.getCurrentSymbolTable().getVariable(name);
+				System.out.println("It's a CR variable named " + name);
+				connector.modifyVar(var, value);
 			}
-		
+
 		update(node.getLineNumber(), UPDATE_REASON_ASSIGNMENT);
 		System.out.println("Leaving assignment");
 		
