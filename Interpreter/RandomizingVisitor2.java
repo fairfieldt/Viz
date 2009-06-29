@@ -2,10 +2,12 @@ package Interpreter;
 
 import java.util.*;
 
-public class RandomizingVisitor2<T extends AbstractVariable> implements VizParserTreeConstants,
+public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 		VizParserVisitor
 {
 	Random rand = new Random();
+	
+	Class<T> varClass = null;
 	
 	final String[] possVars = {"g","i", "j", "k", "m","n", "v", "w"};
 	final String[] paramNames = {"x", "y", "z" };	
@@ -33,6 +35,16 @@ public class RandomizingVisitor2<T extends AbstractVariable> implements VizParse
 	final double chanceOfNumToVar = 1.0/10.0;
 	final double chanceOfAssignToOp = 1.5/10.0;
 	final double chanceOfPlusToMinus = 1.0/2.0;
+	
+	/**
+	 * 
+	 * @param clazz the subclass of AbstractVariable that you want the randomizer to use
+	 */
+	public RandomizingVisitor2(Class<T> clazz)
+	{
+		varClass = clazz;
+	}
+	
 	
 	@Override
 	public Object visit(SimpleNode node, Object data) {
@@ -216,7 +228,18 @@ public class RandomizingVisitor2<T extends AbstractVariable> implements VizParse
 		ArrayList<String> params = foo.getParameters();
 		for(String p : params)
 		{
-			Variable v = new ByValVariable(-128);
+			Variable v = null;
+			try {
+				v = (Variable)varClass.newInstance();
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			v.setValue(-255);
 			
 			v.setParam();
 			

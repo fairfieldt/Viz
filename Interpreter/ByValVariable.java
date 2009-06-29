@@ -15,6 +15,11 @@ public class ByValVariable extends AbstractVariable implements Variable
 	//If an array, the values
 	private ArrayList<Integer> values = new ArrayList<Integer>();
 	
+	public ByValVariable()
+	{
+		super();
+	}
+	
 	/**
 	 * The constructor calls the super() constructor and stores the value
 	 * @param value the starting value

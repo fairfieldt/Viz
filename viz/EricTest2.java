@@ -16,7 +16,7 @@ public class EricTest2 {
 		try {
 			stream = new FileInputStream(args[0]);
 		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
+
 			e1.printStackTrace();
 		}
 		VizParser parser = new VizParser(stream);
@@ -24,7 +24,7 @@ public class EricTest2 {
 		{
 			ASTProgram program = (ASTProgram)parser.program();
 
-			RandomizingVisitor2 rv = new RandomizingVisitor2();
+			RandomizingVisitor2<Interpreter.ByValVariable> rv = new RandomizingVisitor2<Interpreter.ByValVariable>(Interpreter.ByValVariable.class);
 				
 			program.jjtAccept(rv, null);
 		

@@ -7,8 +7,13 @@ public class ByRefVariable extends AbstractVariable implements Variable
 	private ByValVariable ref;
 	private int refIndex = -1;
 	
-	public ByRefVariable(ByValVariable ref)
+	public ByRefVariable()
 	{
+		super();
+	}
+	
+	public ByRefVariable(ByValVariable ref)
+	{	super();
 		setRef(ref);
 	}
 	
