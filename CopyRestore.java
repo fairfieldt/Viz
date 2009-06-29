@@ -1,8 +1,8 @@
-package viz;
 import Interpreter.*;
+import viz.*;
 import java.io.*;
 
-public class CRTest
+public class CopyRestore
 {
 	public static void main(String[] args)
 	{
@@ -11,7 +11,7 @@ public class CRTest
 		BufferedReader br = null;
 		try
 		{
-			br = new BufferedReader(new FileReader(args[0]));
+			br = new BufferedReader(new FileReader("Samples/shell.src"));
 		}
 		catch (Exception e)
 		{
@@ -30,30 +30,17 @@ public class CRTest
 			System.out.println("________________\n");
 			
 			program.buildCode();
-			System.out.println("Built code");
 			
-			//program.dump("");
 			XAALConnector xc = new XAALConnector(program.getPseudocode(), "foo");
 		
-			for (String s : program.getPseudocode())
-			{
-				System.out.println(s);
-			}
-			System.out.println("\n\n Testing Interpret Visitor");
-			
 			QuestionFactory questionFactory = new QuestionFactory();
 			
 			CopyRestoreInterpretVisitor iv = new CopyRestoreInterpretVisitor();
 			iv.setXAALConnector(xc);
 			iv.setQuestionFactory(questionFactory);
 			program.jjtAccept(iv, null);
-			System.out.println(Global.getFunction("foo").getParameters().size());
-			System.out.println(Global.getFunction("foo").getSymbolTable().getLocalVariables().size());
-			xc.draw("/home/fairfieldt/Documents/!real.xaal");
-						for (String line: program.getPseudocode())
-						{
-							System.out.println(line);
-						}
+			xc.draw("by_copy_restore.xaal");
+			System.out.println("Visualization file by_copy_restore.xaal created");
 
 		}
 		catch (Exception e)

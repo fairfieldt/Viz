@@ -7,6 +7,12 @@ public abstract class Question implements Drawable {
 	
 	protected String questionText;
 	
+	//The name of the var we care about
+	protected String variable;
+	
+	//For a var, the index we asked about.
+	protected int index = -1;
+	
 	protected Question(String questionText)
 	{
 		this.questionText = questionText;
@@ -26,6 +32,27 @@ public abstract class Question implements Drawable {
 	public void setQuestionText(String questionText){
         this.questionText = questionText.trim();
     }
+    
+    
+        public void setIndex(int index)
+        {
+        	this.index = index;
+        }
+        
+        public int getIndex()
+        {
+        	return this.index;
+        }
+        
+        public void setVariable(String variable)
+        {
+        	this.variable = variable;
+        }
+        
+        public String getVariable()
+        {
+        	return this.variable;
+        }
 	
 	public int getSlideId()
 	{

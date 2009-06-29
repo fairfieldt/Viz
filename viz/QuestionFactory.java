@@ -5,38 +5,147 @@ import Interpreter.*;
 public class QuestionFactory implements UpdateReasons
 {
 
-	private HashMap<String, Question> endQuestions;
-	private HashMap<String, Question> callQuestions;
-	private HashMap<String, Question> funcQuestions;
-	public QuestionFactory()
+	public Question getStartQuestion()
 	{
-		endQuestions = new HashMap<String, Question>();
-		callQuestions = new HashMap<String, Question>();
-		funcQuestions = new HashMap<String, Question>();
+		ArrayList<String> varNames = Global.getSymbolTable().getCurrentVarNamesArray();
+		Random r = new Random();
+		int choose = r.nextInt(varNames.size());
+		String varName = varNames.get(choose);
+		
+		Question question = new FIBQuestion("What will the value of " + varName + " be after the main function returns?");
+		question.setVariable(varName);
+
+		return question;
 	}
-	
-	
-	public Question[] getQuestions()
+	public Question getCallQuestion(String functionName, HashMap<String, String> pa)
 	{
-	
-		return ((Question[])endQuestions.entrySet().toArray());
-	}
-	
-	public Question addBeginQuestion()
-	{
-		System.out.println("Adding a begin question");
-		String var = getGlobalVar();
-		FIBQuestion question = new FIBQuestion("What will the value of " + var + " when the program has finished executing?");
-		endQuestions.put(var, question);
+		Question question;
+		String varName = null;
+		Random r = new Random();
+		String prev = "";
+		for (String s : pa.values())
+		{
+			if (s.equals(prev))
+			{
+				varName = s;
+				break;
+			}
+		}
+		if (varName == null)
+		{
+			int choose = r.nextInt(pa.size());
+			Object[] args = pa.values().toArray();
+			varName = (String)args[choose];
+		}
+		if (Global.getCurrentSymbolTable().getVariable(varName).getIsArray())
+		{
+			String questionText = "";
+			ArrayList<String> answers = new ArrayList<String>();
+			ArrayList<String> choices = new ArrayList<String>();
+			int whichQ = r.nextInt(2);
+			if (whichQ == 0)
+			{
+				questionText = "Which evaluation strategies would reflect changes to arguments while still in " + functionName + "'s scope?";
+				answers.add("Call by Reference");
+				choices.add("Call by Value");
+				choices.add("Call by Copy-Restore");
+			}
+			else
+			{
+				questionText = "Which evaluation strategies would reflect changes to arguments after " + functionName + " has returned?";
+				answers.add("Call by Copy-Restore");
+				answers.add("Call by Reference");
+				choices.add("Call by Value");
+			}
+			question = new MSQuestion(questionText);
+			for (String s : answers)
+			{
+				((MSQuestion)question).addAnswer(((MSQuestion)question).addChoice(s));
+			}
+			for (String s : choices)
+			{
+				((MSQuestion)question).addChoice(s);
+			}
+			
+		}
+		else
+		{
+			question = new FIBQuestion("What will the value of " + varName + 
+						" be after " + functionName + " returns?");
+			question.setVariable(varName);
+		}			
 		return question;
 	}
 	
-	public Question addAssignmentQuestion(int lineNumber, String varName)
+	
+	public Question getAssignmentQuestion(int lineNumber, String varName)
 	{
-		FIBQuestion question = null;
+		Question question = null;
+		boolean gotAnArg = false;
+		if (Global.getCurrentSymbolTable().getVariable(varName).isParam())
+		{
+			Random r = new Random();
+			int choose = r.nextInt(2);
+			
+			if (choose == 0)
+			{
+				String argName = Global.getCurrentParamToArg().get(varName);
+				Interpreter.Variable arg =  Global.getFunction("main").getSymbolTable().getVariable(argName);
+				System.out.println("Argname: " + argName);
+				if (!arg.getIsArray())
+				{
+					varName = argName;
+					gotAnArg = true;
+				}
+			}
+				
+		}
+		question = new FIBQuestion(
+				"What will be the value of " + 
+				varName + 
+				" after the current line executes?");
+		question.setVariable(varName);
+
 		return question;
 	}
 	
+	public Question getAssignmentQuestion(int lineNumber, String varName, int index)
+	{
+		int i = 0;
+		int localVal = Global.getCurrentSymbolTable().get(varName, true);
+		if (localVal != -255)
+		{
+			int globalVal = Global.getCurrentSymbolTable().get(varName, true);
+			int mainVal = Global.getFunction("main").getSymbolTable().get(varName, true);
+			if (globalVal != -255 && globalVal >= 0 && globalVal < 5)
+			{
+				Random r = new Random();
+				int prob = r.nextInt(2);
+				if (prob == 0)
+				{
+					i = globalVal;
+				}
+				else if (mainVal != -255 && mainVal >= 0 && mainVal < 5)
+				{
+					prob = r.nextInt(2);
+					if (prob == 0)
+					{
+						i = mainVal;
+					}
+				}
+			}
+		}
+		else
+		{
+			i = index;
+		}
+		
+		FIBQuestion question = new FIBQuestion("What will be the value of " + varName + "[" + i + "] after the current line executes?");
+		question.setVariable(varName);
+		question.setIndex(i);
+		return question;
+	}
+/*	
 	
 	public Question addCallQuestion(HashMap<String, String> paramToArg, String funName)
 	{
@@ -177,5 +286,6 @@ public class QuestionFactory implements UpdateReasons
 		return (String)varNames.toArray()[r.nextInt(varNames.size())];
 	}
 	
-		
+*/		
 }
+
