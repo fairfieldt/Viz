@@ -31,10 +31,45 @@ public class QuestionFactory implements UpdateReasons
 		return question;
 	}
 	
-	public Question addAssignmentQuestion(int lineNumber, String varName)
+	public Question getAssignmentQuestion(int lineNumber, String varName)
 	{
-		FIBQuestion question = null;
+		FIBQuestion question = new FIBQuestion("What will be the value of " + varName + " after the current line executes?");
 		return question;
+	}
+	
+	public Question getAssignmentQuestion(int lineNumber, String varName, int index)
+	{
+		int i = 0;
+		int localVal = Global.getCurrentSymbolTable().get(varName, true);
+		if (localVal != -255)
+		{
+			int globalVal = Global.getCurrentSymbolTable().get(varName, true);
+			int mainVal = Global.getFunction("main").getSymbolTable().get(varName, true);
+			if (globalVal != -255 && globalVal >= 0 && globalVal < 5)
+			{
+				Random r = new Random();
+				int prob = r.nextInt(2);
+				if (prob == 0)
+				{
+					i = globalVal;
+				}
+				else if (mainVal != -255 && mainVal >= 0 && mainVal < 5)
+				{
+					prob = r.nextInt(2);
+					if (prob == 0)
+					{
+						i = mainVal;
+					}
+				}
+			}
+			else
+			{
+				i = index;
+			}
+		}
+		
+		FIBQuestion question = new FIBQuestion("What will be the value of " + varName + "[" + i + "] after the current line executes?");
+		question.setIndex(i);
 	}
 	
 	

@@ -119,6 +119,9 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 	
 	public void handleDeclarationList(ASTDeclarationList node)
 	{
+		connector.startSnap(Global.getFunction("main").getLineNumber());
+		connector.startPar();
+		
 		System.out.println("Visiting declList");
 		int numDecls = node.jjtGetNumChildren();
 		for (int i = 0; i < numDecls; i++)
@@ -138,6 +141,8 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 		SimpleNode child = (SimpleNode) node.jjtGetChild(0);
 		if (child.getId() == JJTFUNCTION)
 		{
+			connector.endPar();
+			connector.endSnap();
 			ASTFunction main = Global.getFunction("main");
 			connector.addScope(main.getSymbolTable(), "main", "Global");
 			connector.startSnap(Global.getFunction("main").getLineNumber());
@@ -185,11 +190,7 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 			connector.addVariable(s.getVariable(name), name, s.getName());
 			
 			//This is a snapshot
-			connector.startSnap(node.getLineNumber());
-				connector.startPar();
 					connector.showVar(Global.getCurrentSymbolTable().getVariable(name));
-				connector.endPar();
-			connector.endSnap();	
 	}
 	
 	public void handleFunction(ASTFunction node)

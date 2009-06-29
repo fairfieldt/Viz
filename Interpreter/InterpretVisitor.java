@@ -119,7 +119,10 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	
 	public void handleDeclarationList(ASTDeclarationList node)
 	{
-		//System.out.println("Visiting declList");
+		connector.startSnap(Global.getFunction("main").getLineNumber());
+		connector.startPar();
+		
+		System.out.println("Visiting declList");
 		int numDecls = node.jjtGetNumChildren();
 		for (int i = 0; i < numDecls; i++)
 		{
@@ -138,6 +141,8 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		SimpleNode child = (SimpleNode) node.jjtGetChild(0);
 		if (child.getId() == JJTFUNCTION)
 		{
+			connector.endPar();
+			connector.endSnap();
 			ASTFunction main = Global.getFunction("main");
 			connector.addScope(main.getSymbolTable(), "main", "Global");
 			connector.startSnap(Global.getFunction("main").getLineNumber());
@@ -185,18 +190,15 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 			connector.addVariable(s.getVariable(name), name, s.getName());
 			
 			//This is a snapshot
-			connector.startSnap(node.getLineNumber());
-				connector.startPar();
 					connector.showVar(Global.getCurrentSymbolTable().getVariable(name));
-				connector.endPar();
-			connector.endSnap();	
+	
 	}
 	
 	public void handleFunction(ASTFunction node)
 	{	
 		//Get the function's symbol table, set it's previous to the
 		// calling function's, and then set it to current.
-		
+
 		
 		SymbolTable currentSymbolTable = node.getSymbolTable();
 		for (String p : node.getParameters())
@@ -207,16 +209,6 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		}
 		Global.setCurrentSymbolTable(currentSymbolTable);
 
-		//Drawing Stuff:
-		//connector.addScope(currentSymbolTable, currentSymbolTable.getName(), "Global");
-		System.out.println("Added scope " + currentSymbolTable.getName());
-		//Drawing the actually running
-		connector.startSnap(node.getLineNumber());
-			connector.startPar();
-
-			connector.endPar();
-		connector.endSnap();
-			
 		
 		System.out.println("Executing function: " + node.getName());
 		update(node.getLineNumber(), UPDATE_REASON_FUNCTION);
