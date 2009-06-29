@@ -769,7 +769,7 @@ public class XAALConnector {
 	  }
 	  catch (Exception e)
 	  {
-		  
+		  System.out.println("bad");
 	  }
   }
   
