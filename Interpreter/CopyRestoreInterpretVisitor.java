@@ -224,6 +224,7 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 		
 		for (String p : node.getParameters())
 		{
+			System.out.println("Copying " + p + " out");
 			((ByCopyRestoreVariable)currentSymbolTable.getVariable(p)).copyOut();
 		}
 		System.out.println("LEAVING");

@@ -43,10 +43,12 @@ public class ByCopyRestoreVariable extends AbstractVariable implements Variable
 	{
 		if (this.refIndex == -1)
 		{
+			System.out.println("Copying out value " + this.value);
 			this.ref.setValue(this.value);
 		}
 		else
 		{
+			System.out.println("coping out value " + this.value + " to " + refIndex);
 			this.ref.setValue(refIndex, value);
 		}
 	}
