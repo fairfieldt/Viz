@@ -23,7 +23,7 @@ public class NewTest
 		{
 			ASTProgram program = (ASTProgram)parser.program();
 
-			RandomizingVisitor rv = new RandomizingVisitor();
+			RandomizingVisitor2<ByValVariable> rv = new RandomizingVisitor2<ByValVariable>(ByValVariable.class);
 				
 			program.jjtAccept(rv, null);
 		
