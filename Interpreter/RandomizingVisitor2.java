@@ -36,6 +36,7 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 	final double chanceOfAssignToOp = 1.5/10.0;
 	final double chanceOfPlusToMinus = 1.0/2.0;
 	
+	InterestingCases intrCase;
 	/**
 	 * 
 	 * @param clazz the subclass of AbstractVariable that you want the randomizer to use
@@ -43,6 +44,7 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 	public RandomizingVisitor2(Class<T> clazz)
 	{
 		varClass = clazz;
+		this.intrCase = getIntrCase();
 	}
 	
 	
@@ -213,12 +215,12 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 		ASTCall fooCall = ASTCall.createCall("foo");
 		main.addLogicalChild(fooCall, numVars);
 		
-		for (int i = 0; i < numOfParams; i++)
-		{
-			ASTVar var = createVar(localTable);
-			fooCall.addArg(var);
-		}
+		ArrayList<ASTVar> args = createArgs(numOfParams, localTable);
 		
+		for( ASTVar v : args)
+		{
+			fooCall.addArg(v);
+		}
 	}
 	
 	private void visitFoo(ASTFunction foo)
@@ -376,6 +378,45 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 
 		return ASTVar.createVar(randomVar);
 
+	}
+	
+	//TODO: make it so the aliased params are in positions other than 0 and 1
+	private ArrayList<ASTVar> createArgs(int numOfParams, SymbolTable table)
+	{
+		ArrayList<ASTVar> ret = new ArrayList<ASTVar>();
+		int i = 0;
+		
+		if(intrCase == InterestingCases.Aliasing)
+		{
+			//add first one
+			ASTVar var1 = createVar(table);
+			ret.add(var1);
+			
+			//create second one based on first
+			ASTVar var2 = null;
+			if (var1.getIsArray())// it's indexed so get the index
+			{
+				ASTVar indexVar = (ASTVar) var1.jjtGetChild(0).jjtGetChild(0);
+				var2 = ASTVar.createVarWithIndex(var1.getName(), indexVar.getName());
+			}
+			else // its not an array
+			{
+				var2 = ASTVar.createVar(var1.getName());
+			}
+			ret.add(var2);
+			
+			i = 2;
+			
+		}
+
+		for (; i < numOfParams; i++)
+		{
+			ASTVar var = createVar(table);
+			ret.add(var);
+		}
+		
+		
+		return ret;
 	}
 	
 	private String createSafeIndexVar(SymbolTable localTable)
@@ -590,10 +631,33 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 	
 	private boolean binDecision(double probability)
 	{
-		Random r = new Random();
-		double test = r.nextDouble();
+		
+		double test = rand.nextDouble();
 		
 		return test <= probability;
+	}
+	
+	/**
+	 * method to get an interesting case. The numbers are hardcoded in for now.
+	 * @return an InterestingCases value
+	 */
+	private InterestingCases getIntrCase()
+	{
+		double probability = rand.nextDouble();
+		
+		if (probability <= .45)
+		{
+			return InterestingCases.Aliasing;
+		}
+		else if (probability <= .90)
+		{
+			return InterestingCases.Shadowing;
+		}
+		else
+		{
+			return InterestingCases.None;
+		}
+		
 	}
 	
 	private ArrayList<String> getBadLHSNames(SymbolTable localTable, ArrayList<String> badNames)
