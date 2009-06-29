@@ -1,16 +1,13 @@
 var m[] = {3,2,3};
-
-def foo(q, p, s)
+var j = 1;
+def foo(q, p)
 {
-	var f = q;
-	m[2] = q;
-	q =  m[0];
+	j = 2;
 	q = 5;
-	p = q;
+	p = 11;
 }
 
 def main()
 {
-	var z = 7;
-	foo(m[1], m[2], z);
+	foo(m[j], m[j]);
 }

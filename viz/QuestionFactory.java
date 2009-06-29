@@ -31,6 +31,11 @@ public class QuestionFactory implements UpdateReasons
 		return question;
 	}
 	
+	public Question addAssignmentQuestion(varName)
+	{
+		
+	}
+	
 	
 	public Question addCallQuestion(HashMap<String, String> paramToArg, String funName)
 	{

@@ -4,8 +4,9 @@ import java.util.*;
 
 public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeConstants, UpdateReasons
 {
+	private static final int QUESTION_FREQUENCY = 7;
 	private QuestionFactory questionFactory;
-	private ArrayList<Question> startQuestions = new ArrayList<Question>();//FIXME use this?
+	private Question assignmentQuestion;
 	private XAALConnector connector;
 	public static final int LINE_NUMBER_END = -1;
 
@@ -17,6 +18,29 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 	public void setXAALConnector(XAALConnector xc)
 	{
 		this.connector = xc;
+	}
+	
+	public boolean addQuestion(int lineNumber, String varName, int reason)
+	{
+		Random r = new Random();
+		int chance = r.nextInt(10);
+		
+		//We'll add a question some % of the time
+		if (chance > QUESTION_FREQUENCY)
+		{
+			switch (reason)
+			{
+				case QUESTION_REASON_BEGIN:
+					break;
+				case QUESTION_REASON_END:
+					break;
+				case QUESTION_REASON_CALL:
+					break;
+				case QUESTION_REASON_ASSIGNMENT:
+					assignmentQuestion = questionFactory.getAssignmentQuestion(lineNumber, varName);		
+					break;
+			}
+		}
 	}
 
 	//FIXME use this?
@@ -263,7 +287,7 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 			
 			connector.endPar();
 		connector.endSnap();
-		update(node.getLineNumber(), UPDATE_REASON_STATEMENT);
+
 	}
 	
 	public Integer handleCall(ASTCall node)
@@ -357,7 +381,7 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 	public void handleAssignment(ASTAssignment node)
 	{
 		String name = node.getName();
-
+		boolean gotAQuestion = addQuestion(node.getLineNumber(), name, QUESTION_REASON_ASSIGNMENT);
 		Integer value = (Integer)node.jjtGetChild(1).jjtAccept(this, null);
 		System.out.println("Assigning to " + name + " value of " + value);
 		int index = 0;
@@ -374,12 +398,13 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 		}
 		System.out.println("Ok, set value");
 		//Drawing stuff. snap and par should be opened from enclosing statement
-		
-		connector.addQuestion(questionFactory.addAssignmentQuestion(Global.getCurrentParamToArg(), name));
-		connector.endPar();
-		connector.endSnap();
-		connector.startSnap(node.getLineNumber());
-		connector.startPar();
+		if (gotAQuestion)
+		{
+			connector.endPar();
+			connector.endSnap();
+			connector.startSnap(node.getLineNumber());
+			connector.startPar();
+		}
 			if (v.getIsArray())
 			{
 				connector.modifyVar(Global.getCurrentSymbolTable().getVariable(name), index, value);
