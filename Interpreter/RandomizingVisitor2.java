@@ -36,6 +36,8 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 	final double chanceOfAssignToOp = 1.5/10.0;
 	final double chanceOfPlusToMinus = 1.0/2.0;
 	
+	final double chanceOfArrayInMain = 1.0/2.0;
+	
 	InterestingCases intrCase;
 	/**
 	 * 
@@ -208,6 +210,21 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 			 
 			localTable.put(name, new ByValVariable(value));
 		}
+		
+		if (arrayInMain())
+		{
+			ArrayList<String> badNames = localTable.getLocalVarNamesArray();
+			String name = getNewVarName(badNames);
+			
+			ASTVarDecl newVarDecl = createArrayDecl(name);
+			main.addLogicalChild(newVarDecl, numVars);
+			
+			localTable.put(name, ByValVariable.createArrayVariable());
+			
+			//increment this so the foo call is in the right place
+			numVars++;
+		}
+		
 		
 		int numOfParams = numOfFooParams();
 		addParamsToFoo(numOfParams);
@@ -629,6 +646,11 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 		return binDecision(chanceOfPlusToMinus);
 	}
 	
+	private boolean arrayInMain()
+	{
+		return binDecision(chanceOfArrayInMain);
+	}
+	
 	private boolean binDecision(double probability)
 	{
 		
@@ -700,11 +722,6 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 		}
 		
 		return ret;
-	}
-	
-	private void programNodeTest(ASTProgram node, SymbolTable symbolTable)
-	{
-		
 	}
 	
 	private void testNonArrayVars(ArrayList<String> vars, SymbolTable symbols)
