@@ -228,6 +228,7 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 			((ByCopyRestoreVariable)currentSymbolTable.getVariable(p)).copyOut();
 		}
 		System.out.println("LEAVING");
+		
 		System.out.println(Global.getCurrentSymbolTable());
 		leaveScope();
 	}
@@ -320,10 +321,12 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 			connector.endPar();
 			
 			connector.startPar();
+			Variable v1 = null;
+			ByCopyRestoreVariable v2 = null;
 				for (int i = 0; i < parameters.size(); i++)
 				{ 	
-					Variable v1 = Global.getCurrentSymbolTable().getVariable(argNames.get(i).getName());				
-					ByCopyRestoreVariable v2 = (ByCopyRestoreVariable)st.getVariable(parameters.get(i));		
+					v1 = Global.getCurrentSymbolTable().getVariable(argNames.get(i).getName());				
+					v2 = (ByCopyRestoreVariable)st.getVariable(parameters.get(i));		
 	
 					//((ByRefVariable)v2).setRef(((ByValVariable)v1)); //Now in interpreter we should be pointing correctly.  				
 					
@@ -332,10 +335,12 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 					if (v1.getIsArray())
 					{
 						connector.addVariableReference(v2, v1, v2.getRefIndex());
+						connector.moveValue(v1, v2.getRefIndex(), v2);
 					}
 					else
 					{
 						connector.addVariableReference(v2, v1);
+						connector.moveValue(v1, v2);
 					}
 				}
 				
@@ -343,6 +348,16 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 		connector.endSnap();
 				
 		fun.jjtAccept(this, null);
+		
+		//Drawing the copy out stage
+		connector.startSnap(node.getLineNumber()+1);
+			connector.startPar();
+				for (int i = 0; i < parameters.size(); i++)
+				{
+					connector.moveValue(v2, v1);
+				}
+			connector.endPar();
+		connector.endSnap();
 		return 0;
 	}
 	
