@@ -1,7 +1,7 @@
 package viz;
 
 public class MoveVarIndexAction extends MoveVarAction {
-	int index = -1;
+	private int index = -1;
 	
 	public MoveVarIndexAction(Variable from, int index, Variable to,  int snapNum)
 	{
