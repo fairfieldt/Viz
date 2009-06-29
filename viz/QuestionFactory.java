@@ -31,9 +31,10 @@ public class QuestionFactory implements UpdateReasons
 		return question;
 	}
 	
-	public Question addAssignmentQuestion(varName)
+	public Question addAssignmentQuestion(int lineNumber, String varName)
 	{
-		
+		FIBQuestion question = null;
+		return question;
 	}
 	
 	
