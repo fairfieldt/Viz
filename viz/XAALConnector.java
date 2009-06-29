@@ -319,9 +319,25 @@ public class XAALConnector {
 		 return true;
 	}
 	
+	public boolean moveValue(Interpreter.Variable from, Interpreter.Variable to, 
+			int toIndex)
+	{
+		 if (currentSnapNum < 0)
+		      return false;
 
-
-
+		Variable fromVar = varToVar.get(from.getUUID());
+		Variable toVar = varToVar.get(to.getUUID());
+		
+		
+		fromVar.addCopy();
+		
+		actions.offer(new MoveVarToIndexAction(fromVar, toVar, toIndex, currentSnapNum));
+		
+		Array toArray = (Array)toVar;
+		toArray.setElem(toIndex, fromVar.getValue());
+		
+		return true;
+	}
   
   public boolean modifyVar(Interpreter.Variable iv, int newValue)
   {
@@ -395,6 +411,10 @@ public class XAALConnector {
         	if (action instanceof MoveVarIndexAction)
         	{
         		writeIndexMove((MoveVarIndexAction)action);
+        	}
+        	else if(action instanceof MoveVarToIndexAction)
+        	{
+        		writeIndexToMove((MoveVarToIndexAction)action);
         	}
         	else
         	{
@@ -625,6 +645,11 @@ public class XAALConnector {
 	    int endX = to.getXPos();
 	    int endY = to.getYPos();
 	    
+	    if (to.getIsCopyRestore()) //you've gotta take it from right box
+	    {
+	    	endX = to.getRightXPosCR();
+	    }
+	    
 	    int moveX = startX - endX;
 	    int moveY = startY - endY;
 	    
@@ -649,6 +674,84 @@ public class XAALConnector {
 	    scripter.reclosePar();
 	    scripter.recloseSlide();
 	    
+	  }
+	  catch (Exception e)
+	  {
+		  
+	  }
+  }
+  
+  /**
+   * this is a write back out to an index in an array
+   * @param action
+   */
+  private void writeIndexToMove(MoveVarToIndexAction action)
+  {
+	  try
+	  {
+		  scripter.reopenSlide(action.getSnapNum());
+	  	    
+	    // reopen par
+	    scripter.reopenPar();
+	    
+	    Variable from = action.getFrom();
+	    Array to = (Array)action.getTo();
+	    int toIndex = action.getIndex();
+	    
+	  //get copy for the first variable
+	    String copy1 = from.popCopyId();
+	    
+	 // get a new copy from the first variable.
+	    String newCopy = from.peekCopyId();
+	    
+	  //show newCopy
+	    scripter.addShow(newCopy);
+	    scripter.addChangeStyle(highlightColor, copy1);
+	    
+	 // get copy from second variable
+	    String copy2 = to.popCopyId(toIndex);
+	  
+	 //hide copy2
+	    scripter.addHide(copy2);
+	    scripter.reclosePar();
+	    
+	    
+	    scripter.startPar();
+	    int startX = from.getXPos();
+	    int startY = from.getYPos();
+	    
+	    if (from.getIsCopyRestore()) //you've gotta take it from right box
+	    {
+	    	startX = from.getRightXPosCR();
+	    }
+	    
+	    int endX = to.getXPos(toIndex);
+	    int endY = to.getYPos();
+	    
+	    int moveX = startX - endX;
+	    int moveY = startY - endY;
+	    
+	    scripter.addTranslate(-moveX, -moveY, copy1);
+	    
+	    // give ownership of copy1 to second variable.
+	    to.receiveCopyOwnership(copy1);
+	    
+	    // set the value of 'to' to from's value
+	    to.setElem(toIndex, from.getValue());
+	    
+	    
+	  //reclose the par
+	    scripter.endPar();
+	    //reclose the slide
+	    scripter.recloseSlide();
+	    // turn off highlighting on next slide
+	    scripter.reopenSlide(action.getSnapNum() + 1);
+	    scripter.reopenPar();
+	    
+	    scripter.addChangeStyle("black", copy1);
+	    
+	    scripter.reclosePar();
+	    scripter.recloseSlide();
 	  }
 	  catch (Exception e)
 	  {
