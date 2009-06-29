@@ -8,6 +8,7 @@ public class Variable implements Drawable
 	protected String color = "black";
 	private boolean isReference = false;
 	private boolean isParam = false;
+	private boolean isCopyRestore = false;
 	protected ArrayList<String> ids;
 	private Queue<Integer> copiesToMake;
 	
@@ -47,6 +48,27 @@ public class Variable implements Drawable
 		setReference(ref);
 	}
 	
+	/**
+	 * Use this for copy restore!
+	 * @param name
+	 * @param ref
+	 * @param value
+	 * @param isParam
+	 */
+	public Variable(String name, Variable ref, int value, boolean isParam)
+	{
+		ids = new ArrayList<String>();
+		this.name = name;
+		this.isCopyRestore = true;
+		this.value = value;
+		
+		this.isParam = isParam;
+		this.length = (name.length() * 10) + 60;
+		copiesToMake = new LinkedList<Integer>();
+		copiesOwned = new LinkedList<String>();
+		setReference(ref);
+	}
+	
 	public boolean getHidden()
 	{
 		return hidden;
@@ -55,12 +77,14 @@ public class Variable implements Drawable
 	public void setReference(Variable ref)
 	{
 		this.ref = ref;
+		this.isReference = true;
 	}
 	
 	public void setReference(Variable ref, int index)
 	{
 		this.ref = ref;
 		this.refIndex = index;
+		this.isReference = true;
 	}
 	
 	public void setPosition(int xPos, int yPos)
@@ -168,7 +192,61 @@ public class Variable implements Drawable
 	public void draw(XAALScripter scripter)
 	{
 		
-		if (this.isReference)
+		if (this.isCopyRestore)
+		{
+			String id1 = scripter.addRectangle(xPos, yPos, 40, 40, color,  hidden);
+			//title
+			String id2 = scripter.addText(xPos, yPos-5, name, "black", hidden);
+			//pointer triangle
+			String id3 = scripter.addTriangle(xPos + 16, yPos + 16 , 8, "black", hidden, 
+					StrokeType.solid, 1, "black");
+			//
+			
+			ids.add(id1);
+			ids.add(id2);
+			ids.add(id3);
+			if (ref != null)
+			{
+				String id4 = null;
+				if (refIndex < 0)
+				{
+					System.out.println("Ref pointing to something");
+					id4 = scripter.addArrow(id3, ref.getIds().get(0), false, hidden);
+				}
+				else
+				{
+					Array arr = (Array) ref; 
+					System.out.println("Ref pointing to arrayIndex");
+					id4 = scripter.addArrow(id3, arr.getRect(refIndex), false, hidden);
+				}
+				ids.add(id4);
+			}
+			
+			int rightXPos = xPos + 60;
+			
+			String id5 = scripter.addRectangle(rightXPos, yPos, 40, 40, color, hidden);
+		
+			int x1 = xPos + 40;
+			int x2 = xPos + 60;
+			int y = yPos + 20;
+			String id6 = scripter.addLine(x1, y, x2, y, color, hidden, StrokeType.dotted);
+			
+			ids.add(id5);
+			ids.add(id6);
+			
+			do 
+			{
+				Integer temp = copiesToMake.poll();
+				if (temp == null)
+					break;
+				
+				String newId = scripter.addText(rightXPos+15, yPos+25, temp.toString(), "black", hidden);
+				copiesOwned.offer(newId);
+				
+			} while(true);
+			
+		}
+		else if (this.isReference)
 		{
 			// rectangle
 			String id1 = scripter.addRectangle(xPos, yPos, 40, 40, color,  hidden);

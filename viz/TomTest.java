@@ -32,8 +32,8 @@ public class TomTest {
 		Scope foo = new Scope("foo", "green", false);
 
 		Variable var4 = new Variable("q", 0, true);
-		Variable var5 = new Variable("p", 1, false);
-
+		Variable var5 = new Variable("p", var4, 0, true);
+		var5.addCopy();
 		foo.setHidden(true);
 		
 		var4.setIsParam(true);
