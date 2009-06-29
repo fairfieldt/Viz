@@ -328,7 +328,14 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 					
 					System.out.println("Adding a reference from " + argNames.get(i).getName() +
 						" to " + parameters.get(i));
-					connector.addVariableReference(v2, v1);
+					if (v1.getIsArray())
+					{
+						connector.addVariableReference(v2, v1, v2.getRefIndex());
+					}
+					else
+					{
+						connector.addVariableReference(v2, v1);
+					}
 				}
 				
 			connector.endPar();
