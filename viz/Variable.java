@@ -63,7 +63,7 @@ public class Variable implements Drawable
 		this.value = value;
 		
 		this.isParam = isParam;
-		this.length = (name.length() * 10) + 60;
+		this.length = (name.length() * 10) + 100;
 		copiesToMake = new LinkedList<Integer>();
 		copiesOwned = new LinkedList<String>();
 		setReference(ref);
@@ -77,7 +77,6 @@ public class Variable implements Drawable
 	public void setReference(Variable ref)
 	{
 		this.ref = ref;
-		this.isReference = true;
 	}
 	
 	public void setReference(Variable ref, int index)
@@ -308,11 +307,6 @@ public class Variable implements Drawable
 				copiesOwned.offer(newId);
 				
 			} while(true);
-			/*
-			for (int i = 0; i < copies; i++)
-			{
-				ids.add(scripter.addText(xPos+15, yPos+25, value + "", "black", hidden));
-			}*/
 		}
 		
 	}

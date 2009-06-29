@@ -81,9 +81,13 @@ public class XAALConnector {
 	    for (String p : params)
 	    {
 	    	Interpreter.Variable iv = symbols.getVariable(p);
-	    	Variable v;
-	    	
-	      	if (iv instanceof Interpreter.ByRefVariable)
+	    	Variable v = null;
+	    	if (iv instanceof Interpreter.ByCopyRestoreVariable)
+	    	{
+	    		v = new Variable(p, null, iv.getValue(), true);
+	    		v.setIsCopyRestore();
+	    	}
+	    	else if (iv instanceof Interpreter.ByRefVariable)
 	      	{
 	      		v = new Variable(p, -255, true);
 	      		v.setIsReference(true);
@@ -118,15 +122,6 @@ public class XAALConnector {
     else
     {
     	v = new Variable(varName, var.getValue(), false);
-    	
-    	if (var instanceof Interpreter.ByCopyRestoreVariable)
-    	{
-    		v.setIsCopyRestore();
-    	}
-    	else if (var instanceof Interpreter.ByRefVariable)
-    	{
-    		v.setIsReference(true);
-    	}
     	
     	v.addCopy();
     }
