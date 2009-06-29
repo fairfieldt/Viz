@@ -514,7 +514,7 @@ public class XAALConnector {
     int startX = from.getXPos(); 
     int startY = from.getYPos();
     
-    if (to.getIsCopyRestore()) //you've gotta take it from right box
+    if (from.getIsCopyRestore()) //you've gotta take it from right box
     {
     	startX = from.getRightXPosCR();
     }
