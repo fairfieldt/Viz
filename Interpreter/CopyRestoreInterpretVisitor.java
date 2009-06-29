@@ -332,10 +332,12 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 					if (v1.getIsArray())
 					{
 						connector.addVariableReference(v2, v1, v2.getRefIndex());
+						connector.moveValue(v1, v2.getRefIndex(), v2);
 					}
 					else
 					{
 						connector.addVariableReference(v2, v1);
+						connector.moveValue(v1, v2);
 					}
 				}
 				
