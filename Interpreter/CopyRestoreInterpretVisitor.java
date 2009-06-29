@@ -322,7 +322,8 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 			connector.startPar();
 				for (int i = 0; i < parameters.size(); i++)
 				{ 	
-					Variable v1 = Global.getCurrentSymbolTable().getVariable(argNames.get(i).getName());				Variable v2 = st.getVariable(parameters.get(i));		
+					Variable v1 = Global.getCurrentSymbolTable().getVariable(argNames.get(i).getName());				
+					ByCopyRestoreVariable v2 = (ByCopyRestoreVariable)st.getVariable(parameters.get(i));		
 	
 					//((ByRefVariable)v2).setRef(((ByValVariable)v1)); //Now in interpreter we should be pointing correctly.  				
 					
