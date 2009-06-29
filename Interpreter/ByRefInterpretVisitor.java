@@ -4,9 +4,14 @@ import java.util.*;
 
 public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeConstants, UpdateReasons, QuestionTypes
 {
-	private static final int QUESTION_FREQUENCY = 88;
+		private static final int QUESTION_FREQUENCY = 65;
 	private QuestionFactory questionFactory;
+	
+	
 	private Question assignmentQuestion;
+	private Question callQuestion;
+	private Question startQuestion;
+	
 	private XAALConnector connector;
 	public static final int LINE_NUMBER_END = -1;
 
@@ -128,7 +133,7 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 		
 		node.jjtGetChild(0).jjtAccept(this, null);
 		update(LINE_NUMBER_END, UPDATE_REASON_END);
-		
+		((FIBQuestion)startQuestion).addAnswer(Global.getSymbolTable().get(startQuestion.getVariable())+"");
 		//TODO Write the last snap nicely
 		connector.startSnap(node.getPseudocode().length);
 			connector.startPar();
@@ -162,13 +167,15 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 		SimpleNode child = (SimpleNode) node.jjtGetChild(0);
 		if (child.getId() == JJTFUNCTION)
 		{
+			startQuestion = questionFactory.getStartQuestion();
+			connector.addQuestion(startQuestion);
 			connector.endPar();
 			connector.endSnap();
 			ASTFunction main = Global.getFunction("main");
 			connector.addScope(main.getSymbolTable(), "main", "Global");
 			connector.startSnap(Global.getFunction("main").getLineNumber());
 			connector.startPar();
-				//connector.addQuestion(questionFactory.addBeginQuestion());
+
 			connector.endPar();
 			connector.startPar();
 				connector.showScope("main");
@@ -224,7 +231,7 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 		{
 			connector.startSnap(node.getLineNumber());
 			connector.startPar();
-			boolean gotAQuestion = addQuestion(node.getLineNumber(), node.getName(), QUESTION_REASON_CALL);
+			
 			connector.endPar();
 			connector.endSnap();
 		}
@@ -289,12 +296,14 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 	
 	public Integer handleCall(ASTCall node)
 	{
+		boolean gotAQuestion = true; //FIXME HACK
 		//Get the correct function head node
 		ASTFunction fun = Global.getFunction(node.getName());
 		System.out.println("Calling: " + fun.getName());
 		//Get the parameters and put the correct values in the symbolTable
 		SymbolTable st = fun.getSymbolTable();
-
+		String name = fun.getName();
+		
 		ArrayList<String> parameters = fun.getParameters();		
 		ArrayList<Integer> args = (ArrayList<Integer>) node.jjtGetChild(0).jjtAccept(this, null);
 		ArrayList<ASTVar> argNames = ((ASTArgs)node.jjtGetChild(0)).getArgs();
@@ -322,13 +331,18 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 			pa.put(parameters.get(i), argNames.get(i).getName());
 		}
 		Global.setCurrentParamToArg(pa);
-		//Ok lets set refs now	
-	
+
+	//QUESTION!!!
+		callQuestion = questionFactory.getCallQuestion(name, pa);
+
 		//Drawing Stuff
 		connector.addScope(fun.getSymbolTable(), fun.getName(), "Global");
 		connector.startSnap(node.getLineNumber());
+
 			connector.startPar();
+
 				connector.showScope(node.getName());
+				connector.addQuestion(callQuestion);
 			connector.endPar();
 			
 			connector.startPar();
@@ -354,6 +368,19 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 		connector.endSnap();
 				
 		fun.jjtAccept(this, null);
+		
+		if(gotAQuestion)
+		{
+			if (callQuestion instanceof FIBQuestion)
+			{
+				((FIBQuestion)callQuestion).addAnswer(Global.getFunction("main").getSymbolTable().get(callQuestion.getVariable())+"");
+			}
+			else if (callQuestion instanceof MSQuestion)
+			{
+				//Nothing to do
+			}	
+		}
+		
 		return 0;
 	}
 	
@@ -376,6 +403,12 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 	
 	public void handleAssignment(ASTAssignment node)
 	{
+	
+
+		Random r = new Random();
+		int q = r.nextInt(100);
+		
+			boolean gotAQuestion = q < QUESTION_FREQUENCY;//HACK FOR NOW FIXME
 		String name = node.getName();
 
 		Integer value = (Integer)node.jjtGetChild(1).jjtAccept(this, null);
@@ -388,13 +421,17 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 			index = (Integer) node.jjtGetChild(0).jjtGetChild(0).jjtAccept(this, null);
 			v.setValue(value, index);
 			
-			assignmentQuestion = questionFactory.getAssignmentQuestion(node.getLineNumber, name, index, QUESTION_REASON_ASSIGNMENT);
+			if (gotAQuestion)
+			{assignmentQuestion = questionFactory.getAssignmentQuestion(node.getLineNumber(), name, index);}
+			
 		}
 		else
 		{
 		//QUESTION!!!
-		boolean gotAQuestion = true;
-		assignmentQuestion = questionFactory.getAssignmentQuestion(node.getLineNumber(), name, QUESTION_REASON_ASSIGNMENT);
+		if (gotAQuestion)
+		{
+			assignmentQuestion = questionFactory.getAssignmentQuestion(node.getLineNumber(), name);
+		}
 			v.setValue(value);
 		}
 		System.out.println("Ok, set value");
@@ -402,8 +439,10 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 		if (gotAQuestion)
 		{
 			int i = value;
+			System.out.println(assignmentQuestion);
 			if (assignmentQuestion.getIndex() != -1)
 			{
+				System.out.println("This might be wrong");
 				i = Global.getCurrentSymbolTable().get(name, assignmentQuestion.getIndex());
 			}
 			setAssignmentQuestionAnswer(i);
