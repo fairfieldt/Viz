@@ -39,6 +39,8 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 	final double chanceOfArrayInMain = 1.0/2.0;
 	final double chanceOfArrayInFoo = 1.0/2.0;
 	
+	final double chanceOfParamAsVar = 1.0/2.0;
+	
 	
 	InterestingCases intrCase;
 	/**
@@ -435,7 +437,6 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 		}
 
 		return ASTVar.createVar(randomVar);
-
 	}
 	
 	//TODO: make it so the aliased params are in positions other than 0 and 1
@@ -533,6 +534,8 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 	{
 		ArrayList<String> badLHSNames = getBadLHSNames(localTable, badNames);
 		
+		if (paramAsVar())
+			badLHSNames = localTable.getCurrentVarNamesArray(VarRetrRest.NotParamOnly);
 		ASTVar lhs = createVar(localTable, badLHSNames, true);
 		ASTNum rhs = ASTNum.createNum(randomDeclInt());
 		
@@ -548,7 +551,18 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 			ASTVar lhs)
 	{
 		if (lhs == null)
-			lhs = createVar(localTable, badNames, true);
+		{
+			if (paramAsVar())
+			{	
+				ArrayList<String> nonParams = localTable.getCurrentVarNamesArray(VarRetrRest.NotParamOnly);
+				lhs = createVar(localTable, nonParams, true);
+			}
+			else
+			{
+				lhs = createVar(localTable, badNames, true);
+			}
+			
+		}
 		
 		Node rhs1 = createOperand(localTable);
 		Node rhs2 = createOperand(localTable);
@@ -577,13 +591,18 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 	
 	private Node createOperand(SymbolTable localTable)
 	{
+		ArrayList<String> badNames = null;
+		
 		if (numOrVar()) //num
 		{
 			return ASTNum.createNum(randomDeclInt());
 		}
-		//var
 		
-		return createVar(localTable, null, true);
+		//var
+		if (paramAsVar())
+			badNames = localTable.getCurrentVarNamesArray(VarRetrRest.NotParamOnly);
+		
+		return createVar(localTable, badNames, true);
 	}
 	
 	/**
@@ -734,6 +753,11 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 	private boolean arrayInMain()
 	{
 		return binDecision(chanceOfArrayInMain);
+	}
+	
+	private boolean paramAsVar()
+	{
+		return binDecision(chanceOfParamAsVar);
 	}
 	
 	private boolean arrayInFoo()

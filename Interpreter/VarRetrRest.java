@@ -7,6 +7,7 @@ package Interpreter;
  */
 public enum VarRetrRest {
 	ParamOnly,
+	NotParamOnly,
 	ArrayOnly,
 	NotArrayOnly
 }

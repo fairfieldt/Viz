@@ -164,6 +164,11 @@ public class SymbolTable
 				if (test.isParam())
 					retArray.add(name);
 			}
+			else if (restrict == VarRetrRest.NotParamOnly)
+			{
+				if (!test.isParam())
+					retArray.add(name);
+			}
 			else if (restrict == VarRetrRest.ArrayOnly)
 			{
 				if (test.getIsArray())
