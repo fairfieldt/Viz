@@ -281,22 +281,35 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 		}
 		
 		int numVarDecls = numOfFooVarDecls();
-		
-		for(int i = 0; i < numVarDecls; i++)
 		{
-			ArrayList<String> badVars = localTable.getLocalVarNamesArray();
-			badVars = getBadLHSNames(localTable, badVars);
-			String name = getNewVarName(badVars);
-			int value = randomDeclInt();
+			int i = 0;
 			
-			ASTVarDecl v = createVarDecl(name, value);
-			foo.addLogicalChild(v, i);
-			
-			localTable.put(name, new ByValVariable(value));
+			//create shadowed array.
+			if (intrCase == InterestingCases.Shadowing)
+			{
+				ASTVarDecl var = createShadowedArrayDecl(localTable);
+				foo.addLogicalChild(var, 0);
+				
+				localTable.put(var.getName(), ByValVariable.createArrayVariable());
+				//increment spot in node
+				i++;
+			}
+		
+			for(; i < numVarDecls; i++)
+			{
+				ArrayList<String> badVars = localTable.getLocalVarNamesArray();
+				badVars = getBadLHSNames(localTable, badVars);
+				String name = getNewVarName(badVars);
+				int value = randomDeclInt();
+				
+				ASTVarDecl v = createVarDecl(name, value);
+				foo.addLogicalChild(v, i);
+				
+				localTable.put(name, new ByValVariable(value));
+			}
 		}
-		
-		
-		if (arrayInFoo())
+		//one array is plenty
+		if (arrayInFoo() && intrCase != InterestingCases.Shadowing)
 		{
 			ArrayList<String> badVars = localTable.getLocalVarNamesArray();
 			String name = getNewVarName(badVars);
@@ -467,6 +480,8 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 			
 			ASTVar var1 = ASTVar.createVarWithIndex(name, index);
 			ret.add(var1);
+			
+			i = 1;
 			
 		}
 

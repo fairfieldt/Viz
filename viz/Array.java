@@ -70,6 +70,11 @@ public class Array extends Variable implements Drawable {
 		return arrayCopiesOwned.get(index).pop();
 	}
 	
+	public String peekCopyId(int index)
+	{
+		return arrayCopiesOwned.get(index).peek();
+	}
+	
 	public String getCopyId(int index)
 	{
 		return arrayCopiesOwned.get(index).getFirst();

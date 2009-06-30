@@ -1193,7 +1193,19 @@ public class XAALConnector {
     		  scripter.addHide(id);
     	  }
     	  
-    	  scripter.addHide(local.peekCopyId());
+    	  if (local instanceof Array)
+    	  {
+    		  Array a = (Array)local;
+    		  int arrayLength = a.getValues().size();
+    		  for( int i = 0; i < arrayLength; i++)
+    		  {
+    			  scripter.addHide(a.peekCopyId(i));
+    		  }
+    	  }
+    	  else
+    	  {
+    		  scripter.addHide(local.peekCopyId());
+    	  }
       }
       
       
