@@ -199,32 +199,43 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 	private void visitMain(ASTFunction main)
 	{
 		SymbolTable localTable = main.getSymbolTable();
-		int numVars = numOfMainVarDecls();
-		
-		for (int i = 0; i < numVars; i++)
+		int numVars = -1;
+		if( this.intrCase == InterestingCases.Shadowing)
 		{
-			ArrayList<String> badNames = localTable.getLocalVarNamesArray();
-			String name = getNewVarName(badNames);
-			int value = randomDeclInt();
-			 
-			ASTVarDecl newVarDecl = createVarDecl(name, value);
-			main.addLogicalChild(newVarDecl, i);
-			 
-			localTable.put(name, new ByValVariable(value));
+			ASTVarDecl decl = createShadowedArrayDecl(localTable);
+			main.addLogicalChild(decl, 0);
+			
+			numVars = 1;
 		}
-		
-		if (arrayInMain())
+		else
 		{
-			ArrayList<String> badNames = localTable.getLocalVarNamesArray();
-			String name = getNewVarName(badNames);
+			numVars = numOfMainVarDecls();
+			for (int i = 0; i < numVars; i++)
+			{
+				ArrayList<String> badNames = localTable.getLocalVarNamesArray();
+				String name = getNewVarName(badNames);
+				int value = randomDeclInt();
+				 
+				ASTVarDecl newVarDecl = createVarDecl(name, value);
+				main.addLogicalChild(newVarDecl, i);
+				 
+				localTable.put(name, new ByValVariable(value));
+			}
 			
-			ASTVarDecl newVarDecl = createArrayDecl(name);
-			main.addLogicalChild(newVarDecl, numVars);
 			
-			localTable.put(name, ByValVariable.createArrayVariable());
-			
-			//increment this so the foo call is in the right place
-			numVars++;
+			if (arrayInMain())
+			{
+				ArrayList<String> badNames = localTable.getLocalVarNamesArray();
+				String name = getNewVarName(badNames);
+				
+				ASTVarDecl newVarDecl = createArrayDecl(name);
+				main.addLogicalChild(newVarDecl, numVars);
+				
+				localTable.put(name, ByValVariable.createArrayVariable());
+				
+				//increment this so the foo call is in the right place
+				numVars++;
+			}
 		}
 		
 		
@@ -233,6 +244,7 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 		
 		ASTCall fooCall = ASTCall.createCall("foo");
 		main.addLogicalChild(fooCall, numVars);
+		
 		
 		ArrayList<ASTVar> args = createArgs(numOfParams, localTable);
 		
@@ -441,6 +453,22 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 			i = 2;
 			
 		}
+		else if (intrCase == InterestingCases.Shadowing)
+		{
+			ArrayList<String> arrays = table.getCurrentVarNamesArray(VarRetrRest.ArrayOnly);
+			ArrayList<String> indexVars = table.getCurrentVarNamesArray(VarRetrRest.NotArrayOnly);
+			
+			testArrayEmpty(arrays);
+			testArrayVars(arrays, table);
+			testNonArrayVars(indexVars, table);
+			
+			String name = getRandomItem(arrays);
+			String index = getRandomItem(indexVars);
+			
+			ASTVar var1 = ASTVar.createVarWithIndex(name, index);
+			ret.add(var1);
+			
+		}
 
 		for (; i < numOfParams; i++)
 		{
@@ -543,6 +571,27 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 		return createVar(localTable, null, true);
 	}
 	
+	/**
+	 * must be called at the BEGINNING of a function, not later. Adds it to SymbolTable.
+	 * @param localTable
+	 */
+	private ASTVarDecl createShadowedArrayDecl(SymbolTable localTable)
+	{
+		ArrayList<String> arrays = localTable.getCurrentVarNamesArray(VarRetrRest.ArrayOnly);
+		
+		testArrayEmpty(arrays);
+		
+		String name = getNewVarFromList(arrays);
+		
+		ASTVarDecl ret = createArrayDecl(name);
+		
+		localTable.put(name, ByValVariable.createArrayVariable());
+		
+		return ret;
+	}
+	
+	
+	
 	private void addParamsToFoo(int numToAdd)
 	{
 		ASTFunction foo = Global.getFunctions().get("foo");
@@ -631,6 +680,11 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 		
 		return getRandomItem(possNames);
 		
+	}
+	
+	private String getNewVarFromList (ArrayList<String> choices)
+	{
+		return getRandomItem(choices);
 	}
 	
 	private <S> S getRandomItem(ArrayList<S> items)
