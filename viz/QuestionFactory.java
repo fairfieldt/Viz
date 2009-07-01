@@ -151,6 +151,7 @@ public class QuestionFactory implements UpdateReasons
 	
 	public Question getAssignmentQuestion(int lineNumber, String varName, int index)
 	{
+		System.out.println("Getting an array question");
 		int i = 0;
 		int localVal = Global.getCurrentSymbolTable().get(varName, true);
 		
@@ -183,13 +184,10 @@ public class QuestionFactory implements UpdateReasons
 			i = index;
 		}
 		String scopeHint = " in the current scope ";
-		if (Global.getCurrentSymbolTable().get(varName) != -255)
-		{
-			scopeHint = " in the global scope ";
-		}
+		
 		FIBQuestion question = new FIBQuestion("What will be the value of " + varName + "[" + index + "] " + scopeHint + "after the current line executes?");
 		question.setVariable(varName);
-		question.setIndex(i);
+		question.setIndex(index);
 		return question;
 	}
 /*	

@@ -485,22 +485,24 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 
 		if (v.getIsArray())
 		{
+			System.out.println("AN ARRRAY");
 			index = (Integer) node.jjtGetChild(0).jjtGetChild(0).jjtAccept(this, null);
 			v.setValue(value, index);
 			if (gotAQuestion)
 			{
+				System.out.println("asdf");
 				assignmentQuestion = questionFactory.getAssignmentQuestion(node.getLineNumber(), name, index);
 			}
 		}
 		else
 		{
 					v.setValue(value);
-		}
-		//QUESTION!!!
-		if (gotAQuestion)
+				if (gotAQuestion)
 		{
 		assignmentQuestion = questionFactory.getAssignmentQuestion(node.getLineNumber(), name);
 		}
+		}
+		//QUESTION!!!
 		System.out.println("Ok, set value");
 		//Drawing stuff. snap and par should be opened from enclosing statement
 		if (gotAQuestion)

@@ -405,16 +405,16 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 			else if (callQuestion instanceof TFQuestion)
 			{
 				int qa = answer;
-				//Getting the value of the var at the end of the function
-				String paramName = Global.getCurrentParamToArg().get(callQuestion.getVariable());
-				int prevVal = Global.getFunction("foo").getSymbolTable().get(paramName);
-			
+				//Getting the value of the var at the end of the function FIXME
+				int prevVal = Global.getFunction("foo").getSymbolTable().get("x");
+				System.out.println("YYY " + prevVal);
 				Random r = new Random();
 				int choose = r.nextInt(3);
 				switch (choose)
 				{
 					case 0:
 						qa = callQuestion.getValue();
+						System.out.println("qaqa" + qa);
 						((TFQuestion)callQuestion).setAnswer(false);
 						if (qa == answer) // Value is the same anyway
 						{
@@ -439,6 +439,7 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 			}	
 			else
 			{
+			
 				System.out.println("CQC " + callQuestion);
 			}
 		}
@@ -484,18 +485,24 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 			v.setValue(value, index);
 			
 			if (gotAQuestion)
-			{assignmentQuestion = questionFactory.getAssignmentQuestion(node.getLineNumber(), name, index);}
+			{
+			assignmentQuestion = questionFactory.getAssignmentQuestion(node.getLineNumber(), name, index);
+			}
 			
 		}
 		else
 		{
 		//QUESTION!!!
-		if (gotAQuestion)
-		{
-			assignmentQuestion = questionFactory.getAssignmentQuestion(node.getLineNumber(), name);
-		}
+			if (gotAQuestion)
+			{
+				assignmentQuestion = questionFactory.getAssignmentQuestion(node.getLineNumber(), name);
+			}
 			v.setValue(value);
+			System.out.println("ADFS " + value);
 		}
+		
+		
+		
 		System.out.println("Ok, set value");
 		//Drawing stuff. snap and par should be opened from enclosing statement
 		if (gotAQuestion)
@@ -508,7 +515,10 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 			}
 			else
 			{
+				System.out.println("RRRRR " + assignmentQuestion.getVariable());
 				i = Global.getCurrentSymbolTable().get(assignmentQuestion.getVariable());
+				System.out.println(i);
+				System.out.println("qq");
 			}
 			setAssignmentQuestionAnswer(i);
 			connector.addQuestion(assignmentQuestion);

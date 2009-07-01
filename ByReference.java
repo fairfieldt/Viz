@@ -39,8 +39,8 @@ public class ByReference
 			iv.setXAALConnector(xc);
 			iv.setQuestionFactory(questionFactory);
 			program.jjtAccept(iv, null);
-			xc.draw("by_reference.xaal");
-			System.out.println("Visualization file by_reference.xaal created");
+			xc.draw(args[0]);
+			System.out.println("Visualization file created");
 
 		}
 		catch (Exception e)
