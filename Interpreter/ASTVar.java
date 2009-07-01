@@ -48,6 +48,9 @@ public class ASTVar extends SimpleNode implements VizParserTreeConstants{
   	System.out.println("built in astvar");
   	return code;
   }
+  
+
+  
   /** Accept the visitor. **/
   public Object jjtAccept(VizParserVisitor visitor, Object data) {
     return visitor.visit(this, data);
@@ -97,6 +100,10 @@ public class ASTVar extends SimpleNode implements VizParserTreeConstants{
 		return var;
 	}
 	
-	
+	  public String getCodeRaw()
+	  {
+		  String code = this.name  + (isArray ? "[" + jjtGetChild(0).getCode() + "]" : "");
+		  return code;
+	  }
 }
 

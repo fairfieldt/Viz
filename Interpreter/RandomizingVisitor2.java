@@ -40,9 +40,14 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 	final double chanceOfArrayInFoo = 1.0/2.0;
 	
 	final double chanceOfParamAsVar = 1.0/2.0;
+	//this is actually 25% as this is half of the time a param isn't used as var
+	final double chanceOfArgAsVar = 1.0/2.0;
 	
 	
 	InterestingCases intrCase;
+	
+	
+	
 	/**
 	 * 
 	 * @param clazz the subclass of AbstractVariable that you want the randomizer to use
@@ -51,6 +56,7 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 	{
 		varClass = clazz;
 		this.intrCase = getIntrCase();
+		
 	}
 	
 	
@@ -202,6 +208,8 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 	{
 		SymbolTable localTable = main.getSymbolTable();
 		int numVars = -1;
+		
+		/* THIS WILL PROBABLY  BE USED LATER 
 		if( this.intrCase == InterestingCases.Shadowing)
 		{
 			ASTVarDecl decl = createShadowedArrayDecl(localTable);
@@ -210,35 +218,35 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 			numVars = 1;
 		}
 		else
+		{*/
+		numVars = numOfMainVarDecls();
+		for (int i = 0; i < numVars; i++)
 		{
-			numVars = numOfMainVarDecls();
-			for (int i = 0; i < numVars; i++)
-			{
-				ArrayList<String> badNames = localTable.getLocalVarNamesArray();
-				String name = getNewVarName(badNames);
-				int value = randomDeclInt();
-				 
-				ASTVarDecl newVarDecl = createVarDecl(name, value);
-				main.addLogicalChild(newVarDecl, i);
-				 
-				localTable.put(name, new ByValVariable(value));
-			}
-			
-			
-			if (arrayInMain())
-			{
-				ArrayList<String> badNames = localTable.getLocalVarNamesArray();
-				String name = getNewVarName(badNames);
-				
-				ASTVarDecl newVarDecl = createArrayDecl(name);
-				main.addLogicalChild(newVarDecl, numVars);
-				
-				localTable.put(name, ByValVariable.createArrayVariable());
-				
-				//increment this so the foo call is in the right place
-				numVars++;
-			}
+			ArrayList<String> badNames = localTable.getLocalVarNamesArray();
+			String name = getNewVarName(badNames);
+			int value = randomDeclInt();
+			 
+			ASTVarDecl newVarDecl = createVarDecl(name, value);
+			main.addLogicalChild(newVarDecl, i);
+			 
+			localTable.put(name, new ByValVariable(value));
 		}
+		
+		
+		if (arrayInMain())
+		{
+			ArrayList<String> badNames = localTable.getLocalVarNamesArray();
+			String name = getNewVarName(badNames);
+			
+			ASTVarDecl newVarDecl = createArrayDecl(name);
+			main.addLogicalChild(newVarDecl, numVars);
+			
+			localTable.put(name, ByValVariable.createArrayVariable());
+			
+			//increment this so the foo call is in the right place
+			numVars++;
+		}
+		//}
 		
 		
 		int numOfParams = numOfFooParams();
@@ -250,10 +258,16 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 		
 		ArrayList<ASTVar> args = createArgs(numOfParams, localTable);
 		
+		
+		HashMap<String,String> pa = new HashMap<String, String>();
+		int i = 0;
 		for( ASTVar v : args)
 		{
+			pa.put(paramNames[i], v.getCodeRaw());
 			fooCall.addArg(v);
 		}
+		
+		Global.setCurrentParamToArg(pa);
 	}
 	
 	private void visitFoo(ASTFunction foo)
@@ -536,6 +550,13 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 		
 		if (paramAsVar())
 			badLHSNames = localTable.getCurrentVarNamesArray(VarRetrRest.NotParamOnly);
+		//TODO doesn't use arrays because its hard to tell if they're safe
+		else if (argAsVar())
+		{
+			if (getNonArrayArgsInScope(localTable).size() > 0)
+				badLHSNames = nonArgsVarList(localTable);
+		}
+		
 		ASTVar lhs = createVar(localTable, badLHSNames, true);
 		ASTNum rhs = ASTNum.createNum(randomDeclInt());
 		
@@ -556,6 +577,15 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 			{	
 				ArrayList<String> nonParams = localTable.getCurrentVarNamesArray(VarRetrRest.NotParamOnly);
 				lhs = createVar(localTable, nonParams, true);
+			}
+			
+			else if (argAsVar())
+			{
+				int nonArrayArgsSize = getNonArrayArgsInScope(localTable).size();
+				if (nonArrayArgsSize > 0)
+					lhs = createVar(localTable, nonArgsVarList(localTable), true);
+				else
+					lhs = createVar(localTable, badNames, true);
 			}
 			else
 			{
@@ -601,7 +631,12 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 		//var
 		if (paramAsVar())
 			badNames = localTable.getCurrentVarNamesArray(VarRetrRest.NotParamOnly);
-		
+		else if (argAsVar())
+		{
+			
+			if (getNonArrayArgsInScope(localTable).size() > 0)
+				badNames = nonArgsVarList(localTable);
+		}
 		return createVar(localTable, badNames, true);
 	}
 	
@@ -721,6 +756,54 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 		return getRandomItem(choices);
 	}
 	
+	private ArrayList<String> nonArgsVarList(SymbolTable localTable)
+	{
+		ArrayList<String> ret = new ArrayList<String>();
+		
+		ArrayList<String> vars = localTable.getCurrentVarNamesArray();
+		
+		for (String v : vars)
+		{
+			if (!Global.getCurrentParamToArg().containsValue(v) || 
+					localTable.getVariable(v).getIsArray())
+			{
+				ret.add(v);
+			}
+		}
+		
+		//ret.addAll(localTable.getCurrentVarNamesArray(VarRetrRest.ArrayOnly));
+		
+		return ret;
+	}
+	
+	private ArrayList<String> getNonArrayArgs()
+	{
+		ArrayList<String> ret = new ArrayList<String>();
+		for (String s : Global.getCurrentParamToArg().values())
+		{
+			if (s.length() == 1)
+				ret.add(s);
+		}
+		
+		return ret;
+	}
+	
+	private ArrayList<String> getNonArrayArgsInScope(SymbolTable localTable)
+	{
+		ArrayList<String> args = getNonArrayArgs();
+		ArrayList<String> local = localTable.getCurrentVarNamesArray(VarRetrRest.NotArrayOnly);
+		ArrayList<String> ret = new ArrayList<String>();
+		for (String s : args)
+		{
+			if (local.contains(s))
+				ret.add(s);
+		}
+		
+		testNonArrayVars(ret, localTable);
+		
+		return ret;
+	}
+	
 	private <S> S getRandomItem(ArrayList<S> items)
 	{
 		return items.get(rand.nextInt(items.size()));
@@ -765,6 +848,10 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 		return binDecision(chanceOfArrayInFoo);
 	}
 	
+	private boolean argAsVar()
+	{
+		return binDecision(chanceOfArgAsVar);
+	}
 	private boolean binDecision(double probability)
 	{
 		
