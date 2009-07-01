@@ -307,8 +307,13 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 				foo.addLogicalChild(var, 0);
 				
 				localTable.put(var.getName(), ByValVariable.createArrayVariable());
+				
+				
+				var = createShadowedVarDecl(localTable);
+				foo.addLogicalChild(var,1);
+				
 				//increment spot in node
-				i++;
+				i = 2;
 			}
 		
 			for(; i < numVarDecls; i++)
@@ -641,7 +646,7 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 	}
 	
 	/**
-	 * must be called at the BEGINNING of a function, not later. Adds it to SymbolTable.
+	 * must be called at the BEGINNING of a function, not later.
 	 * @param localTable
 	 */
 	private ASTVarDecl createShadowedArrayDecl(SymbolTable localTable)
@@ -654,7 +659,26 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 		
 		ASTVarDecl ret = createArrayDecl(name);
 		
-		localTable.put(name, ByValVariable.createArrayVariable());
+		return ret;
+	}
+	
+	/**
+	 * must be called at the BEGINNING of a function or right after shadowed array
+	 * declaration, not later. Adds to local symbol table
+	 * 
+	 */
+	private ASTVarDecl createShadowedVarDecl(SymbolTable localTable)
+	{
+		ArrayList<String> vars = localTable.getCurrentVarNamesArray(VarRetrRest.NotParamOrArrayOnly);
+		
+		testArrayEmpty(vars);
+		
+		String name = getNewVarFromList(vars);
+		int value = randomDeclInt();
+		
+		ASTVarDecl ret = createVarDecl(name, value);
+		
+		localTable.put(name, new ByValVariable(value));
 		
 		return ret;
 	}

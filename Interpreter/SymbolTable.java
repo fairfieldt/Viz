@@ -180,6 +180,11 @@ public class SymbolTable
 				if(!test.getIsArray())
 					retArray.add(name);
 			}
+			else if (restrict == VarRetrRest.NotParamOrArrayOnly)
+			{
+				if (!test.getIsArray() && !test.isParam())
+					retArray.add(name);
+			}
 		}
 		
 		return retArray;
