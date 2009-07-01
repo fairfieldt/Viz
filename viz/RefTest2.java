@@ -10,6 +10,7 @@ public class RefTest2
 		System.out.println("Starting");
 		Global.InterpreterType = InterpreterTypes.BY_REFERENCE;
 		BufferedReader br = null;
+		
 		try
 		{
 			br = new BufferedReader(new FileReader(args[0]));
@@ -25,7 +26,7 @@ public class RefTest2
 
 			RandomizingVisitor2<Interpreter.ByRefVariable> rv = new RandomizingVisitor2<Interpreter.ByRefVariable>(Interpreter.ByRefVariable.class);
 				
-			program.jjtAccept(rv, null);
+			//program.jjtAccept(rv, null);
 		
 			System.out.println("Successfully Parsed");
 			System.out.println("________________\n");

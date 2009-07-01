@@ -690,8 +690,11 @@ Element initial = document.getRootElement().getChild("initial", defaultNS);
 			// TODO: fix this so that we get the correct vars
 			endX = endPos.getAttribute("x").getIntValue() + 
 				(dest.getAttribute("shapeWidth", jhaveNS).getIntValue() / 2);
-			endY = endPos.getAttribute("y").getIntValue() + 
-				(dest.getAttribute("shapeHeight", jhaveNS).getIntValue());
+			if (endPos.getAttribute("y").getIntValue() > startY)
+				endY = endPos.getAttribute("y").getIntValue();
+			else
+				endY = endPos.getAttribute("y").getIntValue() + 
+					(dest.getAttribute("shapeHeight", jhaveNS).getIntValue());
 			System.out.println("End X: " + endX + " End Y: " + endY);
 		}
 		catch (Exception e)
