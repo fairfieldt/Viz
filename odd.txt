@@ -1,0 +1,18 @@
+var g = 1;
+var a = 2;
+def foo(x, y, z)
+{
+	var v = 5;
+	x = g + 1;
+	v = y – x;
+	z = 2 + x;
+	y = v + 5;
+	g = 3;
+	x = z – g;
+}
+
+def main()
+{
+	var m = 3;
+	foo(m, m, g);
+}
