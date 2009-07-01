@@ -381,15 +381,47 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 		fun.jjtAccept(this, null);
 		if(gotAQuestion)
 		{
+
+			int answer = Global.getFunction("main").getSymbolTable().get(callQuestion.getVariable());
 			if (callQuestion instanceof FIBQuestion)
 			{
-				int answer = Global.getFunction("main").getSymbolTable().get(callQuestion.getVariable());
 				System.out.println("AAAA " + answer);
 				((FIBQuestion)callQuestion).addAnswer(answer+"");
 			}
-			else if (callQuestion instanceof MSQuestion)
+			else if (callQuestion instanceof TFQuestion)
 			{
-				//Nothing to do
+				int qa = answer;
+				//Getting the value of the var at the end of the function
+				String paramName = Global.getCurrentParamToArg().get(callQuestion.getVariable());
+				int prevVal = Global.getFunction("foo").getSymbolTable().get(paramName);
+				
+				Random r = new Random();
+				int choose = r.nextInt(3);
+				switch (choose)
+				{
+					case 0:
+						qa = callQuestion.getValue();
+						((TFQuestion)callQuestion).setAnswer(false);
+						if (qa == answer) // Value is the same anyway
+						{
+							((TFQuestion)callQuestion).setAnswer(true);
+						}
+						break;
+					case 1:
+						qa = prevVal;
+						((TFQuestion)callQuestion).setAnswer(false);
+						if (qa == answer) // Value is the same anyway
+						{
+							((TFQuestion)callQuestion).setAnswer(true);
+						}
+						break;
+					case 2:
+						((TFQuestion)callQuestion).setAnswer(true);
+						break;
+				}
+						
+			
+				callQuestion.setText(callQuestion.getText() + qa);
 			}	
 			else
 			{

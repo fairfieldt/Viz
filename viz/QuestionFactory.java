@@ -23,7 +23,6 @@ public class QuestionFactory implements UpdateReasons
 				question = new FIBQuestion("What will the value of "
 						 + varName + " be after the main function returns?");
 				break;
-			case 0:
 			case 1:
 				question = new TFQuestion("After them main function returns, the value of "
 				 + varName + " will be ");
@@ -39,7 +38,7 @@ public class QuestionFactory implements UpdateReasons
 	}
 	public Question getCallQuestion(String functionName, HashMap<String, String> pa)
 	{
-		Question question;
+		Question question = null;
 		String varName = null;
 		Random r = new Random();
 		String prev = "";
@@ -97,8 +96,21 @@ public class QuestionFactory implements UpdateReasons
 			{
 				scopeHint = " declared in main ";
 			}
-			question = new FIBQuestion("What will the value of " + varName + 
-			scopeHint + " be after " + functionName + " returns?");
+		
+			int choose = r.nextInt(2);
+			switch (choose)
+			{
+				case 0:
+					question = new FIBQuestion("What will the value of " + varName + 
+					scopeHint + " be after " + functionName + " returns?");
+					break;
+				case 1:
+					question = new TFQuestion("After " + functionName + 
+						" returns, the value of " + varName + scopeHint + 
+						" will be ");
+						break;
+			}
+
 			question.setVariable(varName);
 		}			
 		return question;
@@ -141,17 +153,20 @@ public class QuestionFactory implements UpdateReasons
 	{
 		int i = 0;
 		int localVal = Global.getCurrentSymbolTable().get(varName, true);
-		if (localVal != -255)
+		
+		//This stuff does nothing now.  FIXME
+		if (localVal != -255)//Exists locally
 		{
 			int globalVal = Global.getCurrentSymbolTable().get(varName, true);
 			int mainVal = Global.getFunction("main").getSymbolTable().get(varName, true);
+			//Exists globally and /could/ index the array
 			if (globalVal != -255 && globalVal >= 0 && globalVal < 5)
 			{
 				Random r = new Random();
 				int prob = r.nextInt(2);
 				if (prob == 0)
 				{
-					i = globalVal;
+					i = globalVal;  
 				}
 				else if (mainVal != -255 && mainVal >= 0 && mainVal < 5)
 				{
@@ -167,8 +182,12 @@ public class QuestionFactory implements UpdateReasons
 		{
 			i = index;
 		}
-		
-		FIBQuestion question = new FIBQuestion("What will be the value of " + varName + "[" + i + "] after the current line executes?");
+		String scopeHint = " in the current scope ";
+		if (Global.getCurrentSymbolTable().get(varName) != -255)
+		{
+			scopeHint = " in the global scope ";
+		}
+		FIBQuestion question = new FIBQuestion("What will be the value of " + varName + "[" + index + "] " + scopeHint + "after the current line executes?");
 		question.setVariable(varName);
 		question.setIndex(i);
 		return question;

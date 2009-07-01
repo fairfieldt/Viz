@@ -115,7 +115,33 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		
 		node.jjtGetChild(0).jjtAccept(this, null);
 		update(LINE_NUMBER_END, UPDATE_REASON_END);
-		((FIBQuestion)startQuestion).addAnswer(Global.getSymbolTable().get(startQuestion.getVariable())+"");
+		
+		
+		int value = Global.getCurrentSymbolTable().get(startQuestion.getVariable());
+		if (startQuestion instanceof FIBQuestion)
+		{
+		
+			((FIBQuestion)startQuestion).addAnswer(value+"");
+		}
+		else if (startQuestion instanceof TFQuestion)
+		{
+			Random r = new Random();
+			int prob = r.nextInt(10);
+			int qa = value;
+			if (prob >= 3 && value != startQuestion.getValue())
+			{
+				qa = startQuestion.getValue();
+				((TFQuestion)startQuestion).setAnswer(false);
+			}
+			else
+			{
+				((TFQuestion)startQuestion).setAnswer(true);
+				
+			}
+			startQuestion.setText(startQuestion.getText() + qa + ".");
+		}
+		
+		
 		//TODO Write the last snap nicely
 		connector.startSnap(node.getPseudocode().length);
 			connector.startPar();
@@ -326,15 +352,53 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		fun.jjtAccept(this, null);
 		
 		if(gotAQuestion)
-		{
+				{
+
+			int answer = Global.getFunction("main").getSymbolTable().get(callQuestion.getVariable());
 			if (callQuestion instanceof FIBQuestion)
 			{
-				((FIBQuestion)callQuestion).addAnswer(Global.getFunction("main").getSymbolTable().get(callQuestion.getVariable())+"");
+				System.out.println("AAAA " + answer);
+				((FIBQuestion)callQuestion).addAnswer(answer+"");
 			}
-			else if (callQuestion instanceof MSQuestion)
+			else if (callQuestion instanceof TFQuestion)
 			{
-				//Nothing to do
+				int qa = answer;
+				//Getting the value of the var at the end of the function
+				String paramName = Global.getCurrentParamToArg().get(callQuestion.getVariable());
+				int prevVal = Global.getFunction("foo").getSymbolTable().get(paramName);
+			
+				Random r = new Random();
+				int choose = r.nextInt(3);
+				switch (choose)
+				{
+					case 0:
+						qa = callQuestion.getValue();
+						((TFQuestion)callQuestion).setAnswer(false);
+						if (qa == answer) // Value is the same anyway
+						{
+							((TFQuestion)callQuestion).setAnswer(true);
+						}
+						break;
+					case 1:
+						qa = prevVal;
+						((TFQuestion)callQuestion).setAnswer(false);
+						if (qa == answer) // Value is the same anyway
+						{
+							((TFQuestion)callQuestion).setAnswer(true);
+						}
+						break;
+					case 2:
+						((TFQuestion)callQuestion).setAnswer(true);
+						break;
+				}
+					
+		
+				callQuestion.setText(callQuestion.getText() + qa);
 			}	
+			else
+			{
+				System.out.println("CQC " + callQuestion);
+			}
 		}
 		return 0;
 	}
@@ -383,13 +447,16 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		//Drawing stuff. snap and par should be opened from enclosing statement
 		if (gotAQuestion)
 		{
-			int i = value;
-			System.out.println(assignmentQuestion);
+			int i;
 			if (assignmentQuestion.getIndex() != -1)
 			{
 				System.out.println("This might be wrong");
-				System.out.println(assignmentQuestion.getVariable());
-				i = Global.getCurrentSymbolTable().get(assignmentQuestion.getVariable(), assignmentQuestion.getIndex());
+				i = Global.getCurrentSymbolTable().get(name, assignmentQuestion.getIndex());
+			}
+			else
+			{
+				System.out.println("FFF " + assignmentQuestion.getVariable());
+				i = Global.getCurrentSymbolTable().get(assignmentQuestion.getVariable());
 			}
 			setAssignmentQuestionAnswer(i);
 			connector.addQuestion(assignmentQuestion);
