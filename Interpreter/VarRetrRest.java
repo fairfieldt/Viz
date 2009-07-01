@@ -9,5 +9,6 @@ public enum VarRetrRest {
 	ParamOnly,
 	NotParamOnly,
 	ArrayOnly,
-	NotArrayOnly
+	NotArrayOnly,
+	NotParamOrArrayOnly
 }
