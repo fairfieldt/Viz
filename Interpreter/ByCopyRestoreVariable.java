@@ -6,7 +6,7 @@ public class ByCopyRestoreVariable extends AbstractVariable implements Variable
 	//The ByValVariable we're referring to
 	private ByValVariable ref;
 	private int refIndex = -1;
-	private int value;
+	private int value = 99;
 	
 	public ByCopyRestoreVariable()
 	{
@@ -25,13 +25,16 @@ public class ByCopyRestoreVariable extends AbstractVariable implements Variable
 	
 	public void setValue(int value)
 	{
+		System.out.println("My value is now " + value);
 		this.value = value;
 	}
 	
 	public void setRef(ByValVariable ref, int index)
 	{
+		System.out.println("Setting ref to array");
 		this.ref = ref;
 		this.refIndex = index;
+		this.value = ref.getValue(index);
 	}	
 	
 	public int getRefIndex()
@@ -61,7 +64,7 @@ public class ByCopyRestoreVariable extends AbstractVariable implements Variable
 	
 	public int getValue()
 	{
-		System.out.println("Getting value");
+		System.out.println("Getting value " + this.value);
 		return this.value;
 	}
 	

@@ -115,8 +115,30 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 		
 		node.jjtGetChild(0).jjtAccept(this, null);
 		update(LINE_NUMBER_END, UPDATE_REASON_END);
-		((FIBQuestion)startQuestion).addAnswer(Global.getSymbolTable().get(
-								startQuestion.getVariable())+"");		
+		int value = Global.getCurrentSymbolTable().get(startQuestion.getVariable());
+		if (startQuestion instanceof FIBQuestion)
+		{
+		
+			((FIBQuestion)startQuestion).addAnswer(value+"");
+		}
+		else if (startQuestion instanceof TFQuestion)
+		{
+			Random r = new Random();
+			int prob = r.nextInt(10);
+			int qa = value;
+			if (prob >= 3 && value != startQuestion.getValue())
+			{
+				qa = startQuestion.getValue();
+				((TFQuestion)startQuestion).setAnswer(false);
+			}
+			else
+			{
+				((TFQuestion)startQuestion).setAnswer(true);
+				
+			}
+			startQuestion.setText(startQuestion.getText() + qa + ".");
+		}
+						
 		//TODO Write the last snap nicely
 		connector.startSnap(node.getPseudocode().length);
 			connector.startPar();
@@ -185,6 +207,7 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 		ArrayList<Integer> values;
 		if (node.getIsArray())
 		{
+			System.out.println("This is an array " + name);
 			ByValVariable v = (ByValVariable) s.getVariable(name);
 			v.setArray();
 			System.out.println("BLAH" + node.jjtGetChild(0));
@@ -296,6 +319,7 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 			System.out.println(vv + " ");
 			ByCopyRestoreVariable v = (ByCopyRestoreVariable)st.getVariable(parameters.get(i));
 			ByValVariable ref = (ByValVariable)Global.getCurrentSymbolTable().getVariable(argNames.get(i).getName());
+			System.out.println("Got ref " + argNames.get(i).getName());
 			if (ref.getIsArray())
 			{
 				System.out.println("Setting ref to index " + argNames.get(i).getIndex());
@@ -359,18 +383,25 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 		{
 			if (callQuestion instanceof FIBQuestion)
 			{
-				((FIBQuestion)callQuestion).addAnswer(Global.getFunction("main").getSymbolTable().get(callQuestion.getVariable())+"");
+				int answer = Global.getFunction("main").getSymbolTable().get(callQuestion.getVariable());
+				System.out.println("AAAA " + answer);
+				((FIBQuestion)callQuestion).addAnswer(answer+"");
 			}
 			else if (callQuestion instanceof MSQuestion)
 			{
 				//Nothing to do
 			}	
+			else
+			{
+				System.out.println("CQC " + callQuestion);
+			}
 		}
 		//Drawing the copy out stage
 
 				for (int i = 0; i < parameters.size(); i++)
 				{
-					connector.startSnap(0);
+					//HACK to get the right line to highlight
+					connector.startSnap(Global.getFunction("main").getLineNumber() -1);
 							connector.startPar();
 					v1 = Global.getFunction("main").getSymbolTable().getVariable(argNames.get(i).getName());				
 					v2 = (ByCopyRestoreVariable)st.getVariable(parameters.get(i));					if (v1.getIsArray())
@@ -402,6 +433,7 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 		else
 		{
 			value = v.getValue();
+			System.out.println("Got value " + value);
 		}
 		return value;
 	}
@@ -430,23 +462,27 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 		}
 		else
 		{
+					v.setValue(value);
+		}
 		//QUESTION!!!
 		if (gotAQuestion)
 		{
 		assignmentQuestion = questionFactory.getAssignmentQuestion(node.getLineNumber(), name);
-			v.setValue(value);
-		}
 		}
 		System.out.println("Ok, set value");
 		//Drawing stuff. snap and par should be opened from enclosing statement
 		if (gotAQuestion)
 		{
-			int i = value;
 			System.out.println(assignmentQuestion);
+			int i;
 			if (assignmentQuestion.getIndex() != -1)
 			{
 				System.out.println("This might be wrong");
 				i = Global.getCurrentSymbolTable().get(name, assignmentQuestion.getIndex());
+			}
+			else
+			{
+				i = Global.getCurrentSymbolTable().get(assignmentQuestion.getVariable());
 			}
 			setAssignmentQuestionAnswer(i);
 			connector.addQuestion(assignmentQuestion);

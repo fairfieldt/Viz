@@ -9,9 +9,14 @@ public class CopyRestore
 		System.out.println("Starting");
 		Global.InterpreterType = InterpreterTypes.BY_COPY_RESTORE;
 		BufferedReader br = null;
+		String name = "Samples/shell.src";
+		if (args.length > 0)
+		{
+			name = "Samples/test.src";
+		}
 		try
 		{
-			br = new BufferedReader(new FileReader("Samples/shell.src"));
+			br = new BufferedReader(new FileReader(name));
 		}
 		catch (Exception e)
 		{
@@ -24,7 +29,10 @@ public class CopyRestore
 
 			RandomizingVisitor2<ByRefVariable> rv = new RandomizingVisitor2<ByRefVariable>(ByRefVariable.class);
 				
-			program.jjtAccept(rv, null);
+			if (args.length <= 0)
+			{
+				program.jjtAccept(rv, null);
+			}
 		
 			System.out.println("Successfully Parsed");
 			System.out.println("________________\n");
@@ -39,7 +47,13 @@ public class CopyRestore
 			iv.setXAALConnector(xc);
 			iv.setQuestionFactory(questionFactory);
 			program.jjtAccept(iv, null);
-			xc.draw("by_copy_restore.xaal");
+			String fileName = "by_copy_restore.xaal";
+			if (args.length > 0)
+			{
+				fileName = "/home/fairfieldt/Documents/!real.xaal";
+			}
+			
+			xc.draw(fileName);
 			System.out.println("Visualization file by_copy_restore.xaal created");
 
 		}
