@@ -11,9 +11,29 @@ public class QuestionFactory implements UpdateReasons
 		Random r = new Random();
 		int choose = r.nextInt(varNames.size());
 		String varName = varNames.get(choose);
-		
-		Question question = new FIBQuestion("What will the value of " + varName + " be after the main function returns?");
+		while (Global.getCurrentSymbolTable().getVariable(varName).getIsArray())
+		{
+			varName = varNames.get(r.nextInt(varNames.size()));
+		}
+		int questionType = r.nextInt(2); //Change to 3 once 3rd question type.
+		Question question = null;
+		switch (questionType)
+		{
+			case 0:
+				question = new FIBQuestion("What will the value of "
+						 + varName + " be after the main function returns?");
+				break;
+			case 0:
+			case 1:
+				question = new TFQuestion("After them main function returns, the value of "
+				 + varName + " will be ");
+				 break;
+				 
+			default:
+			
+		}
 		question.setVariable(varName);
+		question.setValue(Global.getSymbolTable().get(varName));
 
 		return question;
 	}
@@ -70,8 +90,15 @@ public class QuestionFactory implements UpdateReasons
 		}
 		else
 		{
+			String scopeHint = " from the global scope ";
+			int var = Global.getFunction("main").getSymbolTable().get(varName, true);
+			System.out.println("QQQQ " + var);
+			if (var != -255)
+			{
+				scopeHint = " declared in main ";
+			}
 			question = new FIBQuestion("What will the value of " + varName + 
-						" be after " + functionName + " returns?");
+			scopeHint + " be after " + functionName + " returns?");
 			question.setVariable(varName);
 		}			
 		return question;
@@ -102,6 +129,7 @@ public class QuestionFactory implements UpdateReasons
 		}
 		question = new FIBQuestion(
 				"What will be the value of " + 
+				(gotAnArg ? "the variable passed as an argument " : "") +
 				varName + 
 				" after the current line executes?");
 		question.setVariable(varName);
