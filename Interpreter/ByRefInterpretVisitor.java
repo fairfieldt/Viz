@@ -486,7 +486,8 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 			
 			if (gotAQuestion)
 			{
-			assignmentQuestion = questionFactory.getAssignmentQuestion(node.getLineNumber(), name, index);
+				System.out.println("Got a question for " + name + " " + index);
+				assignmentQuestion = questionFactory.getAssignmentQuestion(node.getLineNumber(), name, index);
 			}
 			
 		}
@@ -495,6 +496,7 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 		//QUESTION!!!
 			if (gotAQuestion)
 			{
+				System.out.println("Got a question for " + name);
 				assignmentQuestion = questionFactory.getAssignmentQuestion(node.getLineNumber(), name);
 			}
 			v.setValue(value);
@@ -517,10 +519,11 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 			{
 				System.out.println("RRRRR " + assignmentQuestion.getVariable());
 				i = Global.getCurrentSymbolTable().get(assignmentQuestion.getVariable());
+				System.out.println("Getting " + assignmentQuestion.getVariable());
 				System.out.println(i);
 				System.out.println("qq");
 			}
-			setAssignmentQuestionAnswer(i);
+			setAssignmentQuestionAnswer(value);
 			connector.addQuestion(assignmentQuestion);
 			connector.endPar();
 			connector.endSnap();

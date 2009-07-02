@@ -1,10 +1,11 @@
+
+package ParameterPassing;
 import java.util.*;
 import Interpreter.*;
 import viz.*;
 
 import java.io.*;
-
-public class Run {
+public class ParameterPassing {
 
 	/**
 	 * @param args

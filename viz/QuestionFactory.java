@@ -126,7 +126,7 @@ public class QuestionFactory implements UpdateReasons
 			Random r = new Random();
 			int choose = r.nextInt(2);
 			
-			if (choose == 0)
+			if (true)  //should be choose == 0
 			{
 				String argName = Global.getCurrentParamToArg().get(varName);
 				Interpreter.Variable arg =  Global.getFunction("main").getSymbolTable().getVariable(argName);
