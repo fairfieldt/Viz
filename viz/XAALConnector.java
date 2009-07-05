@@ -32,7 +32,7 @@ public class XAALConnector {
   private String[] psuedoCode;
   private String title;
   private PseudoSerializer pseudo;
-  private CodePageContainer mtc;
+  private CodePageContainer cpc;
   
   public XAALConnector(String[] psuedoCode, String title)
   {
@@ -45,22 +45,24 @@ public class XAALConnector {
     this.title = title;
     this.pseudo = new PseudoSerializer(psuedoCode, title);
     actions = new LinkedList<FutureAction>();
-    this.mtc = new CodePageContainer();
+    this.cpc = new CodePageContainer();
   }
   
   public String addCodePage()
   {
-	  return mtc.createCodePage();
+	  return cpc.createCodePage();
   }
   
   public boolean addTextLine(String codePageId, String value, int lineNum)
   {
+	  cpc.get(codePageId).addLine(lineNum, value);
 	  
 	  return true;
   }
   
   public boolean addLinePart(String codePageId, String value, int lineNum)
   {
+	  cpc.get(codePageId).addLinePart(lineNum, value);
 	  return true;
   }
   
@@ -73,11 +75,31 @@ public class XAALConnector {
    */
   public String addImportantPart(String codePageId, String value, int lineNum)
   {
-	  return "";
+	  return cpc.get(codePageId).addImpPart(lineNum, value);
   }
   
-  public boolean moveLinePart(String codePageId, String fromValue, String...toVals)
+  public boolean showCodePage(String codePageId)
   {
+	  actions.offer(new ShowHideCodePageAction(true, cpc.get(codePageId), currentSnapNum));
+	  return true;
+  }
+  
+  public boolean hideCodePage(String codePageId)
+  {
+	  actions.offer(new ShowHideCodePageAction(false, cpc.get(codePageId), currentSnapNum));
+	  return true;
+  }
+  
+  public boolean moveLinePart(String codePageId, String fromId, String...toIds)
+  {
+	  CodePage cp = cpc.get(codePageId);
+	  //make copies for the movements
+	  for( int i = 0; i < toIds.length; i++)
+	  {
+		 cp.addCopy(fromId);
+	  }
+	  
+	  actions.offer(new MovePartCodePageAction(cp, currentSnapNum, fromId, toIds));
 	  return true;
   }
   

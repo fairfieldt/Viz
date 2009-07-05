@@ -2,20 +2,16 @@ package viz;
 
 public class ImpLinePart extends LinePart {
 	private String id;
+	private static int impNum = 0;
 	
-	public ImpLinePart(String s, String id)
+	public ImpLinePart(String s)
 	{
 		super(s);
-		this.id = id;
+		this.id = "impId" + impNum;
 	}
 	
 	public String getId()
 	{
 		return id;
-	}
-	
-	public void setId(String id)
-	{
-		this.id = s;
 	}
 }

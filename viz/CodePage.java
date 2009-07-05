@@ -15,8 +15,10 @@ public class CodePage implements Drawable {
 	private HashMap<String, Integer> copiesToMake;
 	
 	private HashMap<String, LinkedList<String>> copiesOwned;
+	private HashMap<String, String> impIdToXaalId;
 
 	private String id;
+	
 	
 	public CodePage(String id)
 	{
@@ -38,7 +40,11 @@ public class CodePage implements Drawable {
 	public void addLine(int l, String s)
 	{
 		
-		lines.add(new ArrayList<LinePart>());
+		//lines.add(new ArrayList<LinePart>());
+		//TODO: does this work?
+		while (lines.size() >= l)
+			lines.add(new ArrayList<LinePart>());
+		
 		lines.get(l-1).add(new LinePart(s));
 	}
 	
@@ -47,15 +53,13 @@ public class CodePage implements Drawable {
 		addLine(l, s);
 	}
 	
-	public void addArg(int l, String s, String id)
+	public String addImpPart(int l, String s)
 	{
-		addCopy(id);
-		lines.get(l-1).add(new ImpLinePart(s, id));
-	}
-	
-	public void addVar(int l, String s, String id)
-	{
-		addArg(l, s, id);
+		ImpLinePart ilp = new ImpLinePart(s);
+		addCopy(ilp.getId());
+		lines.get(l-1).add(ilp);
+		
+		return ilp.getId();
 	}
 	
 	public void addCopy(String s)
@@ -70,6 +74,18 @@ public class CodePage implements Drawable {
 	public String getId()
 	{
 		return this.id;
+	}
+	
+	public String peekCopy(String impId)
+	{
+		String imp = impIdToXaalId.get(impId);
+		return copiesOwned.get(imp).peek();
+	}
+	
+	public String popCopy(String impId)
+	{
+		String imp = impIdToXaalId.get(impId);
+		return copiesOwned.get(imp).pop();
 	}
 	
 	@Override
