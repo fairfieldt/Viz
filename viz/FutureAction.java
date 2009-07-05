@@ -1,5 +1,5 @@
 package viz;
-//TODO: clean this god forsaken mess up
+
 public abstract class FutureAction {
 
 	private int snapNum;

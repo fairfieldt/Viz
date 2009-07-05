@@ -10,9 +10,9 @@ public class XAALScripter {
 	//TODO: change the namespace to a final namespace eventually
 	private final Namespace jhaveNS = Namespace.getNamespace("jhave","http://www.uwosh.edu/jhave/ns");
 	
-	public final int DEFAULT_FONT_SIZE = 16;
-	public final String DEFAULT_FONT_FAMILY = "Lucida Bright";
-	public final int DEFAULT_STROKE_WIDTH = 1;
+	public static final int DEFAULT_FONT_SIZE = 16;
+	public static final String DEFAULT_FONT_FAMILY = "Lucida Bright";
+	public static final int DEFAULT_STROKE_WIDTH = 1;
 	
 	private int rectNum = 0;
 	private int textNum = 0;

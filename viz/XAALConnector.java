@@ -23,15 +23,16 @@ public class XAALConnector {
     scopeColors.add("green");
   }
   
-  XAALScripter scripter;
-  HashMap<UUID, Variable> varToVar;
-  HashMap<String, Scope> scopes;
-  ArrayList<Question> questions;
-  Scope globalScope;
+  private XAALScripter scripter;
+  private HashMap<UUID, Variable> varToVar;
+  private HashMap<String, Scope> scopes;
+  private ArrayList<Question> questions;
+  private Scope globalScope;
   
-  String[] psuedoCode;
-  String title;
-  PseudoSerializer pseudo;
+  private String[] psuedoCode;
+  private String title;
+  private PseudoSerializer pseudo;
+  private CodePageContainer mtc;
   
   public XAALConnector(String[] psuedoCode, String title)
   {
@@ -44,6 +45,40 @@ public class XAALConnector {
     this.title = title;
     this.pseudo = new PseudoSerializer(psuedoCode, title);
     actions = new LinkedList<FutureAction>();
+    this.mtc = new CodePageContainer();
+  }
+  
+  public String addCodePage()
+  {
+	  return mtc.createCodePage();
+  }
+  
+  public boolean addTextLine(String codePageId, String value, int lineNum)
+  {
+	  
+	  return true;
+  }
+  
+  public boolean addLinePart(String codePageId, String value, int lineNum)
+  {
+	  return true;
+  }
+  
+  /**
+   * Allows you to add an important Part to a line
+   * @param codePageId
+   * @param value
+   * @param lineNum
+   * @return the id of that important Part
+   */
+  public String addImportantPart(String codePageId, String value, int lineNum)
+  {
+	  return "";
+  }
+  
+  public boolean moveLinePart(String codePageId, String fromValue, String...toVals)
+  {
+	  return true;
   }
   
   /**
@@ -207,13 +242,23 @@ public class XAALConnector {
     actions.offer(new ShowHideVarAction(false, v, currentSnapNum));
   }
   
+  
   public boolean startSnap(int lineNum)
+  {
+	return startSnap(lineNum, null);  
+  }
+  
+  public boolean startSnap(int lineNum, String[] pseudocode)
   {
     if (currentSnapNum > 0)
       return false;
       
     try {
       currentSnapNum = scripter.startSlide();
+      
+      if (pseudocode != null)
+    	pseudo.setPseudocode(pseudocode);
+    	  
       scripter.addPseudocodeUrl(pseudo.toPseudoPage(lineNum));
     } catch (SlideException e) {
       return false;
