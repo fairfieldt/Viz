@@ -27,6 +27,10 @@ public class SymbolTable
 		return get(varName, false);
 	}
 	
+	public void clearVars()
+	{
+		vars = new HashMap<String, Variable>();
+	}
 	public Variable getVariable(String varName)
 	{
 		Variable v = null;

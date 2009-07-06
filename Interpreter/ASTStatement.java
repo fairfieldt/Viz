@@ -18,6 +18,11 @@ public class ASTStatement extends SimpleNode implements VizParserTreeConstants
   {
   	return this.lineNumber;
   }
+  
+  public void setLineNumber(int lineNumber)
+  {
+  	this.lineNumber = lineNumber;
+  }
   public String getCode()
   {
   	//if lineNumber == -1 we haven't set yet, so set it and increment the global line counter.  Otherwise do nothing

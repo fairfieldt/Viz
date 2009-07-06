@@ -23,7 +23,6 @@ public class ASTNum extends SimpleNode implements VizParserTreeConstants{
 
   public String getCode()
   {
-  	System.out.println("getCode in num");
   	return this.value + "";
   }
 

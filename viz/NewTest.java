@@ -36,7 +36,7 @@ public class NewTest
 			
 			//program.dump("");
 
-		
+			
 			for (String s : program.getPseudocode())
 			{
 				System.out.println(s);
@@ -54,6 +54,15 @@ public class NewTest
 						}
 
 			XAALConnector xc = new XAALConnector(program.getPseudocode(), "foo");
+			
+			String p1 = xc.addCodePage(program.getPseudocode());
+			xc.startSnap(1);
+			xc.startPar();
+				xc.showCodePage(p1);
+			xc.endPar();
+			xc.endSnap();
+			
+			
 			System.out.println("\n\n Testing Interpret Visitor");
 			
 			QuestionFactory questionFactory = new QuestionFactory();

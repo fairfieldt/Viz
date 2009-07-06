@@ -107,7 +107,11 @@ public class Scope implements Drawable
 	{
 		int subScopeXPos = xPos + 10;
 		int subScopeYPos = yPos + 100;
-		int subScopeYSize = (sizeY-10) / (scopes.size()+1);
+		int subScopeYSize = (sizeY-10) / (scopes.size()+ (scopes.size() == 1 ? 0 : 1));
+		if (scopes.size() == 1)
+		{
+			subScopeYSize -= 100;
+		}
 		System.out.println("SubSize:: " + subScopeYSize);
 		System.out.println("Scopes.size: " + scopes.size());
 		for (int i = scopes.size(); i > 0; i--)
@@ -123,6 +127,10 @@ public class Scope implements Drawable
 	
 	private void sizeVariables()
 	{
+		if (name.equals(""))
+		{
+			currentVarYPos -= 50;
+		}
 		for (Variable v : vars)
 		{
 			if (isGlobal)

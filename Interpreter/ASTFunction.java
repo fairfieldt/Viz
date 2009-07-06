@@ -101,7 +101,6 @@ public class ASTFunction extends SimpleNode
 		{
 			return "";
 		}
-		System.out.println("Getting code in Function");
 		System.out.println(jjtGetChild(0));
 		String code = "def " + this.name + "(";
 		for (int i = 0; i < parameters.size(); i++)
