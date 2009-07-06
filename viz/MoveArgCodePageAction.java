@@ -23,17 +23,17 @@ public class MoveArgCodePageAction extends CodePageAction {
 		return fromLine;
 	}
 	
-	public int fromPos()
+	public int getFromPos()
 	{
 		return fromPos;
 	}
 	
-	public int toLine()
+	public int getToLine()
 	{
 		return toLine;
 	}
 	
-	public int toPos()
+	public int getToPos()
 	{
 		return toPos;
 	}

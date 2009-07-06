@@ -57,10 +57,16 @@ public class XAALConnector {
 		  int toLineNum, int toPos)
   {
 	  CodePage cp = cpc.get(codePageId);
+	  
+	  cp.setCallLineNum(fromLineNum);
+	  
+	  cp.addCopy(fromPos, fromStr);
+	  
 	  actions.offer(new MoveArgCodePageAction(cp, currentSnapNum, 
 			  fromLineNum, fromPos, toLineNum, toPos));
 	  
   }
+  
   /*
   public boolean addTextLine(String codePageId, String value, int lineNum)
   {
@@ -99,7 +105,7 @@ public class XAALConnector {
 	  actions.offer(new ShowHideCodePageAction(false, cpc.get(codePageId), currentSnapNum));
 	  return true;
   }
-  
+  /*
   public boolean moveLinePart(String codePageId, String fromId, String...toIds)
   {
 	  CodePage cp = cpc.get(codePageId);
@@ -112,7 +118,7 @@ public class XAALConnector {
 	  actions.offer(new MovePartCodePageAction(cp, currentSnapNum, fromId, toIds));
 	  return true;
   }
-  
+  */
   /**
    * Add a scope to the visualization. Also adds its parameters.
    * Assumes that the local symbol table has only the parameters, nothing else.
@@ -527,9 +533,9 @@ public class XAALConnector {
       
       else // its a CodePageAction
       {
-    	  if (action instanceof MovePartCodePageAction)
+    	  if (action instanceof MoveArgCodePageAction)
     	  {
-    		  writeMovePartCodePage((MovePartCodePageAction)action);
+    		 // writeMovePartCodePage((MoveArgCodePageAction)action);
     	  }
     	  else if (action instanceof ShowHideCodePageAction)
     	  {
@@ -1326,9 +1332,9 @@ public class XAALConnector {
 	  {
 		  scripter.reopenSlide(action.getSnapNum());
 		  scripter.reopenPar(0);
-		  CodePage p = action.getTo();
+		  CodePage p = action.getCP();
 		  
-		  for(String id : p.peekCopyAll())
+		  for(String id : p.getIds())
 		  {
 			  scripter.addShow(id);
 		  }
@@ -1349,9 +1355,9 @@ public class XAALConnector {
 		  
 		  scripter.reopenSlide(action.getSnapNum());
 		  scripter.reopenPar(0);
-		  CodePage p = action.getTo();
+		  CodePage p = action.getCP();
 		  
-		  for(String id : p.peekCopyAll())
+		  for(String id : p.getIds())
 		  {
 			  scripter.addHide(id);
 		  }
@@ -1365,69 +1371,50 @@ public class XAALConnector {
 	  }
   }
   
-  /**
-   * 1. reopen the slide
-   * 1.5. reopen the par
-   * 2. loop through every recipient id and hide it
-   * @param action
-   */
-  private void writeMovePartCodePage(MovePartCodePageAction action)
+  
+  private void writeMoveArgCodePage(MoveArgCodePageAction action)
   {
 	  try
 	  {
 		  scripter.reopenSlide(action.getSnapNum());
 		  scripter.reopenPar();
-		  CodePage cp = cpc.get(action.getFromPart());
+		  CodePage cp = cpc.get(action.getCP());
 		  
-		  //hide the text at the recipient spots
-		  for (String s : action.getToParts())
-		  {
-			  String xaalId = cp.peekCopy(s);
-			  scripter.addHide(xaalId);
-		  }
-		  String[] copies = new String[action.getToParts().length];
 		  
-		  //show the number of copies needed for the from text
-		  for (int i= 0; i < copies.length; i++)
-		  {
-			  copies[i] = cp.popCopy(action.getFromPart());
-			  scripter.addShow(copies[i]);
-		  }
-		  
-		  scripter.addShow(cp.peekCopy(action.getFromPart()));
-		  
+		  //show a copy
+		  String id = cp.popCopy(action.getFromPos());
+		  scripter.addShow(id);
 		  scripter.reclosePar();
 		  
+		  //do the move!!!
 		  boolean parExists = false;
 		  parExists = scripter.reopenPar(1);
 		  
 		  if(!parExists)
 			  scripter.startPar();
-		  
-		  //foreach impId, move a copy to it and give it ownership
-		  
-		  for (int i = 0; i < action.getToParts().length; i++)
-		  {
-			  	
-			String s = action.getToParts()[i];
-		  	int startX = cp.xPos(action.getFromPart());
-		    int startY = cp.yPos(action.getFromPart());
+			int startX = cp.fromPosX[action.getFromPos()];
+		    int startY = cp.y + (cp.getLineHeight() * action.getFromLine()); 
 		
-		    int endX = cp.xPos(s);
-		    int endY = cp.yPos(s);
+		    int endX = cp.toPosX[action.getToPos()];
+		    int endY = cp.y + (cp.getLineHeight() * action.getToLine());
 		    		    
 		    int moveX = startX - endX;
 		    int moveY = startY - endY;
 		    
-		    scripter.addTranslate(-moveX, -moveY, copies[i]);
-		    
-		    // give ownership of copy1 to second variable.
-		    cp.receiveCopyOwnership(s, copies[i]);		  
-		  }
+		    scripter.addTranslate(-moveX, -moveY, id);
+		  
+		  cp.receiveCopyOwnership(id);
+		  
+		//reclose the par
+		    if (parExists)
+		    	scripter.reclosePar();
+		    else
+		    	scripter.endPar();
+		    //reclose the slide
+		    scripter.recloseSlide();
 	  }
 	  catch (Exception e)
 	  {
-	  
 	  }
   }
 }

@@ -12,18 +12,30 @@ import java.util.*;
  */
 public class CodePage implements Drawable {
 	private String[] code;
-	private HashMap<String, Integer> copiesToMake;
-	
-	//takes an ImpId and gives you all the XaalIds belonging to that imp
-	private HashMap<String, LinkedList<String>> copiesOwned;
-	//private HashMap<String, String> impIdToXaalId;
 
+	// each position 0,1 or 2 has a list of strings it has to make
+	private ArrayList<LinkedList<String>> copiesToMake;
 	
-	private HashMap<String, Integer> impIdToXPos;
-	private HashMap<String, Integer> impIdToYPos;
+	//each position 0,1 or 2 has a list of copy ids it owns
+	private ArrayList<LinkedList<String>> copiesOwned;
 	
+	//the copies we've already used but need the id of
+	private ArrayList<String> preusedCopies;
+	
+	//all the ids for normal text strings
+	private ArrayList<String> ids;
+	
+	//the line number at which the call will happen and the copies should be written
+	private int callLineNum = -1;
+
 	private String id;
 	
+	private int lineHeight;
+	
+	public final int[] fromPosX = {100,120,140};
+	public final int[] toPosX = {100, 140, 180};
+	//where the top of the codepage starts on the page
+	public final int y = 10;
 	
 	public CodePage(String id, String[] code)
 	{
@@ -34,50 +46,21 @@ public class CodePage implements Drawable {
 	
 	private void setup()
 	{
-		
-		
-		copiesToMake = new HashMap<String, Integer>();
-		//impIdToXaalId = new HashMap<String, String>();
-		copiesOwned = new HashMap<String, LinkedList<String>>();
-		
+		copiesToMake = new ArrayList<LinkedList<String>>();
+		copiesOwned = new ArrayList<LinkedList<String>>();
+		preusedCopies = new ArrayList<String>();
 	}
+
 	
-	/**
-	 * lines starts at 1!!!
-	 * @param l
-	 */
-	public void addLine(int l, String s)
+	public void addCopy(int pos, String str)
 	{
+		copiesToMake.ensureCapacity(pos);
 		
-		//lines.add(new ArrayList<LinePart>());
-		//TODO: does this work?
-		while (lines.size() >= l)
-			lines.add(new ArrayList<LinePart>());
+		if (copiesToMake.get(pos) == null)
+			copiesToMake.add(pos, new LinkedList<String>());
 		
-		lines.get(l-1).add(new LinePart(s));
-	}
-	
-	public void addLinePart(int l, String s)
-	{
-		addLine(l, s);
-	}
-	
-	public String addImpPart(int l, String s)
-	{
-		ImpLinePart ilp = new ImpLinePart(s);
-		addCopy(ilp.getId());
-		lines.get(l-1).add(ilp);
-		
-		return ilp.getId();
-	}
-	
-	public void addCopy(String s)
-	{
-		if (copiesToMake.get(s) == null)
-			copiesToMake.put(s, new Integer(0));
-		
-		int value = copiesToMake.get(s).intValue();
-		copiesToMake.put(s, new Integer(value++));
+		copiesToMake.get(pos).push(str);
+			
 	}
 	
 	public String getId()
@@ -85,45 +68,57 @@ public class CodePage implements Drawable {
 		return this.id;
 	}
 	
+	public ArrayList<String> getIds()
+	{
+		return ids;
+	}
+	
+	public void setCallLineNum(int lineNum)
+	{
+		if (callLineNum == -1)
+			callLineNum = lineNum;
+	}
+	
+	public int numOfCopies(int pos)
+	{
+		return copiesOwned.get(pos).size();
+	}
+	/*
 	public ArrayList<String> peekCopyAll()
 	{
 		return new ArrayList<String>(copiesOwned.keySet());
 	}
-	
-	public String peekCopy(String impId)
+	*/
+	public String peekCopy(int pos)
 	{
-		//String imp = impIdToXaalId.get(impId);
-		return copiesOwned.get(imp).peek();
+		return copiesOwned.get(pos).peek();
 	}
 	
-	public String popCopy(String impId)
+	public String popCopy(int pos)
 	{
-		//String imp = impIdToXaalId.get(impId);
-		return copiesOwned.get(impId).pop();
+		return copiesOwned.get(pos).pop();
 	}
 	
-	public void receiveCopyOwnership(String impId, String copyId)
+	public void receiveCopyOwnership(String copyId)
 	{
-		//String imp = impIdToXaalId.get(impId);
-		copiesOwned.get(impId).addFirst(copyId);
+		preusedCopies.add(copyId);
 	}
 	
-	public int xPos(String impId)
+	public ArrayList<String> preusedCopies()
 	{
-		//String xaalId = impIdToXaalId.get(impId);
-		return this.impIdToXPos.get(impId).intValue();
+		return preusedCopies;
 	}
 	
-	public int yPos(String impId)
+	public int getLineHeight()
 	{
-		//String xaalId = impIdToXaalId.get(impId);
-		return this.impIdToYPos.get(impId).intValue();
+		return lineHeight;
 	}
 	
 	@Override
 	public void draw(XAALScripter scripter) {
-		int y = 10;
-		
+
+		int dy = 0;
+		int x = 0;
 		Graphics g = (new BufferedImage(1,1, 
                 BufferedImage.TYPE_INT_RGB)).getGraphics();
 		//change to Lucida Bright when we post
@@ -131,37 +126,31 @@ public class CodePage implements Drawable {
 				Font.PLAIN, XAALScripter.DEFAULT_FONT_SIZE));
 		
 		FontMetrics fm = g.getFontMetrics();
-		int lineHeight = fm.getHeight();
+		lineHeight = fm.getHeight();
 		
-		
-		for(int i = 0; i < lines.size(); i++)
+		//write out all the code
+		for (int i = 0; i < code.length; i++)
 		{
-			ArrayList<LinePart> line = lines.get(i);
-			int lastEndingX = 0; 
-			for (int j = 0; j < line.size(); j++ )
-			{
-				String id = null;
-				if (line.get(j) instanceof ImpLinePart)
-				{
-					ImpLinePart ilp = (ImpLinePart)line.get(j);
-					id = scripter.addText(lastEndingX, y, line.get(j).getValue(), "black", false);
-					for (int n = 0; n < copiesToMake.get(ilp.getId()).intValue(); n++)
-					{
-						String ni = scripter.addText(lastEndingX, y, line.get(j).getValue(), "black", false);
-						
-					}
-				}
-				else
-				{
-					id = scripter.addText(lastEndingX, y, line.get(j).getValue(), "black", false);
-				}
-				
-				
-				lastEndingX += fm.stringWidth(line.get(j).getValue());
-			}
-			
-			y += lineHeight;
+			String id = scripter.addText(x, y + dy, code[i], "black", true);
+			ids.add(id);
+			dy += lineHeight;
 		}
+		
+		//write out all the copies
+		for (int i = 0; i < copiesToMake.size(); i++)
+		{
+			copiesOwned.add(new LinkedList<String>());
+			LinkedList<String> posCopiesToMake = copiesToMake.get(i);
+			
+			while (posCopiesToMake.size() > 0)
+			{
+				String temp = posCopiesToMake.pop();
+				String id = scripter.addText(fromPosX[i], y + (lineHeight*callLineNum)
+						, temp, "black", true);
+				copiesOwned.get(i).add(id);
+			} 
+		}
+		
 	}
 
 }
