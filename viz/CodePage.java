@@ -11,7 +11,7 @@ import java.util.*;
  *
  */
 public class CodePage implements Drawable {
-	private ArrayList<ArrayList<LinePart>> lines;
+	private String[] code;
 	private HashMap<String, Integer> copiesToMake;
 	
 	//takes an ImpId and gives you all the XaalIds belonging to that imp
@@ -25,16 +25,17 @@ public class CodePage implements Drawable {
 	private String id;
 	
 	
-	public CodePage(String id)
+	public CodePage(String id, String[] code)
 	{
 		setup();
+		this.code = code;
 		this.id = id;
 	}
 	
 	private void setup()
 	{
 		
-		lines = new ArrayList<ArrayList<LinePart>>();
+		
 		copiesToMake = new HashMap<String, Integer>();
 		//impIdToXaalId = new HashMap<String, String>();
 		copiesOwned = new HashMap<String, LinkedList<String>>();

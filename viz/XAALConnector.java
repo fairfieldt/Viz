@@ -48,14 +48,17 @@ public class XAALConnector {
     this.cpc = new CodePageContainer();
   }
   
-  public String addCodePage()
+  public String addCodePage(String[] code)
   {
-	  return cpc.createCodePage();
+	  return cpc.createCodePage(code);
   }
   
   public void moveArgs(String codePageId, int fromLineNum, int fromPos, String fromStr, 
 		  int toLineNum, int toPos)
   {
+	  CodePage cp = cpc.get(codePageId);
+	  actions.offer(new MoveArgCodePageAction(cp, currentSnapNum, 
+			  fromLineNum, fromPos, toLineNum, toPos));
 	  
   }
   /*

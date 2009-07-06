@@ -9,9 +9,9 @@ public class CodePageContainer extends HashMap<String, CodePage> implements Draw
 
 	private int mtNum = 0;
 	
-	public String createCodePage()
+	public String createCodePage(String[] code)
 	{
-		CodePage cp = new CodePage("ml" + mtNum);
+		CodePage cp = new CodePage("ml" + mtNum, code);
 		mtNum++;
 		this.put(cp.getId(), cp);
 		
