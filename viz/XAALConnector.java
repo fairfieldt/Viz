@@ -1417,7 +1417,7 @@ public class XAALConnector {
 		    int moveY = startY - endY;
 		  System.out.println(3);
 		    scripter.addTranslate(-moveX, -moveY, id);
-		 		  scripter.addHide(id);
+
 		    System.out.println("Added a translate");
 		  cp.receiveCopyOwnership(id);
 
@@ -1427,6 +1427,22 @@ public class XAALConnector {
 		    	scripter.reclosePar();
 		    else
 		    	scripter.endPar();
+		    	
+		    parExists = false;
+		  parExists = scripter.reopenPar(2);
+		  if(!parExists)
+		  {
+			  scripter.startPar();
+		  }
+		  scripter.addHide(id);
+  		  if (parExists)
+  		  {
+		    	scripter.reclosePar();
+		  } 
+		  else
+		  {
+		    	scripter.endPar();
+		  }
 		    //reclose the slide
 		    scripter.recloseSlide();
 	  }

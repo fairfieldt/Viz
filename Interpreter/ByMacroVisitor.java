@@ -14,7 +14,7 @@ public class ByMacroVisitor implements VizParserVisitor, VizParserTreeConstants,
 	private ASTProgram program;
 	
 	private boolean inNested = false;
-	
+	public static String nextCodePageId;
 	private boolean readyForCall = false;
 	private ASTCall call;
 

@@ -32,8 +32,8 @@ public class CodePage implements Drawable {
 	
 	private int lineHeight;
 	
-	public final int[] fromPosX = {70,110,140};
-	public final int[] toPosX = {10, 40, 70};
+	public final int[] fromPosX = {110,150,190};
+	public final int[] toPosX = {60, 76, 120};
 	//where the top of the codepage starts on the page
 	public final int y = 10;
 	
