@@ -86,12 +86,20 @@ public class NewTest
 			xc.endPar();
 			xc.endSnap();
 			xc.startSnap(2);
-			//Copy Body here
+			ByMacroVisitor2 bm2 = new ByMacroVisitor2();
+			program.jjtAccept(bm2, null);
+			Global.lineNumber = 1;
+			program.codeBuilt = false;
+			program.buildCode();
+				String p3 = xc.addCodePage(program.getPseudocode());
+			xc.startPar();
+				xc.hideCodePage(p2);
+				xc.showCodePage(p3);
 			xc.endSnap();
 			
 			xc.startSnap(3);
 			xc.startPar();
-				xc.hideCodePage(p2);
+				xc.hideCodePage(p3);
 			xc.endPar();
 			xc.endSnap();
 			xc.startSnap(1, program.getPseudocode());
