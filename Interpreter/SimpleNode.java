@@ -4,7 +4,7 @@ package Interpreter;
 
 public class SimpleNode implements Node {
   protected Node parent;
-  protected Node[] children;
+  public Node[] children;
   protected int id;
   protected Object value;
   protected VizParser parser;
@@ -119,6 +119,7 @@ public class SimpleNode implements Node {
   public Object childrenAccept(VizParserVisitor visitor, Object data) {
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
+        System.out.println(children[i]);
         children[i].jjtAccept(visitor, data);
       }
     }

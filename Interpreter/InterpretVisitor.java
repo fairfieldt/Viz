@@ -208,6 +208,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		node.setLineNumber(((SimpleNode)node.jjtGetParent()).getLineNumber());
 		SymbolTable s = Global.getCurrentSymbolTable();
 		ArrayList<Integer> values;
+
 		if (node.getIsArray())
 		{
 			ByValVariable v = (ByValVariable) s.getVariable(name);
@@ -234,8 +235,11 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	{	
 		//Get the function's symbol table, set it's previous to the
 		// calling function's, and then set it to current.
-
-		
+		if (!node.getUsed())
+		{
+			System.out.println("Unused function");
+			return;
+		}
 		SymbolTable currentSymbolTable = node.getSymbolTable();
 		for (String p : node.getParameters())
 		{
@@ -247,7 +251,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 
 		
 		System.out.println("Executing function: " + node.getName());
-		update(node.getLineNumber(), UPDATE_REASON_FUNCTION);
+
 		node.jjtGetChild(0).jjtAccept(this, null);
 		leaveScope();
 	}
@@ -266,10 +270,23 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	
 	public void handleStatementList(ASTStatementList node)
 	{
+		if (!node.getIsFunction())
+		{
+			Global.setCurrentSymbolTable(Global.getFunction("foo").getSymbolTable());
+			System.out.println(Global.getCurrentSymbolTable());
+			connector.addScope(Global.getCurrentSymbolTable(), "foo", "main");
+			connector.showScope("foo");
+		}
+
 		int numStatements = node.jjtGetNumChildren();
 		for (int i = 0; i < numStatements; i++)
 		{
+			System.out.println(node.jjtGetChild(i));
 			node.jjtGetChild(i).jjtAccept(this, null);
+		}
+		if (!node.getIsFunction())
+		{
+			Global.setCurrentSymbolTable(Global.getCurrentSymbolTable().getPrevious());
 		}
 	}
 	
@@ -283,6 +300,24 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 			connector.startPar();
 		
 		//FIXME we'll see how this works	
+		
+		//Nested scope for by macro
+		SimpleNode s = (SimpleNode) node.jjtGetChild(0);
+		
+		if (s instanceof ASTStatementList)
+		{
+
+			System.out.println("Nested scope!");
+			System.out.println(Global.getCurrentSymbolTable());
+			SymbolTable st = new SymbolTable(Global.getCurrentSymbolTable());
+			st.setName("nested");
+			System.out.println(st);
+			Global.setCurrentSymbolTable(st);
+			s.jjtAccept(this, null);
+			Global.setCurrentSymbolTable(st.getPrevious());
+		}
+		
+		
 		node.jjtGetChild(0).jjtAccept(this, null);
 		if (((SimpleNode)node.jjtGetChild(0)).getId() == JJTCALL)
 		{
@@ -424,11 +459,15 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		System.out.println("Assigning to " + name);
 		Integer value = (Integer)node.jjtGetChild(1).jjtAccept(this, null);
 		int index = 0;
+		System.out.println("HRM");
+		System.out.println(Global.getCurrentSymbolTable());
 		ByValVariable v = (ByValVariable) Global.getCurrentSymbolTable().getVariable(name);
-
+		System.out.println("VVVV" + v.getIsArray() + " " + name);
 		if (v.getIsArray())
 		{
+			System.out.println("Dealing with an array");
 			index = (Integer) node.jjtGetChild(0).jjtGetChild(0).jjtAccept(this, null);
+			System.out.println("Index: " + index);
 			v.setValue(value, index);
 		if (gotAQuestion)
 		{

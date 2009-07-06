@@ -196,7 +196,10 @@ public class Scope implements Drawable
 			scopes.get(0).draw(scripter);
 			
 			//draw foo -- MUST BE THE LAST ONE
-			scopes.get(1).draw(scripter);
+			if (scopes.size() > 1)
+			{
+				scopes.get(1).draw(scripter);
+			}
 		}
 		else
 		{

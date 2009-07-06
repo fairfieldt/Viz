@@ -10,7 +10,15 @@ public class SymbolTable
 	private String name = "Global";
 	public SymbolTable(SymbolTable previous)
 	{
-		this.previous = Global.getSymbolTable();
+		if ( previous != null)
+		{
+			System.out.println("Setting prev st to " + previous.getName());
+			this.previous = previous;
+		}
+		else
+		{
+			this.previous = Global.getSymbolTable();
+		}
 		this.vars = new HashMap<String, Variable>();
 	}
 	
@@ -193,6 +201,11 @@ public class SymbolTable
 	public SymbolTable getPrevious()
 	{
 		return previous;
+	}
+	
+	public void setPrevious(SymbolTable st)
+	{
+		this.previous = st;
 	}
 	
 	public HashSet<String> getLocalVarNames()

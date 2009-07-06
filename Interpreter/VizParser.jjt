@@ -138,6 +138,7 @@
 			if (isArray)		
 			{
 				v.setArray();
+
 			}
 			Global.getCurrentSymbolTable().put(t.image, v);
 			jjtThis.setIsArray(isArray);
@@ -246,9 +247,13 @@
 	 */
 	void statementList() #StatementList:
 	{
+		
 	}
 	{
 		statement() (statementListP())? | <FILL>
+		{
+
+		}
 	}
 	
 	/**
@@ -270,7 +275,7 @@
 	{
 	}
 	{
-		 expression() <SEMI> |  <VAR> varDecl() <SEMI>
+		 expression() <SEMI> |  <VAR> varDecl() <SEMI> | compoundStatement()
 	}
 
 	/**
@@ -307,6 +312,7 @@
 		{
 			jjtThis.setName(t.image);
 			jjtThis.setIsArray(isArray);
+
 			return t.image;
 		}
 	}

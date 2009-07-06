@@ -25,8 +25,8 @@ public class NewTest
 
 			RandomizingVisitor2<ByValVariable> rv = new RandomizingVisitor2<ByValVariable>(ByValVariable.class);
 				
-			program.jjtAccept(rv, null);
-		
+//			program.jjtAccept(rv, null);
+
 			System.out.println("Successfully Parsed");
 			System.out.println("________________\n");
 
@@ -35,12 +35,25 @@ public class NewTest
 			System.out.println("Built code");
 			
 			//program.dump("");
-			XAALConnector xc = new XAALConnector(program.getPseudocode(), "foo");
+
 		
 			for (String s : program.getPseudocode())
 			{
 				System.out.println(s);
 			}
+			
+			System.out.println("MACRO TIME");
+			ByMacroVisitor bm = new ByMacroVisitor();
+			((SimpleNode)program).jjtAccept(bm, null);		
+			Global.lineNumber = 1;
+			program.codeBuilt = false;
+			program.buildCode();
+						for (String line: program.getPseudocode())
+						{
+							System.out.println(line);
+						}
+
+			XAALConnector xc = new XAALConnector(program.getPseudocode(), "foo");
 			System.out.println("\n\n Testing Interpret Visitor");
 			
 			QuestionFactory questionFactory = new QuestionFactory();
@@ -52,10 +65,7 @@ public class NewTest
 			System.out.println(Global.getFunction("foo").getParameters().size());
 			System.out.println(Global.getFunction("foo").getSymbolTable().getLocalVariables().size());
 			xc.draw("/home/fairfieldt/Documents/!real.xaal");
-						for (String line: program.getPseudocode())
-						{
-							System.out.println(line);
-						}
+			
 
 		}
 		catch (Exception e)

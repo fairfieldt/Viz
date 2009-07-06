@@ -12,6 +12,7 @@ public class ByValVariable extends AbstractVariable implements Variable
 	
 	private boolean isArray = false;
 	
+	private ASTExpression subscript = null;
 	//If an array, the values
 	private ArrayList<Integer> values = new ArrayList<Integer>();
 	
@@ -28,6 +29,16 @@ public class ByValVariable extends AbstractVariable implements Variable
 	{
 		super();
 		this.value = value;
+	}
+	
+	public void setSubscript(ASTExpression exp)
+	{
+		this.subscript = exp;
+	}
+	
+	public ASTExpression getSubscript()
+	{
+		return this.subscript;
 	}
 	
 	/**

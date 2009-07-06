@@ -27,6 +27,16 @@ public class ASTStatement extends SimpleNode implements VizParserTreeConstants
   	}
 	return "\n" + this.lineNumber + ".\t" + jjtGetChild(0).getCode();
   }
+  public String getCode(boolean nested)
+  {
+  	//if lineNumber == -1 we haven't set yet, so set it and increment the global line counter.  Otherwise do nothing
+  	if (this.lineNumber == -1)
+  	{
+  		this.lineNumber = Global.lineNumber++;
+  	}
+	return "\n" + this.lineNumber + ".\t" + (nested ? "\t" : "") + jjtGetChild(0).getCode();
+  }
+
 
 
   /** Accept the visitor. **/

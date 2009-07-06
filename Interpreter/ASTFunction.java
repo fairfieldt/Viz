@@ -7,6 +7,7 @@ public class ASTFunction extends SimpleNode
 	private String name;
 	private SymbolTable localScopeSymbolTable;
 	private int lineNumber = -1;
+	private boolean used = true;
 	
 	public ASTFunction(int id)
 	{
@@ -15,6 +16,15 @@ public class ASTFunction extends SimpleNode
 		this.parameters = new ArrayList<String>();
 	}
 	
+	public void setUsed(boolean used)
+	{
+		this.used = used;
+	}
+	
+	public boolean getUsed()
+	{
+		return used;
+	}
 	
 	public ArrayList<String> getParameters()
 	{
@@ -87,6 +97,10 @@ public class ASTFunction extends SimpleNode
 
 	public String getCode()
 	{
+		if (!used)
+		{
+			return "";
+		}
 		System.out.println("Getting code in Function");
 		System.out.println(jjtGetChild(0));
 		String code = "def " + this.name + "(";

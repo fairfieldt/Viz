@@ -45,6 +45,7 @@ public class Global
 	public static void setCurrentSymbolTable(SymbolTable table)
 	{
 		currentSymbolTable = table;
+		System.out.println("done here");
 	}
 	
 	public static boolean addFunction(ASTFunction fun)

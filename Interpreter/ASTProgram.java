@@ -3,7 +3,7 @@ package Interpreter;
 public class ASTProgram extends SimpleNode
 {
 	private String[] pseudocode;
-	private boolean codeBuilt = false;
+	public boolean codeBuilt = false;
 	public ASTProgram(int id)
 	{
 		super(id);
