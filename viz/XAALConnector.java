@@ -467,6 +467,9 @@ public class XAALConnector {
     //first calls draw on the global scope which then draws all of the children
     globalScope.draw(scripter);
     System.out.println("Drew global scope");
+    
+    cpc.draw(scripter);
+    System.out.println("Drew code pages");
     //System.out.println(scripter.toString());
     //perform and write future actions to the scripter
     FutureAction action = null;
@@ -535,7 +538,7 @@ public class XAALConnector {
       {
     	  if (action instanceof MoveArgCodePageAction)
     	  {
-    		 // writeMovePartCodePage((MoveArgCodePageAction)action);
+    		 writeMoveArgCodePage((MoveArgCodePageAction)action);
     	  }
     	  else if (action instanceof ShowHideCodePageAction)
     	  {

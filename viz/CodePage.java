@@ -19,10 +19,7 @@ public class CodePage implements Drawable {
 	//each position 0,1 or 2 has a list of copy ids it owns
 	private ArrayList<LinkedList<String>> copiesOwned;
 	
-	//the copies we've already used but need the id of
-	private ArrayList<String> preusedCopies;
-	
-	//all the ids for normal text strings
+	//all the ids for normal text strings and ones that have been used already
 	private ArrayList<String> ids;
 	
 	//the line number at which the call will happen and the copies should be written
@@ -48,7 +45,7 @@ public class CodePage implements Drawable {
 	{
 		copiesToMake = new ArrayList<LinkedList<String>>();
 		copiesOwned = new ArrayList<LinkedList<String>>();
-		preusedCopies = new ArrayList<String>();
+		
 	}
 
 	
@@ -101,12 +98,7 @@ public class CodePage implements Drawable {
 	
 	public void receiveCopyOwnership(String copyId)
 	{
-		preusedCopies.add(copyId);
-	}
-	
-	public ArrayList<String> preusedCopies()
-	{
-		return preusedCopies;
+		ids.add(copyId);
 	}
 	
 	public int getLineHeight()
