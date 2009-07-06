@@ -80,20 +80,7 @@ public class XAALConnector {
 	  actions.offer(new ShowHideCodePageAction(false, cpc.get(codePageId), currentSnapNum));
 	  return true;
   }
-  /*
-  public boolean moveLinePart(String codePageId, String fromId, String...toIds)
-  {
-	  CodePage cp = cpc.get(codePageId);
-	  //make copies for the movements
-	  for( int i = 0; i < toIds.length; i++)
-	  {
-		 cp.addCopy(fromId);
-	  }
-	  
-	  actions.offer(new MovePartCodePageAction(cp, currentSnapNum, fromId, toIds));
-	  return true;
-  }
-  */
+ 
   /**
    * Add a scope to the visualization. Also adds its parameters.
    * Assumes that the local symbol table has only the parameters, nothing else.
@@ -143,16 +130,16 @@ public class XAALConnector {
 		      	}
 		      	else
 		      	{	
-				v = new Variable(p, symbols.get(p), true);
-			}
-			retScope.addVariable(v);
+		        	v = new Variable(p, symbols.get(p), true);
+		        }
+		        retScope.addVariable(v);
 		       
-			//add a copy of the original
-			v.addCopy();
-			
-			varToVar.put(iv.getUUID(), v);
+		        //add a copy of the original
+		        v.addCopy();
+		        
+		        varToVar.put(iv.getUUID(), v);
 		    }
-    	    }
+	    }
     }
   }
   
@@ -549,7 +536,7 @@ public class XAALConnector {
     
       writer.close();
     } catch (IOException e) {
-      // TODO Auto-generated catch block
+     
       e.printStackTrace();
     }
     
