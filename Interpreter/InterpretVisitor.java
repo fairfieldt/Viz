@@ -29,7 +29,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	public void update(int lineNumber, int reason)
 	{
 		System.out.println("Update on " + lineNumber);
-		//System.out.println(Global.getCurrentSymbolTable().toString());
+		System.out.println(Global.getCurrentSymbolTable().toString());
 		//questionFactory.addAnswers(lineNumber, reason);
 	}
 	
@@ -207,6 +207,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		String name = node.getName();
 		node.setLineNumber(((SimpleNode)node.jjtGetParent()).getLineNumber());
 		SymbolTable s = Global.getCurrentSymbolTable();
+		System.out.println("VDCL " + s + " " + name);
 		ArrayList<Integer> values;
 
 		if (node.getIsArray())
@@ -223,7 +224,9 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 			Integer value =(Integer) node.jjtGetChild(0).jjtAccept(this, null);
 			s.setValue(name, value);
 		}
+
 			//Drawing Stuff
+			System.out.println(s.getName());
 			connector.addVariable(s.getVariable(name), name, s.getName());
 			
 			//This is a snapshot
@@ -274,8 +277,8 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		{
 			Global.setCurrentSymbolTable(Global.getFunction("foo").getSymbolTable());
 			System.out.println(Global.getCurrentSymbolTable());
-			connector.addScope(Global.getCurrentSymbolTable(), "foo", "main");
-			connector.showScope("foo");
+			connector.addScope(Global.getCurrentSymbolTable(), "", "main");
+			connector.showScope("");
 		}
 
 		int numStatements = node.jjtGetNumChildren();
@@ -315,18 +318,21 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 			Global.setCurrentSymbolTable(st);
 			s.jjtAccept(this, null);
 			Global.setCurrentSymbolTable(st.getPrevious());
+			System.out.println("Done with nested scope!");
 		}
-		
-		
-		node.jjtGetChild(0).jjtAccept(this, null);
-		if (((SimpleNode)node.jjtGetChild(0)).getId() == JJTCALL)
+		else
 		{
-			((ASTCall)(node.jjtGetChild(0))).setLineNumber(node.getLineNumber());
+		
+			node.jjtGetChild(0).jjtAccept(this, null);
+			if (((SimpleNode)node.jjtGetChild(0)).getId() == JJTCALL)
+			{
+				((ASTCall)(node.jjtGetChild(0))).setLineNumber(node.getLineNumber());
+			}
+				
+				connector.endPar();
+			connector.endSnap();
+			update(node.getLineNumber(), UPDATE_REASON_STATEMENT);
 		}
-			
-			connector.endPar();
-		connector.endSnap();
-		update(node.getLineNumber(), UPDATE_REASON_STATEMENT);
 	}
 	
 	public Integer handleCall(ASTCall node)

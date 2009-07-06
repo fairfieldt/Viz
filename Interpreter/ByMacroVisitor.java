@@ -137,10 +137,13 @@ public class ByMacroVisitor implements VizParserVisitor, VizParserTreeConstants,
 		
 		//Now attach the function's statementlist to the expression where the call was.
 		ASTExpression exp = (ASTExpression) node.jjtGetParent();
-		exp.children[0] = fun.jjtGetChild(0);
+		ASTStatement stmnt = (ASTStatement) exp.jjtGetParent();
+		stmnt.children[0] = fun.jjtGetChild(0);
+		fun.jjtGetChild(0).jjtSetParent(stmnt);
 		
-		((ASTStatementList)exp.jjtGetChild(0)).setIsFunction(false);
-		((ASTStatementList)exp.jjtGetChild(0)).setSymbolTable(new SymbolTable(Global.getCurrentSymbolTable()));
+		((ASTStatementList)stmnt.jjtGetChild(0)).setIsFunction(false);
+		((ASTStatementList)stmnt.jjtGetChild(0)).setSymbolTable(fun.getSymbolTable());
+		fun.getSymbolTable().setName("");
 
 		System.out.println("asas");
 		
