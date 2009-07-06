@@ -108,6 +108,9 @@ public class XAALConnector {
   public boolean replaceWithScope(String codePageId, int callLineNum, 
 		  int startScopeLNum, int endScopeLNum, int endOfMainBrktLNum)
   {
+	  
+	  actions.offer(new ScopeReplaceCodePageAction(cpc.get(codePageId), currentSnapNum, 
+			  callLineNum, startScopeLNum, endScopeLNum, endOfMainBrktLNum));
 	  return true;
   }
  

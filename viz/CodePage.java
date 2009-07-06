@@ -22,6 +22,9 @@ public class CodePage implements Drawable {
 	//all the ids for normal text strings and ones that have been used already
 	private ArrayList<String> ids;
 	
+	//the XAALIds for each line
+	private ArrayList<String> lineToXaalId;
+	
 	//the line number at which the call will happen and the copies should be written
 	private int callLineNum = -1;
 
@@ -34,6 +37,9 @@ public class CodePage implements Drawable {
 	//where the top of the codepage starts on the page
 	public final int y = 10;
 	
+	//where the left side of the codepage starts
+	public final int x = 0;
+	
 	public CodePage(String id, String[] code)
 	{
 		setup();
@@ -45,7 +51,7 @@ public class CodePage implements Drawable {
 	{
 		copiesToMake = new ArrayList<LinkedList<String>>();
 		copiesOwned = new ArrayList<LinkedList<String>>();
-		
+		lineToXaalId = new ArrayList<String>();
 	}
 
 	
@@ -70,6 +76,11 @@ public class CodePage implements Drawable {
 		return ids;
 	}
 	
+	public ArrayList<String> getLineToXaalId()
+	{
+		return lineToXaalId;
+	}
+	
 	public void setCallLineNum(int lineNum)
 	{
 		if (callLineNum == -1)
@@ -80,12 +91,7 @@ public class CodePage implements Drawable {
 	{
 		return copiesOwned.get(pos).size();
 	}
-	/*
-	public ArrayList<String> peekCopyAll()
-	{
-		return new ArrayList<String>(copiesOwned.keySet());
-	}
-	*/
+
 	public String peekCopy(int pos)
 	{
 		return copiesOwned.get(pos).peek();
@@ -125,6 +131,7 @@ public class CodePage implements Drawable {
 		{
 			String id = scripter.addText(x, y + dy, code[i], "black", true);
 			ids.add(id);
+			lineToXaalId.add(id);
 			dy += lineHeight;
 		}
 		
