@@ -9,6 +9,9 @@ import Interpreter.Global;
 //TODO: highlighting doesn't always work.
 public class XAALConnector {
  
+	private final int dxOnScopeReplace = 400;
+	
+	
   private static LinkedList<String> scopeColors;
   private int currentSnapNum;
   
@@ -547,6 +550,10 @@ public class XAALConnector {
     		  {
     			  writeCodePageHide((ShowHideCodePageAction)action);
     		  }
+    	  }
+    	  else if (action instanceof ScopeReplaceCodePageAction)
+    	  {
+    		  writeReplaceWithScopeCodePage((ScopeReplaceCodePageAction)action);
     	  }
       }
       
@@ -1392,11 +1399,11 @@ public class XAALConnector {
 		  
 		  if(!parExists)
 			  scripter.startPar();
-			int startX = cp.fromPosX[action.getFromPos()];
-		    int startY = cp.y + (cp.getLineHeight() * action.getFromLine()); 
+			int startX = cp.x + cp.fromPosX[action.getFromPos()];
+		    int startY = cp.y + (cp.getLineHeight() * (action.getFromLine()-1)); 
 		
-		    int endX = cp.toPosX[action.getToPos()];
-		    int endY = cp.y + (cp.getLineHeight() * action.getToLine());
+		    int endX = cp.x + cp.toPosX[action.getToPos()];
+		    int endY = cp.y + (cp.getLineHeight() * (action.getToLine()-1));
 		    		    
 		    int moveX = startX - endX;
 		    int moveY = startY - endY;
@@ -1412,6 +1419,80 @@ public class XAALConnector {
 		    	scripter.endPar();
 		    //reclose the slide
 		    scripter.recloseSlide();
+	  }
+	  catch (Exception e)
+	  {
+	  }
+  }
+  
+  private void writeReplaceWithScopeCodePage(ScopeReplaceCodePageAction action)
+  {
+	  try
+	  {
+		  scripter.reopenSlide(action.getSnapNum());
+		  scripter.reopenPar();
+		  CodePage cp = cpc.get(action.getCP());
+		  
+		  ArrayList<String> lineToXaal = cp.getLineToXaalId();
+		  
+		  //move scope to left
+		  int startLnIndex = action.getStartScopeLNum() -1;
+		  int endLnIndex = action.getEndScopeLNum() -1;
+		  
+		  //write a move for all of the scope lines
+		  for (int i = startLnIndex; i <= endLnIndex; i++)
+		  {
+			  	int startX = cp.x;
+			    int startY = cp.y + (cp.getLineHeight() * i); 
+			
+			    int endX = cp.x - dxOnScopeReplace;
+			    int endY = startY;
+			    		    
+			    int moveX = startX - endX;
+			    int moveY = startY - endY;
+			    
+			    scripter.addTranslate(-moveX, -moveY, lineToXaal.get(i));
+		  }
+		  
+		  scripter.reclosePar();
+		  
+		  //do all the hiding necessary
+		  boolean parExists = false;
+		  parExists = scripter.reopenPar(1);
+		  if(!parExists)
+			  scripter.startPar();
+		  
+		  //hide the call line
+		  scripter.addHide(lineToXaal.get(action.getCallLineNum()));
+		  
+		  //hide the function line
+		  scripter.addHide(lineToXaal.get(startLnIndex - 1));
+		  
+		//reclose the par
+		    if (parExists)
+		    	scripter.reclosePar();
+		    else
+		    	scripter.endPar();
+		    
+		    
+		    // do the moving of the bottom bracket
+		      parExists = false;
+			  parExists = scripter.reopenPar(2);
+			  if(!parExists)
+				  scripter.startPar();
+			  /*
+			  	int startX = cp.x;
+			    int startY = cp.y + (cp.getLineHeight() * (action.getEndOfMainBrktLNum() -1)); 
+			
+			    int endX = cp.x;
+			    int endY = startY + (cp.getLineHeight() * ())
+			    		    
+			    int moveX = startX - endX;
+			    int moveY = startY - endY;
+			    
+			    scripter.addTranslate(-moveX, -moveY, lineToXaal.get(i));
+			  */
+		  
 	  }
 	  catch (Exception e)
 	  {

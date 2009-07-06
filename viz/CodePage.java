@@ -52,6 +52,7 @@ public class CodePage implements Drawable {
 		copiesToMake = new ArrayList<LinkedList<String>>();
 		copiesOwned = new ArrayList<LinkedList<String>>();
 		lineToXaalId = new ArrayList<String>();
+		ids = new ArrayList<String>();
 	}
 
 	
