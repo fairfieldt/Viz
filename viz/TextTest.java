@@ -16,8 +16,20 @@ public class TextTest {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws SlideException, ParException, IOException {
-		XAALScripter scripter = new XAALScripter();
-		CodePageContainer mc = new CodePageContainer();
+		String[] psuedoCode = {""}; 
+		XAALConnector conn = new XAALConnector(psuedoCode, "title");
+		
+		String codePageId = conn.addCodePage();
+		
+		conn.addLinePart(codePageId, "var g = 1;", 1);
+		conn.addLinePart(codePageId, "def foo(x, y, z)", 2);
+		conn.addLinePart(codePageId, "{", 3);
+			conn.addLinePart(codePageId, "\tvar v = 5;", 4);
+			conn.addLinePart(codePageId, "\t", 5);
+			conn.addImportantPart(codePageId, "x", 5);
+			conn.addLinePart(codePageId, " = ", 5);
+			
+		
 		/*
 		MultiText m = new MultiText();
 		mc.add(m);

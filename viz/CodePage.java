@@ -17,6 +17,10 @@ public class CodePage implements Drawable {
 	private HashMap<String, LinkedList<String>> copiesOwned;
 	private HashMap<String, String> impIdToXaalId;
 
+	
+	private HashMap<String, Integer> xaalIdToXPos;
+	private HashMap<String, Integer> xaalIdToYPos;
+	
 	private String id;
 	
 	
@@ -99,6 +103,18 @@ public class CodePage implements Drawable {
 	{
 		String imp = impIdToXaalId.get(impId);
 		copiesOwned.get(imp).addFirst(copyId);
+	}
+	
+	public int xPos(String impId)
+	{
+		String xaalId = impIdToXaalId.get(impId);
+		return this.xaalIdToXPos.get(xaalId).intValue();
+	}
+	
+	public int yPos(String impId)
+	{
+		String xaalId = impIdToXaalId.get(impId);
+		return this.xaalIdToYPos.get(xaalId).intValue();
 	}
 	
 	@Override

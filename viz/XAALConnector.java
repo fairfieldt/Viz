@@ -1334,10 +1334,92 @@ public class XAALConnector {
   
   private void writeCodePageHide(ShowHideCodePageAction action)
   {
+	  try
+	  {
+		  
+		  scripter.reopenSlide(action.getSnapNum());
+		  scripter.reopenPar(0);
+		  CodePage p = action.getTo();
+		  
+		  for(String id : p.peekCopyAll())
+		  {
+			  scripter.addHide(id);
+		  }
+		  
+		  scripter.reclosePar();
+		  scripter.recloseSlide();
+	  }
+	  catch(Exception e)
+	  {
+	  
+	  }
   }
   
+  /**
+   * 1. reopen the slide
+   * 1.5. reopen the par
+   * 2. loop through every recipient id and hide it
+   * @param action
+   */
   private void writeMovePartCodePage(MovePartCodePageAction action)
   {
-  
+	  try
+	  {
+		  scripter.reopenSlide(action.getSnapNum());
+		  scripter.reopenPar();
+		  CodePage cp = cpc.get(action.getFromPart());
+		  
+		  //hide the text at the recipient spots
+		  for (String s : action.getToParts())
+		  {
+			  String xaalId = cp.peekCopy(s);
+			  scripter.addHide(xaalId);
+		  }
+		  String[] copies = new String[action.getToParts().length];
+		  
+		  //show the number of copies needed for the from text
+		  for (int i= 0; i < copies.length; i++)
+		  {
+			  copies[i] = cp.popCopy(action.getFromPart());
+			  scripter.addShow(copies[i]);
+		  }
+		  
+		  scripter.addShow(cp.peekCopy(action.getFromPart()));
+		  
+		  scripter.reclosePar();
+		  
+		  boolean parExists = false;
+		  parExists = scripter.reopenPar(1);
+		  
+		  if(!parExists)
+			  scripter.startPar();
+		  
+		  //foreach impId, move a copy to it and give it ownership
+		  
+		  for (int i = 0; i < action.getToParts().length; i++)
+		  {
+			  	
+			String s = action.getToParts()[i];
+		  	int startX = cp.xPos(action.getFromPart());
+		    int startY = cp.yPos(action.getFromPart());
+		
+		    int endX = cp.xPos(s);
+		    int endY = cp.yPos(s);
+		    		    
+		    int moveX = startX - endX;
+		    int moveY = startY - endY;
+		    
+		    scripter.addTranslate(-moveX, -moveY, copies[i]);
+		    
+		    // give ownership of copy1 to second variable.
+		    cp.receiveCopyOwnership(s, copies[i]);		  
+		  }
+		  
+		  
+	  }
+	  catch (Exception e)
+	  {
+	  
+	  }
   }
 }
