@@ -829,6 +829,16 @@ Element initial = document.getRootElement().getChild("initial", defaultNS);
 		return true;
 	}
 	
+	public boolean reopenLastPar()
+	{
+		List pars = currentSlide.getChildren("par", defaultNS);
+		if (pars.size() == 0)
+			return false;
+		
+		currentPar = (Element)pars.get(pars.size()-1);
+		return true;
+	}
+	
 	public void reclosePar()
 	{
 		currentPar = null;

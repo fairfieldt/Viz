@@ -18,6 +18,7 @@ public class XAALConnector {
   
   static {
     scopeColors = new LinkedList<String>();
+    scopeColors.add("yellow");
     scopeColors.add("blue");
     scopeColors.add("red");
     scopeColors.add("green");
@@ -67,32 +68,6 @@ public class XAALConnector {
 	  
   }
   
-  /*
-  public boolean addTextLine(String codePageId, String value, int lineNum)
-  {
-	  cpc.get(codePageId).addLine(lineNum, value);
-	  
-	  return true;
-  }
-  
-  public boolean addLinePart(String codePageId, String value, int lineNum)
-  {
-	  cpc.get(codePageId).addLinePart(lineNum, value);
-	  return true;
-  }*/
-  
-  /**
-   * Allows you to add an important Part to a line
-   * @param codePageId
-   * @param value
-   * @param lineNum
-   * @return the id of that important Part
-   */
-  /*
-  public String addImportantPart(String codePageId, String value, int lineNum)
-  {
-	  return cpc.get(codePageId).addImpPart(lineNum, value);
-  }*/
   
   public boolean showCodePage(String codePageId)
   {
