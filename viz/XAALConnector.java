@@ -80,6 +80,36 @@ public class XAALConnector {
 	  actions.offer(new ShowHideCodePageAction(false, cpc.get(codePageId), currentSnapNum));
 	  return true;
   }
+  
+  /**
+   * the params would be as marked for the following program:
+   * 
+   *  						def main()
+   *  						{
+   * callLineNum:				foo(a, b);
+   * endOfMainBrktLNum: 	}
+   * 
+   * 						def foo(x, y)
+   * startScopeLNum: 		{
+   * 							x = 2;
+   * 							y = x;
+   * 							.
+   * 							.
+   * 							.
+   * 							y = x + 2;
+   * endScopeLNum 			}
+   * @param codePageId the id of the codePage
+   * @param callLineNum the line number of the function that is being replaced
+   * @param startScopeLNum the line number at the beginning bracket of "foo"
+   * @param endScopeLNum the line number at the ending bracket of "foo"
+   * @param endOfMainBrktLNum the line number at the ending bracket of "main"
+   * @return
+   */
+  public boolean replaceWithScope(String codePageId, int callLineNum, 
+		  int startScopeLNum, int endScopeLNum, int endOfMainBrktLNum)
+  {
+	  return true;
+  }
  
   /**
    * Add a scope to the visualization. Also adds its parameters.
