@@ -159,6 +159,7 @@ public class ByMacroVisitor implements VizParserVisitor, VizParserTreeConstants,
 			System.out.println(argName + ": " + NewTest.currentPage + " " + callLineNumber + " " + pos + " " + argName + " " + lineNumber + " " + endPos);
 			System.out.println("Moving to");
 			connector.moveArgs(NewTest.currentPage, callLineNumber, pos, argName, lineNumber, endPos);
+			
 			System.out.println("...");
 		}
 	}
@@ -190,29 +191,7 @@ public class ByMacroVisitor implements VizParserVisitor, VizParserTreeConstants,
 	
 	public void handleCall(ASTCall node)
 	{	
-		/*	
-		if (!readyForCall)
-		{
-			call = node;
-			return;
-		}
-		//Draw the intermediate step before changing the code again
-		connector.endSnap();
-		connector.startSnap(0);
-		connector.endPar();
-		connector.startPar();
-			program.codeBuilt = false;
-			Global.lineNumber = 1;
-			program.buildCode();
-			String p = connector.addCodePage(program.getPseudocode());
-			connector.hideCodePage(NewTest.currentPage);
-			NewTest.currentPage = p;
-			connector.showCodePage(NewTest.currentPage);
-		connector.endPar();
-		connector.endSnap();
-		connector.startSnap(0);
-		connector.startPar();
-		*/
+		
 		//Get the correct function head node
 		ASTFunction fun = Global.getFunction(node.getName());
 		System.out.println("Calling: " + fun.getName());
@@ -246,24 +225,6 @@ public class ByMacroVisitor implements VizParserVisitor, VizParserTreeConstants,
 		fun.jjtAccept(this, null);
 		inNested = false;
 		
-		
-		/*
-		//Now attach the function's statementlist to the expression where the call was.
-		ASTExpression exp = (ASTExpression) node.jjtGetParent();
-		ASTStatement stmnt = (ASTStatement) exp.jjtGetParent();
-		stmnt.children[0] = fun.jjtGetChild(0);
-		fun.jjtGetChild(0).jjtSetParent(stmnt);
-		
-		((ASTStatementList)stmnt.jjtGetChild(0)).setIsFunction(false);
-		((ASTStatementList)stmnt.jjtGetChild(0)).setSymbolTable(fun.getSymbolTable());
-		fun.getSymbolTable().setName("");
-
-		System.out.println("asas");
-		
-		//Remove the function declaration
-		fun.setUsed(false);
-		node.setUsed(false);
-		*/
 	}
 	
 
