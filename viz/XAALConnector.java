@@ -500,7 +500,7 @@ public class XAALConnector {
         	}
         }
       }
-      else // its a scope
+      else if (action instanceof ScopeAction)// its a scope
       {
         if (action instanceof ShowHideScopeAction) // its a show or hide action
         {
@@ -513,6 +513,25 @@ public class XAALConnector {
             writeScopeHide((ShowHideScopeAction)action);
           }
         }
+      }
+      
+      else // its a CodePageAction
+      {
+    	  if (action instanceof MovePartCodePageAction)
+    	  {
+    		  writeMovePartCodePage((MovePartCodePageAction)action);
+    	  }
+    	  else if (action instanceof ShowHideCodePageAction)
+    	  {
+    		  if (((ShowHideCodePageAction)action).isShow()) // its a show action  
+    		  {
+    			  writeCodePageShow((ShowHideCodePageAction)action);
+    		  }
+    		  else // its a hide action
+    		  {
+    			  writeCodePageHide((ShowHideCodePageAction)action);
+    		  }
+    	  }
       }
       
     } while (true);
@@ -1286,5 +1305,39 @@ public class XAALConnector {
     {
       
     }
+  }
+  /**
+  * 1. reopen the slide
+  * 1.5. reopen the par
+  */
+  private void writeCodePageShow(ShowHideCodePageAction action)
+  {
+	  try
+	  {
+		  scripter.reopenSlide(action.getSnapNum());
+		  scripter.reopenPar(0);
+		  CodePage p = action.getTo();
+		  
+		  for(String id : p.peekCopyAll())
+		  {
+			  scripter.addShow(id);
+		  }
+		  
+		  scripter.reclosePar();
+		  scripter.recloseSlide();
+	  }
+	  catch(Exception e)
+	  {
+	  
+	  }
+  }
+  
+  private void writeCodePageHide(ShowHideCodePageAction action)
+  {
+  }
+  
+  private void writeMovePartCodePage(MovePartCodePageAction action)
+  {
+  
   }
 }

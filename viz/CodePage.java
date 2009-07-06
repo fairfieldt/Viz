@@ -31,6 +31,8 @@ public class CodePage implements Drawable {
 		
 		lines = new ArrayList<ArrayList<LinePart>>();
 		copiesToMake = new HashMap<String, Integer>();
+		impIdToXaalId = new HashMap<String, String>();
+		copiesOwned = new HashMap<String, LinkedList<String>>();
 	}
 	
 	/**
@@ -76,6 +78,11 @@ public class CodePage implements Drawable {
 		return this.id;
 	}
 	
+	public ArrayList<String> peekCopyAll()
+	{
+		return new ArrayList<String>(copiesOwned.keySet());
+	}
+	
 	public String peekCopy(String impId)
 	{
 		String imp = impIdToXaalId.get(impId);
@@ -86,6 +93,12 @@ public class CodePage implements Drawable {
 	{
 		String imp = impIdToXaalId.get(impId);
 		return copiesOwned.get(imp).pop();
+	}
+	
+	public void receiveCopyOwnership(String impId, String copyId)
+	{
+		String imp = impIdToXaalId.get(impId);
+		copiesOwned.get(imp).addFirst(copyId);
 	}
 	
 	@Override
