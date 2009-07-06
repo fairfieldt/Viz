@@ -123,34 +123,36 @@ public class XAALConnector {
     if (!name.equals("Global")) // global's not in the function table so don't try to find it
     {
 	    Interpreter.ASTFunction func = Global.getFunction(name);
-	    
-	    ArrayList<String> params = func.getParameters();
-	    
-	    for (String p : params)
+	    if (func != null)
 	    {
-	    	Interpreter.Variable iv = symbols.getVariable(p);
-	    	Variable v = null;
-	    	if (iv instanceof Interpreter.ByCopyRestoreVariable)
-	    	{
-	    		v = new Variable(p, null, iv.getValue(), true);
-	    		v.setIsCopyRestore();
-	    	}
-	    	else if (iv instanceof Interpreter.ByRefVariable)
-	      	{
-	      		v = new Variable(p, -255, true);
-	      		v.setIsReference(true);
-	      	}
-	      	else
-	      	{	
-	        	v = new Variable(p, symbols.get(p), true);
-	        }
-	        retScope.addVariable(v);
-	       
-	        //add a copy of the original
-	        v.addCopy();
-	        
-	        varToVar.put(iv.getUUID(), v);
-	    }
+		    ArrayList<String> params = func.getParameters();
+		    
+		    for (String p : params)
+		    {
+		    	Interpreter.Variable iv = symbols.getVariable(p);
+		    	Variable v = null;
+		    	if (iv instanceof Interpreter.ByCopyRestoreVariable)
+		    	{
+		    		v = new Variable(p, null, iv.getValue(), true);
+		    		v.setIsCopyRestore();
+		    	}
+		    	else if (iv instanceof Interpreter.ByRefVariable)
+		      	{
+		      		v = new Variable(p, -255, true);
+		      		v.setIsReference(true);
+		      	}
+		      	else
+		      	{	
+				v = new Variable(p, symbols.get(p), true);
+			}
+			retScope.addVariable(v);
+		       
+			//add a copy of the original
+			v.addCopy();
+			
+			varToVar.put(iv.getUUID(), v);
+		    }
+    	    }
     }
   }
   

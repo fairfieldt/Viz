@@ -140,10 +140,9 @@ public class ByMacroVisitor implements VizParserVisitor, VizParserTreeConstants,
 		exp.children[0] = fun.jjtGetChild(0);
 		
 		((ASTStatementList)exp.jjtGetChild(0)).setIsFunction(false);
-		((ASTStatementList)exp.jjtGetChild(0)).setSymbolTable(fun.getSymbolTable());
-		((ASTStatementList)exp.jjtGetChild(0)).getSymbolTable().setPrevious(Global.getCurrentSymbolTable());
+		((ASTStatementList)exp.jjtGetChild(0)).setSymbolTable(new SymbolTable(Global.getCurrentSymbolTable()));
+
 		System.out.println("asas");
-		System.out.println(fun.getSymbolTable());
 		
 		//Remove the function declaration
 		fun.setUsed(false);
