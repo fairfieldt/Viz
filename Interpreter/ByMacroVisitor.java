@@ -149,6 +149,7 @@ public class ByMacroVisitor implements VizParserVisitor, VizParserTreeConstants,
 		
 		//Remove the function declaration
 		fun.setUsed(false);
+		node.setUsed(false);
 	}
 	
 
