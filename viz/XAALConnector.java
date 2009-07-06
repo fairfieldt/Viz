@@ -48,11 +48,26 @@ public class XAALConnector {
     this.cpc = new CodePageContainer();
   }
   
-  public String addCodePage()
+  public String addCodePage(String[] code)
   {
-	  return cpc.createCodePage();
+	  return cpc.createCodePage(code);
   }
   
+  public void moveArgs(String codePageId, int fromLineNum, int fromPos, String fromStr, 
+		  int toLineNum, int toPos)
+  {
+	  CodePage cp = cpc.get(codePageId);
+	  
+	  cp.setCallLineNum(fromLineNum);
+	  
+	  cp.addCopy(fromPos, fromStr);
+	  
+	  actions.offer(new MoveArgCodePageAction(cp, currentSnapNum, 
+			  fromLineNum, fromPos, toLineNum, toPos));
+	  
+  }
+  
+  /*
   public boolean addTextLine(String codePageId, String value, int lineNum)
   {
 	  cpc.get(codePageId).addLine(lineNum, value);
@@ -64,7 +79,7 @@ public class XAALConnector {
   {
 	  cpc.get(codePageId).addLinePart(lineNum, value);
 	  return true;
-  }
+  }*/
   
   /**
    * Allows you to add an important Part to a line
@@ -73,10 +88,11 @@ public class XAALConnector {
    * @param lineNum
    * @return the id of that important Part
    */
+  /*
   public String addImportantPart(String codePageId, String value, int lineNum)
   {
 	  return cpc.get(codePageId).addImpPart(lineNum, value);
-  }
+  }*/
   
   public boolean showCodePage(String codePageId)
   {
@@ -89,7 +105,7 @@ public class XAALConnector {
 	  actions.offer(new ShowHideCodePageAction(false, cpc.get(codePageId), currentSnapNum));
 	  return true;
   }
-  
+  /*
   public boolean moveLinePart(String codePageId, String fromId, String...toIds)
   {
 	  CodePage cp = cpc.get(codePageId);
@@ -102,7 +118,7 @@ public class XAALConnector {
 	  actions.offer(new MovePartCodePageAction(cp, currentSnapNum, fromId, toIds));
 	  return true;
   }
-  
+  */
   /**
    * Add a scope to the visualization. Also adds its parameters.
    * Assumes that the local symbol table has only the parameters, nothing else.
@@ -451,6 +467,9 @@ public class XAALConnector {
     //first calls draw on the global scope which then draws all of the children
     globalScope.draw(scripter);
     System.out.println("Drew global scope");
+    
+    cpc.draw(scripter);
+    System.out.println("Drew code pages");
     //System.out.println(scripter.toString());
     //perform and write future actions to the scripter
     FutureAction action = null;
@@ -500,7 +519,7 @@ public class XAALConnector {
         	}
         }
       }
-      else // its a scope
+      else if (action instanceof ScopeAction)// its a scope
       {
         if (action instanceof ShowHideScopeAction) // its a show or hide action
         {
@@ -513,6 +532,25 @@ public class XAALConnector {
             writeScopeHide((ShowHideScopeAction)action);
           }
         }
+      }
+      
+      else // its a CodePageAction
+      {
+    	  if (action instanceof MoveArgCodePageAction)
+    	  {
+    		 writeMoveArgCodePage((MoveArgCodePageAction)action);
+    	  }
+    	  else if (action instanceof ShowHideCodePageAction)
+    	  {
+    		  if (((ShowHideCodePageAction)action).isShow()) // its a show action  
+    		  {
+    			  writeCodePageShow((ShowHideCodePageAction)action);
+    		  }
+    		  else // its a hide action
+    		  {
+    			  writeCodePageHide((ShowHideCodePageAction)action);
+    		  }
+    	  }
       }
       
     } while (true);
@@ -1286,5 +1324,100 @@ public class XAALConnector {
     {
       
     }
+  }
+  /**
+  * 1. reopen the slide
+  * 1.5. reopen the par
+  */
+  private void writeCodePageShow(ShowHideCodePageAction action)
+  {
+	  try
+	  {
+		  scripter.reopenSlide(action.getSnapNum());
+		  scripter.reopenPar(0);
+		  CodePage p = action.getCP();
+		  
+		  for(String id : p.getIds())
+		  {
+			  scripter.addShow(id);
+		  }
+		  
+		  scripter.reclosePar();
+		  scripter.recloseSlide();
+	  }
+	  catch(Exception e)
+	  {
+	  
+	  }
+  }
+  
+  private void writeCodePageHide(ShowHideCodePageAction action)
+  {
+	  try
+	  {
+		  
+		  scripter.reopenSlide(action.getSnapNum());
+		  scripter.reopenPar(0);
+		  CodePage p = action.getCP();
+		  
+		  for(String id : p.getIds())
+		  {
+			  scripter.addHide(id);
+		  }
+		  
+		  scripter.reclosePar();
+		  scripter.recloseSlide();
+	  }
+	  catch(Exception e)
+	  {
+	  
+	  }
+  }
+  
+  
+  private void writeMoveArgCodePage(MoveArgCodePageAction action)
+  {
+	  try
+	  {
+		  scripter.reopenSlide(action.getSnapNum());
+		  scripter.reopenPar();
+		  CodePage cp = cpc.get(action.getCP());
+		  
+		  
+		  //show a copy
+		  String id = cp.popCopy(action.getFromPos());
+		  scripter.addShow(id);
+		  scripter.reclosePar();
+		  
+		  //do the move!!!
+		  boolean parExists = false;
+		  parExists = scripter.reopenPar(1);
+		  
+		  if(!parExists)
+			  scripter.startPar();
+			int startX = cp.fromPosX[action.getFromPos()];
+		    int startY = cp.y + (cp.getLineHeight() * action.getFromLine()); 
+		
+		    int endX = cp.toPosX[action.getToPos()];
+		    int endY = cp.y + (cp.getLineHeight() * action.getToLine());
+		    		    
+		    int moveX = startX - endX;
+		    int moveY = startY - endY;
+		    
+		    scripter.addTranslate(-moveX, -moveY, id);
+		  
+		  cp.receiveCopyOwnership(id);
+		  
+		//reclose the par
+		    if (parExists)
+		    	scripter.reclosePar();
+		    else
+		    	scripter.endPar();
+		    //reclose the slide
+		    scripter.recloseSlide();
+	  }
+	  catch (Exception e)
+	  {
+	  }
   }
 }

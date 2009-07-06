@@ -1,17 +1,17 @@
 package viz;
 
 public abstract class CodePageAction extends FutureAction {
-	private CodePage to;
+	private CodePage cp;
 	
 	public CodePageAction(CodePage to, int slideNum)
 	{
 		super(slideNum);
-		this.to = to;
+		this.cp = to;
 	}
 	
-	public CodePage getTo()
+	public CodePage getCP()
 	{
-		return to;
+		return cp;
 	}
 	
 }
