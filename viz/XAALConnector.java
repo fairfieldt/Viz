@@ -1414,8 +1414,6 @@ public class XAALConnector {
 		    // give ownership of copy1 to second variable.
 		    cp.receiveCopyOwnership(s, copies[i]);		  
 		  }
-		  
-		  
 	  }
 	  catch (Exception e)
 	  {
