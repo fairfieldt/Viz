@@ -53,7 +53,7 @@ public class XAALConnector {
 	  return cpc.createCodePage();
   }
   
-  public void moveArgs(String codePageId, int fromLineNum, int fromPos, 
+  public void moveArgs(String codePageId, int fromLineNum, int fromPos, String fromStr, 
 		  int toLineNum, int toPos)
   {
 	  
