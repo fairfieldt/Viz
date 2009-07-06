@@ -60,7 +60,7 @@ public class XAALConnector {
   public void moveArgs(String codePageId, int fromLineNum, int fromPos, String fromStr, 
 		  int toLineNum, int toPos)
   {
-  	  System.out.println("grr");
+
 	  CodePage cp = cpc.get(codePageId);
 	  System.out.println(cp);
 	  cp.setCallLineNum(fromLineNum);

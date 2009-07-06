@@ -3,7 +3,7 @@ var j = 1;
 var f = 3;
 def foo(x, y, z)
 {
-	var q = 2;
+	var q = 5;
 	x  = 2;
 	y = 5;
 	j = x + y;

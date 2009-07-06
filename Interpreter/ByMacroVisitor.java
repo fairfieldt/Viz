@@ -156,7 +156,7 @@ public class ByMacroVisitor implements VizParserVisitor, VizParserTreeConstants,
 			{
 				argName = argName + "[" + arg.getSubscript().getCode() + "]";
 			}
-			System.out.println(NewTest.currentPage + " " + callLineNumber + " " + pos + " " + argName + " " + lineNumber + " " + endPos);
+			System.out.println(argName + ": " + NewTest.currentPage + " " + callLineNumber + " " + pos + " " + argName + " " + lineNumber + " " + endPos);
 			System.out.println("Moving to");
 			connector.moveArgs(NewTest.currentPage, callLineNumber, pos, argName, lineNumber, endPos);
 			System.out.println("...");
