@@ -301,7 +301,7 @@ Element initial = document.getRootElement().getChild("initial", defaultNS);
 		text.addContent(coordinate);
 		
 		Element contentsElem = createElement("contents");
-		
+		contents = contents.replace("\t", "&nbsp&nbsp&nbsp&nbsp&nbsp");
 		Text contentsVal = new Text(contents);
 		contentsElem.addContent(contentsVal);
 		
