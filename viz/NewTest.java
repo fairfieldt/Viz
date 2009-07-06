@@ -4,6 +4,7 @@ import java.io.*;
 
 public class NewTest
 {
+	public static String currentPage;
 	public static void main(String[] args)
 	{
 		Global.InterpreterType = InterpreterTypes.BY_VALUE;
@@ -34,17 +35,41 @@ public class NewTest
 			program.buildCode();
 			System.out.println("Built code");
 			
-			//program.dump("");
+
+			String[] info = {"Step 1. Copy in the arguments",
+					 "Step 2. Copy in the function body",
+					 "Step 3. Run the program.  (Click next to begin)"};
+					 
+			XAALConnector xc = new XAALConnector(info, "foo");			//program.dump("");
+			String p0 = xc.addCodePage(program.getPseudocode());
+			currentPage = p0;
+			xc.startSnap(0);
+			xc.startPar();
+				xc.showCodePage(p0);
+			xc.endPar();
+			xc.endSnap();
+			xc.startSnap(1);
+			xc.startPar();
+			
+			ByMacroVisitor bm = new ByMacroVisitor();
+			bm.setXAALConnector(xc);
+			program.jjtAccept(bm, null);
+			xc.endPar();
+			xc.endSnap();
+			/*
+			program.codeBuilt = false;
+			Global.lineNumber = 1;
+			program.buildCode();		
+			String p1 = xc.addCodePage(program.getPseudocode());
+			
+			xc.startPar();
+				xc.showCodePage(p1);
+			xc.endPar();
+			*/
+			
 
 			
-			for (String s : program.getPseudocode())
-			{
-				System.out.println(s);
-			}
-			
-			System.out.println("MACRO TIME");
-			ByMacroVisitor bm = new ByMacroVisitor();
-			((SimpleNode)program).jjtAccept(bm, null);		
+			System.out.println("MACRO TIME");		
 			Global.lineNumber = 1;
 			program.codeBuilt = false;
 			program.buildCode();
@@ -52,16 +77,27 @@ public class NewTest
 						{
 							System.out.println(line);
 						}
-
-			XAALConnector xc = new XAALConnector(program.getPseudocode(), "foo");
-			
-			String p1 = xc.addCodePage(program.getPseudocode());
+		
+			String p2 = xc.addCodePage(program.getPseudocode());
 			xc.startSnap(1);
 			xc.startPar();
-				xc.showCodePage(p1);
+				xc.hideCodePage(p0);
+				xc.showCodePage(p2);
 			xc.endPar();
 			xc.endSnap();
+			xc.startSnap(2);
+			//Copy Body here
+			xc.endSnap();
 			
+			xc.startSnap(3);
+			xc.startPar();
+				xc.hideCodePage(p2);
+			xc.endPar();
+			xc.endSnap();
+			xc.startSnap(1, program.getPseudocode());
+			xc.startPar();
+			xc.endPar();
+			xc.endSnap();
 			
 			System.out.println("\n\n Testing Interpret Visitor");
 			

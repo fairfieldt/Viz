@@ -36,7 +36,7 @@ public class ASTStatementList extends SimpleNode {
 
   public String getCode()
   {
-  	System.out.println("ASS" + this.jjtGetParent());
+  	System.out.println("AS" + this.jjtGetParent());
   	boolean isNested = this.jjtGetParent() instanceof ASTStatement;
   	System.out.println("isNested " + isNested);
   	String code = "";

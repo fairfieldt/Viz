@@ -60,8 +60,9 @@ public class XAALConnector {
   public void moveArgs(String codePageId, int fromLineNum, int fromPos, String fromStr, 
 		  int toLineNum, int toPos)
   {
+  	  System.out.println("grr");
 	  CodePage cp = cpc.get(codePageId);
-	  
+	  System.out.println(cp);
 	  cp.setCallLineNum(fromLineNum);
 	  
 	  cp.addCopy(fromPos, fromStr);
@@ -538,6 +539,7 @@ public class XAALConnector {
       {
     	  if (action instanceof MoveArgCodePageAction)
     	  {
+    	  	System.out.println("Action: " + action);
     		 writeMoveArgCodePage((MoveArgCodePageAction)action);
     	  }
     	  else if (action instanceof ShowHideCodePageAction)
@@ -1385,32 +1387,40 @@ public class XAALConnector {
 	  {
 		  scripter.reopenSlide(action.getSnapNum());
 		  scripter.reopenPar();
-		  CodePage cp = cpc.get(action.getCP());
+		  CodePage cp = action.getCP();
 		  
-		  
+		  System.out.println(action.getCP());
+		  System.out.println("Moving arg");
 		  //show a copy
+		  System.out.println(cp);
 		  String id = cp.popCopy(action.getFromPos());
+		  System.out.println(id);
 		  scripter.addShow(id);
 		  scripter.reclosePar();
 		  
 		  //do the move!!!
 		  boolean parExists = false;
 		  parExists = scripter.reopenPar(1);
-		  
+		  System.out.println(1);
 		  if(!parExists)
+		  {
 			  scripter.startPar();
-			int startX = cp.x + cp.fromPosX[action.getFromPos()];
-		    int startY = cp.y + (cp.getLineHeight() * (action.getFromLine()-1)); 
+		  }
+		  System.out.println(2);
+		    int startX = cp.x + cp.fromPosX[action.getFromPos()];
+		    int startY = cp.y + (cp.getLineHeight() * (action.getFromLine()-3)); 
 		
 		    int endX = cp.x + cp.toPosX[action.getToPos()];
-		    int endY = cp.y + (cp.getLineHeight() * (action.getToLine()-1));
+		    int endY = cp.y + (cp.getLineHeight() * (action.getToLine()-4));
 		    		    
 		    int moveX = startX - endX;
 		    int moveY = startY - endY;
-		    
+		  System.out.println(3);
 		    scripter.addTranslate(-moveX, -moveY, id);
-		  
+		 		  scripter.addHide(id);
+		    System.out.println("Added a translate");
 		  cp.receiveCopyOwnership(id);
+
 		  
 		//reclose the par
 		    if (parExists)
@@ -1422,6 +1432,7 @@ public class XAALConnector {
 	  }
 	  catch (Exception e)
 	  {
+	  	System.out.println(e);
 	  }
   }
   

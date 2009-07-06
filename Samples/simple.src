@@ -1,5 +1,6 @@
 var m[] = {3,2,3};
 var j = 1;
+var f = 3;
 def foo(x, y, z)
 {
 	var q = 2;
@@ -11,6 +12,7 @@ def foo(x, y, z)
 
 def main()
 {
-	foo(m[j], m[j], j);
+	foo(m[j], f, j);
 	j = 3;
 }
+

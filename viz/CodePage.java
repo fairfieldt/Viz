@@ -14,10 +14,10 @@ public class CodePage implements Drawable {
 	private String[] code;
 
 	// each position 0,1 or 2 has a list of strings it has to make
-	private ArrayList<LinkedList<String>> copiesToMake;
+	private ArrayList<LinkedList<String>> copiesToMake = new ArrayList<LinkedList<String>>();
 	
 	//each position 0,1 or 2 has a list of copy ids it owns
-	private ArrayList<LinkedList<String>> copiesOwned;
+	private ArrayList<LinkedList<String>> copiesOwned = new ArrayList<LinkedList<String>>();
 	
 	//all the ids for normal text strings and ones that have been used already
 	private ArrayList<String> ids;
@@ -32,8 +32,8 @@ public class CodePage implements Drawable {
 	
 	private int lineHeight;
 	
-	public final int[] fromPosX = {100,120,140};
-	public final int[] toPosX = {100, 140, 180};
+	public final int[] fromPosX = {70,110,140};
+	public final int[] toPosX = {10, 40, 70};
 	//where the top of the codepage starts on the page
 	public final int y = 10;
 	
@@ -45,6 +45,11 @@ public class CodePage implements Drawable {
 		setup();
 		this.code = code;
 		this.id = id;
+		for (int i = 0; i < 3; i++)
+		{
+			copiesToMake.add(i, new LinkedList<String>());
+			copiesOwned.add(i, new LinkedList<String>());
+		}
 	}
 	
 	private void setup()
@@ -59,11 +64,9 @@ public class CodePage implements Drawable {
 	public void addCopy(int pos, String str)
 	{
 		copiesToMake.ensureCapacity(pos);
-		
-		if (copiesToMake.get(pos) == null)
-			copiesToMake.add(pos, new LinkedList<String>());
-		
+	
 		copiesToMake.get(pos).push(str);
+
 			
 	}
 	
@@ -121,8 +124,8 @@ public class CodePage implements Drawable {
 		Graphics g = (new BufferedImage(1,1, 
                 BufferedImage.TYPE_INT_RGB)).getGraphics();
 		//change to Lucida Bright when we post
-		g.setFont(new Font("Serif", 
-				Font.PLAIN, XAALScripter.DEFAULT_FONT_SIZE));
+		g.setFont(new Font("Monospaced", 
+				Font.PLAIN, 20));
 		
 		FontMetrics fm = g.getFontMetrics();
 		lineHeight = fm.getHeight();
