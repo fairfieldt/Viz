@@ -14,12 +14,13 @@ public class CodePage implements Drawable {
 	private ArrayList<ArrayList<LinePart>> lines;
 	private HashMap<String, Integer> copiesToMake;
 	
+	//takes an ImpId and gives you all the XaalIds belonging to that imp
 	private HashMap<String, LinkedList<String>> copiesOwned;
-	private HashMap<String, String> impIdToXaalId;
+	//private HashMap<String, String> impIdToXaalId;
 
 	
-	private HashMap<String, Integer> xaalIdToXPos;
-	private HashMap<String, Integer> xaalIdToYPos;
+	private HashMap<String, Integer> impIdToXPos;
+	private HashMap<String, Integer> impIdToYPos;
 	
 	private String id;
 	
@@ -35,8 +36,9 @@ public class CodePage implements Drawable {
 		
 		lines = new ArrayList<ArrayList<LinePart>>();
 		copiesToMake = new HashMap<String, Integer>();
-		impIdToXaalId = new HashMap<String, String>();
+		//impIdToXaalId = new HashMap<String, String>();
 		copiesOwned = new HashMap<String, LinkedList<String>>();
+		
 	}
 	
 	/**
@@ -89,32 +91,32 @@ public class CodePage implements Drawable {
 	
 	public String peekCopy(String impId)
 	{
-		String imp = impIdToXaalId.get(impId);
+		//String imp = impIdToXaalId.get(impId);
 		return copiesOwned.get(imp).peek();
 	}
 	
 	public String popCopy(String impId)
 	{
-		String imp = impIdToXaalId.get(impId);
-		return copiesOwned.get(imp).pop();
+		//String imp = impIdToXaalId.get(impId);
+		return copiesOwned.get(impId).pop();
 	}
 	
 	public void receiveCopyOwnership(String impId, String copyId)
 	{
-		String imp = impIdToXaalId.get(impId);
-		copiesOwned.get(imp).addFirst(copyId);
+		//String imp = impIdToXaalId.get(impId);
+		copiesOwned.get(impId).addFirst(copyId);
 	}
 	
 	public int xPos(String impId)
 	{
-		String xaalId = impIdToXaalId.get(impId);
-		return this.xaalIdToXPos.get(xaalId).intValue();
+		//String xaalId = impIdToXaalId.get(impId);
+		return this.impIdToXPos.get(impId).intValue();
 	}
 	
 	public int yPos(String impId)
 	{
-		String xaalId = impIdToXaalId.get(impId);
-		return this.xaalIdToYPos.get(xaalId).intValue();
+		//String xaalId = impIdToXaalId.get(impId);
+		return this.impIdToYPos.get(impId).intValue();
 	}
 	
 	@Override

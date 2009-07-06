@@ -53,6 +53,12 @@ public class XAALConnector {
 	  return cpc.createCodePage();
   }
   
+  public void moveArgs(String codePageId, int fromLineNum, int fromPos, 
+		  int toLineNum, int toPos)
+  {
+	  
+  }
+  /*
   public boolean addTextLine(String codePageId, String value, int lineNum)
   {
 	  cpc.get(codePageId).addLine(lineNum, value);
@@ -64,7 +70,7 @@ public class XAALConnector {
   {
 	  cpc.get(codePageId).addLinePart(lineNum, value);
 	  return true;
-  }
+  }*/
   
   /**
    * Allows you to add an important Part to a line
@@ -73,10 +79,11 @@ public class XAALConnector {
    * @param lineNum
    * @return the id of that important Part
    */
+  /*
   public String addImportantPart(String codePageId, String value, int lineNum)
   {
 	  return cpc.get(codePageId).addImpPart(lineNum, value);
-  }
+  }*/
   
   public boolean showCodePage(String codePageId)
   {
