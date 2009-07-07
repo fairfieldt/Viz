@@ -99,13 +99,15 @@ public class ByMacroVisitor implements VizParserVisitor, VizParserTreeConstants,
 			int endPos = 0;
 			int lineNumber = 0;
 			Object[] params =  Global.getCurrentParamToArg().keySet().toArray();
-
-			if ( argName.equals((String)params[1]))
+			String expectedArgName = Global.getCurrentParamToArg().get((String)params[1]);
+			if (argName.equals(expectedArgName))
 			{
+				System.out.println("**");
 				pos = 1;
 			}
-			else if (params.length > 2 && argName.equals(params[2]))
+			else if (params.length > 2 && argName.equals(Global.getCurrentParamToArg().get((String)params[2])))
 			{
+				System.out.println("^^");
 				pos = 2;
 			}
 			
