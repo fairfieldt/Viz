@@ -1487,7 +1487,7 @@ public class XAALConnector {
 			  	int startX = cp.x;
 			    int startY = cp.y + (cp.getLineHeight() * i); 
 			
-			    int endX = cp.x - dxOnScopeReplace;
+			    int endX = cp.x + dxOnScopeReplace;
 			    int endY = startY;
 			    		    
 			    int moveX = startX - endX;
@@ -1522,18 +1522,20 @@ public class XAALConnector {
 			  parExists = scripter.reopenPar(2);
 			  if(!parExists)
 				  scripter.startPar();
-			  /*
+			  
 			  	int startX = cp.x;
 			    int startY = cp.y + (cp.getLineHeight() * (action.getEndOfMainBrktLNum() -1)); 
 			
 			    int endX = cp.x;
-			    int endY = startY + (cp.getLineHeight() * ())
+			    
+			    int totalLines = action.getStartScopeLNum() - action.getEndScopeLNum();
+			    int endY = startY + (cp.getLineHeight() * totalLines);
 			    		    
 			    int moveX = startX - endX;
 			    int moveY = startY - endY;
 			    
-			    scripter.addTranslate(-moveX, -moveY, lineToXaal.get(i));
-			  */
+			    scripter.addTranslate(-moveX, -moveY, lineToXaal.get(action.getEndOfMainBrktLNum() -1));
+			  
 		  
 	  }
 	  catch (Exception e)
