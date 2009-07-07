@@ -95,7 +95,7 @@ public class ByMacroVisitor implements VizParserVisitor, VizParserTreeConstants,
 			}
 			
 			//Add the graphical move
-			int pos = 0;
+			int pos = 2;
 			int endPos = 0;
 			int lineNumber = 0;
 			Object[] params =  Global.getCurrentParamToArg().keySet().toArray();
@@ -108,7 +108,7 @@ public class ByMacroVisitor implements VizParserVisitor, VizParserTreeConstants,
 			else if (params.length > 2 && argName.equals(Global.getCurrentParamToArg().get((String)params[2])))
 			{
 				System.out.println("^^");
-				pos = 2;
+				pos = 0;
 			}
 			
 			//Three cases
@@ -323,6 +323,8 @@ public class ByMacroVisitor implements VizParserVisitor, VizParserTreeConstants,
   	{
   		handleAssignment((ASTAssignment)node);
   		System.out.println("asdf");
+  		System.out.println(node.getName());
+  		System.out.println(Global.getCurrentSymbolTable());
   		node.childrenAccept(this, null);
   		return null;
   	}
