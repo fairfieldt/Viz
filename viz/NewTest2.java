@@ -81,8 +81,7 @@ public class NewTest2
 			String p2 = xc.addCodePage(program.getPseudocode());
 			xc.startSnap(1);
 			xc.startPar();
-				xc.hideCodePage(p0);
-				xc.showCodePage(p2);
+				xc.swapCodePage(p0, p2);
 			xc.endPar();
 			xc.endSnap();
 			xc.startSnap(2);

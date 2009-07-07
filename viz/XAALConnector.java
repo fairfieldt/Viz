@@ -60,7 +60,6 @@ public class XAALConnector {
   public void moveArgs(String codePageId, int fromLineNum, int fromPos, String fromStr, 
 		  int toLineNum, int toPos)
   {
-
 	  CodePage cp = cpc.get(codePageId);
 	  System.out.println(cp);
 	  cp.setCallLineNum(fromLineNum);
@@ -68,8 +67,7 @@ public class XAALConnector {
 	  cp.addCopy(fromPos, fromStr);
 	  
 	  actions.offer(new MoveArgCodePageAction(cp, currentSnapNum, 
-			  fromLineNum, fromPos, toLineNum, toPos, fromStr));
-	  
+			  fromLineNum, fromPos, toLineNum, toPos, fromStr));  
   }
   
   public void swapCodePage(String prevCodePageId, String newCodePageId)
@@ -1505,7 +1503,7 @@ public class XAALConnector {
 			  scripter.startPar();
 		  
 		  //hide the call line
-		  scripter.addHide(lineToXaal.get(action.getCallLineNum()));
+		  scripter.addHide(lineToXaal.get(action.getCallLineNum()-1));
 		  
 		  //hide the function line
 		  scripter.addHide(lineToXaal.get(startLnIndex - 1));
@@ -1536,7 +1534,39 @@ public class XAALConnector {
 			    
 			    scripter.addTranslate(-moveX, -moveY, lineToXaal.get(action.getEndOfMainBrktLNum() -1));
 			  
-		  
+			  //reclose the par
+			    if (parExists)
+			    	scripter.reclosePar();
+			    else
+			    	scripter.endPar();
+			    
+			  //do the moving of the code into place
+			    parExists = scripter.reopenPar(3);
+				  if(!parExists)
+					  scripter.startPar();
+			    
+			    
+			  //write a move for all of the scope lines
+				  for (int i = startLnIndex; i <= endLnIndex; i++)
+				  {
+					    startX = cp.x + dxOnScopeReplace;
+					    startY = cp.y + (cp.getLineHeight() * i);
+					    
+					    endX = cp.x;
+					    endY = cp.y + ((action.getCallLineNum()-1) + (cp.getLineHeight() * (i -startLnIndex)));
+					    
+					    moveX = startX - endX;
+					    moveY = startY - endY;
+					    
+					    scripter.addTranslate(-moveX, -moveY, lineToXaal.get(i));
+				  }
+				  
+				  if (parExists)
+				    	scripter.reclosePar();
+				    else
+				    	scripter.endPar();
+				  
+				  scripter.recloseSlide();
 	  }
 	  catch (Exception e)
 	  {
@@ -1551,6 +1581,7 @@ public class XAALConnector {
   {
 	  try
 	  {
+		  scripter.reopenSlide(action.getSnapNum());
 		  boolean parExists = scripter.reopenPar(2);
 		  if(!parExists)
 		  {
@@ -1571,6 +1602,8 @@ public class XAALConnector {
 		  {
 			  scripter.addShow(id);
 		  }
+		  
+		  scripter.recloseSlide();
 	  }
 	  catch (Exception e)
 	  {}
