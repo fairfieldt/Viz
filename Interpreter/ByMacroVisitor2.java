@@ -90,11 +90,12 @@ public class ByMacroVisitor2 implements VizParserVisitor, VizParserTreeConstants
 		*/
 		//Get the correct function head node
 		ASTFunction fun = Global.getFunction(node.getName());
-		System.out.println("Calling: " + fun.getName());
+		System.out.println("Calling!: " + fun.getName());
 		
 		//The call's grandparent knows the line number and we need to know it later
 		SimpleNode sn = (SimpleNode) node.jjtGetParent();
 		sn = (SimpleNode) sn.jjtGetParent();
+		System.out.println("Got grandparent");
 		
 		callLineNumber = sn.getLineNumber();
 		System.out.println("AHHHH " + callLineNumber);
@@ -105,9 +106,12 @@ public class ByMacroVisitor2 implements VizParserVisitor, VizParserTreeConstants
 		st.setPrevious(Global.getCurrentSymbolTable());
 		System.out.println(Global.getCurrentSymbolTable());
 		String name = fun.getName();
+		
+		System.out.println(name);
 		ArrayList<String> parameters = fun.getParameters();		
 
-		ArrayList<ASTVar> args = ((ASTArgs)node.jjtGetChild(0)).getArgs();
+		
+		ArrayList<ASTVar> args = node.getArgs();
 
 		HashMap<String, String> pa = new HashMap<String, String>(); //Maps args to params
 		for (int i = 0; i < parameters.size(); i++)
@@ -122,6 +126,8 @@ public class ByMacroVisitor2 implements VizParserVisitor, VizParserTreeConstants
 		inNested = false;
 		
 		//Now attach the function's statementlist to the expression where the call was.
+		System.out.println(node);
+		System.out.println(node.jjtGetParent());
 		ASTExpression exp = (ASTExpression) node.jjtGetParent();
 		ASTStatement stmnt = (ASTStatement) exp.jjtGetParent();
 		stmnt.children[0] = fun.jjtGetChild(0);

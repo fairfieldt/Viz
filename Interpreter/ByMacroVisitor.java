@@ -210,11 +210,18 @@ public class ByMacroVisitor implements VizParserVisitor, VizParserTreeConstants,
 		SymbolTable st = fun.getSymbolTable();
 		st.setPrevious(Global.getCurrentSymbolTable());
 		System.out.println(Global.getCurrentSymbolTable());
+
 		String name = fun.getName();
+		System.out.println("FUNNAME: " + name);
+		
+		
 		ArrayList<String> parameters = fun.getParameters();		
-
-		ArrayList<ASTVar> args = ((ASTArgs)node.jjtGetChild(0)).getArgs();
-
+		ASTArgs argsNode = (ASTArgs) node.jjtGetChild(0);
+		System.out.println(argsNode);
+		ArrayList<ASTVar> args = node.getArgs();
+		System.out.println("args: " + args.size() + " params: " + parameters.size());
+		
+		
 		HashMap<String, String> pa = new HashMap<String, String>(); //Maps args to params
 		for (int i = 0; i < parameters.size(); i++)
 		{
