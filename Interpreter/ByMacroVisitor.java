@@ -69,9 +69,15 @@ public class ByMacroVisitor implements VizParserVisitor, VizParserTreeConstants,
 	
 	public void handleVar(ASTVar node)
 	{
+		System.out.println(node.getName());
 		if (node.getIsArray())
 		{
 			ByValVariable v = (ByValVariable) Global.getCurrentSymbolTable().getVariable(node.getName());
+			if (v == null)
+			{
+				v = (ByValVariable) Global.getFunction("foo").getSymbolTable().getVariable(node.getName());
+			}
+			System.out.println(v);
 			v.setSubscript((ASTExpression)node.jjtGetChild(0));
 		}
 		if (!inNested)
@@ -315,6 +321,7 @@ public class ByMacroVisitor implements VizParserVisitor, VizParserTreeConstants,
   	}
   	public Object visit(ASTVar node, Object data)
   	{
+  		System.out.println("VAR " + node.getName());
   		handleVar((ASTVar)node);
   		node.childrenAccept(this, null);
   		return null;
