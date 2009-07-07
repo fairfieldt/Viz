@@ -21,7 +21,6 @@ public class XAALConnector {
   
   static {
     scopeColors = new LinkedList<String>();
-    scopeColors.add("yellow");
     scopeColors.add("blue");
     scopeColors.add("red");
     scopeColors.add("green");
@@ -1604,6 +1603,12 @@ public class XAALConnector {
 		  {
 			  scripter.addShow(id);
 		  }
+		 
+		  
+		  if (parExists)
+		    	scripter.reclosePar();
+		    else
+		    	scripter.endPar();
 		  
 		  scripter.recloseSlide();
 	  }

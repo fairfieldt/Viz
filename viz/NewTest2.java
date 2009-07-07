@@ -1,5 +1,6 @@
 package viz;
 import Interpreter.*;
+
 import java.io.*;
 
 public class NewTest2
@@ -54,20 +55,6 @@ public class NewTest2
 			ByMacroVisitor bm = new ByMacroVisitor();
 			bm.setXAALConnector(xc);
 			program.jjtAccept(bm, null);
-			xc.endPar();
-			xc.endSnap();
-			/*
-			program.codeBuilt = false;
-			Global.lineNumber = 1;
-			program.buildCode();		
-			String p1 = xc.addCodePage(program.getPseudocode());
-			
-			xc.startPar();
-				xc.showCodePage(p1);
-			xc.endPar();
-			*/
-			
-
 			
 			System.out.println("MACRO TIME");		
 			Global.lineNumber = 1;
@@ -77,13 +64,11 @@ public class NewTest2
 						{
 							System.out.println(line);
 						}
-		
 			String p2 = xc.addCodePage(program.getPseudocode());
-			xc.startSnap(1);
-			xc.startPar();
-				xc.swapCodePage(p0, p2);
+			xc.swapCodePage(p0, p2);
 			xc.endPar();
 			xc.endSnap();
+
 			xc.startSnap(2);
 			ByMacroVisitor2 bm2 = new ByMacroVisitor2();
 			program.jjtAccept(bm2, null);
