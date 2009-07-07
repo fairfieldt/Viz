@@ -53,7 +53,7 @@ public class ASTStatement extends SimpleNode implements VizParserTreeConstants
 	public static ASTStatement createStmtWithChild(Node child)
 	{
 		ASTStatement stmt = new ASTStatement(JJTSTATEMENT);
-		if (child instanceof ASTStatementList)
+		if (child instanceof ASTStatementList || child instanceof ASTDeclaration)
 		{
 			stmt.addChild(child, 0);
 		}
