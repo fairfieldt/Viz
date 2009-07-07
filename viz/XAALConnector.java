@@ -68,8 +68,16 @@ public class XAALConnector {
 	  cp.addCopy(fromPos, fromStr);
 	  
 	  actions.offer(new MoveArgCodePageAction(cp, currentSnapNum, 
-			  fromLineNum, fromPos, toLineNum, toPos));
+			  fromLineNum, fromPos, toLineNum, toPos, fromStr));
 	  
+  }
+  
+  public void swapCodePage(String prevCodePageId, String newCodePageId)
+  {
+	  CodePage cp = cpc.get(prevCodePageId);
+	  CodePage newCP = cpc.get(newCodePageId);
+	  
+	  actions.offer(new SwapCodePageAction(cp, newCP, currentSnapNum));
   }
   
   
@@ -553,10 +561,15 @@ public class XAALConnector {
     			  writeCodePageHide((ShowHideCodePageAction)action);
     		  }
     	  }
+    	  else if (action instanceof SwapCodePageAction)
+    	  {
+    		  writeSwapCodePage((SwapCodePageAction)action);
+    	  }
     	  else if (action instanceof ScopeReplaceCodePageAction)
     	  {
     		  writeReplaceWithScopeCodePage((ScopeReplaceCodePageAction)action);
     	  }
+    	  
       }
       
     } while (true);
@@ -583,9 +596,8 @@ public class XAALConnector {
     }
     
   }
-  
- 
-  /**
+
+/**
    * a move consists of:
    * 1. reopening the slide
    * 1.5 reopen par
@@ -1396,6 +1408,7 @@ public class XAALConnector {
 		  String id = cp.popCopy(action.getFromPos());
 		  System.out.println(id);
 		  scripter.addShow(id);
+		  scripter.addChangeStyle(highlightColor, id);
 		  scripter.reclosePar();
 		  
 		  //do the move!!!
@@ -1429,6 +1442,7 @@ public class XAALConnector {
 		    	scripter.endPar();
 		    	
 		    parExists = false;
+		    
 		  parExists = scripter.reopenPar(2);
 		  if(!parExists)
 		  {
@@ -1443,6 +1457,7 @@ public class XAALConnector {
 		  {
 		    	scripter.endPar();
 		  }
+		  
 		    //reclose the slide
 		    scripter.recloseSlide();
 	  }
@@ -1524,5 +1539,38 @@ public class XAALConnector {
 	  catch (Exception e)
 	  {
 	  }
+  }
+  
+  /**
+   * this starts at par 2 of move of a moveCodepage
+   * @param action
+   */
+  private void writeSwapCodePage(SwapCodePageAction action)
+  {
+	  try
+	  {
+		  boolean parExists = scripter.reopenPar(2);
+		  if(!parExists)
+		  {
+			  scripter.startPar();
+		  }
+		  
+		  CodePage p = action.getCP();
+		  
+		  
+		  for(String id : p.getIds())
+		  {
+			  scripter.addHide(id);
+		  }
+		  
+		  CodePage newCP = action.getNewCP();
+		  
+		  for(String id : newCP.getIds())
+		  {
+			  scripter.addShow(id);
+		  }
+	  }
+	  catch (Exception e)
+	  {}
   }
 }

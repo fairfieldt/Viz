@@ -14,7 +14,7 @@ public class CodePage implements Drawable {
 	private String[] code;
 
 	// each position 0,1 or 2 has a list of strings it has to make
-	private ArrayList<LinkedList<String>> copiesToMake = new ArrayList<LinkedList<String>>();
+	private ArrayList<Queue<String>> copiesToMake = new ArrayList<Queue<String>>();
 	
 	//each position 0,1 or 2 has a list of copy ids it owns
 	private ArrayList<LinkedList<String>> copiesOwned = new ArrayList<LinkedList<String>>();
@@ -54,7 +54,7 @@ public class CodePage implements Drawable {
 	
 	private void setup()
 	{
-		copiesToMake = new ArrayList<LinkedList<String>>();
+		copiesToMake = new ArrayList<Queue<String>>();
 		copiesOwned = new ArrayList<LinkedList<String>>();
 		lineToXaalId = new ArrayList<String>();
 		ids = new ArrayList<String>();
@@ -65,7 +65,7 @@ public class CodePage implements Drawable {
 	{
 		copiesToMake.ensureCapacity(pos);
 	
-		copiesToMake.get(pos).push(str);
+		copiesToMake.get(pos).offer(str);
 
 			
 	}
@@ -143,14 +143,14 @@ public class CodePage implements Drawable {
 		for (int i = 0; i < copiesToMake.size(); i++)
 		{
 			copiesOwned.add(new LinkedList<String>());
-			LinkedList<String> posCopiesToMake = copiesToMake.get(i);
+			Queue<String> posCopiesToMake = copiesToMake.get(i);
 			
 			while (posCopiesToMake.size() > 0)
 			{
-				String temp = posCopiesToMake.pop();
+				String temp = posCopiesToMake.poll();
 				String id = scripter.addText(fromPosX[i], y + (lineHeight*callLineNum)
 						, temp, "black", true);
-				copiesOwned.get(i).add(id);
+				copiesOwned.get(i).offer(id);
 			} 
 		}
 		
