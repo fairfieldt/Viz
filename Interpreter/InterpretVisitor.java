@@ -146,6 +146,7 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		connector.startSnap(node.getPseudocode().length);
 			connector.startPar();
 				connector.hideScope("foo");
+				System.out.println("BLAH");
 			connector.endPar();
 		connector.endSnap();
 		System.out.println("Done");

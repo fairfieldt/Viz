@@ -1275,8 +1275,10 @@ public class XAALConnector {
       Scope scope = scopes.get(action.getScope());
       ArrayList<String> scopeIds = scope.getIds();
       //show all the ids
+      System.out.println("TTT" + scopeIds.size());
       for (String id : scopeIds)
       {
+      	System.out.println("QAQAQ" + id);
         scripter.addHide(id);
       }
       
@@ -1338,7 +1340,7 @@ public class XAALConnector {
     }
     catch (Exception e)
     {
-      
+      System.out.println(e);
     }
   }
   /**
