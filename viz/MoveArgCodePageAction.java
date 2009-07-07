@@ -9,13 +9,14 @@ public class MoveArgCodePageAction extends CodePageAction {
 	
 	
 	public MoveArgCodePageAction(CodePage cp, int slideNum, int fromLine, int fromPos,
-			int toLine, int toPos)
+			int toLine, int toPos, String fromStr)
 	{
 		super(cp, slideNum);
 		this.fromLine = fromLine;
 		this.fromPos = fromPos;
 		this.toLine = toLine;
 		this.toPos = toPos;
+		this.fromStr = fromStr;
 	}
 	
 	public int getFromLine()
