@@ -77,18 +77,20 @@ public class NewTest2
 			program.buildCode();
 				String p3 = xc.addCodePage(program.getPseudocode());
 			xc.startPar();
-				//xc.showCodePage(p2);
-				
+				//xc.hideCodePage(p2);
+			xc.replaceWithScope(p2, 16, 4, 11, 8);
 				//xc.showCodePage(p3);
+			xc.endPar();
 			xc.endSnap();
 			
 			xc.startSnap(3);
 			xc.startPar();
-				xc.hideCodePage(p3);
+			// xc.hideCodePage(p3);
 			xc.endPar();
 			xc.endSnap();
 			xc.startSnap(1, program.getPseudocode());
 			xc.startPar();
+			xc.hideCodePage(p2);
 			xc.endPar();
 			xc.endSnap();
 			
@@ -102,7 +104,7 @@ public class NewTest2
 			program.jjtAccept(iv, null);
 			System.out.println(Global.getFunction("foo").getParameters().size());
 			System.out.println(Global.getFunction("foo").getSymbolTable().getLocalVariables().size());
-			xc.draw("/home/fairfieldt/Documents/!real2.xaal");
+			xc.draw("C:\\Users\\Eric\\Desktop\\bymacro.xaal");
 			
 
 		}

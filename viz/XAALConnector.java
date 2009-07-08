@@ -91,13 +91,7 @@ public class XAALConnector {
   }
   
   /**
-   * the params would be as marked for the following program:
-   * 
-   *  						def main()
-   *  						{
-   * callLineNum:				foo(a, b);
-   * endOfMainBrktLNum: 	}
-   * 
+   * the params would be as marked for the following program: 
    * 						def foo(x, y)
    * startScopeLNum: 		{
    * 							x = 2;
@@ -107,6 +101,11 @@ public class XAALConnector {
    * 							.
    * 							y = x + 2;
    * endScopeLNum 			}
+   * 						def main()
+   *  						{
+   * callLineNum:				foo(a, b);
+   * endOfMainBrktLNum: 	}
+   * 
    * @param codePageId the id of the codePage
    * @param callLineNum the line number of the function that is being replaced
    * @param startScopeLNum the line number at the beginning bracket of "foo"
@@ -1480,6 +1479,10 @@ public class XAALConnector {
 		  //move scope to left
 		  int startLnIndex = action.getStartScopeLNum() -1;
 		  int endLnIndex = action.getEndScopeLNum() -1;
+		  int funcLnIndex = startLnIndex- 1;
+		  int callLnIndex = action.getCallLineNum()-1;
+		  int mainBeginIndex = endLnIndex + 1;
+		  int mainBefCallIndex = callLnIndex -1;
 		  
 		  //write a move for all of the scope lines
 		  for (int i = startLnIndex; i <= endLnIndex; i++)
@@ -1505,10 +1508,10 @@ public class XAALConnector {
 			  scripter.startPar();
 		  
 		  //hide the call line
-		  scripter.addHide(lineToXaal.get(action.getCallLineNum()-1));
+		  scripter.addHide(lineToXaal.get(callLnIndex));
 		  
 		  //hide the function line
-		  scripter.addHide(lineToXaal.get(startLnIndex - 1));
+		  scripter.addHide(lineToXaal.get(funcLnIndex));
 		  
 		//reclose the par
 		    if (parExists)
@@ -1517,12 +1520,61 @@ public class XAALConnector {
 		    	scripter.endPar();
 		    
 		    
-		    // do the moving of the bottom bracket
+		    // do the moving of main
 		      parExists = false;
 			  parExists = scripter.reopenPar(2);
 			  if(!parExists)
 				  scripter.startPar();
 			  
+			//write a move for all of the lines of main
+			  for (int i = mainBeginIndex; i <= mainBefCallIndex; i++)
+			  {
+				  int startX = cp.x;
+				  int startY = cp.y + (cp.getLineHeight() * i);
+				  
+				  int endX = startX;
+				  int endY = cp.y + (cp.getLineHeight() * funcLnIndex) + 
+				  				(cp.getLineHeight() *(i-mainBeginIndex));
+				  int moveX = startX - endX;
+				    int moveY = startY - endY;
+				    
+				    scripter.addTranslate(-moveX, -moveY, lineToXaal.get(i));
+			  }
+			  
+			//reclose the par
+			    if (parExists)
+			    	scripter.reclosePar();
+			    else
+			    	scripter.endPar();
+			    
+			    //move the new scope into position!
+			    parExists = false;
+				  parExists = scripter.reopenPar(3);
+				  if(!parExists)
+					  scripter.startPar();
+				  
+				  //write a move for all of the scope lines into position
+				  for (int i = startLnIndex; i <= endLnIndex; i++)
+				  {
+					  	int startX = cp.x + dxOnScopeReplace;;
+					    int startY = cp.y + (cp.getLineHeight() * i); 
+					
+					    int endX = cp.x;
+					    int endY = cp.y + (cp.getLineHeight() * funcLnIndex) + 
+					         (cp.getLineHeight() * (mainBefCallIndex - mainBeginIndex)) +
+					        		 (cp.getLineHeight() * 1) + (cp.getLineHeight() *(i-startLnIndex));
+					    		    
+					    int moveX = startX - endX;
+					    int moveY = startY - endY;
+					    
+					    scripter.addTranslate(-moveX, -moveY, lineToXaal.get(i));
+				  }
+				    if (parExists)
+				    	scripter.reclosePar();
+				    else
+				    	scripter.endPar();
+				  
+			  /*
 			  	int startX = cp.x;
 			    int startY = cp.y + (cp.getLineHeight() * (action.getEndOfMainBrktLNum() -1)); 
 			
@@ -1541,7 +1593,11 @@ public class XAALConnector {
 			    	scripter.reclosePar();
 			    else
 			    	scripter.endPar();
-			    
+			 */
+		    
+		    
+		    
+		    /*
 			  //do the moving of the code into place
 			    parExists = scripter.reopenPar(3);
 				  if(!parExists)
@@ -1567,7 +1623,7 @@ public class XAALConnector {
 				    	scripter.reclosePar();
 				    else
 				    	scripter.endPar();
-				  
+				  */
 				  scripter.recloseSlide();
 	  }
 	  catch (Exception e)
