@@ -14,6 +14,8 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	private XAALConnector connector;
 		private static final int QUESTION_FREQUENCY = 65;
 	public static final int LINE_NUMBER_END = -1;
+	
+	private boolean byMacroFlag = false;
 
 	public void setQuestionFactory(QuestionFactory questionFactory)
 	{
@@ -23,6 +25,11 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	public void setXAALConnector(XAALConnector xc)
 	{
 		this.connector = xc;
+	}
+	
+	public void setByMacroFlag()
+	{
+		byMacroFlag = true;
 	}
 
 	//FIXME use this?
@@ -145,7 +152,9 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		//TODO Write the last snap nicely
 		connector.startSnap(node.getPseudocode().length);
 			connector.startPar();
-				connector.hideScope("foo");
+				// we can't hide foo in by macro cuz it doesn't exist
+				if (!byMacroFlag)
+					connector.hideScope("foo");
 				System.out.println("BLAH");
 			connector.endPar();
 		connector.endSnap();
