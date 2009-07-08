@@ -58,19 +58,7 @@ public class NewTest
 			ByMacroVisitor bm = new ByMacroVisitor();
 			bm.setXAALConnector(xc);
 			program.jjtAccept(bm, null);
-			xc.endPar();
-			xc.endSnap();
-			/*
-			program.codeBuilt = false;
-			Global.lineNumber = 1;
-			program.buildCode();		
-			String p1 = xc.addCodePage(program.getPseudocode());
-			
-			xc.startPar();
-				xc.showCodePage(p1);
-			xc.endPar();
-			*/
-			
+
 
 			
 			System.out.println("MACRO TIME");		
@@ -83,11 +71,10 @@ public class NewTest
 						}
 		
 			String p2 = xc.addCodePage(program.getPseudocode());
-			xc.startSnap(1);
-			xc.startPar();
-				xc.swapCodePage(p0, p2);
+			xc.swapCodePage(p0, p2);			
 			xc.endPar();
 			xc.endSnap();
+	
 			xc.startSnap(2);
 			ByMacroVisitor2 bm2 = new ByMacroVisitor2();
 			program.jjtAccept(bm2, null);
@@ -99,11 +86,17 @@ public class NewTest
 			
 			//Prettier now
 			
-		  	xc.replaceWithScope(p2, 10, 5, 9, 12);
+			xc.replaceWithScope(p2, 16, 4, 11, 8);
 			/*
 				xc.hideCodePage(p2);
 				xc.showCodePage(p3);
 			*/
+			xc.endPar();
+			xc.startPar();
+			xc.swapCodePage(p2, p3);			
+			xc.endPar();
+			
+			
 			xc.endSnap();
 			
 			xc.startSnap(3);
