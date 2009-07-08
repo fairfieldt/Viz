@@ -91,13 +91,7 @@ public class XAALConnector {
   }
   
   /**
-   * the params would be as marked for the following program:
-   * 
-   *  						def main()
-   *  						{
-   * callLineNum:				foo(a, b);
-   * endOfMainBrktLNum: 	}
-   * 
+   * the params would be as marked for the following program: 
    * 						def foo(x, y)
    * startScopeLNum: 		{
    * 							x = 2;
@@ -107,6 +101,11 @@ public class XAALConnector {
    * 							.
    * 							y = x + 2;
    * endScopeLNum 			}
+   * 						def main()
+   *  						{
+   * callLineNum:				foo(a, b);
+   * endOfMainBrktLNum: 	}
+   * 
    * @param codePageId the id of the codePage
    * @param callLineNum the line number of the function that is being replaced
    * @param startScopeLNum the line number at the beginning bracket of "foo"
@@ -1518,7 +1517,7 @@ public class XAALConnector {
 		    
 		    
 		    // do the moving of the bottom bracket
-		      parExists = false;
+		   /*   parExists = false;
 			  parExists = scripter.reopenPar(2);
 			  if(!parExists)
 				  scripter.startPar();
@@ -1541,7 +1540,8 @@ public class XAALConnector {
 			    	scripter.reclosePar();
 			    else
 			    	scripter.endPar();
-			    
+			 */
+		    /*
 			  //do the moving of the code into place
 			    parExists = scripter.reopenPar(3);
 				  if(!parExists)
@@ -1567,7 +1567,7 @@ public class XAALConnector {
 				    	scripter.reclosePar();
 				    else
 				    	scripter.endPar();
-				  
+				  */
 				  scripter.recloseSlide();
 	  }
 	  catch (Exception e)
