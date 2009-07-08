@@ -59,18 +59,6 @@ public class NewTest
 			bm.setXAALConnector(xc);
 			program.jjtAccept(bm, null);
 			xc.endPar();
-			xc.endSnap();
-			/*
-			program.codeBuilt = false;
-			Global.lineNumber = 1;
-			program.buildCode();		
-			String p1 = xc.addCodePage(program.getPseudocode());
-			
-			xc.startPar();
-				xc.showCodePage(p1);
-			xc.endPar();
-			*/
-			
 
 			
 			System.out.println("MACRO TIME");		
@@ -83,7 +71,7 @@ public class NewTest
 						}
 		
 			String p2 = xc.addCodePage(program.getPseudocode());
-			xc.startSnap(1);
+
 			xc.startPar();
 				xc.swapCodePage(p0, p2);
 			xc.endPar();
@@ -99,7 +87,7 @@ public class NewTest
 			
 			//Prettier now
 			
-		  	xc.replaceWithScope(p2, 10, 5, 9, 12);
+		  	xc.replaceWithScope(p2, 15, 5, 11, 17);
 			/*
 				xc.hideCodePage(p2);
 				xc.showCodePage(p3);
