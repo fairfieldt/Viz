@@ -65,7 +65,7 @@ public class NewTest
 
 
 			
-			System.out.println("MACRO TIME");		
+			//System.out.println("MACRO TIME");		
 			Global.lineNumber = 1;
 			program.codeBuilt = false;
 			program.buildCode();
@@ -89,8 +89,8 @@ public class NewTest
 			xc.startPar();
 			
 			//Prettier now
-			System.out.println("callline: " + callLine + " start " + startScope + " end " + endScope + " endmain " + endMain);
-			xc.replaceWithScope(p2, callLine, startScope, endScope, endMain);
+			//System.out.println("callline: " + callLine + " start " + startScope + " end " + endScope + " endmain " + endMain);
+			xc.replaceWithScope(p2, callLine, startScope, endScope, endMain+1);
 			p3 = xc.addCodePage(program.getPseudocode());
 			/*
 				xc.hideCodePage(p2);
@@ -114,7 +114,7 @@ public class NewTest
 			xc.endPar();
 			xc.endSnap();
 			
-			System.out.println("\n\n Testing Interpret Visitor");
+			//System.out.println("\n\n Testing Interpret Visitor");
 			
 			QuestionFactory questionFactory = new QuestionFactory();
 			
@@ -122,8 +122,7 @@ public class NewTest
 			iv.setXAALConnector(xc);
 			iv.setQuestionFactory(questionFactory);
 			program.jjtAccept(iv, null);
-			System.out.println(Global.getFunction("foo").getParameters().size());
-			System.out.println(Global.getFunction("foo").getSymbolTable().getLocalVariables().size());
+			
 			xc.draw("/home/fairfieldt/Documents/!real.xaal");
 			
 

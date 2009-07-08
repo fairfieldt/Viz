@@ -98,7 +98,7 @@ public class Variable implements Drawable
 	
 	public void setPosition(int xPos, int yPos)
 	{
-		System.out.println("Setting position of... " + name + " to " + xPos + "," + yPos);
+		//System.out.println("Setting position of... " + name + " to " + xPos + "," + yPos);
 		this.xPos = xPos;
 		this.yPos = yPos;
 	}
@@ -194,7 +194,7 @@ public class Variable implements Drawable
 	
 	public ArrayList<String> getIds()
 	{
-		System.out.println("I have " + ids.size() + " ids");
+		//System.out.println("I have " + ids.size() + " ids");
 		return this.ids;
 	}
 	
@@ -224,13 +224,13 @@ public class Variable implements Drawable
 				String id4 = null;
 				if (refIndex < 0)
 				{
-					System.out.println("Ref pointing to something");
+				//	System.out.println("Ref pointing to something");
 					id4 = scripter.addArrow(id3, ref.getIds().get(0), false, hidden);
 				}
 				else
 				{
 					Array arr = (Array) ref; 
-					System.out.println("Ref pointing to arrayIndex");
+				//	System.out.println("Ref pointing to arrayIndex");
 					id4 = scripter.addArrow(id3, arr.getRect(refIndex), false, hidden);
 				}
 				ids.add(id4);
@@ -279,13 +279,13 @@ public class Variable implements Drawable
 				String id4 = null;
 				if (refIndex < 0)
 				{
-					System.out.println("Ref pointing to something");
+				//	System.out.println("Ref pointing to something");
 					id4 = scripter.addArrow(id3, ref.getIds().get(0), false, hidden);
 				}
 				else
 				{
 					Array arr = (Array) ref; 
-					System.out.println("Ref pointing to arrayIndex");
+				//	System.out.println("Ref pointing to arrayIndex");
 					id4 = scripter.addArrow(id3, arr.getRect(refIndex), false, hidden);
 				}
 				ids.add(id4);
@@ -299,8 +299,8 @@ public class Variable implements Drawable
 
 			ids.add(id1);
 			ids.add(id2);
-			System.out.println(id1);
-			System.out.println(id2);
+			//System.out.println(id1);
+			//System.out.println(id2);
 			
 			do 
 			{

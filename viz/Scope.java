@@ -112,12 +112,12 @@ public class Scope implements Drawable
 		{
 			subScopeYSize -= 100;
 		}
-		System.out.println("SubSize:: " + subScopeYSize);
-		System.out.println("Scopes.size: " + scopes.size());
+	//	System.out.println("SubSize:: " + subScopeYSize);
+	//	System.out.println("Scopes.size: " + scopes.size());
 		for (int i = scopes.size(); i > 0; i--)
 		{
 			Scope s = scopes.get(i-1);
-			System.out.println("SubSize: " + subScopeYSize);
+		//	System.out.println("SubSize: " + subScopeYSize);
 			s.setPosition(subScopeXPos, subScopeYPos);
 			s.setSize(sizeX - 20, subScopeYSize);
 			subScopeYPos += subScopeYSize + 40;
@@ -143,7 +143,7 @@ public class Scope implements Drawable
 				v.setPosition(currentVarXPos + 25, currentVarYPos +90);
 			}
 			currentVarXPos += v.getLength() + 10;
-			System.out.println("Size var " + v.getName() + " to x: " +  xPos + " y: " + yPos);
+		//	System.out.println("Size var " + v.getName() + " to x: " +  xPos + " y: " + yPos);
 		}
 		
 		for (Variable v: params)
@@ -151,7 +151,7 @@ public class Scope implements Drawable
 			v.setPosition(currentParamXPos + 25, currentParamYPos + 25);
 			currentParamXPos+=v.getLength() + 10;
 			
-			System.out.println("Size param " + v.getName() + " to x: " +  xPos + " y: " + yPos);
+		//	System.out.println("Size param " + v.getName() + " to x: " +  xPos + " y: " + yPos);
 		}
 	}
 	
@@ -175,8 +175,8 @@ public class Scope implements Drawable
 
 	public void draw(XAALScripter scripter)
 	{
-		System.out.println("Drawing scope: " + name);
-		System.out.println("XPos: " + xPos + " YPos: " + yPos);
+		//System.out.println("Drawing scope: " + name);
+		//System.out.println("XPos: " + xPos + " YPos: " + yPos);
 		int captionLength = name.length() * 13;
 		String id1 = scripter.addRectangle(xPos, yPos, sizeX, sizeY, color, hidden, 6);
 		String id3 = scripter.addText(xPos+3, yPos-5, name, "black", hidden);
@@ -213,7 +213,7 @@ public class Scope implements Drawable
 		{
 			for (Scope s : scopes)
 			{
-				System.out.println("Drawing subScope");
+			//	System.out.println("Drawing subScope");
 				s.draw(scripter);
 			}
 		}

@@ -1567,7 +1567,7 @@ public class XAALConnector {
 			// reclose slide
 			scripter.recloseSlide();
 		} catch (Exception e) {
-			System.out.println(e);
+			//System.out.println(e);
 		}
 	}
 

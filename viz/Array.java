@@ -62,10 +62,10 @@ public class Array extends Variable implements Drawable {
 	
 	public String popCopyId(int index)
 	{
-		System.out.println("SSSSS");
+		//System.out.println("SSSSS");
 		for (String s : arrayCopiesOwned.get(index))
 		{
-			System.out.println(s);
+		//	System.out.println(s);
 		}
 		return arrayCopiesOwned.get(index).pop();
 	}
@@ -103,11 +103,11 @@ public class Array extends Variable implements Drawable {
 	public void draw(XAALScripter scripter) {
 		String label = scripter.addText(getXPos(), getYPos()-5, name, "black", getHidden());
 		ids.add(label);
-		System.out.println(label + " .....");
-		System.out.println("Draw!!!!!!!!!!!!");
+		//System.out.println(label + " .....");
+		//System.out.println("Draw!!!!!!!!!!!!");
 		for (int i = 0; i < arrayCopiesToMake.size(); i++)
 		{
-			System.out.println(arrayCopiesToMake.get(i).peek());
+		//	System.out.println(arrayCopiesToMake.get(i).peek());
 		}
 		
 		int arrayXPos = getXPos();
@@ -122,8 +122,8 @@ public class Array extends Variable implements Drawable {
 		
 			String id = 
 				scripter.addText(indexXPos + 15, getYPos() + 25, values.get(i) + "", "black", true);
-			System.out.println(rectangle);
-			System.out.println(id);
+			//System.out.println(rectangle);
+			//System.out.println(id);
 			ids.add(rectangle);
 			//ids.add(id);
 			

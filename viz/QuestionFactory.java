@@ -91,7 +91,7 @@ public class QuestionFactory implements UpdateReasons
 		{
 			String scopeHint = " from the global scope ";
 			int var = Global.getFunction("main").getSymbolTable().get(varName, true);
-			System.out.println("QQQQ " + var);
+			//System.out.println("QQQQ " + var);
 			if (var != -255)
 			{
 				scopeHint = " declared in main ";
@@ -130,7 +130,7 @@ public class QuestionFactory implements UpdateReasons
 			{
 				String argName = Global.getCurrentParamToArg().get(varName);
 				Interpreter.Variable arg =  Global.getFunction("main").getSymbolTable().getVariable(argName);
-				System.out.println("Argname: " + argName);
+				//System.out.println("Argname: " + argName);
 				if (!arg.getIsArray())
 				{
 					varName = argName;
@@ -151,7 +151,7 @@ public class QuestionFactory implements UpdateReasons
 	
 	public Question getAssignmentQuestion(int lineNumber, String varName, int index)
 	{
-		System.out.println("Getting an array question");
+		//System.out.println("Getting an array question");
 		int i = 0;
 		int localVal = Global.getCurrentSymbolTable().get(varName, true);
 		
