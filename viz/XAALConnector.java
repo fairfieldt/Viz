@@ -123,7 +123,7 @@ public class XAALConnector {
 	public void moveArgs(String codePageId, int fromLineNum, int fromPos,
 			String fromStr, int toLineNum, int toPos) {
 		CodePage cp = cpc.get(codePageId);
-		System.out.println(cp);
+		//System.out.println(cp);
 		cp.setCallLineNum(fromLineNum);
 
 		cp.addCopy(fromPos, fromStr);
@@ -330,7 +330,7 @@ public class XAALConnector {
 		varToVar.put(var.getUUID(), v);
 
 		for (String key : scopes.keySet()) {
-			System.out.println(key);
+			//System.out.println(key);
 		}
 		scopes.get(scope).addVariable(v);
 	}
@@ -712,10 +712,10 @@ public class XAALConnector {
 		// first calls draw on the global scope which then draws all of the
 		// children
 		globalScope.draw(scripter);
-		System.out.println("Drew global scope");
+		//System.out.println("Drew global scope");
 
 		cpc.draw(scripter);
-		System.out.println("Drew code pages");
+		//System.out.println("Drew code pages");
 
 		// perform and write future actions to the scripter
 		FutureAction action = null;
@@ -775,7 +775,7 @@ public class XAALConnector {
 			else // its a CodePageAction
 			{
 				if (action instanceof MoveArgCodePageAction) {
-					System.out.println("Action: " + action);
+				//	System.out.println("Action: " + action);
 					writeMoveArgCodePage((MoveArgCodePageAction) action);
 				} else if (action instanceof ShowHideCodePageAction) {
 					if (((ShowHideCodePageAction) action).isShow()) // its a
@@ -1214,7 +1214,7 @@ public class XAALConnector {
 	 *            the ModifyVarIndexAction containing the information needed.
 	 */
 	private void writeIndexModify(ModifyVarIndexAction action) {
-		System.out.println("Writing index modify");
+		//System.out.println("Writing index modify");
 		try {
 			// reopen a slide
 			scripter.reopenSlide(action.getSnapNum());
@@ -1223,19 +1223,19 @@ public class XAALConnector {
 			scripter.reopenPar();
 
 			int toIndex = action.getIndex();
-			System.out.println("Modifying index " + toIndex);
+		//	System.out.println("Modifying index " + toIndex);
 			Array v = (Array) action.getTo();
 
 			// pop copy of current value
 			String oldCopy = v.popCopyId(toIndex);
-			System.out.println("Current value = " + oldCopy);
+			//System.out.println("Current value = " + oldCopy);
 			// hide oldCopy
 			scripter.addHide(oldCopy);
 
 			// pop copy of new value
 			String newCopy = v.getCopyId(toIndex);
 
-			System.out.println("New value " + newCopy);
+			//System.out.println("New value " + newCopy);
 			// show new copy
 			scripter.addShow(newCopy);
 
@@ -1287,7 +1287,7 @@ public class XAALConnector {
 	 *            the ShowHideVarAction containing the information needed.
 	 */
 	private void writeVarShow(ShowHideVarAction action) {
-		System.out.println("Showing a var");
+		//System.out.println("Showing a var");
 		try {
 			// reopen a slide
 			scripter.reopenSlide(action.getSnapNum());
@@ -1300,7 +1300,7 @@ public class XAALConnector {
 			// show all the ids
 			ArrayList<String> ids = v.getIds();
 			for (String id : ids) {
-				System.out.println("Showing id: " + id);
+				//System.out.println("Showing id: " + id);
 				try {
 					scripter.addShow(id);
 				} catch (Exception e) {
@@ -1311,8 +1311,8 @@ public class XAALConnector {
 				Array vArray = (Array) v;
 				for (int i = 0; i < vArray.getValues().size(); i++) {
 					String copy = vArray.popCopyId(i);
-					System.out.println("Showing: " + copy + " on slide "
-							+ action.getSnapNum());
+					//System.out.println("Showing: " + copy + " on slide "
+						//	+ action.getSnapNum());
 					scripter.addShow(copy);
 
 					vArray.receiveCopyOwnership(copy, i);
@@ -1515,9 +1515,9 @@ public class XAALConnector {
 			Scope scope = scopes.get(action.getScope());
 			ArrayList<String> scopeIds = scope.getIds();
 			// show all the ids
-			System.out.println("TTT" + scopeIds.size());
+			//System.out.println("TTT" + scopeIds.size());
 			for (String id : scopeIds) {
-				System.out.println("QAQAQ" + id);
+			//	System.out.println("QAQAQ" + id);
 				scripter.addHide(id);
 			}
 
@@ -1631,12 +1631,12 @@ public class XAALConnector {
 			scripter.reopenPar();
 			CodePage cp = action.getCP();
 
-			System.out.println(action.getCP());
-			System.out.println("Moving arg");
+			//System.out.println(action.getCP());
+			//System.out.println("Moving arg");
 			// show a copy
-			System.out.println(cp);
+			//System.out.println(cp);
 			String id = cp.popCopy(action.getFromPos());
-			System.out.println(id);
+			//System.out.println(id);
 			scripter.addShow(id);
 			scripter.addChangeStyle(highlightColor, id);
 			scripter.reclosePar();
@@ -1644,11 +1644,11 @@ public class XAALConnector {
 			// do the move!!!
 			boolean parExists = false;
 			parExists = scripter.reopenPar(1);
-			System.out.println(1);
+			//System.out.println(1);
 			if (!parExists) {
 				scripter.startPar();
 			}
-			System.out.println(2);
+			//System.out.println(2);
 			int startX = cp.x + cp.fromPosX[action.getFromPos()];
 			int startY = cp.y
 					+ (cp.getLineHeight() * (action.getFromLine() - 3));
@@ -1658,10 +1658,10 @@ public class XAALConnector {
 
 			int moveX = startX - endX;
 			int moveY = startY - endY;
-			System.out.println(3);
+			//System.out.println(3);
 			scripter.addTranslate(-moveX, -moveY, id);
 
-			System.out.println("Added a translate");
+			//System.out.println("Added a translate");
 			cp.receiveCopyOwnership(id);
 
 			// reclose the par

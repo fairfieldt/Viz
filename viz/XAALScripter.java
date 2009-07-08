@@ -878,7 +878,7 @@ public class XAALScripter {
 		for (Object o : elements) {
 			Element e = (Element) o;
 			Attribute a = e.getAttribute("id");
-			System.out.println(a);
+			//System.out.println(a);
 			if (e.getAttribute("id").getValue().equals(originName)) {
 				origin = e;
 			} else if (e.getAttribute("id").getValue().equals(destName)) {
@@ -897,7 +897,7 @@ public class XAALScripter {
 			startX = startPos.getAttribute("x").getIntValue();
 			// (origin.getAttribute("shapeWidth", jhaveNS).getIntValue() /2);
 			startY = startPos.getAttribute("y").getIntValue();
-			System.out.println("X: " + startX + " Y: " + startY);
+			//System.out.println("X: " + startX + " Y: " + startY);
 
 			// TODO: fix this so that we get the correct vars
 			endX = endPos.getAttribute("x").getIntValue()
@@ -908,7 +908,7 @@ public class XAALScripter {
 				endY = endPos.getAttribute("y").getIntValue()
 						+ (dest.getAttribute("shapeHeight", jhaveNS)
 								.getIntValue());
-			System.out.println("End X: " + endX + " End Y: " + endY);
+			//System.out.println("End X: " + endX + " End Y: " + endY);
 		} catch (Exception e) {
 			System.out.println(e);
 		}
@@ -1252,7 +1252,7 @@ public class XAALScripter {
 	 *             No slide open.
 	 */
 	public void addHide(String... ids) throws SlideException {
-		System.out.println("Adding hide for " + ids[0]);
+		//System.out.println("Adding hide for " + ids[0]);
 		if (!inSlide())
 			throw new SlideException(
 					"You must create a slide before creating actions.");
