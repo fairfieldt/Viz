@@ -77,8 +77,9 @@ public class NewTest2
 			program.buildCode();
 				String p3 = xc.addCodePage(program.getPseudocode());
 			xc.startPar();
-				xc.hideCodePage(p2);
-				xc.showCodePage(p3);
+				//xc.showCodePage(p2);
+				
+				//xc.showCodePage(p3);
 			xc.endSnap();
 			
 			xc.startSnap(3);

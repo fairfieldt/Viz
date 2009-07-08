@@ -1,6 +1,8 @@
 package viz;
 import org.jdom.*;
 import org.jdom.output.*;
+import org.jdom.xpath.XPath;
+
 import java.util.*;
 
 public class XAALScripter {
@@ -1396,7 +1398,56 @@ Element initial = document.getRootElement().getChild("initial", defaultNS);
 	//TODO: just for testing!
 	public String toString()
 	{
+		runCodeCleanup();
+		
 		XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
 		return outputter.outputString(document);
+	}
+	
+	/**
+	 * removes some code that either isn't needed or screws something up
+	 */
+	private void runCodeCleanup()
+	{
+		removeEmptyPars();
+		fixDualColorChanges();
+	}
+	
+	private void removeEmptyPars()
+	{
+	}
+	
+	/**
+	 * Occasionally code is created that highlighting is turned off for the previous slide 
+	 * but then turned back on for the current slide at the same time. This causes highlighting to
+	 * not work as expected. This method fixes this.
+	 */
+	private void fixDualColorChanges()
+	{
+		/*
+		 		try
+		 
+		{
+			XPath xp = XPath.newInstance("/xaal:xaal/xaal:animation/xaal:seq/xaal:par");
+			XPath cSXp = XPath.newInstance("xaal:change-style");
+			XPath oRefXp = XPath.newInstance("xaal:object-ref");
+			xp.addNamespace("xaal", defaultNS.getURI());
+			cSXp.addNamespace("xaal", defaultNS.getURI());
+			oRefXp.addNamespace("xaal", defaultNS.getURI());
+			
+			List nodes = xp.selectNodes(document.getRootElement());
+			for (Object nodeObj : nodes)
+			{
+				Element node = (Element)nodeObj;
+				
+				ListcSXp.selectNodes(node);
+			}
+		}
+		catch(JDOMException e)
+		{
+			
+		}
+		
+	*/
 	}
 }
