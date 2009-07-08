@@ -96,8 +96,14 @@ public class NewTest
 			program.buildCode();
 				String p3 = xc.addCodePage(program.getPseudocode());
 			xc.startPar();
+			
+			//Prettier now
+			
+		  	xc.replaceWithScope(p2, 10, 5, 9, 12);
+			/*
 				xc.hideCodePage(p2);
 				xc.showCodePage(p3);
+			*/
 			xc.endSnap();
 			
 			xc.startSnap(3);

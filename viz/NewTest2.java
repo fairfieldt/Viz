@@ -101,7 +101,7 @@ public class NewTest2
 			program.jjtAccept(iv, null);
 			System.out.println(Global.getFunction("foo").getParameters().size());
 			System.out.println(Global.getFunction("foo").getSymbolTable().getLocalVariables().size());
-			xc.draw("C:\\Users\\Eric\\Desktop\\bymacro.xaal");
+			xc.draw("/home/fairfieldt/Documents/!real2.xaal");
 			
 
 		}
