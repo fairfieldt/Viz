@@ -228,7 +228,6 @@ public class ByMacroVisitor implements VizParserVisitor, VizParserTreeConstants,
 	
 	public void handleCall(ASTCall node)
 	{	
-		NewTest.callLine = node.getLineNumber();
 		theCall = node;
 		//Get the correct function head node
 		ASTFunction fun = Global.getFunction(node.getName());

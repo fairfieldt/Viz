@@ -30,7 +30,7 @@ public class NewTest
 
 			RandomizingVisitor2<ByValVariable> rv = new RandomizingVisitor2<ByValVariable>(ByValVariable.class);
 				
-			//program.jjtAccept(rv, null);
+			program.jjtAccept(rv, null);
 
 			System.out.println("Successfully Parsed");
 			System.out.println("________________\n");
@@ -85,12 +85,13 @@ public class NewTest
 			Global.lineNumber = 1;
 			program.codeBuilt = false;
 			program.buildCode();
-				String p3 = xc.addCodePage(program.getPseudocode());
+				String p3 = null;
 			xc.startPar();
 			
 			//Prettier now
-			
-			xc.replaceWithScope(p2, 16, 4, 11, 8);
+			System.out.println("callline: " + callLine + " start " + startScope + " end " + endScope + " endmain " + endMain);
+			xc.replaceWithScope(p2, callLine, startScope, endScope, endMain);
+			p3 = xc.addCodePage(program.getPseudocode());
 			/*
 				xc.hideCodePage(p2);
 				xc.showCodePage(p3);

@@ -1,5 +1,6 @@
 package Interpreter;
 import java.util.*;
+import viz.*;
 
 public class ASTFunction extends SimpleNode
 {
@@ -107,8 +108,19 @@ public class ASTFunction extends SimpleNode
 		{
 			code += parameters.get(i) + (i < parameters.size() -1 ?  ", " : "");
 		}
-		code += ")\n" + Global.lineNumber++ + ". {" + jjtGetChild(0).getCode() + "\n" + Global.lineNumber++ + ". }";
-		
+		int startLineNumber = Global.lineNumber++;
+		code += ")\n" + startLineNumber + ". {" + jjtGetChild(0).getCode() + "\n";
+		int endLineNumber = Global.lineNumber++;
+		code += endLineNumber + ". }";
+		if (this.name.equals("foo"))
+		{
+			NewTest.startScope = startLineNumber;
+			NewTest.endScope = endLineNumber;
+		}
+		else
+		{
+			NewTest.endMain = endLineNumber;
+		}
 		return code;
 	}
 

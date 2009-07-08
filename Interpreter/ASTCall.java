@@ -1,6 +1,7 @@
 package Interpreter;
 
 import java.util.*;
+import viz.*;
 
 public class ASTCall extends SimpleNode implements VizParserTreeConstants{
 
@@ -75,11 +76,13 @@ public class ASTCall extends SimpleNode implements VizParserTreeConstants{
   
   public String getCode()
   {
+  	NewTest.callLine = Global.lineNumber;
   	if (!inUse)
   	{
   		return "";
   	}
   	return name + "(" + jjtGetChild(0).getCode() + ");";
+ 
   }
 
   /** Accept the visitor. **/
