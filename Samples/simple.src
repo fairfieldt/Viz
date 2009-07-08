@@ -12,7 +12,7 @@ def foo(x, y, z)
 
 def main()
 {
-	foo(m[j], f, j);
+	foo( m[1], m[j], j);
 	j = 3;
 }
 

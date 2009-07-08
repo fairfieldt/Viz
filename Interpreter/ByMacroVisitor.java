@@ -16,7 +16,7 @@ public class ByMacroVisitor implements VizParserVisitor, VizParserTreeConstants,
 	private boolean inNested = false;
 	public static String nextCodePageId;
 	private boolean readyForCall = false;
-	private ASTCall call;
+	private ASTCall theCall;
 
 	
 	public void setXAALConnector(XAALConnector xc)
@@ -69,7 +69,10 @@ public class ByMacroVisitor implements VizParserVisitor, VizParserTreeConstants,
 	
 	public void handleVar(ASTVar node)
 	{
+		
 		System.out.println(node.getName());
+		
+		SimpleNode subscript = null;
 		if (node.getIsArray())
 		{
 			ByValVariable v = (ByValVariable) Global.getCurrentSymbolTable().getVariable(node.getName());
@@ -77,18 +80,23 @@ public class ByMacroVisitor implements VizParserVisitor, VizParserTreeConstants,
 			{
 				v = (ByValVariable) Global.getFunction("foo").getSymbolTable().getVariable(node.getName());
 			}
-			System.out.println(v);
-			v.setSubscript((ASTExpression)node.jjtGetChild(0));
+			System.out.println("LLL" + v.getIsArray() + " " + node.getName());
+			ASTExpression sub = (ASTExpression)node.jjtGetChild(0);
+			v.setSubscript(sub);
+			System.out.println(sub.getCode());
 		}
+		
 		if (!inNested)
 		{
 			return;
 		}
+		
 		String argName = Global.getCurrentParamToArg().get(node.getName());
 		System.out.println("Var " + argName);
-		if (argName != null)
+		if (argName != null)		//It's one of the args
 		{
 			System.out.println(argName + ": " + node.getName());
+			String name = node.getName();
 			node.setName(argName);
 			System.out.println("Substituted " + argName);
 			ByValVariable arg =(ByValVariable) Global.getCurrentSymbolTable().getVariable(argName);
@@ -96,8 +104,29 @@ public class ByMacroVisitor implements VizParserVisitor, VizParserTreeConstants,
 			{
 				System.out.println("An array");
 				node.setIsArray(true);
-				System.out.println(arg.getSubscript());
-				node.jjtAddChild(arg.getSubscript(), 0);
+				//here we want to get the correct subscript
+				//ASTFunction fn = Global.getFunction("main");
+				ASTArgs args = (ASTArgs) theCall.jjtGetChild(0);
+
+				
+				if (name.equals("x"))
+				{
+					subscript = (SimpleNode) args.jjtGetChild(0).jjtGetChild(0);
+				}
+				else if (name.equals("y"))
+				{
+					subscript = (SimpleNode) args.jjtGetChild(1).jjtGetChild(0);
+				}
+				else if (name.equals("z"))
+				{
+					subscript = (SimpleNode) args.jjtGetChild(2).jjtGetChild(0);
+				}
+				else
+				{
+					System.out.println("Something is wrong");
+				}
+				System.out.println(subscript.getCode());
+				node.jjtAddChild(subscript, 0);
 			}
 			
 			//Add the graphical move
@@ -162,7 +191,7 @@ public class ByMacroVisitor implements VizParserVisitor, VizParserTreeConstants,
 			}
 			if (node.getIsArray()) //An array, we have to put the subscript on for the move
 			{
-				argName = argName + "[" + arg.getSubscript().getCode() + "]";
+				argName = argName + "[" + subscript.getCode() + "]";
 			}
 			System.out.println(argName + ": " + NewTest.currentPage + " " + callLineNumber + " " + pos + " " + argName + " " + lineNumber + " " + endPos);
 			System.out.println("Moving to");
@@ -199,7 +228,7 @@ public class ByMacroVisitor implements VizParserVisitor, VizParserTreeConstants,
 	
 	public void handleCall(ASTCall node)
 	{	
-		
+		theCall = node;
 		//Get the correct function head node
 		ASTFunction fun = Global.getFunction(node.getName());
 		System.out.println("Calling: " + fun.getName());
@@ -235,7 +264,11 @@ public class ByMacroVisitor implements VizParserVisitor, VizParserTreeConstants,
 			args.get(i).jjtAccept(this, null);
 		}
 		Global.setCurrentParamToArg(pa);
-		
+		for (String s : Global.getCurrentParamToArg().keySet())
+		{
+			System.out.println(s + ": " + Global.getCurrentParamToArg().get(s));
+		}
+		System.out.println("FYF");
 		inNested = true;
 		fun.jjtAccept(this, null);
 		inNested = false;

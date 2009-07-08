@@ -26,7 +26,7 @@ public class NewTest
 
 			RandomizingVisitor2<ByValVariable> rv = new RandomizingVisitor2<ByValVariable>(ByValVariable.class);
 				
-			program.jjtAccept(rv, null);
+			//program.jjtAccept(rv, null);
 
 			System.out.println("Successfully Parsed");
 			System.out.println("________________\n");
