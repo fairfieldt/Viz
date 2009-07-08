@@ -41,8 +41,8 @@ public class ASTVarDecl extends SimpleNode implements VizParserTreeConstants
   	
   	public String getCode()
   	{
-  		System.out.println("Getcode in vardecl");
-  		return "var " + this.name + (isArray ? "[]" : "") + 
+if (Global.debug) {  		System.out.println("Getcode in vardecl");
+}  		return "var " + this.name + (isArray ? "[]" : "") + 
   			" = " + jjtGetChild(0).getCode() + ";"; 
   	}
   	

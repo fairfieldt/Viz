@@ -29,8 +29,8 @@ public class ByMacroVisitor2 implements VizParserVisitor, VizParserTreeConstants
 	{
 		int id = node.getId();
 		Object retVal = null;
-		System.out.println("Visiting " + id);
-		switch (id)
+if (Global.debug) {		System.out.println("Visiting " + id);
+}		switch (id)
 		{
 			case JJTSTATEMENTLIST:
 					node.childrenAccept(this, null);
@@ -39,8 +39,8 @@ public class ByMacroVisitor2 implements VizParserVisitor, VizParserTreeConstants
 				node.childrenAccept(this, null);
 				break;
 			case JJTCALL:
-				System.out.println("CALL");
-				handleCall((ASTCall)node);
+if (Global.debug) {				System.out.println("CALL");
+}				handleCall((ASTCall)node);
 				node.childrenAccept(this, null);
 				break;
 			case JJTVAR:
@@ -52,12 +52,12 @@ public class ByMacroVisitor2 implements VizParserVisitor, VizParserTreeConstants
 			default:
 				for (int i = 0; i < node.jjtGetNumChildren(); i++)
 				{
-					System.out.println(node.jjtGetChild(i));
-					SimpleNode s = (SimpleNode)node.jjtGetChild(i);
+if (Global.debug) {					System.out.println(node.jjtGetChild(i));
+}					SimpleNode s = (SimpleNode)node.jjtGetChild(i);
 					s.jjtAccept(this, null);
 				}
-				System.out.println("AFTER");
-		}
+if (Global.debug) {				System.out.println("AFTER");
+}		}
 		return retVal;
 	}
 	
@@ -90,25 +90,25 @@ public class ByMacroVisitor2 implements VizParserVisitor, VizParserTreeConstants
 		*/
 		//Get the correct function head node
 		ASTFunction fun = Global.getFunction(node.getName());
-		System.out.println("Calling!: " + fun.getName());
-		
+if (Global.debug) {		System.out.println("Calling!: " + fun.getName());
+}		
 		//The call's grandparent knows the line number and we need to know it later
 		SimpleNode sn = (SimpleNode) node.jjtGetParent();
 		sn = (SimpleNode) sn.jjtGetParent();
-		System.out.println("Got grandparent");
-		
+if (Global.debug) {		System.out.println("Got grandparent");
+}		
 		callLineNumber = sn.getLineNumber();
-		System.out.println("AHHHH " + callLineNumber);
-		
+if (Global.debug) {		System.out.println("AHHHH " + callLineNumber);
+}		
 		
 		//Get the parameters and put the correct values in the symbolTable
 		SymbolTable st = fun.getSymbolTable();
 		st.setPrevious(Global.getCurrentSymbolTable());
-		System.out.println(Global.getCurrentSymbolTable());
-		String name = fun.getName();
+if (Global.debug) {		System.out.println(Global.getCurrentSymbolTable());
+}		String name = fun.getName();
 		
-		System.out.println(name);
-		ArrayList<String> parameters = fun.getParameters();		
+if (Global.debug) {		System.out.println(name);
+}		ArrayList<String> parameters = fun.getParameters();		
 
 		
 		ArrayList<ASTVar> args = node.getArgs();
@@ -126,9 +126,9 @@ public class ByMacroVisitor2 implements VizParserVisitor, VizParserTreeConstants
 		inNested = false;
 		
 		//Now attach the function's statementlist to the expression where the call was.
-		System.out.println(node);
-		System.out.println(node.jjtGetParent());
-		ASTExpression exp = (ASTExpression) node.jjtGetParent();
+if (Global.debug) {		System.out.println(node);
+}if (Global.debug) {		System.out.println(node.jjtGetParent());
+}		ASTExpression exp = (ASTExpression) node.jjtGetParent();
 		ASTStatement stmnt = (ASTStatement) exp.jjtGetParent();
 		stmnt.children[0] = fun.jjtGetChild(0);
 		fun.jjtGetChild(0).jjtSetParent(stmnt);
@@ -137,8 +137,8 @@ public class ByMacroVisitor2 implements VizParserVisitor, VizParserTreeConstants
 		((ASTStatementList)stmnt.jjtGetChild(0)).setSymbolTable(fun.getSymbolTable());
 		fun.getSymbolTable().setName("");
 
-		System.out.println("asas");
-		
+if (Global.debug) {		System.out.println("asas");
+}		
 		//Remove the function declaration
 		fun.setUsed(false);
 		node.setUsed(false);
@@ -156,8 +156,8 @@ public class ByMacroVisitor2 implements VizParserVisitor, VizParserTreeConstants
 	
 	public Object visit(ASTDeclarationList node, Object data)
 	{	
-		System.out.println("Handle decl list");
-		node.childrenAccept(this, null);
+if (Global.debug) {		System.out.println("Handle decl list");
+}		node.childrenAccept(this, null);
 		return null;
 	}
 	
@@ -186,19 +186,19 @@ public class ByMacroVisitor2 implements VizParserVisitor, VizParserTreeConstants
 	
 	public Object visit(ASTFunction node, Object data)
 	{	
-		System.out.println("Visiting function");
-		
+if (Global.debug) {		System.out.println("Visiting function");
+}		
 		node.childrenAccept(this, null);
 		return null;
 	}
 	
 	public Object visit(ASTStatementList node, Object data)
 	{
-		System.out.println("here");
-		for (int i = 0; i < node.jjtGetNumChildren(); i++)
+if (Global.debug) {		System.out.println("here");
+}		for (int i = 0; i < node.jjtGetNumChildren(); i++)
 		{
-			System.out.println(node.jjtGetChild(i));
-			node.jjtGetChild(i).jjtAccept(this, null);
+if (Global.debug) {			System.out.println(node.jjtGetChild(i));
+}			node.jjtGetChild(i).jjtAccept(this, null);
 		}
 		return null;
 	}
@@ -206,8 +206,8 @@ public class ByMacroVisitor2 implements VizParserVisitor, VizParserTreeConstants
   	{
 	  	for (int i = 0; i < node.jjtGetNumChildren(); i++)
 		{
-			System.out.println(node.jjtGetChild(i));
-			node.jjtGetChild(i).jjtAccept(this, null);
+if (Global.debug) {			System.out.println(node.jjtGetChild(i));
+}			node.jjtGetChild(i).jjtAccept(this, null);
 		}
   		return null;
   	}
@@ -231,8 +231,8 @@ public class ByMacroVisitor2 implements VizParserVisitor, VizParserTreeConstants
  	{
 		for (int i = 0; i < node.jjtGetNumChildren(); i++)
 		{
-			System.out.println(node.jjtGetChild(i));
-			node.jjtGetChild(i).jjtAccept(this, null);
+if (Global.debug) {			System.out.println(node.jjtGetChild(i));
+}			node.jjtGetChild(i).jjtAccept(this, null);
 		}
 		return null;
  	}

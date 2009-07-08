@@ -7,6 +7,7 @@ public class Global
 	public static int InterpreterType;
 	public static int lineNumber = 1;
 	
+	public static boolean debug = false;
 	private static SymbolTable symbolTable = new SymbolTable(null);
 	private static HashMap<String,ASTFunction> functions = new HashMap<String, ASTFunction>();
 	
@@ -45,16 +46,16 @@ public class Global
 	public static void setCurrentSymbolTable(SymbolTable table)
 	{
 		currentSymbolTable = table;
-		System.out.println("done here");
-	}
+if (Global.debug) {		System.out.println("done here");
+}	}
 	
 	public static boolean addFunction(ASTFunction fun)
 	{
 		//System.out.println("Adding a function");
 		if (functions.containsKey(fun.getName()))
 		{
-			System.out.println("Found key " + fun.getName());
-			return false;
+if (Global.debug) {			System.out.println("Found key " + fun.getName());
+}			return false;
 		}
 		functions.put(fun.getName(), fun);
 		return true;

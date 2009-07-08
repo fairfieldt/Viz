@@ -64,14 +64,14 @@ public class ASTFunction extends SimpleNode
 				break;
 			default:
 				v = new ByValVariable(-255);
-				System.out.println("Error, default interpreter type reached");
-		}
+if (Global.debug) {				System.out.println("Error, default interpreter type reached");
+}		}
 		v.setParam();
 
 		if(!this.localScopeSymbolTable.put(name, v))
 		{
-			System.out.println("failed but making it true anyway");
-			v = this.localScopeSymbolTable.getVariable(name);
+if (Global.debug) {			System.out.println("failed but making it true anyway");
+}			v = this.localScopeSymbolTable.getVariable(name);
 			//v.setParam();
 		}
 
@@ -102,8 +102,8 @@ public class ASTFunction extends SimpleNode
 		{
 			return "";
 		}
-		System.out.println(jjtGetChild(0));
-		String code = "def " + this.name + "(";
+if (Global.debug) {		System.out.println(jjtGetChild(0));
+}		String code = "def " + this.name + "(";
 		for (int i = 0; i < parameters.size(); i++)
 		{
 			code += parameters.get(i) + (i < parameters.size() -1 ?  ", " : "");

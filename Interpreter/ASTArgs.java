@@ -22,8 +22,8 @@ public class ASTArgs extends SimpleNode {
   
   public void gatherArgs()
   {
-  	System.out.println("Gathering args");
-  	for (int i = 0; i < jjtGetNumChildren(); i++)
+if (Global.debug) {  	System.out.println("Gathering args");
+}  	for (int i = 0; i < jjtGetNumChildren(); i++)
   	{
   		args.add((ASTVar)jjtGetChild(i));
   	}

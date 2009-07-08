@@ -12,8 +12,8 @@ public class SymbolTable
 	{
 		if ( previous != null)
 		{
-			System.out.println("Setting prev st to " + previous.getName());
-			this.previous = previous;
+if (Global.debug) {			System.out.println("Setting prev st to " + previous.getName());
+}			this.previous = previous;
 		}
 		else
 		{
@@ -44,8 +44,8 @@ public class SymbolTable
 		}
 		else
 		{
-			System.out.println("Error!  Couldn't find variable");
-		}
+if (Global.debug) {			System.out.println("Error!  Couldn't find variable");
+}		}
 		return v;
 	}
 	
@@ -141,8 +141,8 @@ public class SymbolTable
 		}
 		else
 		{
-			System.out.println("error! variable not found: " + name);
-		}
+if (Global.debug) {			System.out.println("error! variable not found: " + name);
+}		}
 	}
 	
 	public HashSet<String> getCurrentVarNames()

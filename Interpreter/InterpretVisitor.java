@@ -35,9 +35,9 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	//FIXME use this?
 	public void update(int lineNumber, int reason)
 	{
-		System.out.println("Update on " + lineNumber);
-		System.out.println(Global.getCurrentSymbolTable().toString());
-		//questionFactory.addAnswers(lineNumber, reason);
+if (Global.debug) {		System.out.println("Update on " + lineNumber);
+}if (Global.debug) {		System.out.println(Global.getCurrentSymbolTable().toString());
+}		//questionFactory.addAnswers(lineNumber, reason);
 	}
 	
 	public void setAssignmentQuestionAnswer(int value)
@@ -101,8 +101,8 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 				handleFunction((ASTFunction)node);
 				break;
 			default:
-				System.out.println("Unimplemented");
-		}
+if (Global.debug) {				System.out.println("Unimplemented");
+}		}
 		return retVal;
 	}
 	
@@ -155,19 +155,19 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 				// we can't hide foo in by macro cuz it doesn't exist
 				if (!byMacroFlag)
 					connector.hideScope("foo");
-				System.out.println("BLAH");
-			connector.endPar();
+if (Global.debug) {				System.out.println("BLAH");
+}			connector.endPar();
 		connector.endSnap();
-		System.out.println("Done");
-	}
+if (Global.debug) {		System.out.println("Done");
+}	}
 	
 	public void handleDeclarationList(ASTDeclarationList node)
 	{
 		connector.startSnap(Global.getFunction("main").getLineNumber());
 		connector.startPar();
 		
-		System.out.println("Visiting declList");
-		int numDecls = node.jjtGetNumChildren();
+if (Global.debug) {		System.out.println("Visiting declList");
+}		int numDecls = node.jjtGetNumChildren();
 		for (int i = 0; i < numDecls; i++)
 		{
 			//A Declaration returned false which means we ran.
@@ -217,17 +217,17 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		String name = node.getName();
 		node.setLineNumber(((SimpleNode)node.jjtGetParent()).getLineNumber());
 		SymbolTable s = Global.getCurrentSymbolTable();
-		System.out.println("VDCL " + s + " " + name);
-		ArrayList<Integer> values;
+if (Global.debug) {		System.out.println("VDCL " + s + " " + name);
+}		ArrayList<Integer> values;
 
 		if (node.getIsArray())
 		{
 			ByValVariable v = (ByValVariable) s.getVariable(name);
 			v.setArray();
-			System.out.println("BLAH" + node.jjtGetChild(0));
-			 values = (ArrayList<Integer>)handleArrayDeclaration((ASTArrayDeclaration)node.jjtGetChild(0));
-			System.out.println("Values: " + values);
-			v.setValues(values);
+if (Global.debug) {			System.out.println("BLAH" + node.jjtGetChild(0));
+}			 values = (ArrayList<Integer>)handleArrayDeclaration((ASTArrayDeclaration)node.jjtGetChild(0));
+if (Global.debug) {			System.out.println("Values: " + values);
+}			v.setValues(values);
 		}
 		else
 		{
@@ -236,8 +236,8 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		}
 
 			//Drawing Stuff
-			System.out.println(s.getName());
-			connector.addVariable(s.getVariable(name), name, s.getName());
+if (Global.debug) {			System.out.println(s.getName());
+}			connector.addVariable(s.getVariable(name), name, s.getName());
 			
 			//This is a snapshot
 					connector.showVar(Global.getCurrentSymbolTable().getVariable(name));
@@ -250,8 +250,8 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		// calling function's, and then set it to current.
 		if (!node.getUsed())
 		{
-			System.out.println("Unused function");
-			return;
+if (Global.debug) {			System.out.println("Unused function");
+}			return;
 		}
 		SymbolTable currentSymbolTable = node.getSymbolTable();
 		for (String p : node.getParameters())
@@ -263,8 +263,8 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		Global.setCurrentSymbolTable(currentSymbolTable);
 
 		
-		System.out.println("Executing function: " + node.getName());
-
+if (Global.debug) {		System.out.println("Executing function: " + node.getName());
+}
 		node.jjtGetChild(0).jjtAccept(this, null);
 		leaveScope();
 	}
@@ -274,11 +274,11 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		for (int i = 0; i < node.jjtGetNumChildren(); i++)
 		{
 			Integer value = (Integer)node.jjtGetChild(i).jjtAccept(this, null);
-			System.out.println("ff " + value);
-			values.add(value);
+if (Global.debug) {			System.out.println("ff " + value);
+}			values.add(value);
 		}
-		System.out.println(values);
-		return values;
+if (Global.debug) {		System.out.println(values);
+}		return values;
 	}
 	
 	public void handleStatementList(ASTStatementList node)
@@ -286,16 +286,16 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		if (!node.getIsFunction())
 		{
 			Global.setCurrentSymbolTable(Global.getFunction("foo").getSymbolTable());
-			System.out.println(Global.getCurrentSymbolTable());
-			connector.addScope(Global.getCurrentSymbolTable(), "", "main");
+if (Global.debug) {			System.out.println(Global.getCurrentSymbolTable());
+}			connector.addScope(Global.getCurrentSymbolTable(), "", "main");
 			connector.showScope("");
 		}
 
 		int numStatements = node.jjtGetNumChildren();
 		for (int i = 0; i < numStatements; i++)
 		{
-			System.out.println(node.jjtGetChild(i));
-			node.jjtGetChild(i).jjtAccept(this, null);
+if (Global.debug) {			System.out.println(node.jjtGetChild(i));
+}			node.jjtGetChild(i).jjtAccept(this, null);
 		}
 		if (!node.getIsFunction())
 		{
@@ -320,16 +320,16 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		if (s instanceof ASTStatementList)
 		{
 
-			System.out.println("Nested scope!");
-			System.out.println(Global.getCurrentSymbolTable());
-			SymbolTable st = new SymbolTable(Global.getCurrentSymbolTable());
+if (Global.debug) {			System.out.println("Nested scope!");
+}if (Global.debug) {			System.out.println(Global.getCurrentSymbolTable());
+}			SymbolTable st = new SymbolTable(Global.getCurrentSymbolTable());
 			st.setName("nested");
-			System.out.println(st);
-			Global.setCurrentSymbolTable(st);
+if (Global.debug) {			System.out.println(st);
+}			Global.setCurrentSymbolTable(st);
 			s.jjtAccept(this, null);
 			Global.setCurrentSymbolTable(st.getPrevious());
-			System.out.println("Done with nested scope!");
-		}
+if (Global.debug) {			System.out.println("Done with nested scope!");
+}		}
 		else
 		{
 		
@@ -350,8 +350,8 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 			boolean gotAQuestion = true; //FIXME HACK
 		//Get the correct function head node
 		ASTFunction fun = Global.getFunction(node.getName());
-		System.out.println("Calling: " + fun.getName());
-		//Get the parameters and put the correct values in the symbolTable
+if (Global.debug) {		System.out.println("Calling: " + fun.getName());
+}		//Get the parameters and put the correct values in the symbolTable
 		SymbolTable st = fun.getSymbolTable();
 		String name = fun.getName();
 		ArrayList<String> parameters = fun.getParameters();		
@@ -408,8 +408,8 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 			int answer = Global.getFunction("main").getSymbolTable().get(callQuestion.getVariable());
 			if (callQuestion instanceof FIBQuestion)
 			{
-				System.out.println("AAAA " + answer);
-				((FIBQuestion)callQuestion).addAnswer(answer+"");
+if (Global.debug) {				System.out.println("AAAA " + answer);
+}				((FIBQuestion)callQuestion).addAnswer(answer+"");
 			}
 			else if (callQuestion instanceof TFQuestion)
 			{
@@ -448,8 +448,8 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 			}	
 			else
 			{
-				System.out.println("CQC " + callQuestion);
-			}
+if (Global.debug) {				System.out.println("CQC " + callQuestion);
+}			}
 		}
 		return 0;
 	}
@@ -472,19 +472,19 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 		
 			boolean gotAQuestion = q < QUESTION_FREQUENCY;//HACK FOR NOW FIXME
 		String name = node.getName();
-		System.out.println("Assigning to " + name);
-		Integer value = (Integer)node.jjtGetChild(1).jjtAccept(this, null);
+if (Global.debug) {		System.out.println("Assigning to " + name);
+}		Integer value = (Integer)node.jjtGetChild(1).jjtAccept(this, null);
 		int index = 0;
-		System.out.println("HRM");
-		System.out.println(Global.getCurrentSymbolTable());
-		ByValVariable v = (ByValVariable) Global.getCurrentSymbolTable().getVariable(name);
-		System.out.println("VVVV" + v.getIsArray() + " " + name);
-		if (v.getIsArray())
+if (Global.debug) {		System.out.println("HRM");
+}if (Global.debug) {		System.out.println(Global.getCurrentSymbolTable());
+}		ByValVariable v = (ByValVariable) Global.getCurrentSymbolTable().getVariable(name);
+if (Global.debug) {		System.out.println("VVVV" + v.getIsArray() + " " + name);
+}		if (v.getIsArray())
 		{
-			System.out.println("Dealing with an array");
-			index = (Integer) node.jjtGetChild(0).jjtGetChild(0).jjtAccept(this, null);
-			System.out.println("Index: " + index);
-			v.setValue(value, index);
+if (Global.debug) {			System.out.println("Dealing with an array");
+}			index = (Integer) node.jjtGetChild(0).jjtGetChild(0).jjtAccept(this, null);
+if (Global.debug) {			System.out.println("Index: " + index);
+}			v.setValue(value, index);
 		if (gotAQuestion)
 		{
 			assignmentQuestion = questionFactory.getAssignmentQuestion(node.getLineNumber(), name, index);
@@ -505,13 +505,13 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 			int i;
 			if (assignmentQuestion.getIndex() != -1)
 			{
-				System.out.println("This might be wrong");
-				i = Global.getCurrentSymbolTable().get(name, assignmentQuestion.getIndex());
+if (Global.debug) {				System.out.println("This might be wrong");
+}				i = Global.getCurrentSymbolTable().get(name, assignmentQuestion.getIndex());
 			}
 			else
 			{
-				System.out.println("FFF " + assignmentQuestion.getVariable());
-				i = Global.getCurrentSymbolTable().get(assignmentQuestion.getVariable());
+if (Global.debug) {				System.out.println("FFF " + assignmentQuestion.getVariable());
+}				i = Global.getCurrentSymbolTable().get(assignmentQuestion.getVariable());
 			}
 			setAssignmentQuestionAnswer(i);
 			connector.addQuestion(assignmentQuestion);
@@ -569,8 +569,8 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	
 	public Integer handleNum(ASTNum node)
 	{
-		System.out.println("gg" + node.getValue());
-		return node.getValue();
+if (Global.debug) {		System.out.println("gg" + node.getValue());
+}		return node.getValue();
 	}
 	public Object visit(ASTProgram node, Object data)
 	{
@@ -651,8 +651,8 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
   	
   	public void leaveScope()
   	{
-  		System.out.println("Leaving scope " + Global.getCurrentSymbolTable().getName());
-
+if (Global.debug) {  		System.out.println("Leaving scope " + Global.getCurrentSymbolTable().getName());
+}
   		update(-1, UPDATE_REASON_LEAVEFUN);
   	}
 }

@@ -28,8 +28,8 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 	//FIXME use this?
 	public void update(int lineNumber, int reason)
 	{
-		System.out.println("Update on " + lineNumber);
-		//System.out.println(Global.getCurrentSymbolTable().toString());
+if (Global.debug) {		System.out.println("Update on " + lineNumber);
+}		//System.out.println(Global.getCurrentSymbolTable().toString());
 		//questionFactory.addAnswers(lineNumber, reason);
 	}
 	
@@ -94,15 +94,15 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 				handleFunction((ASTFunction)node);
 				break;
 			default:
-				System.out.println("Unimplemented");
-		}
+if (Global.debug) {				System.out.println("Unimplemented");
+}		}
 		return retVal;
 	}
 	
 	public void handleProgram(ASTProgram node)
 	{
-		System.out.println("visiting program");
-		Global.setCurrentSymbolTable(Global.getSymbolTable()); 
+if (Global.debug) {		System.out.println("visiting program");
+}		Global.setCurrentSymbolTable(Global.getSymbolTable()); 
 		update(1, UPDATE_REASON_BEGIN);
 		
 		//Drawing Stuff
@@ -145,16 +145,16 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 				connector.hideScope("foo");
 			connector.endPar();
 		connector.endSnap();
-		System.out.println("Done");
-	}
+if (Global.debug) {		System.out.println("Done");
+}	}
 	
 	public void handleDeclarationList(ASTDeclarationList node)
 	{
 		connector.startSnap(Global.getFunction("main").getLineNumber());
 		connector.startPar();
 		
-		System.out.println("Visiting declList");
-		int numDecls = node.jjtGetNumChildren();
+if (Global.debug) {		System.out.println("Visiting declList");
+}		int numDecls = node.jjtGetNumChildren();
 		for (int i = 0; i < numDecls; i++)
 		{
 			//A Declaration returned false which means we ran.
@@ -200,20 +200,20 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 	
 	public void handleVarDecl(ASTVarDecl node)
 	{
-		System.out.println("Visiting var decl");
-		String name = node.getName();
+if (Global.debug) {		System.out.println("Visiting var decl");
+}		String name = node.getName();
 		node.setLineNumber(((SimpleNode)node.jjtGetParent()).getLineNumber());
 		SymbolTable s = Global.getCurrentSymbolTable();
 		ArrayList<Integer> values;
 		if (node.getIsArray())
 		{
-			System.out.println("This is an array " + name);
-			ByValVariable v = (ByValVariable) s.getVariable(name);
+if (Global.debug) {			System.out.println("This is an array " + name);
+}			ByValVariable v = (ByValVariable) s.getVariable(name);
 			v.setArray();
-			System.out.println("BLAH" + node.jjtGetChild(0));
-			 values = (ArrayList<Integer>)handleArrayDeclaration((ASTArrayDeclaration)node.jjtGetChild(0));
-			System.out.println("Values: " + values);
-			v.setValues(values);
+if (Global.debug) {			System.out.println("BLAH" + node.jjtGetChild(0));
+}			 values = (ArrayList<Integer>)handleArrayDeclaration((ASTArrayDeclaration)node.jjtGetChild(0));
+if (Global.debug) {			System.out.println("Values: " + values);
+}			v.setValues(values);
 		}
 		else
 		{
@@ -232,8 +232,8 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 		//Get the function's symbol table, set it's previous to the
 		// calling function's, and then set it to current.
 		
-		System.out.println("Visiting function");
-		SymbolTable currentSymbolTable = node.getSymbolTable();
+if (Global.debug) {		System.out.println("Visiting function");
+}		SymbolTable currentSymbolTable = node.getSymbolTable();
 		for (String p : node.getParameters())
 		{
 			ByCopyRestoreVariable v = new ByCopyRestoreVariable();
@@ -243,19 +243,19 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 		Global.setCurrentSymbolTable(currentSymbolTable);
 
 		
-		System.out.println("Executing function: " + node.getName());
-		update(node.getLineNumber(), UPDATE_REASON_FUNCTION);
+if (Global.debug) {		System.out.println("Executing function: " + node.getName());
+}		update(node.getLineNumber(), UPDATE_REASON_FUNCTION);
 		node.jjtGetChild(0).jjtAccept(this, null);
 		
 		for (String p : node.getParameters())
 		{
-			System.out.println("Copying " + p + " out");
-			((ByCopyRestoreVariable)currentSymbolTable.getVariable(p)).copyOut();
+if (Global.debug) {			System.out.println("Copying " + p + " out");
+}			((ByCopyRestoreVariable)currentSymbolTable.getVariable(p)).copyOut();
 		}
-		System.out.println("LEAVING");
-		
-		System.out.println(Global.getCurrentSymbolTable());
-		leaveScope();
+if (Global.debug) {		System.out.println("LEAVING");
+}		
+if (Global.debug) {		System.out.println(Global.getCurrentSymbolTable());
+}		leaveScope();
 	}
 	public ArrayList<Integer> handleArrayDeclaration(ASTArrayDeclaration node)
 	{
@@ -263,11 +263,11 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 		for (int i = 0; i < node.jjtGetNumChildren(); i++)
 		{
 			Integer value = (Integer)node.jjtGetChild(i).jjtAccept(this, null);
-			System.out.println("ff " + value);
-			values.add(value);
+if (Global.debug) {			System.out.println("ff " + value);
+}			values.add(value);
 		}
-		System.out.println(values);
-		return values;
+if (Global.debug) {		System.out.println(values);
+}		return values;
 	}
 	
 	public void handleStatementList(ASTStatementList node)
@@ -305,33 +305,33 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 		boolean gotAQuestion = true; //FIXME HACK
 		//Get the correct function head node
 		ASTFunction fun = Global.getFunction(node.getName());
-		System.out.println("Calling: " + fun.getName());
-		//Get the parameters and put the correct values in the symbolTable
+if (Global.debug) {		System.out.println("Calling: " + fun.getName());
+}		//Get the parameters and put the correct values in the symbolTable
 		SymbolTable st = fun.getSymbolTable();
 		String name = fun.getName();
 		ArrayList<String> parameters = fun.getParameters();		
 		ArrayList<Integer> args = (ArrayList<Integer>) node.jjtGetChild(0).jjtAccept(this, null);
 		ArrayList<ASTVar> argNames = ((ASTArgs)node.jjtGetChild(0)).getArgs();
-		System.out.println("Ready to set args");
-		for (int i = 0; i < args.size(); i++)
+if (Global.debug) {		System.out.println("Ready to set args");
+}		for (int i = 0; i < args.size(); i++)
 		{
 			Variable vv = st.getVariable(parameters.get(i));
-			System.out.println(vv + " ");
-			ByCopyRestoreVariable v = (ByCopyRestoreVariable)st.getVariable(parameters.get(i));
+if (Global.debug) {			System.out.println(vv + " ");
+}			ByCopyRestoreVariable v = (ByCopyRestoreVariable)st.getVariable(parameters.get(i));
 			ByValVariable ref = (ByValVariable)Global.getCurrentSymbolTable().getVariable(argNames.get(i).getName());
-			System.out.println("Got ref " + argNames.get(i).getName());
-			if (ref.getIsArray())
+if (Global.debug) {			System.out.println("Got ref " + argNames.get(i).getName());
+}			if (ref.getIsArray())
 			{
-				System.out.println("Setting ref to index " + argNames.get(i).getIndex());
-				v.setRef(ref, argNames.get(i).getIndex());
+if (Global.debug) {				System.out.println("Setting ref to index " + argNames.get(i).getIndex());
+}				v.setRef(ref, argNames.get(i).getIndex());
 			}
 			else
 			{
 				v.setRef(ref);
 			}
 		}
-		System.out.println("Set args");
-		HashMap<String, String> pa = new HashMap<String, String>(); //Maps args to params
+if (Global.debug) {		System.out.println("Set args");
+}		HashMap<String, String> pa = new HashMap<String, String>(); //Maps args to params
 		for (int i = 0; i < parameters.size(); i++)
 		{
 			pa.put(parameters.get(i), argNames.get(i).getName());
@@ -361,8 +361,8 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 					//((ByRefVariable)v2).setRef(((ByValVariable)v1)); 
 					//Now in interpreter we should be pointing correctly.  				
 					
-					System.out.println("Adding a reference from " + argNames.get(i).getName() +
-						" to " + parameters.get(i));
+if (Global.debug) {					System.out.println("Adding a reference from " + argNames.get(i).getName() +
+}						" to " + parameters.get(i));
 					if (v1.getIsArray())
 					{
 						connector.addVariableReference(v2, v1, v2.getRefIndex());
@@ -385,8 +385,8 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 			int answer = Global.getFunction("main").getSymbolTable().get(callQuestion.getVariable());
 			if (callQuestion instanceof FIBQuestion)
 			{
-				System.out.println("AAAA " + answer);
-				((FIBQuestion)callQuestion).addAnswer(answer+"");
+if (Global.debug) {				System.out.println("AAAA " + answer);
+}				((FIBQuestion)callQuestion).addAnswer(answer+"");
 			}
 			else if (callQuestion instanceof TFQuestion)
 			{
@@ -425,8 +425,8 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 			}	
 			else
 			{
-				System.out.println("CQC " + callQuestion);
-			}
+if (Global.debug) {				System.out.println("CQC " + callQuestion);
+}			}
 		}
 		//Drawing the copy out stage
 
@@ -438,8 +438,8 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 					v1 = Global.getFunction("main").getSymbolTable().getVariable(argNames.get(i).getName());				
 					v2 = (ByCopyRestoreVariable)st.getVariable(parameters.get(i));					if (v1.getIsArray())
 					{
-						System.out.println("Copying out to an array " + v2.getRefIndex());
-						connector.moveValue(v2, v1, v2.getRefIndex());
+if (Global.debug) {						System.out.println("Copying out to an array " + v2.getRefIndex());
+}						connector.moveValue(v2, v1, v2.getRefIndex());
 					}
 					else
 					{
@@ -465,8 +465,8 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 		else
 		{
 			value = v.getValue();
-			System.out.println("Got value " + value);
-		}
+if (Global.debug) {			System.out.println("Got value " + value);
+}		}
 		return value;
 	}
 	
@@ -479,19 +479,19 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 		String name = node.getName();
 
 		Integer value = (Integer)node.jjtGetChild(1).jjtAccept(this, null);
-		System.out.println("Assigning to " + name + " value of " + value);
-		int index = 0;
+if (Global.debug) {		System.out.println("Assigning to " + name + " value of " + value);
+}		int index = 0;
 		Variable v = Global.getCurrentSymbolTable().getVariable(name);
 
 		if (v.getIsArray())
 		{
-			System.out.println("AN ARRRAY");
-			index = (Integer) node.jjtGetChild(0).jjtGetChild(0).jjtAccept(this, null);
+if (Global.debug) {			System.out.println("AN ARRRAY");
+}			index = (Integer) node.jjtGetChild(0).jjtGetChild(0).jjtAccept(this, null);
 			v.setValue(value, index);
 			if (gotAQuestion)
 			{
-				System.out.println("asdf");
-				assignmentQuestion = questionFactory.getAssignmentQuestion(node.getLineNumber(), name, index);
+if (Global.debug) {				System.out.println("asdf");
+}				assignmentQuestion = questionFactory.getAssignmentQuestion(node.getLineNumber(), name, index);
 			}
 		}
 		else
@@ -503,16 +503,16 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 		}
 		}
 		//QUESTION!!!
-		System.out.println("Ok, set value");
-		//Drawing stuff. snap and par should be opened from enclosing statement
+if (Global.debug) {		System.out.println("Ok, set value");
+}		//Drawing stuff. snap and par should be opened from enclosing statement
 		if (gotAQuestion)
 		{
-			System.out.println(assignmentQuestion);
-			int i;
+if (Global.debug) {			System.out.println(assignmentQuestion);
+}			int i;
 			if (assignmentQuestion.getIndex() != -1)
 			{
-				System.out.println("This might be wrong");
-				i = Global.getCurrentSymbolTable().get(name, assignmentQuestion.getIndex());
+if (Global.debug) {				System.out.println("This might be wrong");
+}				i = Global.getCurrentSymbolTable().get(name, assignmentQuestion.getIndex());
 			}
 			else
 			{
@@ -538,13 +538,13 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 			{
 				ByCopyRestoreVariable var = 
 				(ByCopyRestoreVariable)Global.getCurrentSymbolTable().getVariable(name);
-				System.out.println("It's a CR variable named " + name);
-				connector.modifyVar(var, value);
+if (Global.debug) {				System.out.println("It's a CR variable named " + name);
+}				connector.modifyVar(var, value);
 			}
 
 		update(node.getLineNumber(), UPDATE_REASON_ASSIGNMENT);
-		System.out.println("Leaving assignment");
-		
+if (Global.debug) {		System.out.println("Leaving assignment");
+}		
 	}
 	
 	public Integer handleExpression(ASTExpression node)
@@ -582,8 +582,8 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 	
 	public Integer handleNum(ASTNum node)
 	{
-		System.out.println("gg" + node.getValue());
-		return node.getValue();
+if (Global.debug) {		System.out.println("gg" + node.getValue());
+}		return node.getValue();
 	}
 	public Object visit(ASTProgram node, Object data)
 	{
@@ -664,8 +664,8 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
   	
   	public void leaveScope()
   	{
-  		System.out.println("Leaving scope " + Global.getCurrentSymbolTable().getName());
-		
+if (Global.debug) {  		System.out.println("Leaving scope " + Global.getCurrentSymbolTable().getName());
+}		
   		update(-1, UPDATE_REASON_LEAVEFUN);
   	}
 }

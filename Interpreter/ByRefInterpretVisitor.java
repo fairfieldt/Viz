@@ -53,8 +53,8 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 	//FIXME use this?
 	public void update(int lineNumber, int reason)
 	{
-		System.out.println("Update on " + lineNumber);
-		//System.out.println(Global.getCurrentSymbolTable().toString());
+if (Global.debug) {		System.out.println("Update on " + lineNumber);
+}		//System.out.println(Global.getCurrentSymbolTable().toString());
 		//questionFactory.addAnswers(lineNumber, reason);
 	}
 	
@@ -112,15 +112,15 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 				handleFunction((ASTFunction)node);
 				break;
 			default:
-				System.out.println("Unimplemented");
-		}
+if (Global.debug) {				System.out.println("Unimplemented");
+}		}
 		return retVal;
 	}
 	
 	public void handleProgram(ASTProgram node)
 	{
-		System.out.println("visiting program");
-		Global.setCurrentSymbolTable(Global.getSymbolTable()); 
+if (Global.debug) {		System.out.println("visiting program");
+}		Global.setCurrentSymbolTable(Global.getSymbolTable()); 
 		update(1, UPDATE_REASON_BEGIN);
 		
 		//Drawing Stuff
@@ -164,13 +164,13 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 				connector.hideScope("foo");
 			connector.endPar();
 		connector.endSnap();
-		System.out.println("Done");
-	}
+if (Global.debug) {		System.out.println("Done");
+}	}
 	
 	public void handleDeclarationList(ASTDeclarationList node)
 	{
-		System.out.println("Visiting declList");
-		
+if (Global.debug) {		System.out.println("Visiting declList");
+}		
 		connector.startSnap(Global.getFunction("main").getLineNumber());
 		connector.startPar();
 		int numDecls = node.jjtGetNumChildren();
@@ -219,8 +219,8 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 	
 	public void handleVarDecl(ASTVarDecl node)
 	{
-		System.out.println("Visiting var decl");
-		String name = node.getName();
+if (Global.debug) {		System.out.println("Visiting var decl");
+}		String name = node.getName();
 		node.setLineNumber(((SimpleNode)node.jjtGetParent()).getLineNumber());
 		SymbolTable s = Global.getCurrentSymbolTable();
 		ArrayList<Integer> values;
@@ -228,10 +228,10 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 		{
 			ByValVariable v = (ByValVariable) s.getVariable(name);
 			v.setArray();
-			System.out.println("BLAH" + node.jjtGetChild(0));
-			 values = (ArrayList<Integer>)handleArrayDeclaration((ASTArrayDeclaration)node.jjtGetChild(0));
-			System.out.println("Values: " + values);
-			v.setValues(values);
+if (Global.debug) {			System.out.println("BLAH" + node.jjtGetChild(0));
+}			 values = (ArrayList<Integer>)handleArrayDeclaration((ASTArrayDeclaration)node.jjtGetChild(0));
+if (Global.debug) {			System.out.println("Values: " + values);
+}			v.setValues(values);
 		}
 		else
 		{
@@ -259,8 +259,8 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 			connector.endPar();
 			connector.endSnap();
 		}
-		System.out.println("Visiting function");
-		SymbolTable currentSymbolTable = node.getSymbolTable();
+if (Global.debug) {		System.out.println("Visiting function");
+}		SymbolTable currentSymbolTable = node.getSymbolTable();
 		for (String p : node.getParameters())
 		{
 			ByRefVariable v = new ByRefVariable(null);
@@ -270,8 +270,8 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 		Global.setCurrentSymbolTable(currentSymbolTable);
 
 		
-		System.out.println("Executing function: " + node.getName());
-		update(node.getLineNumber(), UPDATE_REASON_FUNCTION);
+if (Global.debug) {		System.out.println("Executing function: " + node.getName());
+}		update(node.getLineNumber(), UPDATE_REASON_FUNCTION);
 		node.jjtGetChild(0).jjtAccept(this, null);
 		leaveScope();
 	}
@@ -281,11 +281,11 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 		for (int i = 0; i < node.jjtGetNumChildren(); i++)
 		{
 			Integer value = (Integer)node.jjtGetChild(i).jjtAccept(this, null);
-			System.out.println("ff " + value);
-			values.add(value);
+if (Global.debug) {			System.out.println("ff " + value);
+}			values.add(value);
 		}
-		System.out.println(values);
-		return values;
+if (Global.debug) {		System.out.println(values);
+}		return values;
 	}
 	
 	public void handleStatementList(ASTStatementList node)
@@ -323,33 +323,33 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 		boolean gotAQuestion = true; //FIXME HACK
 		//Get the correct function head node
 		ASTFunction fun = Global.getFunction(node.getName());
-		System.out.println("Calling: " + fun.getName());
-		//Get the parameters and put the correct values in the symbolTable
+if (Global.debug) {		System.out.println("Calling: " + fun.getName());
+}		//Get the parameters and put the correct values in the symbolTable
 		SymbolTable st = fun.getSymbolTable();
 		String name = fun.getName();
 		
 		ArrayList<String> parameters = fun.getParameters();		
 		ArrayList<Integer> args = (ArrayList<Integer>) node.jjtGetChild(0).jjtAccept(this, null);
 		ArrayList<ASTVar> argNames = ((ASTArgs)node.jjtGetChild(0)).getArgs();
-		System.out.println("Ready to set args");
-		for (int i = 0; i < args.size(); i++)
+if (Global.debug) {		System.out.println("Ready to set args");
+}		for (int i = 0; i < args.size(); i++)
 		{
 			Variable vv = st.getVariable(parameters.get(i));
-			System.out.println(vv + " ");
-			ByRefVariable v = (ByRefVariable)st.getVariable(parameters.get(i));
+if (Global.debug) {			System.out.println(vv + " ");
+}			ByRefVariable v = (ByRefVariable)st.getVariable(parameters.get(i));
 			ByValVariable ref = (ByValVariable)Global.getCurrentSymbolTable().getVariable(argNames.get(i).getName());
 			if (ref.getIsArray())
 			{
-				System.out.println("Setting ref to index " + argNames.get(i).getIndex());
-				v.setRef(ref, argNames.get(i).getIndex());
+if (Global.debug) {				System.out.println("Setting ref to index " + argNames.get(i).getIndex());
+}				v.setRef(ref, argNames.get(i).getIndex());
 			}
 			else
 			{
 				v.setRef(ref);
 			}
 		}
-		System.out.println("Set args");
-		HashMap<String, String> pa = new HashMap<String, String>(); //Maps args to params
+if (Global.debug) {		System.out.println("Set args");
+}		HashMap<String, String> pa = new HashMap<String, String>(); //Maps args to params
 		for (int i = 0; i < parameters.size(); i++)
 		{
 			pa.put(parameters.get(i), argNames.get(i).getName());
@@ -384,8 +384,8 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 					}
 					 //Now in interpreter we should be pointing correctly.  				
 					
-					System.out.println("Adding a reference from " + argNames.get(i).getName() +
-						" to " + parameters.get(i));
+if (Global.debug) {					System.out.println("Adding a reference from " + argNames.get(i).getName() +
+}						" to " + parameters.get(i));
 				}
 				
 			connector.endPar();
@@ -396,26 +396,26 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 		{
 
 			int answer = Global.getFunction("main").getSymbolTable().get(callQuestion.getVariable());
-			System.out.println("ASF " + answer);
-			if (callQuestion instanceof FIBQuestion)
+if (Global.debug) {			System.out.println("ASF " + answer);
+}			if (callQuestion instanceof FIBQuestion)
 			{
-				System.out.println("AAAA " + answer);
-				((FIBQuestion)callQuestion).addAnswer(answer+"");
+if (Global.debug) {				System.out.println("AAAA " + answer);
+}				((FIBQuestion)callQuestion).addAnswer(answer+"");
 			}
 			else if (callQuestion instanceof TFQuestion)
 			{
 				int qa = answer;
 				//Getting the value of the var at the end of the function FIXME
 				int prevVal = Global.getFunction("foo").getSymbolTable().get("x");
-				System.out.println("YYY " + prevVal);
-				Random r = new Random();
+if (Global.debug) {				System.out.println("YYY " + prevVal);
+}				Random r = new Random();
 				int choose = r.nextInt(3);
 				switch (choose)
 				{
 					case 0:
 						qa = callQuestion.getValue();
-						System.out.println("qaqa" + qa);
-						((TFQuestion)callQuestion).setAnswer(false);
+if (Global.debug) {						System.out.println("qaqa" + qa);
+}						((TFQuestion)callQuestion).setAnswer(false);
 						if (qa == answer) // Value is the same anyway
 						{
 							((TFQuestion)callQuestion).setAnswer(true);
@@ -440,8 +440,8 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 			else
 			{
 			
-				System.out.println("CQC " + callQuestion);
-			}
+if (Global.debug) {				System.out.println("CQC " + callQuestion);
+}			}
 		}
 		
 		return 0;
@@ -475,8 +475,8 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 		String name = node.getName();
 
 		Integer value = (Integer)node.jjtGetChild(1).jjtAccept(this, null);
-		System.out.println("Assigning to " + name + " value of " + value);
-		int index = 0;
+if (Global.debug) {		System.out.println("Assigning to " + name + " value of " + value);
+}		int index = 0;
 		Variable v = Global.getCurrentSymbolTable().getVariable(name);
 
 		if (v.getIsArray())
@@ -486,8 +486,8 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 			
 			if (gotAQuestion)
 			{
-				System.out.println("Got a question for " + name + " " + index);
-				assignmentQuestion = questionFactory.getAssignmentQuestion(node.getLineNumber(), name, index);
+if (Global.debug) {				System.out.println("Got a question for " + name + " " + index);
+}				assignmentQuestion = questionFactory.getAssignmentQuestion(node.getLineNumber(), name, index);
 			}
 			
 		}
@@ -496,33 +496,33 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 		//QUESTION!!!
 			if (gotAQuestion)
 			{
-				System.out.println("Got a question for " + name);
-				assignmentQuestion = questionFactory.getAssignmentQuestion(node.getLineNumber(), name);
+if (Global.debug) {				System.out.println("Got a question for " + name);
+}				assignmentQuestion = questionFactory.getAssignmentQuestion(node.getLineNumber(), name);
 			}
 			v.setValue(value);
-			System.out.println("ADFS " + value);
-		}
+if (Global.debug) {			System.out.println("ADFS " + value);
+}		}
 		
 		
 		
-		System.out.println("Ok, set value");
-		//Drawing stuff. snap and par should be opened from enclosing statement
+if (Global.debug) {		System.out.println("Ok, set value");
+}		//Drawing stuff. snap and par should be opened from enclosing statement
 		if (gotAQuestion)
 		{
 			int i;
 			if (assignmentQuestion.getIndex() != -1)
 			{
-				System.out.println("This might be wrong");
-				i = Global.getCurrentSymbolTable().get(name, assignmentQuestion.getIndex());
+if (Global.debug) {				System.out.println("This might be wrong");
+}				i = Global.getCurrentSymbolTable().get(name, assignmentQuestion.getIndex());
 			}
 			else
 			{
-				System.out.println("RRRRR " + assignmentQuestion.getVariable());
-				i = Global.getCurrentSymbolTable().get(assignmentQuestion.getVariable());
-				System.out.println("Getting " + assignmentQuestion.getVariable());
-				System.out.println(i);
-				System.out.println("qq");
-			}
+if (Global.debug) {				System.out.println("RRRRR " + assignmentQuestion.getVariable());
+}				i = Global.getCurrentSymbolTable().get(assignmentQuestion.getVariable());
+if (Global.debug) {				System.out.println("Getting " + assignmentQuestion.getVariable());
+}if (Global.debug) {				System.out.println(i);
+}if (Global.debug) {				System.out.println("qq");
+}			}
 			setAssignmentQuestionAnswer(value);
 			connector.addQuestion(assignmentQuestion);
 			connector.endPar();
@@ -542,8 +542,8 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 			else 
 			{
 				ByRefVariable var = (ByRefVariable)Global.getCurrentSymbolTable().getVariable(name);
-				System.out.println("It's a reference variable named " + name);
-				ByValVariable val = var.getRef();
+if (Global.debug) {				System.out.println("It's a reference variable named " + name);
+}				ByValVariable val = var.getRef();
 				if (val.getIsArray())
 				{
 					connector.modifyVar(val, var.getRefIndex(), value);
@@ -557,8 +557,8 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 			}
 		
 		update(node.getLineNumber(), UPDATE_REASON_ASSIGNMENT);
-		System.out.println("Leaving assignment");
-		
+if (Global.debug) {		System.out.println("Leaving assignment");
+}		
 	}
 	
 	public Integer handleExpression(ASTExpression node)
@@ -596,8 +596,8 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
 	
 	public Integer handleNum(ASTNum node)
 	{
-		System.out.println("gg" + node.getValue());
-		return node.getValue();
+if (Global.debug) {		System.out.println("gg" + node.getValue());
+}		return node.getValue();
 	}
 	public Object visit(ASTProgram node, Object data)
 	{
@@ -678,8 +678,8 @@ public class ByRefInterpretVisitor implements VizParserVisitor, VizParserTreeCon
   	
   	public void leaveScope()
   	{
-  		System.out.println("Leaving scope " + Global.getCurrentSymbolTable().getName());
-
+if (Global.debug) {  		System.out.println("Leaving scope " + Global.getCurrentSymbolTable().getName());
+}
   		update(-1, UPDATE_REASON_LEAVEFUN);
   	}
 }

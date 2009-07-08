@@ -57,16 +57,16 @@ public class ByValVariable extends AbstractVariable implements Variable
 	 */
 	public int getValue(int subscript)
 	{
-		System.out.println("Getting index " + subscript);
-		if (!isArray)
+if (Global.debug) {		System.out.println("Getting index " + subscript);
+}		if (!isArray)
 		{
-			System.out.println("Trying to access non-array as an array");
-			return -255;
+if (Global.debug) {			System.out.println("Trying to access non-array as an array");
+}			return -255;
 		}
 		if (values.size() -1 < subscript)
 		{
-			System.out.println("Error, array index out of bounds");
-			return -255;
+if (Global.debug) {			System.out.println("Error, array index out of bounds");
+}			return -255;
 		}
 		else
 		{
@@ -96,8 +96,8 @@ public class ByValVariable extends AbstractVariable implements Variable
 		}
 		else
 		{
-			System.out.println("trying to index a non-array");
-		}
+if (Global.debug) {			System.out.println("trying to index a non-array");
+}		}
 	}
 	
 	/**
@@ -136,8 +136,8 @@ public class ByValVariable extends AbstractVariable implements Variable
 	{
 		if (this.value != -1000)
 		{
-			System.out.println("Problem handling array");
-			return null;
+if (Global.debug) {			System.out.println("Problem handling array");
+}			return null;
 		}
 		return this.values;
 	}

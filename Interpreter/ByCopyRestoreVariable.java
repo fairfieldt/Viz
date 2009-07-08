@@ -25,14 +25,14 @@ public class ByCopyRestoreVariable extends AbstractVariable implements Variable
 	
 	public void setValue(int value)
 	{
-		System.out.println("My value is now " + value);
-		this.value = value;
+if (Global.debug) {		System.out.println("My value is now " + value);
+}		this.value = value;
 	}
 	
 	public void setRef(ByValVariable ref, int index)
 	{
-		System.out.println("Setting ref to array");
-		this.ref = ref;
+if (Global.debug) {		System.out.println("Setting ref to array");
+}		this.ref = ref;
 		this.refIndex = index;
 		this.value = ref.getValue(index);
 	}	
@@ -46,14 +46,14 @@ public class ByCopyRestoreVariable extends AbstractVariable implements Variable
 	{
 		if (this.refIndex == -1)
 		{
-			System.out.println("Copying out value " + this.value);
-			this.ref.setValue(this.value);
+if (Global.debug) {			System.out.println("Copying out value " + this.value);
+}			this.ref.setValue(this.value);
 		}
 		else
 		{
-			System.out.println("coping out value " + this.value + " to " + refIndex);
-			System.out.println(this.ref.getIsArray());
-			this.ref.setValue(value, this.refIndex);
+if (Global.debug) {			System.out.println("coping out value " + this.value + " to " + refIndex);
+}if (Global.debug) {			System.out.println(this.ref.getIsArray());
+}			this.ref.setValue(value, this.refIndex);
 		}
 	}
 	
@@ -64,8 +64,8 @@ public class ByCopyRestoreVariable extends AbstractVariable implements Variable
 	
 	public int getValue()
 	{
-		System.out.println("Getting value " + this.value);
-		return this.value;
+if (Global.debug) {		System.out.println("Getting value " + this.value);
+}		return this.value;
 	}
 	
 	public void setParam()
@@ -80,8 +80,8 @@ public class ByCopyRestoreVariable extends AbstractVariable implements Variable
 	
 	public void setArray()
 	{
-		System.out.println("A CopyRestore variable can't be an array, ERROR");
-	}
+if (Global.debug) {		System.out.println("A CopyRestore variable can't be an array, ERROR");
+}	}
 	
 	public boolean getIsArray()
 	{
@@ -90,18 +90,18 @@ public class ByCopyRestoreVariable extends AbstractVariable implements Variable
 	
 	public ArrayList<Integer> getValues()
 	{
-		System.out.println("Not an array, ERROR");
-		return null;
+if (Global.debug) {		System.out.println("Not an array, ERROR");
+}		return null;
 	}
 	
 	public int getValue(int subscript)
 	{
-		System.out.println("Not an array, ERROR");
-		return 0;
+if (Global.debug) {		System.out.println("Not an array, ERROR");
+}		return 0;
 	}
 
 	public void setValue(int value, int index)
 	{
-		System.out.println("Not an array, ERROR");
-	}
+if (Global.debug) {		System.out.println("Not an array, ERROR");
+}	}
 }

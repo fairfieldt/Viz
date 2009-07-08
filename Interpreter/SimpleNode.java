@@ -119,8 +119,8 @@ public class SimpleNode implements Node {
   public Object childrenAccept(VizParserVisitor visitor, Object data) {
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        System.out.println(children[i]);
-        children[i].jjtAccept(visitor, data);
+if (Global.debug) {        System.out.println(children[i]);
+}        children[i].jjtAccept(visitor, data);
       }
     }
     return data;
@@ -143,8 +143,8 @@ public class SimpleNode implements Node {
 	return "UNIMPLEMENTED";
   }
   public void dump(String prefix) {
-    System.out.println(toString(prefix));
-    if (children != null) {
+if (Global.debug) {    System.out.println(toString(prefix));
+}    if (children != null) {
       for (int i = 0; i < children.length; ++i) {
   SimpleNode n = (SimpleNode)children[i];
   if (n != null) {

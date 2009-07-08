@@ -36,12 +36,12 @@ public class ASTStatementList extends SimpleNode {
 
   public String getCode()
   {
-  	System.out.println("AS" + this.jjtGetParent());
-  	boolean isNested = this.jjtGetParent() instanceof ASTStatement;
-  	System.out.println("isNested " + isNested);
-  	String code = "";
-  	System.out.println("ASA" + this.jjtGetParent());
-  	if (isNested)
+if (Global.debug) {  	System.out.println("AS" + this.jjtGetParent());
+}  	boolean isNested = this.jjtGetParent() instanceof ASTStatement;
+if (Global.debug) {  	System.out.println("isNested " + isNested);
+}  	String code = "";
+if (Global.debug) {  	System.out.println("ASA" + this.jjtGetParent());
+}  	if (isNested)
   	{
   		code += "{";
   	}
