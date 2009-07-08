@@ -133,7 +133,7 @@ public class Scope implements Drawable
 		}
 		for (Variable v : vars)
 		{
-			if (isGlobal)
+			if (isGlobal || scopes.size() >0)
 			{
 				v.setPosition(currentVarXPos + 25, currentVarYPos +35);
 				

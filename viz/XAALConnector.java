@@ -77,6 +77,14 @@ public class XAALConnector {
 	  actions.offer(new SwapCodePageAction(cp, newCP, currentSnapNum));
   }
   
+  public void swapCodePage(String prevCodePageId, String newCodePageId, boolean scopeReplace)
+  {
+	  CodePage cp = cpc.get(prevCodePageId);
+	  CodePage newCP = cpc.get(newCodePageId);
+	  
+	  actions.offer(new SwapCodePageAction(cp, newCP, scopeReplace, currentSnapNum));
+  }
+  
   
   public boolean showCodePage(String codePageId)
   {
@@ -1591,11 +1599,24 @@ public class XAALConnector {
 	  try
 	  {
 		  scripter.reopenSlide(action.getSnapNum());
-		  boolean parExists = scripter.reopenPar(2);
+		  
+		  boolean parExists = false;
+		if (action.getReplaceScope())
+		{
+			parExists = scripter.reopenPar(4);
+			  if(!parExists)
+			  {
+				  scripter.startPar();
+			  }
+		}
+		else
+		{
+			parExists = scripter.reopenPar(2);
 		  if(!parExists)
 		  {
 			  scripter.startPar();
 		  }
+		}
 		  
 		  CodePage p = action.getCP();
 		  
