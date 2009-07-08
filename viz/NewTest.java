@@ -5,6 +5,10 @@ import java.io.*;
 public class NewTest
 {
 	public static String currentPage;
+	public static int callLine;
+	public static int startScope;
+	public static int endScope;
+	public static int endMain;
 	public static void main(String[] args)
 	{
 		Global.InterpreterType = InterpreterTypes.BY_VALUE;
@@ -93,7 +97,7 @@ public class NewTest
 			*/
 			xc.endPar();
 			xc.startPar();
-			xc.swapCodePage(p2, p3);			
+			xc.swapCodePage(p2, p3, true);			
 			xc.endPar();
 			
 			
