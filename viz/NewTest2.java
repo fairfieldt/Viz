@@ -78,7 +78,7 @@ public class NewTest2
 				String p3 = xc.addCodePage(program.getPseudocode());
 			xc.startPar();
 				//xc.hideCodePage(p2);
-			xc.replaceWithScope(p2, 6, 10, 16, 8);
+			xc.replaceWithScope(p2, 16, 4, 11, 8);
 				//xc.showCodePage(p3);
 			xc.endPar();
 			xc.endSnap();
