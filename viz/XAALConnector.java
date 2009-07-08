@@ -1574,56 +1574,7 @@ public class XAALConnector {
 				    else
 				    	scripter.endPar();
 				  
-			  /*
-			  	int startX = cp.x;
-			    int startY = cp.y + (cp.getLineHeight() * (action.getEndOfMainBrktLNum() -1)); 
-			
-			    int endX = cp.x;
-			    
-			    int totalLines = action.getStartScopeLNum() - action.getEndScopeLNum();
-			    int endY = startY + (cp.getLineHeight() * totalLines);
-			    		    
-			    int moveX = startX - endX;
-			    int moveY = startY - endY;
-			    
-			    scripter.addTranslate(-moveX, -moveY, lineToXaal.get(action.getEndOfMainBrktLNum() -1));
 			  
-			  //reclose the par
-			    if (parExists)
-			    	scripter.reclosePar();
-			    else
-			    	scripter.endPar();
-			 */
-		    
-		    
-		    
-		    /*
-			  //do the moving of the code into place
-			    parExists = scripter.reopenPar(3);
-				  if(!parExists)
-					  scripter.startPar();
-			    
-			    
-			  //write a move for all of the scope lines
-				  for (int i = startLnIndex; i <= endLnIndex; i++)
-				  {
-					    startX = cp.x + dxOnScopeReplace;
-					    startY = cp.y + (cp.getLineHeight() * i);
-					    
-					    endX = cp.x;
-					    endY = cp.y + ((action.getCallLineNum()-1) + (cp.getLineHeight() * (i -startLnIndex)));
-					    
-					    moveX = startX - endX;
-					    moveY = startY - endY;
-					    
-					    scripter.addTranslate(-moveX, -moveY, lineToXaal.get(i));
-				  }
-				  
-				  if (parExists)
-				    	scripter.reclosePar();
-				    else
-				    	scripter.endPar();
-				  */
 				  scripter.recloseSlide();
 	  }
 	  catch (Exception e)
