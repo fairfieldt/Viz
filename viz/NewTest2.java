@@ -85,6 +85,7 @@ public class NewTest2
 			
 			xc.startSnap(3);
 			xc.startPar();
+				xc.hideCodePage(p2);
 			// xc.hideCodePage(p3);
 			xc.endPar();
 			xc.endSnap();
