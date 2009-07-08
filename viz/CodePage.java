@@ -6,11 +6,17 @@ import java.awt.image.BufferedImage;
 import java.util.*;
 
 /**
- *
- * @author Eric
+ * Represents a page of code displayed on the first few slides of by-macro.
+ * @author Eric Schultz and Tom Fairfield
  *
  */
 public class CodePage implements Drawable {
+	
+	//the starting x positions of copies of values 
+	public final int[] fromPosX = {100,120,130};
+	public final int[] toPosX = {60, 90, 120};
+	
+	// the code to be displayed, separated by lines in an array
 	private String[] code;
 
 	// each position 0,1 or 2 has a list of strings it has to make
@@ -27,19 +33,25 @@ public class CodePage implements Drawable {
 	
 	//the line number at which the call will happen and the copies should be written
 	private int callLineNum = -1;
-
-	private String id;
 	
+	//the unique id of the codepage
+	private String id;
+
+	// the height of a line
 	private int lineHeight;
 	
-	public final int[] fromPosX = {100,120,130};
-	public final int[] toPosX = {60, 90, 120};
+	
 	//where the top of the codepage starts on the page
 	public final int y = 10;
 	
 	//where the left side of the codepage starts
 	public final int x = 0;
 	
+	/**
+	 * Constructor for CodePage
+	 * @param id the unique id of the CodePage
+	 * @param code the source code to be displayed separated by lines
+	 */
 	public CodePage(String id, String[] code)
 	{
 		setup();
@@ -52,6 +64,10 @@ public class CodePage implements Drawable {
 		}
 	}
 	
+	/**
+	 * A setup method used by the constructor. I thought we were going to have multiple
+	 * constructors but we don't so this isn't really all that needed.
+	 */
 	private void setup()
 	{
 		copiesToMake = new ArrayList<Queue<String>>();
@@ -61,6 +77,11 @@ public class CodePage implements Drawable {
 	}
 
 	
+	/**
+	 * Adds a copy of str to the CodePage at pos. These copies will be used for moving later.
+	 * @param pos the from x-position. Must be 0, 1 or 2.
+	 * @param str the string to make a copy of.
+	 */
 	public void addCopy(int pos, String str)
 	{
 		copiesToMake.ensureCapacity(pos);
@@ -69,12 +90,19 @@ public class CodePage implements Drawable {
 
 			
 	}
-	
+	/**
+	 * Retrieves this object's id.
+	 * @return the unique id
+	 */
 	public String getId()
 	{
 		return this.id;
 	}
 	
+	/**
+	 * Retrieves all the ids "owned" by this CodePage.
+	 * @return
+	 */
 	public ArrayList<String> getIds()
 	{
 		return ids;

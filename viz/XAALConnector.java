@@ -7,36 +7,71 @@ import java.util.*;
 import Interpreter.Global;
  
 //TODO: highlighting doesn't always work.
+/**
+ * <code>XAALConnector</code> is used by the interpreters to convert the various displayable 
+ * entities (variables, scopes, source code) into the proper XAAL script. <br><br>
+ * XAALConnector has two phases:
+ * <ol>
+ * <li>A recording phase and</li>
+ * <li>A drawing phase</li>
+ * </ol>
+ * <p>The first phase happens as the source code is interpreted by the interpreter. 
+ * The interpreter calls the methods to perform add, show, hide, move and 
+ * other actions on the displayable entities. XAALConnector records each as a 
+ * <code>FutureAction</code>.</p>
+ * <p>Once the first phase is finished, the interpreter calls the <code>draw</code> method.
+ * <code>draw</code> writes the entity to the XAAL script and then performs each 
+ * <code>FutureAction</code>.
+ */
 public class XAALConnector {
  
+	// how far the foo code block should move to the right.
 	private final int dxOnScopeReplace = 400;
 	
-	
+	// the colors scopes can be and the order in which they're used
   private static LinkedList<String> scopeColors;
+  static {
+	    scopeColors = new LinkedList<String>();
+	    scopeColors.add("blue");
+	    scopeColors.add("red");
+	    scopeColors.add("green");
+	  }
+  
+  //the number of the snap we're at
   private int currentSnapNum;
   
+  //the color used to highlight text
   private final String highlightColor = "red";
   
+  //the FutureActions to be performed in draw
   private LinkedList<FutureAction> actions;
   
-  static {
-    scopeColors = new LinkedList<String>();
-    scopeColors.add("blue");
-    scopeColors.add("red");
-    scopeColors.add("green");
-  }
+
   
   private XAALScripter scripter;
+  
+  //a mapping of the Variable used in the interpreter to a Variable used for display
   private HashMap<UUID, Variable> varToVar;
+  
+  //a mapping of the name of a scope to the the Scope used for display
   private HashMap<String, Scope> scopes;
+  // the questions to be written to the script
   private ArrayList<Question> questions;
+  
   private Scope globalScope;
   
   private String[] psuedoCode;
   private String title;
+  //the PsuedoSerializer used to create the psuedocode for each slide
   private PseudoSerializer pseudo;
+  //holds all the CodePages used by the XAALConnector
   private CodePageContainer cpc;
   
+  /**
+   * Constructor for <code>XAALConnector</code>
+   * @param psuedoCode the pseudocode used at the beginning of the visualization
+   * @param title the title of the visualization
+   */
   public XAALConnector(String[] psuedoCode, String title)
   {
     scripter = new XAALScripter();
@@ -51,11 +86,26 @@ public class XAALConnector {
     this.cpc = new CodePageContainer();
   }
   
+  /**
+   * Adds a <code>CodePage</code> for use by <code>XAALConnector</code>.
+   * @param code the code to be displayed on screen.
+   * @return the unique id of the <code>CodePage</code>.
+   */
   public String addCodePage(String[] code)
   {
 	  return cpc.createCodePage(code);
   }
   
+  /**
+   * Performs animation for the first text substitution of the by-macro visualization
+   * on the current snap.
+   * @param codePageId the <code>CodePage</code> the animation is performed on.
+   * @param fromLineNum the line where the highlighted copy moves from.
+   * @param fromPos the position where the highlighted copy moves from.
+   * @param fromStr the actual string to be moved.
+   * @param toLineNum the line where the highlighted copy moves to.
+   * @param toPos the position where the highlighted copy moves to.
+   */
   public void moveArgs(String codePageId, int fromLineNum, int fromPos, String fromStr, 
 		  int toLineNum, int toPos)
   {
@@ -69,6 +119,12 @@ public class XAALConnector {
 			  fromLineNum, fromPos, toLineNum, toPos, fromStr));  
   }
   
+  /**
+   * Performs a swap of two <code>CodePage</code>s on the current snap.
+   * This version can only be used right after a <code>moveArgs</code> call.
+   * @param prevCodePageId the id of the <code>CodePage</code> to be hidden.
+   * @param newCodePageId the id of the <code>CodePage</code> to be shown.
+   */
   public void swapCodePage(String prevCodePageId, String newCodePageId)
   {
 	  CodePage cp = cpc.get(prevCodePageId);
@@ -77,6 +133,13 @@ public class XAALConnector {
 	  actions.offer(new SwapCodePageAction(cp, newCP, currentSnapNum));
   }
   
+  /**
+   * Performs a swap of two <code>CodePage</code>s on the current snap.
+   * @param prevCodePageId the id of the <code>CodePage</code> to be hidden.
+   * @param newCodePageId the id of the <code>CodePage</code> to be shown.
+   * @param scopeReplace use true if this is right after a <code>replaceWithScope</code>, 
+   * false if right after a <code>moveArgs</code> call. A bit of a hack to say the least. 
+   */
   public void swapCodePage(String prevCodePageId, String newCodePageId, boolean scopeReplace)
   {
 	  CodePage cp = cpc.get(prevCodePageId);
@@ -85,13 +148,22 @@ public class XAALConnector {
 	  actions.offer(new SwapCodePageAction(cp, newCP, scopeReplace, currentSnapNum));
   }
   
-  
+  /**
+   * Displays a <code>CodePage</code> for viewing on the current snap.
+   * @param codePageId the id of the <code>CodePage</code> to be shown.
+   * @return always returns true.
+   */
   public boolean showCodePage(String codePageId)
   {
 	  actions.offer(new ShowHideCodePageAction(true, cpc.get(codePageId), currentSnapNum));
 	  return true;
   }
   
+  /**
+   * Hides a <code>CodePage</code> from view on the current snap.
+   * @param codePageId codePageId the id of the <code>CodePage</code> to be hidden.
+   * @return always returns true.
+   */
   public boolean hideCodePage(String codePageId)
   {
 	  actions.offer(new ShowHideCodePageAction(false, cpc.get(codePageId), currentSnapNum));
@@ -99,8 +171,10 @@ public class XAALConnector {
   }
   
   /**
-   * the params would be as marked for the following program: 
-   * 						def foo(x, y)
+   * Performs animation for the second text substitution of the by-macro visualization.<br><br>
+   * The params would be as marked for the following program: 
+   * 
+   * <pre>					def foo(x, y)
    * startScopeLNum: 		{
    * 							x = 2;
    * 							y = x;
@@ -112,14 +186,13 @@ public class XAALConnector {
    * 						def main()
    *  						{
    * callLineNum:				foo(a, b);
-   * endOfMainBrktLNum: 	}
-   * 
+   * endOfMainBrktLNum: 	}</pre>
    * @param codePageId the id of the codePage
    * @param callLineNum the line number of the function that is being replaced
    * @param startScopeLNum the line number at the beginning bracket of "foo"
    * @param endScopeLNum the line number at the ending bracket of "foo"
-   * @param endOfMainBrktLNum the line number at the ending bracket of "main"
-   * @return
+   * @param endOfMainBrktLNum the line number at the ending bracket of "main". Not used.
+   * @return always returns true.
    */
   public boolean replaceWithScope(String codePageId, int callLineNum, 
 		  int startScopeLNum, int endScopeLNum, int endOfMainBrktLNum)
@@ -133,9 +206,9 @@ public class XAALConnector {
   /**
    * Add a scope to the visualization. Also adds its parameters.
    * Assumes that the local symbol table has only the parameters, nothing else.
-   * @param symbols
-   * @param name
-   * @param parent
+   * @param symbols <code>SymbolTable</code> containing all the parameters of the scope.
+   * @param name name of function usually. If the scope has no name just make something up that's unique.
+   * @param parent the parent scope of the scope being added.
    */
   public void addScope(Interpreter.SymbolTable symbols, String name, String parent)
   {
@@ -192,6 +265,12 @@ public class XAALConnector {
     }
   }
   
+  /**
+   * Adds a variable to the visualization.
+   * @param var the <code>Interpreter.Variable</code> to be displayed.
+   * @param varName the name of the variable.
+   * @param scope the name of the scope containing the variable.
+   */
   public void addVariable(Interpreter.Variable var, String varName, String scope)
   {
     Variable v;
@@ -225,6 +304,12 @@ public class XAALConnector {
     scopes.get(scope).addVariable(v);
   }
   
+  /**
+   * Adds a reference from the <code>src</code> variable to the <code>dest</code>. A way
+   * to create a reference variable.
+   * @param src the reference variable.
+   * @param dest the variable being referenced.
+   */
   public void addVariableReference(Interpreter.Variable src, Interpreter.Variable  dest)
   {
   	Variable v1 = varToVar.get(src.getUUID());
@@ -242,6 +327,13 @@ public class XAALConnector {
   }
   
   
+  /**
+   * Adds a reference from the <code>src</code> variable to the <code>index</code> of <code>dest</code>.
+   * A way to create a reference variable to an array element.
+   * @param src the reference variable.
+   * @param dest the array variable containing the index being referenced.
+   * @param index the index being referenced.
+   */
   public void addVariableReference(Interpreter.Variable src, Interpreter.Variable dest, 
 		  int index)
   {
@@ -256,28 +348,33 @@ public class XAALConnector {
 	  	
 	  	v1.setReference(v2, index);
 	  	
-	  	
+	  
   }
   
-  /**
-   * TODO: check if you're actually on a slide
-   */
+  
+//TODO: check if you're actually on a slide
+/**
+ * Displays a <code>Scope</code> on the current slide.
+ * @param s the id of the <code>Scope</code> to be shown.
+ */
   public void showScope(String s)
   {
     actions.offer(new ShowHideScopeAction(true, s, currentSnapNum));
   }
-  
+//TODO: check if you're actually on a slide
   /**
-   * TODO: check if you're actually on a slide
+   * Hides a <code>Scope</code> on the current slide.
+   * @param s the id of the <code>Scope</code> to be hidden.
    */
   public void hideScope(String s)
   {
     actions.offer(new ShowHideScopeAction(false, s, currentSnapNum));
   }
-  
+//TODO: check if you're actually on a slide
   /**
-   * TODO: check if you're actually on a slide
-   * @param var
+   * Displays a <code>Variable</code> on the current slide.
+   * @param var an <code>Interpreter.Variable</code> that corresponds with the <code>Variable</code>
+   * to be shown.
    */
   public void showVar(Interpreter.Variable var)
   {
@@ -285,20 +382,36 @@ public class XAALConnector {
     Variable v = varToVar.get(var.getUUID());
     actions.offer(new ShowHideVarAction(true, v, currentSnapNum));
   }
-  
-  // TODO: check if you're actually on a slide
+
+  //TODO: check if you're actually on a slide
+  /**
+   * Hides a <code>Variable</code> on the current slide.
+   * @param var an <code>Interpreter.Variable</code> that corresponds with the <code>Variable</code>
+   * to be hidden.
+   */
   public void hideVar(Interpreter.Variable var)
   {
     Variable v = varToVar.get(var.getUUID());
     actions.offer(new ShowHideVarAction(false, v, currentSnapNum));
   }
   
-  
+  /**
+   * Starts a new snapshot for actions to take place.
+   * @param lineNum the line number corresponds to the snapshot in the visualization.
+   * @return true if the snap was started, false if something went wrong.
+   */
   public boolean startSnap(int lineNum)
   {
 	return startSnap(lineNum, null);  
   }
   
+  /**
+   * Starts a new snapshot for actions to take place.
+   * @param lineNum the line number corresponds to the snapshot in the visualization. 
+   * @param pseudocode array containing the lines of pseudocode that correspond to this slide.
+   * Only needed if the contents of the pseudocode pane is changed. 
+   * @return true if the snap was started, false if something went wrong.
+   */
   public boolean startSnap(int lineNum, String[] pseudocode)
   {
     if (currentSnapNum > 0)
@@ -318,6 +431,10 @@ public class XAALConnector {
     return true;
   }
   
+  /**
+   * ends the current snapshot.
+   * @return true if the snap was ended, false if something went wrong.
+   */
   public boolean endSnap()
   {
     if (currentSnapNum < 0)
@@ -332,6 +449,10 @@ public class XAALConnector {
     return true;
   }
   
+  /**
+   * starts a parallel section inside the current snapshot. You need one in each snap. 
+   * @return true if the par was started, false if something went wrong.
+   */
   public boolean startPar()
   {
     if (currentSnapNum < 0)
@@ -347,6 +468,10 @@ public class XAALConnector {
     return true;
   }
   
+  /**
+   * ends the current par section.
+   * @return true if the par was ended, false if something went wrong.
+   */
   public boolean endPar()
   {
     if (currentSnapNum < 0)
@@ -364,7 +489,11 @@ public class XAALConnector {
     return true;  
   }
   
-  
+  /**
+   * adds a question to the current snapshot.
+   * @param q the <code>Question</code> to add to the current snapshot. 
+   * @return true if added, false otherwise.
+   */
   public boolean addQuestion(Question q)
   {
     if (currentSnapNum < 0)
@@ -377,7 +506,14 @@ public class XAALConnector {
     return true;
   }
   
-  
+  /**
+   * Animates the passing of the value of <code>Variable</code> to a parameter.
+   * @param from an <code>Interpreter.Variable</code> that corresponds with the <code>Variable</code>
+   * to get the value from.
+   * @param to an <code>Interpreter.Variable</code> that corresponds with the <code>Variable</code>
+   * to send the value to.
+   * @return true of added, false otherwise.
+   */
   public boolean moveValue (Interpreter.Variable from, Interpreter.Variable to)
   {
     if (currentSnapNum < 0)
@@ -396,7 +532,16 @@ public class XAALConnector {
   }
   
 
- 
+  /**
+   * Animates the passing of the value of <code>fromIndex</code> in 
+   * <code>Variable</code> to a parameter.
+   * @param from an <code>Interpreter.Variable</code> that corresponds with the array <code>Variable</code>
+   * containing the index to get the value from.
+   * @param fromIndex the index in <code>from</code> containing the value.
+   * @param to an <code>Interpreter.Variable</code> that corresponds with the <code>Variable</code>
+   * to send the value to.
+   * @return true of added, false otherwise.
+   */
 	public boolean moveValue(Interpreter.Variable from, int fromIndex, Interpreter.Variable to)
 	{
 		 if (currentSnapNum < 0)
@@ -415,6 +560,16 @@ public class XAALConnector {
 		 return true;
 	}
 	
+	/**
+	 * Animates the passing of the value of a parameter <code>Variable</code> back 
+	 * to the <code>toIndex</code> in <code>to</code>. Used in copy-restore.
+	 * @param from an <code>Interpreter.Variable</code> that corresponds with the
+	 *  parameter <code>Variable</code> to get the value from.
+	 * @param to an <code>Interpreter.Variable</code> that corresponds with an
+	 *  array <code>Variable</code>.
+	 * @param toIndex the index in <code>to</code> the value should be moved to.
+	 * @return true if added, false otherwise.
+	 */
 	public boolean moveValue(Interpreter.Variable from, Interpreter.Variable to, 
 			int toIndex)
 	{
@@ -435,6 +590,13 @@ public class XAALConnector {
 		return true;
 	}
   
+  /**
+   * Modifies the value of a <code>Variable</code>.
+   * @param iv an <code>Interpreter.Variable</code> that corresponds with the <code>Variable</code>
+   * to be modified.
+   * @param newValue the new value of the <code>Variable</code>.
+   * @return true if added, false otherwise.
+   */
   public boolean modifyVar(Interpreter.Variable iv, int newValue)
   {
     if (currentSnapNum < 0)
@@ -450,6 +612,14 @@ public class XAALConnector {
     
   }
   
+  /**
+   * Modifies the value at <code>newIndex</code> in an array <code>Variable</code>.
+   * @param iv an <code>Interpreter.Variable</code> that corresponds with the array <code>Variable</code>
+   * containing the index to be modified.
+   * @param index index whose value should be modified.
+   * @param newValue the new value of <code>index</code> in the array <code>Variable</code>.
+   * @return true if added, false otherwise.
+   */
 	public boolean modifyVar(Interpreter.Variable iv, int index, int newValue)
 	{
 		 if (currentSnapNum < 0)
@@ -471,8 +641,9 @@ public class XAALConnector {
  
   
   /**
-   * where the magic happens
-   * @param filename
+   * Writes the entities and action performed on those entities to the script.
+   * The second phase of XAALConnector.
+   * @param filename the name of the file where the script will be written to.
    */
   public void draw(String filename)
   {
@@ -483,7 +654,7 @@ public class XAALConnector {
     
     cpc.draw(scripter);
     System.out.println("Drew code pages");
-    //System.out.println(scripter.toString());
+    
     //perform and write future actions to the scripter
     FutureAction action = null;
     do
@@ -601,9 +772,10 @@ public class XAALConnector {
     
   }
 
-/**
-   * a move consists of:
-   * 1. reopening the slide
+ /**
+   * Writes the variable move to the script.<br><br>
+   * A move consists of (may not be up to date!):
+   * <pre>1. reopening the slide
    * 1.5 reopen par
    * 2. getting a copy1 from the first variable.
    * 2.5 get a newCopy from the first Variable.
@@ -621,8 +793,8 @@ public class XAALConnector {
    * 10.5 reopen next par
    * 11. turn off highlighting of copy1
    * 12. reclose par
-   * 12.5 reclose slide
-   * @param action
+   * 12.5 reclose slide</pre>
+   * @param action the MoveVarAction containing the information needed.
    */
   private void writeMove(MoveVarAction action)
   {
@@ -705,13 +877,14 @@ public class XAALConnector {
     
     }
   
-    
-  } // after this method completes every variable's value must equal the head of
-  //its copiesOwned queue
+ // after this method completes every variable's value must equal the head of
+    //its copiesOwned queue
+  } 
   
   /**
-   * a move consists of:
-   * 1. reopening the slide
+   * Writes the move FROM the index of an array to the script.<br><br>
+   * An index move consists of (may not be up to date!):
+   * <pre>1. reopening the slide
    * 1.5 reopen par
    * 2. getting a copy1 from the first variable at index.
    * 2.5 get a newCopy from the first Variable at index.
@@ -729,8 +902,8 @@ public class XAALConnector {
    * 10.5 reopen next par
    * 11. unhighlight copy1
    * 12. reclose par
-   * 12.5 reclose slide.
-   * @param action
+   * 12.5 reclose slide.</pre>
+   * @param action the MoveVarIndexAction containing the information needed.
    */
   private void writeIndexMove(MoveVarIndexAction action)
   {
@@ -817,8 +990,8 @@ public class XAALConnector {
   }
   
   /**
-   * this is a write back out to an index in an array
-   * @param action
+   * Writes the move TO the index of an array to the script.
+   * @param action the MoveVarToIndexAction containing the information needed.
    */
   private void writeIndexToMove(MoveVarToIndexAction action)
   {
@@ -901,8 +1074,9 @@ public class XAALConnector {
   }
   
   /**
-   * a modify consists of:
-   * 1. reopening the slide
+   * Writes the modification of a variable to the script.<br><br>
+   * A modify consists of(may not be up to date!):
+   * <pre>1. reopening the slide
    * 1.5 reopen par
    * 2. pop the copy of the currentValue
    * 3. hide this copy
@@ -911,7 +1085,8 @@ public class XAALConnector {
    * 6. give ownership of this copy BACK to the variable (its a hack)
    * 7. set the value of the variable to its new value
    * 8. reclose the par
-   * 8.5 reclose the slide
+   * 8.5 reclose the slide</pre>
+   * @param action the ModifyVarAction containing the information needed.
    */
   private void writeVarModify(ModifyVarAction action)
   {
@@ -968,8 +1143,9 @@ public class XAALConnector {
   }
   
   /**
-   * a modify consists of:
-   * 1. reopening the slide
+   * Writes the modification of an index of a variable to the script.<br><br>
+   * an index modify consists of (may not be up to date!):
+   * <pre>1. reopening the slide
    * 1.5 reopen par
    * 2. pop the copy of the currentValue at index
    * 3. hide this copy
@@ -978,7 +1154,8 @@ public class XAALConnector {
    * 6. give ownership of this copy BACK to the variable (its a hack) at index
    * 7. set the value of the variable at index to its new value
    * 8. reclose the par
-   * 8.5 reclose the slide
+   * 8.5 reclose the slide</pre>
+   * @param action the ModifyVarIndexAction containing the information needed.
    */
   private void writeIndexModify(ModifyVarIndexAction action)
   {
@@ -1038,15 +1215,17 @@ public class XAALConnector {
   }
   
   /**
-   * 1. reopening the slide
+   * Writes the displaying of a variable to the script.<br><br>
+   * A variable show consists of (may not be up to date!):
+   * <pre>1. reopening the slide
    * 1.5 reopen par
    * ... show all the ids
    * 2. pop the copy of current value from the variable
    * 3. show the value.
    * 4. give ownership of this copy BACK to the variable (its a HACK)
    * 5. reclose par
-   * 5.5 reclose slide
-   * @param action
+   * 5.5 reclose slide</pre>
+   * @param action the ShowHideVarAction containing the information needed.
    */
   private void writeVarShow(ShowHideVarAction action)
   {
@@ -1127,15 +1306,17 @@ public class XAALConnector {
   }
   
   /**
-   * 1. reopening the slide
+   * Writes the hiding of a variable to the script.<br><br>
+   * A variable hide consists of (may not be up to date!):
+   * <pre>1. reopening the slide
    * 1.5 reopen par
    * ... hide all the ids
    * 2. pop the copy of current value from the variable
    * 3. hide the value.
    * 4. give ownership of this copy BACK to the variable (its a HACK)
    * 5. reclose par
-   * 5.5 reclose slide
-   * @param action
+   * 5.5 reclose slide</pre>
+   * @param action the ShowHideVarAction containing the information needed.
    */
   private void writeVarHide(ShowHideVarAction action)
   {
@@ -1182,11 +1363,11 @@ public class XAALConnector {
     }
   }
   
+  //TODO: make sure that all the params and values are shown correctly, its possible they might not be
   /**
-   * TODO: make sure that all the params and values are shown correctly,
-   * its possible they might not be
-   *
-   * 1. reopen the slide
+   * Writes the showing of a scope to the script.<br><br>
+   * A scope show consists of (may not be up to date!):
+   * <pre> 1. reopen the slide
    * 1.5. reopen the par
    * 2. show all the ids
    * 3. loop through the params as follows:
@@ -1195,8 +1376,8 @@ public class XAALConnector {
    *     6. show the copy
    *     7. give ownership of the copy back to the param HACK
    * 8. reclose the par
-   * 8.5 reclose the slide
-   * @param action
+   * 8.5 reclose the slide</pre>
+   * @param action the ShowHideScopeAction containing the information needed.
    */
   private void writeScopeShow(ShowHideScopeAction action)
   {
@@ -1253,11 +1434,12 @@ public class XAALConnector {
     }
   }
   
-  /**
-   * TODO: make sure that all the params and values are shown correctly,
-   * its possible they might not be
-   *
-   * 1. reopen the slide
+ //TODO: make sure that all the params and values are shown correctly,
+   // its possible they might not be
+   /**
+    * Writes the hiding of a scope to the script.<br><br>
+   * A scope show consists of (may not be up to date!):
+   * <pre>1. reopen the slide
    * 1.5. reopen the par
    * 2. hide all the ids
    * 3. loop through the params as follows:
@@ -1266,8 +1448,8 @@ public class XAALConnector {
    *     6. hide the copy
    *     7. give ownership of the copy back to the param HACK
    * 8. reclose the par
-   * 8.5 reclose the slide
-   * @param action
+   * 8.5 reclose the slide</pre>
+   * @param action the ShowHideScopeAction containing the information needed.
    */
   private void writeScopeHide(ShowHideScopeAction action)
   {
@@ -1349,10 +1531,11 @@ public class XAALConnector {
       System.out.println(e);
     }
   }
+
   /**
-  * 1. reopen the slide
-  * 1.5. reopen the par
-  */
+   * Writes the showing of a code page to the script.
+   * @param action the ShowHideCodePageAction containing the information needed.
+   */
   private void writeCodePageShow(ShowHideCodePageAction action)
   {
 	  try
@@ -1375,6 +1558,10 @@ public class XAALConnector {
 	  }
   }
   
+  /**
+   * Writes the hiding of a code page to the script.
+   * @param action the ShowHideCodePageAction containing the information needed.
+   */
   private void writeCodePageHide(ShowHideCodePageAction action)
   {
 	  try
@@ -1398,7 +1585,10 @@ public class XAALConnector {
 	  }
   }
   
-  
+  /**
+   * Writes the moving of the arguments for the first text substitution for by-macro.
+   * @param action the MoveArgCodePageAction containing the information needed.
+   */
   private void writeMoveArgCodePage(MoveArgCodePageAction action)
   {
 	  try
@@ -1473,6 +1663,10 @@ public class XAALConnector {
 	  }
   }
   
+  /**
+   * Writes the moving of the scope for the second text substitution for by-macro
+   * @param action the ScopeReplaceCodePageAction containing the information needed.
+   */
   private void writeReplaceWithScopeCodePage(ScopeReplaceCodePageAction action)
   {
 	  try
@@ -1591,8 +1785,8 @@ public class XAALConnector {
   }
   
   /**
-   * this starts at par 2 of move of a moveCodepage
-   * @param action
+   * Writes the swapping of a two CodePages to the script.
+   * @param action the SwapCodePageAction containing the information needed.
    */
   private void writeSwapCodePage(SwapCodePageAction action)
   {
