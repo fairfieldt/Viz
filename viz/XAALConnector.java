@@ -1472,9 +1472,10 @@ public class XAALConnector {
 	  {
 		  scripter.reopenSlide(action.getSnapNum());
 		  scripter.reopenPar();
-		  CodePage cp = cpc.get(action.getCP());
+		  CodePage cp = action.getCP();
 		  
-		  ArrayList<String> lineToXaal = cp.getLineToXaalId();
+		  ArrayList<String> lineToXaal;
+		  lineToXaal = cp.getLineToXaalId();
 		  
 		  //move scope to left
 		  int startLnIndex = action.getStartScopeLNum() -1;
