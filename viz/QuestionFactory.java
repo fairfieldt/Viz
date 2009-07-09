@@ -24,7 +24,7 @@ public class QuestionFactory implements UpdateReasons
 						 + varName + " be after the main function returns?");
 				break;
 			case 1:
-				question = new TFQuestion("After them main function returns, the value of "
+				question = new TFQuestion("After the main function returns, the value of "
 				 + varName + " will be ");
 				 break;
 				 
