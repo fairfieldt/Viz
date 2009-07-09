@@ -7,10 +7,12 @@ import viz.*;
 import java.io.*;
 public class ParameterPassing {
 
+	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		XAALScripter.debug = true;
 		
 		Random r = new Random();
 		int num = r.nextInt(3);
@@ -24,8 +26,6 @@ public class ParameterPassing {
 			case 2: byCR(args);
 				break;
 		}
-	
-
 	}
 	
 	private static void byValue(String[] args)
@@ -53,6 +53,12 @@ public class ParameterPassing {
 			System.out.println("________________\n");
 			
 			program.buildCode();
+			
+			if (XAALScripter.debug)
+				for (String s : program.getPseudocode())
+				{
+					System.out.println(s);
+				}
 			
 			XAALConnector xc = new XAALConnector(program.getPseudocode(), "By Value");
 		
@@ -98,6 +104,11 @@ public class ParameterPassing {
 			System.out.println("________________\n");
 			
 			program.buildCode();
+			if (XAALScripter.debug)
+				for (String s : program.getPseudocode())
+				{
+					System.out.println(s);
+				}
 			
 			XAALConnector xc = new XAALConnector(program.getPseudocode(), "By Reference");
 		
@@ -143,9 +154,14 @@ public class ParameterPassing {
 			System.out.println("________________\n");
 			
 			program.buildCode();
+			if (XAALScripter.debug)
+				for (String s : program.getPseudocode())
+				{
+					System.out.println(s);
+				}
 			
 			XAALConnector xc = new XAALConnector(program.getPseudocode(), "By Copy Restore");
-		
+			
 			QuestionFactory questionFactory = new QuestionFactory();
 			
 			CopyRestoreInterpretVisitor iv = new CopyRestoreInterpretVisitor();
@@ -159,6 +175,7 @@ public class ParameterPassing {
 		}
 		catch (Exception e)
 		{
+			System.out.println();
 		}
 		
 	}
