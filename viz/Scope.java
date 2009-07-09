@@ -157,13 +157,6 @@ public class Scope implements Drawable
 	
 	public ArrayList<Variable> getParams()
 	{
-		ArrayList<Variable> params = new ArrayList<Variable>();
-		
-		for (Variable v : this.params)
-		{
-			params.add(v);
-		}
-		
 		return params;
 	}
 	
