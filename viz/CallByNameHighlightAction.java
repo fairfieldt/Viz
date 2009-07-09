@@ -1,20 +1,26 @@
 package viz;
 
-public class CallByNameHighlightAction extends VarAction {
+public class CallByNameHighlightAction extends FutureAction{
 	private String fadedScope;
-	private String highlightScope;
+	private String[] highlightScopes;
+	private Variable[] highlightVars;
+	private Variable modifiedVar;
+	private int value;
 	
-	public CallByNameHighlightAction(Variable highlightVar, String fadedScope, 
-			String highlightScope, int slideNum)
+	public CallByNameHighlightAction(Variable[] highlightVars, String fadedScope, 
+			String[] highlightScopes, Variable modifiedVar, int value, int slideNum)
 	{
-		super(highlightVar, slideNum);
+		super(slideNum);
 		this.fadedScope = fadedScope;
-		this.highlightScope = highlightScope;
+		this.highlightScopes = highlightScopes;
+		this.highlightVars = highlightVars;
+		this.modifiedVar = modifiedVar;
+		this.value = value;
 	}
 	
-	public Variable getHighlightVar()
+	public Variable[] getHighlightVars()
 	{
-		return getTo();
+		return highlightVars;
 	}
 	
 	public String getFadedScope()
@@ -22,8 +28,18 @@ public class CallByNameHighlightAction extends VarAction {
 		return fadedScope;
 	}
 	
-	public String getHighlightScope()
+	public String[] getHighlightScopes()
 	{
-		return highlightScope;
+		return highlightScopes;
+	}
+	
+	public Variable getModifiedVar()
+	{
+		return modifiedVar;
+	}
+	
+	public int getValue()
+	{
+		return value;
 	}
 }
