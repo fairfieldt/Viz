@@ -1402,7 +1402,6 @@ public class XAALScripter {
 
 				e.printStackTrace();
 			}
-		
 	}
 
 	/**
