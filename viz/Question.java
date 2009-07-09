@@ -7,6 +7,7 @@ public abstract class Question implements Drawable {
 	
 	protected String questionText;
 	
+	public boolean aboutArg = false;
 	//The name of the var we care about
 	protected String variable;
 	

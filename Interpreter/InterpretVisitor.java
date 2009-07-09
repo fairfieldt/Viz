@@ -472,19 +472,16 @@ if (XAALScripter.debug) {				System.out.println("CQC " + callQuestion);
 		
 			boolean gotAQuestion = q < QUESTION_FREQUENCY;//HACK FOR NOW FIXME
 		String name = node.getName();
-if (XAALScripter.debug) {		System.out.println("Assigning to " + name);
-}		Integer value = (Integer)node.jjtGetChild(1).jjtAccept(this, null);
+		if (XAALScripter.debug) {System.out.println("Assigning to " + name);}
+		Integer value = (Integer)node.jjtGetChild(1).jjtAccept(this, null);
 		int index = 0;
-if (XAALScripter.debug) {		System.out.println("HRM");
-}if (XAALScripter.debug) {		System.out.println(Global.getCurrentSymbolTable());
-}		ByValVariable v = (ByValVariable) Global.getCurrentSymbolTable().getVariable(name);
-if (XAALScripter.debug) {		System.out.println("VVVV" + v.getIsArray() + " " + name);
-}		if (v.getIsArray())
+		
+		ByValVariable v = (ByValVariable) Global.getCurrentSymbolTable().getVariable(name);
+
+		if (v.getIsArray())
 		{
-if (XAALScripter.debug) {			System.out.println("Dealing with an array");
-}			index = (Integer) node.jjtGetChild(0).jjtGetChild(0).jjtAccept(this, null);
-if (XAALScripter.debug) {			System.out.println("Index: " + index);
-}			v.setValue(value, index);
+			index = (Integer) node.jjtGetChild(0).jjtGetChild(0).jjtAccept(this, null);
+			v.setValue(value, index);
 		if (gotAQuestion)
 		{
 			assignmentQuestion = questionFactory.getAssignmentQuestion(node.getLineNumber(), name, index);
@@ -505,13 +502,26 @@ if (XAALScripter.debug) {			System.out.println("Index: " + index);
 			int i;
 			if (assignmentQuestion.getIndex() != -1)
 			{
-if (XAALScripter.debug) {				System.out.println("This might be wrong");
-}				i = Global.getCurrentSymbolTable().get(name, assignmentQuestion.getIndex());
+				if (assignmentQuestion.aboutArg)
+				{
+					i = Global.getFunction("main").getSymbolTable().get(assignmentQuestion.getVariable(), assignmentQuestion.getIndex());
+				}
+				else
+				{
+					i = Global.getCurrentSymbolTable().get(name, assignmentQuestion.getIndex());
+				}
 			}
 			else
 			{
-if (XAALScripter.debug) {				System.out.println("FFF " + assignmentQuestion.getVariable());
-}				i = Global.getCurrentSymbolTable().get(assignmentQuestion.getVariable());
+				if (assignmentQuestion.aboutArg)
+				{
+					System.out.println("Getting " + name);
+					i = Global.getFunction("main").getSymbolTable().get(assignmentQuestion.getVariable());
+				}
+				else
+				{
+					i = Global.getCurrentSymbolTable().get(name);
+				}
 			}
 			setAssignmentQuestionAnswer(i);
 			connector.addQuestion(assignmentQuestion);

@@ -126,7 +126,7 @@ public class QuestionFactory implements UpdateReasons
 			Random r = new Random();
 			int choose = r.nextInt(2);
 			
-			if (true)  //should be choose == 0
+			if (choose == 0)  //should be choose == 0
 			{
 				String argName = Global.getCurrentParamToArg().get(varName);
 				Interpreter.Variable arg =  Global.getFunction("main").getSymbolTable().getVariable(argName);
@@ -145,6 +145,7 @@ public class QuestionFactory implements UpdateReasons
 				varName + 
 				" after the current line executes?");
 		question.setVariable(varName);
+		question.aboutArg = gotAnArg;
 
 		return question;
 	}
