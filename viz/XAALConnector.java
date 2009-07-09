@@ -38,7 +38,7 @@ public class XAALConnector {
 	static {
 		scopeColors = new LinkedList<String>();
 		scopeColors.add("blue");
-		scopeColors.add("red");
+		scopeColors.add("purple");
 		scopeColors.add("green");
 	}
 
