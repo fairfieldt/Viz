@@ -1,7 +1,7 @@
 package Interpreter;
 
 import java.util.*;
-
+import viz.*;
 public class SymbolTable
 {
 	private HashMap<String, Variable> vars;
@@ -12,7 +12,7 @@ public class SymbolTable
 	{
 		if ( previous != null)
 		{
-if (Global.debug) {			System.out.println("Setting prev st to " + previous.getName());
+if (XAALScripter.debug) {			System.out.println("Setting prev st to " + previous.getName());
 }			this.previous = previous;
 		}
 		else
@@ -44,7 +44,7 @@ if (Global.debug) {			System.out.println("Setting prev st to " + previous.getNam
 		}
 		else
 		{
-if (Global.debug) {			System.out.println("Error!  Couldn't find variable");
+if (XAALScripter.debug) {			System.out.println("Error!  Couldn't find variable");
 }		}
 		return v;
 	}
@@ -141,7 +141,7 @@ if (Global.debug) {			System.out.println("Error!  Couldn't find variable");
 		}
 		else
 		{
-if (Global.debug) {			System.out.println("error! variable not found: " + name);
+if (XAALScripter.debug) {			System.out.println("error! variable not found: " + name);
 }		}
 	}
 	

@@ -2,6 +2,7 @@
 /* JavaCCOptions:MULTI=true,NODE_USES_PARSER=false,VISITOR=true,TRACK_TOKENS=false,NODE_PREFIX=AST,NODE_EXTENDS=,NODE_FACTORY= */
 package Interpreter;
 
+import viz.*;
 import java.util.*;
 
 public class ASTArgs extends SimpleNode {
@@ -22,7 +23,7 @@ public class ASTArgs extends SimpleNode {
   
   public void gatherArgs()
   {
-if (Global.debug) {  	System.out.println("Gathering args");
+if (XAALScripter.debug) {  	System.out.println("Gathering args");
 }  	for (int i = 0; i < jjtGetNumChildren(); i++)
   	{
   		args.add((ASTVar)jjtGetChild(i));

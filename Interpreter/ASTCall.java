@@ -21,7 +21,7 @@ public class ASTCall extends SimpleNode implements VizParserTreeConstants{
   
   public void addArgs(ArrayList<ASTVar> args)
   {
-if (Global.debug) {  	System.out.println("Addargs called");
+if (XAALScripter.debug) {  	System.out.println("Addargs called");
 }  	this.args = args;
   }
   
@@ -63,7 +63,7 @@ if (Global.debug) {  	System.out.println("Addargs called");
   {
 	if (jjtGetNumChildren() == 0)
 	{
-if (Global.debug) {		System.out.println("I had no args");
+if (XAALScripter.debug) {		System.out.println("I had no args");
 }		ASTArgs args = new ASTArgs(JJTARGS);
 		args.jjtSetParent(this);
 		this.jjtAddChild(args, 0);

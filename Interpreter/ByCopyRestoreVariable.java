@@ -1,6 +1,6 @@
 package Interpreter;
 import java.util.*;
-
+import viz.*;
 public class ByCopyRestoreVariable extends AbstractVariable implements Variable
 {
 	//The ByValVariable we're referring to
@@ -25,13 +25,13 @@ public class ByCopyRestoreVariable extends AbstractVariable implements Variable
 	
 	public void setValue(int value)
 	{
-if (Global.debug) {		System.out.println("My value is now " + value);
+if (XAALScripter.debug) {		System.out.println("My value is now " + value);
 }		this.value = value;
 	}
 	
 	public void setRef(ByValVariable ref, int index)
 	{
-if (Global.debug) {		System.out.println("Setting ref to array");
+if (XAALScripter.debug) {		System.out.println("Setting ref to array");
 }		this.ref = ref;
 		this.refIndex = index;
 		this.value = ref.getValue(index);
@@ -46,13 +46,13 @@ if (Global.debug) {		System.out.println("Setting ref to array");
 	{
 		if (this.refIndex == -1)
 		{
-if (Global.debug) {			System.out.println("Copying out value " + this.value);
+if (XAALScripter.debug) {			System.out.println("Copying out value " + this.value);
 }			this.ref.setValue(this.value);
 		}
 		else
 		{
-if (Global.debug) {			System.out.println("coping out value " + this.value + " to " + refIndex);
-}if (Global.debug) {			System.out.println(this.ref.getIsArray());
+if (XAALScripter.debug) {			System.out.println("coping out value " + this.value + " to " + refIndex);
+}if (XAALScripter.debug) {			System.out.println(this.ref.getIsArray());
 }			this.ref.setValue(value, this.refIndex);
 		}
 	}
@@ -64,7 +64,7 @@ if (Global.debug) {			System.out.println("coping out value " + this.value + " to
 	
 	public int getValue()
 	{
-if (Global.debug) {		System.out.println("Getting value " + this.value);
+if (XAALScripter.debug) {		System.out.println("Getting value " + this.value);
 }		return this.value;
 	}
 	
@@ -80,7 +80,7 @@ if (Global.debug) {		System.out.println("Getting value " + this.value);
 	
 	public void setArray()
 	{
-if (Global.debug) {		System.out.println("A CopyRestore variable can't be an array, ERROR");
+if (XAALScripter.debug) {		System.out.println("A CopyRestore variable can't be an array, ERROR");
 }	}
 	
 	public boolean getIsArray()
@@ -90,18 +90,18 @@ if (Global.debug) {		System.out.println("A CopyRestore variable can't be an arra
 	
 	public ArrayList<Integer> getValues()
 	{
-if (Global.debug) {		System.out.println("Not an array, ERROR");
+if (XAALScripter.debug) {		System.out.println("Not an array, ERROR");
 }		return null;
 	}
 	
 	public int getValue(int subscript)
 	{
-if (Global.debug) {		System.out.println("Not an array, ERROR");
+if (XAALScripter.debug) {		System.out.println("Not an array, ERROR");
 }		return 0;
 	}
 
 	public void setValue(int value, int index)
 	{
-if (Global.debug) {		System.out.println("Not an array, ERROR");
+if (XAALScripter.debug) {		System.out.println("Not an array, ERROR");
 }	}
 }

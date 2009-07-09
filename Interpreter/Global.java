@@ -1,6 +1,6 @@
 package Interpreter;
 import java.util.*;
-
+import viz.*;
 public class Global
 {
 	//Line number for pseudocode.
@@ -46,7 +46,7 @@ public class Global
 	public static void setCurrentSymbolTable(SymbolTable table)
 	{
 		currentSymbolTable = table;
-if (Global.debug) {		System.out.println("done here");
+if (XAALScripter.debug) {		System.out.println("done here");
 }	}
 	
 	public static boolean addFunction(ASTFunction fun)
@@ -54,7 +54,7 @@ if (Global.debug) {		System.out.println("done here");
 		//System.out.println("Adding a function");
 		if (functions.containsKey(fun.getName()))
 		{
-if (Global.debug) {			System.out.println("Found key " + fun.getName());
+if (XAALScripter.debug) {			System.out.println("Found key " + fun.getName());
 }			return false;
 		}
 		functions.put(fun.getName(), fun);

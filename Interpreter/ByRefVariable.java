@@ -1,6 +1,6 @@
 package Interpreter;
 import java.util.*;
-
+import viz.*;
 public class ByRefVariable extends AbstractVariable implements Variable
 {
 	//The ByValVariable we're referring to
@@ -40,15 +40,15 @@ public class ByRefVariable extends AbstractVariable implements Variable
 	
 	public void setValue(int value)
 	{
-if (Global.debug) {		System.out.println("ref: " + ref);
-}if (Global.debug) {		System.out.println("Setting value");
+if (XAALScripter.debug) {		System.out.println("ref: " + ref);
+}if (XAALScripter.debug) {		System.out.println("Setting value");
 }		this.ref.setValue(value);
-if (Global.debug) {		System.out.println("Done setting value");
+if (XAALScripter.debug) {		System.out.println("Done setting value");
 }	}
 	
 	public int getValue()
 	{
-if (Global.debug) {		System.out.println("Getting value");
+if (XAALScripter.debug) {		System.out.println("Getting value");
 }		if (this.refIndex == -1) //Normal var
 		{
 			return this.ref.getValue();
@@ -68,7 +68,7 @@ if (Global.debug) {		System.out.println("Getting value");
 	
 	public void setArray()
 	{
-if (Global.debug) {		System.out.println("A Reference variable can't be an array, ERROR");
+if (XAALScripter.debug) {		System.out.println("A Reference variable can't be an array, ERROR");
 }	}
 	
 	public boolean getIsArray()
@@ -78,18 +78,18 @@ if (Global.debug) {		System.out.println("A Reference variable can't be an array,
 	
 	public ArrayList<Integer> getValues()
 	{
-if (Global.debug) {		System.out.println("Not an array, ERROR");
+if (XAALScripter.debug) {		System.out.println("Not an array, ERROR");
 }		return null;
 	}
 	
 	public int getValue(int subscript)
 	{
-if (Global.debug) {		System.out.println("Not an array, ERROR");
+if (XAALScripter.debug) {		System.out.println("Not an array, ERROR");
 }		return 0;
 	}
 
 	public void setValue(int value, int index)
 	{
-if (Global.debug) {		System.out.println("Not an array, ERROR");
+if (XAALScripter.debug) {		System.out.println("Not an array, ERROR");
 }	}
 }

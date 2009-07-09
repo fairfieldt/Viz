@@ -29,7 +29,7 @@ public class ByMacroVisitor2 implements VizParserVisitor, VizParserTreeConstants
 	{
 		int id = node.getId();
 		Object retVal = null;
-if (Global.debug) {		System.out.println("Visiting " + id);
+if (XAALScripter.debug) {		System.out.println("Visiting " + id);
 }		switch (id)
 		{
 			case JJTSTATEMENTLIST:
@@ -39,7 +39,7 @@ if (Global.debug) {		System.out.println("Visiting " + id);
 				node.childrenAccept(this, null);
 				break;
 			case JJTCALL:
-if (Global.debug) {				System.out.println("CALL");
+if (XAALScripter.debug) {				System.out.println("CALL");
 }				handleCall((ASTCall)node);
 				node.childrenAccept(this, null);
 				break;
@@ -52,11 +52,11 @@ if (Global.debug) {				System.out.println("CALL");
 			default:
 				for (int i = 0; i < node.jjtGetNumChildren(); i++)
 				{
-if (Global.debug) {					System.out.println(node.jjtGetChild(i));
+if (XAALScripter.debug) {					System.out.println(node.jjtGetChild(i));
 }					SimpleNode s = (SimpleNode)node.jjtGetChild(i);
 					s.jjtAccept(this, null);
 				}
-if (Global.debug) {				System.out.println("AFTER");
+if (XAALScripter.debug) {				System.out.println("AFTER");
 }		}
 		return retVal;
 	}
@@ -90,24 +90,24 @@ if (Global.debug) {				System.out.println("AFTER");
 		*/
 		//Get the correct function head node
 		ASTFunction fun = Global.getFunction(node.getName());
-if (Global.debug) {		System.out.println("Calling!: " + fun.getName());
+if (XAALScripter.debug) {		System.out.println("Calling!: " + fun.getName());
 }		
 		//The call's grandparent knows the line number and we need to know it later
 		SimpleNode sn = (SimpleNode) node.jjtGetParent();
 		sn = (SimpleNode) sn.jjtGetParent();
-if (Global.debug) {		System.out.println("Got grandparent");
+if (XAALScripter.debug) {		System.out.println("Got grandparent");
 }		
 		callLineNumber = sn.getLineNumber();
-if (Global.debug) {		System.out.println("AHHHH " + callLineNumber);
+if (XAALScripter.debug) {		System.out.println("AHHHH " + callLineNumber);
 }		
 		
 		//Get the parameters and put the correct values in the symbolTable
 		SymbolTable st = fun.getSymbolTable();
 		st.setPrevious(Global.getCurrentSymbolTable());
-if (Global.debug) {		System.out.println(Global.getCurrentSymbolTable());
+if (XAALScripter.debug) {		System.out.println(Global.getCurrentSymbolTable());
 }		String name = fun.getName();
 		
-if (Global.debug) {		System.out.println(name);
+if (XAALScripter.debug) {		System.out.println(name);
 }		ArrayList<String> parameters = fun.getParameters();		
 
 		
@@ -126,8 +126,8 @@ if (Global.debug) {		System.out.println(name);
 		inNested = false;
 		
 		//Now attach the function's statementlist to the expression where the call was.
-if (Global.debug) {		System.out.println(node);
-}if (Global.debug) {		System.out.println(node.jjtGetParent());
+if (XAALScripter.debug) {		System.out.println(node);
+}if (XAALScripter.debug) {		System.out.println(node.jjtGetParent());
 }		ASTExpression exp = (ASTExpression) node.jjtGetParent();
 		ASTStatement stmnt = (ASTStatement) exp.jjtGetParent();
 		stmnt.children[0] = fun.jjtGetChild(0);
@@ -137,7 +137,7 @@ if (Global.debug) {		System.out.println(node);
 		((ASTStatementList)stmnt.jjtGetChild(0)).setSymbolTable(fun.getSymbolTable());
 		fun.getSymbolTable().setName("");
 
-if (Global.debug) {		System.out.println("asas");
+if (XAALScripter.debug) {		System.out.println("asas");
 }		
 		//Remove the function declaration
 		fun.setUsed(false);
@@ -156,7 +156,7 @@ if (Global.debug) {		System.out.println("asas");
 	
 	public Object visit(ASTDeclarationList node, Object data)
 	{	
-if (Global.debug) {		System.out.println("Handle decl list");
+if (XAALScripter.debug) {		System.out.println("Handle decl list");
 }		node.childrenAccept(this, null);
 		return null;
 	}
@@ -186,7 +186,7 @@ if (Global.debug) {		System.out.println("Handle decl list");
 	
 	public Object visit(ASTFunction node, Object data)
 	{	
-if (Global.debug) {		System.out.println("Visiting function");
+if (XAALScripter.debug) {		System.out.println("Visiting function");
 }		
 		node.childrenAccept(this, null);
 		return null;
@@ -194,10 +194,10 @@ if (Global.debug) {		System.out.println("Visiting function");
 	
 	public Object visit(ASTStatementList node, Object data)
 	{
-if (Global.debug) {		System.out.println("here");
+if (XAALScripter.debug) {		System.out.println("here");
 }		for (int i = 0; i < node.jjtGetNumChildren(); i++)
 		{
-if (Global.debug) {			System.out.println(node.jjtGetChild(i));
+if (XAALScripter.debug) {			System.out.println(node.jjtGetChild(i));
 }			node.jjtGetChild(i).jjtAccept(this, null);
 		}
 		return null;
@@ -206,7 +206,7 @@ if (Global.debug) {			System.out.println(node.jjtGetChild(i));
   	{
 	  	for (int i = 0; i < node.jjtGetNumChildren(); i++)
 		{
-if (Global.debug) {			System.out.println(node.jjtGetChild(i));
+if (XAALScripter.debug) {			System.out.println(node.jjtGetChild(i));
 }			node.jjtGetChild(i).jjtAccept(this, null);
 		}
   		return null;
@@ -231,7 +231,7 @@ if (Global.debug) {			System.out.println(node.jjtGetChild(i));
  	{
 		for (int i = 0; i < node.jjtGetNumChildren(); i++)
 		{
-if (Global.debug) {			System.out.println(node.jjtGetChild(i));
+if (XAALScripter.debug) {			System.out.println(node.jjtGetChild(i));
 }			node.jjtGetChild(i).jjtAccept(this, null);
 		}
 		return null;

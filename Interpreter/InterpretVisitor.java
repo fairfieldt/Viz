@@ -35,8 +35,8 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	//FIXME use this?
 	public void update(int lineNumber, int reason)
 	{
-if (Global.debug) {		System.out.println("Update on " + lineNumber);
-}if (Global.debug) {		System.out.println(Global.getCurrentSymbolTable().toString());
+if (XAALScripter.debug) {		System.out.println("Update on " + lineNumber);
+}if (XAALScripter.debug) {		System.out.println(Global.getCurrentSymbolTable().toString());
 }		//questionFactory.addAnswers(lineNumber, reason);
 	}
 	
@@ -101,7 +101,7 @@ if (Global.debug) {		System.out.println("Update on " + lineNumber);
 				handleFunction((ASTFunction)node);
 				break;
 			default:
-if (Global.debug) {				System.out.println("Unimplemented");
+if (XAALScripter.debug) {				System.out.println("Unimplemented");
 }		}
 		return retVal;
 	}
@@ -155,10 +155,10 @@ if (Global.debug) {				System.out.println("Unimplemented");
 				// we can't hide foo in by macro cuz it doesn't exist
 				if (!byMacroFlag)
 					connector.hideScope("foo");
-if (Global.debug) {				System.out.println("BLAH");
+if (XAALScripter.debug) {				System.out.println("BLAH");
 }			connector.endPar();
 		connector.endSnap();
-if (Global.debug) {		System.out.println("Done");
+if (XAALScripter.debug) {		System.out.println("Done");
 }	}
 	
 	public void handleDeclarationList(ASTDeclarationList node)
@@ -166,7 +166,7 @@ if (Global.debug) {		System.out.println("Done");
 		connector.startSnap(Global.getFunction("main").getLineNumber());
 		connector.startPar();
 		
-if (Global.debug) {		System.out.println("Visiting declList");
+if (XAALScripter.debug) {		System.out.println("Visiting declList");
 }		int numDecls = node.jjtGetNumChildren();
 		for (int i = 0; i < numDecls; i++)
 		{
@@ -217,16 +217,16 @@ if (Global.debug) {		System.out.println("Visiting declList");
 		String name = node.getName();
 		node.setLineNumber(((SimpleNode)node.jjtGetParent()).getLineNumber());
 		SymbolTable s = Global.getCurrentSymbolTable();
-if (Global.debug) {		System.out.println("VDCL " + s + " " + name);
+if (XAALScripter.debug) {		System.out.println("VDCL " + s + " " + name);
 }		ArrayList<Integer> values;
 
 		if (node.getIsArray())
 		{
 			ByValVariable v = (ByValVariable) s.getVariable(name);
 			v.setArray();
-if (Global.debug) {			System.out.println("BLAH" + node.jjtGetChild(0));
+if (XAALScripter.debug) {			System.out.println("BLAH" + node.jjtGetChild(0));
 }			 values = (ArrayList<Integer>)handleArrayDeclaration((ASTArrayDeclaration)node.jjtGetChild(0));
-if (Global.debug) {			System.out.println("Values: " + values);
+if (XAALScripter.debug) {			System.out.println("Values: " + values);
 }			v.setValues(values);
 		}
 		else
@@ -236,7 +236,7 @@ if (Global.debug) {			System.out.println("Values: " + values);
 		}
 
 			//Drawing Stuff
-if (Global.debug) {			System.out.println(s.getName());
+if (XAALScripter.debug) {			System.out.println(s.getName());
 }			connector.addVariable(s.getVariable(name), name, s.getName());
 			
 			//This is a snapshot
@@ -250,7 +250,7 @@ if (Global.debug) {			System.out.println(s.getName());
 		// calling function's, and then set it to current.
 		if (!node.getUsed())
 		{
-if (Global.debug) {			System.out.println("Unused function");
+if (XAALScripter.debug) {			System.out.println("Unused function");
 }			return;
 		}
 		SymbolTable currentSymbolTable = node.getSymbolTable();
@@ -263,7 +263,7 @@ if (Global.debug) {			System.out.println("Unused function");
 		Global.setCurrentSymbolTable(currentSymbolTable);
 
 		
-if (Global.debug) {		System.out.println("Executing function: " + node.getName());
+if (XAALScripter.debug) {		System.out.println("Executing function: " + node.getName());
 }
 		node.jjtGetChild(0).jjtAccept(this, null);
 		leaveScope();
@@ -274,10 +274,10 @@ if (Global.debug) {		System.out.println("Executing function: " + node.getName())
 		for (int i = 0; i < node.jjtGetNumChildren(); i++)
 		{
 			Integer value = (Integer)node.jjtGetChild(i).jjtAccept(this, null);
-if (Global.debug) {			System.out.println("ff " + value);
+if (XAALScripter.debug) {			System.out.println("ff " + value);
 }			values.add(value);
 		}
-if (Global.debug) {		System.out.println(values);
+if (XAALScripter.debug) {		System.out.println(values);
 }		return values;
 	}
 	
@@ -286,7 +286,7 @@ if (Global.debug) {		System.out.println(values);
 		if (!node.getIsFunction())
 		{
 			Global.setCurrentSymbolTable(Global.getFunction("foo").getSymbolTable());
-if (Global.debug) {			System.out.println(Global.getCurrentSymbolTable());
+if (XAALScripter.debug) {			System.out.println(Global.getCurrentSymbolTable());
 }			connector.addScope(Global.getCurrentSymbolTable(), "", "main");
 			connector.showScope("");
 		}
@@ -294,7 +294,7 @@ if (Global.debug) {			System.out.println(Global.getCurrentSymbolTable());
 		int numStatements = node.jjtGetNumChildren();
 		for (int i = 0; i < numStatements; i++)
 		{
-if (Global.debug) {			System.out.println(node.jjtGetChild(i));
+if (XAALScripter.debug) {			System.out.println(node.jjtGetChild(i));
 }			node.jjtGetChild(i).jjtAccept(this, null);
 		}
 		if (!node.getIsFunction())
@@ -320,15 +320,15 @@ if (Global.debug) {			System.out.println(node.jjtGetChild(i));
 		if (s instanceof ASTStatementList)
 		{
 
-if (Global.debug) {			System.out.println("Nested scope!");
-}if (Global.debug) {			System.out.println(Global.getCurrentSymbolTable());
+if (XAALScripter.debug) {			System.out.println("Nested scope!");
+}if (XAALScripter.debug) {			System.out.println(Global.getCurrentSymbolTable());
 }			SymbolTable st = new SymbolTable(Global.getCurrentSymbolTable());
 			st.setName("nested");
-if (Global.debug) {			System.out.println(st);
+if (XAALScripter.debug) {			System.out.println(st);
 }			Global.setCurrentSymbolTable(st);
 			s.jjtAccept(this, null);
 			Global.setCurrentSymbolTable(st.getPrevious());
-if (Global.debug) {			System.out.println("Done with nested scope!");
+if (XAALScripter.debug) {			System.out.println("Done with nested scope!");
 }		}
 		else
 		{
@@ -350,7 +350,7 @@ if (Global.debug) {			System.out.println("Done with nested scope!");
 			boolean gotAQuestion = true; //FIXME HACK
 		//Get the correct function head node
 		ASTFunction fun = Global.getFunction(node.getName());
-if (Global.debug) {		System.out.println("Calling: " + fun.getName());
+if (XAALScripter.debug) {		System.out.println("Calling: " + fun.getName());
 }		//Get the parameters and put the correct values in the symbolTable
 		SymbolTable st = fun.getSymbolTable();
 		String name = fun.getName();
@@ -408,7 +408,7 @@ if (Global.debug) {		System.out.println("Calling: " + fun.getName());
 			int answer = Global.getFunction("main").getSymbolTable().get(callQuestion.getVariable());
 			if (callQuestion instanceof FIBQuestion)
 			{
-if (Global.debug) {				System.out.println("AAAA " + answer);
+if (XAALScripter.debug) {				System.out.println("AAAA " + answer);
 }				((FIBQuestion)callQuestion).addAnswer(answer+"");
 			}
 			else if (callQuestion instanceof TFQuestion)
@@ -448,7 +448,7 @@ if (Global.debug) {				System.out.println("AAAA " + answer);
 			}	
 			else
 			{
-if (Global.debug) {				System.out.println("CQC " + callQuestion);
+if (XAALScripter.debug) {				System.out.println("CQC " + callQuestion);
 }			}
 		}
 		return 0;
@@ -472,18 +472,18 @@ if (Global.debug) {				System.out.println("CQC " + callQuestion);
 		
 			boolean gotAQuestion = q < QUESTION_FREQUENCY;//HACK FOR NOW FIXME
 		String name = node.getName();
-if (Global.debug) {		System.out.println("Assigning to " + name);
+if (XAALScripter.debug) {		System.out.println("Assigning to " + name);
 }		Integer value = (Integer)node.jjtGetChild(1).jjtAccept(this, null);
 		int index = 0;
-if (Global.debug) {		System.out.println("HRM");
-}if (Global.debug) {		System.out.println(Global.getCurrentSymbolTable());
+if (XAALScripter.debug) {		System.out.println("HRM");
+}if (XAALScripter.debug) {		System.out.println(Global.getCurrentSymbolTable());
 }		ByValVariable v = (ByValVariable) Global.getCurrentSymbolTable().getVariable(name);
-if (Global.debug) {		System.out.println("VVVV" + v.getIsArray() + " " + name);
+if (XAALScripter.debug) {		System.out.println("VVVV" + v.getIsArray() + " " + name);
 }		if (v.getIsArray())
 		{
-if (Global.debug) {			System.out.println("Dealing with an array");
+if (XAALScripter.debug) {			System.out.println("Dealing with an array");
 }			index = (Integer) node.jjtGetChild(0).jjtGetChild(0).jjtAccept(this, null);
-if (Global.debug) {			System.out.println("Index: " + index);
+if (XAALScripter.debug) {			System.out.println("Index: " + index);
 }			v.setValue(value, index);
 		if (gotAQuestion)
 		{
@@ -505,12 +505,12 @@ if (Global.debug) {			System.out.println("Index: " + index);
 			int i;
 			if (assignmentQuestion.getIndex() != -1)
 			{
-if (Global.debug) {				System.out.println("This might be wrong");
+if (XAALScripter.debug) {				System.out.println("This might be wrong");
 }				i = Global.getCurrentSymbolTable().get(name, assignmentQuestion.getIndex());
 			}
 			else
 			{
-if (Global.debug) {				System.out.println("FFF " + assignmentQuestion.getVariable());
+if (XAALScripter.debug) {				System.out.println("FFF " + assignmentQuestion.getVariable());
 }				i = Global.getCurrentSymbolTable().get(assignmentQuestion.getVariable());
 			}
 			setAssignmentQuestionAnswer(i);
@@ -569,7 +569,7 @@ if (Global.debug) {				System.out.println("FFF " + assignmentQuestion.getVariabl
 	
 	public Integer handleNum(ASTNum node)
 	{
-if (Global.debug) {		System.out.println("gg" + node.getValue());
+if (XAALScripter.debug) {		System.out.println("gg" + node.getValue());
 }		return node.getValue();
 	}
 	public Object visit(ASTProgram node, Object data)
@@ -651,7 +651,7 @@ if (Global.debug) {		System.out.println("gg" + node.getValue());
   	
   	public void leaveScope()
   	{
-if (Global.debug) {  		System.out.println("Leaving scope " + Global.getCurrentSymbolTable().getName());
+if (XAALScripter.debug) {  		System.out.println("Leaving scope " + Global.getCurrentSymbolTable().getName());
 }
   		update(-1, UPDATE_REASON_LEAVEFUN);
   	}

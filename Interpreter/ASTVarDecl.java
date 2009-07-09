@@ -1,6 +1,6 @@
 
 package Interpreter;
-
+import viz.*;
 import java.util.*;
 
 public class ASTVarDecl extends SimpleNode implements VizParserTreeConstants
@@ -41,7 +41,7 @@ public class ASTVarDecl extends SimpleNode implements VizParserTreeConstants
   	
   	public String getCode()
   	{
-if (Global.debug) {  		System.out.println("Getcode in vardecl");
+if (XAALScripter.debug) {  		System.out.println("Getcode in vardecl");
 }  		return "var " + this.name + (isArray ? "[]" : "") + 
   			" = " + jjtGetChild(0).getCode() + ";"; 
   	}

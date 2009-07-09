@@ -1,5 +1,5 @@
 package Interpreter;
-
+import viz.*;
 public class ASTVar extends SimpleNode implements VizParserTreeConstants{
   
   private String name;
@@ -43,9 +43,9 @@ public class ASTVar extends SimpleNode implements VizParserTreeConstants{
 
   public String getCode()
   {
-if (Global.debug) {  	System.out.println("getcode astvar");
+if (XAALScripter.debug) {  	System.out.println("getcode astvar");
 }  	String code = this.name  + (isArray ? "[" + jjtGetChild(0).getCode() + "]" : "");
-if (Global.debug) {  	System.out.println("built in astvar");
+if (XAALScripter.debug) {  	System.out.println("built in astvar");
 }  	return code;
   }
   

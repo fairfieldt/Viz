@@ -1,6 +1,6 @@
 
 package Interpreter;
-
+import viz.*;
 public class ASTStatementList extends SimpleNode {
   
   private boolean isFunction = true;
@@ -36,11 +36,11 @@ public class ASTStatementList extends SimpleNode {
 
   public String getCode()
   {
-if (Global.debug) {  	System.out.println("AS" + this.jjtGetParent());
+if (XAALScripter.debug) {  	System.out.println("AS" + this.jjtGetParent());
 }  	boolean isNested = this.jjtGetParent() instanceof ASTStatement;
-if (Global.debug) {  	System.out.println("isNested " + isNested);
+if (XAALScripter.debug) {  	System.out.println("isNested " + isNested);
 }  	String code = "";
-if (Global.debug) {  	System.out.println("ASA" + this.jjtGetParent());
+if (XAALScripter.debug) {  	System.out.println("ASA" + this.jjtGetParent());
 }  	if (isNested)
   	{
   		code += "{";

@@ -46,6 +46,9 @@ public class XAALScripter {
 
 	// the current par as a JDom Element
 	private Element currentPar = null;
+	
+	//whether we should be running in debug mode and printing out debug info.
+	public static boolean debug = false;
 
 	/**
 	 * Constructor for XAALScripter

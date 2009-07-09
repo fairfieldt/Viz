@@ -1,6 +1,6 @@
 package Interpreter;
 import java.util.*;
-
+import viz.*;
 /**
  * class ByValVariable
  * @authors Tom Fairfield Eric Schultz
@@ -57,15 +57,15 @@ public class ByValVariable extends AbstractVariable implements Variable
 	 */
 	public int getValue(int subscript)
 	{
-if (Global.debug) {		System.out.println("Getting index " + subscript);
+if (XAALScripter.debug) {		System.out.println("Getting index " + subscript);
 }		if (!isArray)
 		{
-if (Global.debug) {			System.out.println("Trying to access non-array as an array");
+if (XAALScripter.debug) {			System.out.println("Trying to access non-array as an array");
 }			return -255;
 		}
 		if (values.size() -1 < subscript)
 		{
-if (Global.debug) {			System.out.println("Error, array index out of bounds");
+if (XAALScripter.debug) {			System.out.println("Error, array index out of bounds");
 }			return -255;
 		}
 		else
@@ -96,7 +96,7 @@ if (Global.debug) {			System.out.println("Error, array index out of bounds");
 		}
 		else
 		{
-if (Global.debug) {			System.out.println("trying to index a non-array");
+if (XAALScripter.debug) {			System.out.println("trying to index a non-array");
 }		}
 	}
 	
@@ -136,7 +136,7 @@ if (Global.debug) {			System.out.println("trying to index a non-array");
 	{
 		if (this.value != -1000)
 		{
-if (Global.debug) {			System.out.println("Problem handling array");
+if (XAALScripter.debug) {			System.out.println("Problem handling array");
 }			return null;
 		}
 		return this.values;

@@ -1,7 +1,7 @@
 package Interpreter;
 
 import java.util.*;
-
+import viz.*;
 public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 		VizParserVisitor
 {
@@ -263,12 +263,12 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 		int i = 0;
 		for( ASTVar v : args)
 		{
-if (Global.debug) {			System.out.println("AAADDINNG");
+if (XAALScripter.debug) {			System.out.println("AAADDINNG");
 }			pa.put(paramNames[i], v.getCodeRaw());
 			fooCall.addArg(v);
 		}
 		fooCall.addArgs(args);
-if (Global.debug) {		System.out.println("YYY " + fooCall.getArgs().size());
+if (XAALScripter.debug) {		System.out.println("YYY " + fooCall.getArgs().size());
 }		
 		Global.setCurrentParamToArg(pa);
 	}
