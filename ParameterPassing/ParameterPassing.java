@@ -54,7 +54,7 @@ public class ParameterPassing {
 			
 			program.buildCode();
 			
-			XAALConnector xc = new XAALConnector(program.getPseudocode(), "foo");
+			XAALConnector xc = new XAALConnector(program.getPseudocode(), "By Value");
 		
 			QuestionFactory questionFactory = new QuestionFactory();
 			
@@ -99,7 +99,7 @@ public class ParameterPassing {
 			
 			program.buildCode();
 			
-			XAALConnector xc = new XAALConnector(program.getPseudocode(), "foo");
+			XAALConnector xc = new XAALConnector(program.getPseudocode(), "By Reference");
 		
 			QuestionFactory questionFactory = new QuestionFactory();
 			
@@ -144,7 +144,7 @@ public class ParameterPassing {
 			
 			program.buildCode();
 			
-			XAALConnector xc = new XAALConnector(program.getPseudocode(), "foo");
+			XAALConnector xc = new XAALConnector(program.getPseudocode(), "By Copy Restore");
 		
 			QuestionFactory questionFactory = new QuestionFactory();
 			

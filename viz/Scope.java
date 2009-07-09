@@ -9,6 +9,7 @@ public class Scope implements Drawable
 	private ArrayList<Scope> scopes;
 	
 	private ArrayList<String> ids;
+	private String rectId;
 
 	private int xPos = 0;
 	private int yPos = 50;
@@ -103,6 +104,11 @@ public class Scope implements Drawable
 		return this.ids;
 	}
 	
+	public String getRectId()
+	{
+		return rectId;
+	}
+	
 	private void sizeScopes()
 	{
 		int subScopeXPos = xPos + 10;
@@ -172,6 +178,7 @@ public class Scope implements Drawable
 		//System.out.println("XPos: " + xPos + " YPos: " + yPos);
 		int captionLength = name.length() * 13;
 		String id1 = scripter.addRectangle(xPos, yPos, sizeX, sizeY, color, hidden, 6);
+		rectId = id1;
 		String id3 = scripter.addText(xPos+3, yPos-5, name, "black", hidden);
 		
 		ids.add(id1);

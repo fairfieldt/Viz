@@ -38,7 +38,7 @@ public class XAALConnector {
 	static {
 		scopeColors = new LinkedList<String>();
 		scopeColors.add("blue");
-		scopeColors.add("red");
+		scopeColors.add("purple");
 		scopeColors.add("green");
 	}
 
@@ -330,10 +330,10 @@ public class XAALConnector {
 		// setVarValue(v, var.getValue());
 
 		varToVar.put(var.getUUID(), v);
-
+/*
 		for (String key : scopes.keySet()) {
 			// System.out.println(key);
-		}
+		}*/
 		scopes.get(scope).addVariable(v);
 	}
 
@@ -440,34 +440,43 @@ public class XAALConnector {
 	 * the non-relevant scope.
 	 * 
 	 * @param highlightVar
-	 *            an <code>Interpreter.Variable</code> that corresponds with the
-	 *            <code>Variable</code> to be hidden
+	 *            a list of  <code>Interpreter.Variable</code> that corresponds with the
+	 *            <code>Variable</code>s to be highlighted.
 	 * @param fadedScopeId
 	 *            the name of the scope to fade out.
 	 * @param highlightScopeId
-	 *            the name of the scope to highlight containing
+	 *            the name of the scopes to highlight containing
 	 *            <code>hightlightVar</code>
+	 * @param modifiedVar the variable being modified
+	 * @param value the new value of <code>modifiedVar</code>
 	 * @return true if works, false if something went bad.
 	 */
-	public boolean callByNameHighlight(Interpreter.Variable highlightVar,
-			String fadedScopeId, String highlightScopeId) {
+	public boolean callByNameHighlight(Interpreter.Variable[] highlightVars,
+			String fadedScopeId, String highlightScopeIds[], Interpreter.Variable modifiedVar,
+			int value) {
+		
 		if (currentSnapNum < 0)
 			return false;
-
-		Variable var = varToVar.get(highlightVar.getUUID());
-
-		actions.offer(new CallByNameHighlightAction(var, fadedScopeId,
-				highlightScopeId, currentSnapNum));
 		int highLine = lineToHighlight;
 		String[] pseudo = this.pseudo.getPseudocode();
-
+		int snapNum = currentSnapNum;
+		
 		endPar();
 		endSnap();
-		// create a slide for the end result of the movement
-		startSnap(highLine, pseudo);
-		startPar();
+		Variable[] highlightedVars = new Variable[highlightVars.length];
+		for (int i = 0; i < highlightVars.length; i++)
+		{
+			startSnap(highLine, pseudo);
+			startPar();
+			highlightedVars[i] = varToVar.get(highlightVars[i].getUUID());
+			endPar();
+			endSnap();
+		}
+		
+		Variable innerVar = varToVar.get(modifiedVar.getUUID());
 
-		// TODO: this may do something totally screwed up!
+		actions.offer(new CallByNameHighlightAction(highlightedVars, fadedScopeId,
+				highlightScopeIds, innerVar, value, currentSnapNum));
 
 		return true;
 	}
@@ -790,7 +799,8 @@ public class XAALConnector {
 					} else {
 						writeMove((MoveVarAction) action);
 					}
-				} else // a variable is being set by a constant
+				}
+				else // a variable is being set by a constant
 				{
 					if (action instanceof ModifyVarIndexAction) {
 						writeIndexModify((ModifyVarIndexAction) action);
@@ -798,7 +808,8 @@ public class XAALConnector {
 						writeVarModify((ModifyVarAction) action);
 					}
 				}
-			} else if (action instanceof ScopeAction)// its a scope
+			} 
+			else if (action instanceof ScopeAction)// its a scope
 			{
 				if (action instanceof ShowHideScopeAction) // its a show or hide
 				// action
@@ -813,7 +824,10 @@ public class XAALConnector {
 					}
 				}
 			}
-
+			else if (action instanceof CallByNameHighlightAction) //call by name highlighting
+			{
+				writeCallByNameHighlight((CallByNameHighlightAction)action);
+			}
 			else // its a CodePageAction
 			{
 				if (action instanceof MoveArgCodePageAction) {
@@ -1892,7 +1906,32 @@ public class XAALConnector {
 				scripter.endPar();
 
 			scripter.recloseSlide();
-		} catch (Exception e) {
+		} 
+		catch (Exception e) 
+		{
 		}
+	}
+	
+	private void writeCallByNameHighlight(CallByNameHighlightAction action)
+	{
+		/*
+		try 
+		{
+			/*
+		
+			scripter.reopenSlide(action.getSnapNum());
+			
+			boolean parExists = false;
+			parExists = scripter.reopenPar(0);
+			if (!parExists)
+				scripter.startPar();
+			
+			//action.getHighlightVar()
+			 * 
+			 
+		}
+		catch (XAALScripterException e)
+		{
+		}*/
 	}
 }

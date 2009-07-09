@@ -1353,6 +1353,56 @@ public class XAALScripter {
 				e.printStackTrace();
 			}
 	}
+	
+	public void addChangeStyle(StrokeType type, int strokeWidth, String...ids) throws SlideException 
+	{
+	
+		if (!inSlide())
+			throw new SlideException(
+					"You must create a slide before creating actions.");
+
+		boolean closeParAtEnd = false;
+
+		if (!inPar()) {
+			try {
+				startPar();
+			} catch (ParException e) {
+
+				e.printStackTrace();
+			}
+			closeParAtEnd = true;
+		}
+		
+		Element parent = currentPar;
+
+		Element changeStyle = createElement("change-style");
+
+		for (String id : ids) {
+			Element objRef = createElement("object-ref");
+			objRef.setAttribute("id", id);
+			changeStyle.addContent(objRef);
+		}
+
+		Element style = createElement("style");
+		
+		Element stroke = createElement("stroke");
+		stroke.setAttribute("type", type.toString());
+		stroke.setAttribute("width", strokeWidth + "");
+		
+		style.addContent(stroke);
+		
+		changeStyle.addContent(style);
+	
+		parent.addContent(changeStyle);
+		
+		if (closeParAtEnd)
+			try {
+				endPar();
+			} catch (ParException e) {
+
+				e.printStackTrace();
+			}
+	}
 
 	/**
 	 * Adds a move for no object. Used for current pause hack. Move not
