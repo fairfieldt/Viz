@@ -74,6 +74,8 @@ public class XAALConnector {
 	private CodePageContainer cpc;
 
 	private Queue<Integer> lineToHighlightOnSnap;
+	
+	private int lineToHighlight = -1;
 
 	/**
 	 * Constructor for <code>XAALConnector</code>
@@ -518,7 +520,7 @@ public class XAALConnector {
 				pseudo.setPseudocode(pseudocode);
 
 			lineToHighlightOnSnap.offer(lineNum);
-
+			lineToHighlight = lineNum;
 		} catch (SlideException e) {
 			return false;
 		}
@@ -541,7 +543,7 @@ public class XAALConnector {
 		} catch (SlideException e) {
 			return false;
 		}
-		
+		lineToHighlight = -1;
 		currentSnapNum = -1;
 		return true;
 	}
