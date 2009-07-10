@@ -14,6 +14,8 @@ public class Variable implements Drawable
 	
 	private LinkedList<String> copiesOwned;
 	
+	private String rectId;
+	
 	protected boolean hidden = false;
 	
 	protected int xPos;
@@ -192,6 +194,11 @@ public class Variable implements Drawable
 		return this.isParam;
 	}
 	
+	public String getRectId()
+	{
+		return this.rectId;
+	}
+	
 	public ArrayList<String> getIds()
 	{
 		//System.out.println("I have " + ids.size() + " ids");
@@ -209,6 +216,7 @@ public class Variable implements Drawable
 		if (this.isCopyRestore)
 		{
 			String id1 = scripter.addRectangle(xPos, yPos, 40, 40, color,  hidden);
+			this.rectId = id1;
 			//title
 			String id2 = scripter.addText(xPos, yPos-5, name, "black", hidden);
 			//pointer triangle

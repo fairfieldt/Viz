@@ -15,7 +15,7 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 	final int maxVarDeclsInGlobal = 5;
 	
 	final int minIntInDecl = 1;
-	final int maxIntInDecl = 5;
+	final int maxIntInDecl = 9;
 	
 	final int minVarDeclsInMain = 0;
 	final int maxVarDeclsInMain = 1;
@@ -223,6 +223,7 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 		for (int i = 0; i < numVars; i++)
 		{
 			ArrayList<String> badNames = localTable.getLocalVarNamesArray();
+			badNames.addAll(localTable.getCurrentVarNamesArray(VarRetrRest.ArrayOnly));
 			String name = getNewVarName(badNames);
 			int value = randomDeclInt();
 			 
@@ -349,11 +350,7 @@ if (XAALScripter.debug) {		System.out.println("YYY " + fooCall.getArgs().size())
 		
 		
 		ArrayList<String> safeIndexVars = new ArrayList<String>();
-		safeIndexVars.add(createSafeIndexVar(localTable));
-		
-		if (varClass == ByRefVariable.class)
-			safeIndexVars.addAll(createSafeIndexRefs(safeIndexVars, localTable));
-		
+		safeIndexVars.addAll(localTable.getCurrentVarNamesArray(VarRetrRest.NotArrayOnly));
 		
 		int numAOStmts = numOfFooAOStmts();
 		
@@ -517,16 +514,16 @@ if (XAALScripter.debug) {		System.out.println("YYY " + fooCall.getArgs().size())
 		
 		return ret;
 	}
-	
+	/*
 	private String createSafeIndexVar(SymbolTable localTable)
 	{
 		ArrayList<String> safeVars = localTable.getCurrentVarNamesArray(VarRetrRest.NotArrayOnly);
 		
-		testSafeIndexVars(safeVars, localTable);
+		//testSafeIndexVars(safeVars, localTable);
 		
 		return getRandomItem(safeVars);
-	}
-	
+	}*/
+	/*
 	private ArrayList<String> createSafeIndexRefs(ArrayList<String> safeIndexs, SymbolTable localTable)
 	{
 		ArrayList<String> ret = new ArrayList<String>();
@@ -550,7 +547,7 @@ if (XAALScripter.debug) {		System.out.println("YYY " + fooCall.getArgs().size())
 		}
 		
 		return ret;
-	}
+	}*/
 	
 	private ASTAssignment createBasicAssign(SymbolTable localTable, ArrayList<String> badNames)
 	{
@@ -960,7 +957,7 @@ if (XAALScripter.debug) {		System.out.println("YYY " + fooCall.getArgs().size())
 				throw new AssumptionFailedException();
 		}
 	}
-	
+	/*
 	private void testSafeIndexVars(ArrayList<String> vars, SymbolTable symbols)
 	{
 		for (String v : vars)
@@ -968,7 +965,7 @@ if (XAALScripter.debug) {		System.out.println("YYY " + fooCall.getArgs().size())
 			if (symbols.getVariable(v).getIsArray())
 				throw new AssumptionFailedException();
 		}
-	}
+	}*/
 	
 	private void testArrayVars(ArrayList<String> vars, SymbolTable symbols)
 	{
