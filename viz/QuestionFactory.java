@@ -5,6 +5,12 @@ import Interpreter.*;
 public class QuestionFactory implements UpdateReasons
 {
 
+	public Question getArgCopyQuestion()
+	{
+		String variable = "asdf";
+		TFQuestion question = new TFQuestion("The variable " + variable + " will be captured after Step 1 is completed");
+		return question;
+	}
 	public Question getStartQuestion()
 	{
 		ArrayList<String> varNames = Global.getSymbolTable().getCurrentVarNamesArray();

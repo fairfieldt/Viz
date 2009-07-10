@@ -31,7 +31,7 @@ public class ByValue
 			
 			program.buildCode();
 			
-			XAALConnector xc = new XAALConnector(program.getPseudocode(), "foo");
+			XAALConnector xc = new XAALConnector(program.getPseudocode(), "Call by Value");
 		
 			QuestionFactory questionFactory = new QuestionFactory();
 			

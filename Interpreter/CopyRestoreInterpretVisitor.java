@@ -506,6 +506,7 @@ if (XAALScripter.debug) {				System.out.println("CQC " + callQuestion);
 				program.codeBuilt = false;
 				Global.lineNumber = 1;
 				program.buildCode();
+				connector.modifyPseudocodeOnAll(program.getPseudocode());
 			}
 		}
 		else
