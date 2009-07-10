@@ -601,7 +601,7 @@ public class XAALConnector {
 		return true;
 	}
 	
-	public void modifyPseudoCodeOnAll(String[] pseudocode)
+	public void modifyPseudocodeOnAll(String[] pseudocode)
 	{
 		for(Integer i : pseudoAtSnap.keySet())
 		{
