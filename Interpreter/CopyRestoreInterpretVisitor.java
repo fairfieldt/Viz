@@ -316,33 +316,28 @@ if (XAALScripter.debug) {		System.out.println(values);
 		boolean gotAQuestion = true; //FIXME HACK
 		//Get the correct function head node
 		ASTFunction fun = Global.getFunction(node.getName());
-if (XAALScripter.debug) {		System.out.println("Calling: " + fun.getName());
-}		//Get the parameters and put the correct values in the symbolTable
+		//Get the parameters and put the correct values in the symbolTable
 		SymbolTable st = fun.getSymbolTable();
 		String name = fun.getName();
 		ArrayList<String> parameters = fun.getParameters();		
 		ArrayList<Integer> args = (ArrayList<Integer>) node.jjtGetChild(0).jjtAccept(this, null);
 		ArrayList<ASTVar> argNames = ((ASTArgs)node.jjtGetChild(0)).getArgs();
-if (XAALScripter.debug) {		System.out.println("Ready to set args");
-}		for (int i = 0; i < args.size(); i++)
+
+		for (int i = 0; i < args.size(); i++)
 		{
 			Variable vv = st.getVariable(parameters.get(i));
-if (XAALScripter.debug) {			System.out.println(vv + " ");
-}			ByCopyRestoreVariable v = (ByCopyRestoreVariable)st.getVariable(parameters.get(i));
+			ByCopyRestoreVariable v = (ByCopyRestoreVariable)st.getVariable(parameters.get(i));
 			ByValVariable ref = (ByValVariable)Global.getCurrentSymbolTable().getVariable(argNames.get(i).getName());
-if (XAALScripter.debug) {			System.out.println("Got ref " + argNames.get(i).getName());
-}			if (ref.getIsArray())
+			if (ref.getIsArray())
 			{
-if (XAALScripter.debug) {				System.out.println("Setting ref to index " + argNames.get(i).getIndex());
-}				v.setRef(ref, argNames.get(i).getIndex());
+				v.setRef(ref, argNames.get(i).getIndex());
 			}
 			else
 			{
 				v.setRef(ref);
 			}
 		}
-if (XAALScripter.debug) {		System.out.println("Set args");
-}		HashMap<String, String> pa = new HashMap<String, String>(); //Maps args to params
+		HashMap<String, String> pa = new HashMap<String, String>(); //Maps args to params
 		for (int i = 0; i < parameters.size(); i++)
 		{
 			pa.put(parameters.get(i), argNames.get(i).getName());
@@ -465,8 +460,8 @@ if (XAALScripter.debug) {				System.out.println("CQC " + callQuestion);
 					v1 = Global.getFunction("main").getSymbolTable().getVariable(argNames.get(i).getName());				
 					v2 = (ByCopyRestoreVariable)st.getVariable(parameters.get(i));					if (v1.getIsArray())
 					{
-if (XAALScripter.debug) {						System.out.println("Copying out to an array " + v2.getRefIndex());
-}						connector.moveValue(v2, v1, v2.getRefIndex());
+
+						connector.moveValue(v2, v1, v2.getRefIndex());
 					}
 					else
 					{
@@ -577,11 +572,9 @@ if (XAALScripter.debug) {		System.out.println("Assigning to " + name + " value o
 				System.out.println(e);
 				
 			}
-			System.out.println("that was close");
 			if (gotAQuestion)
 			{
-if (XAALScripter.debug) {				System.out.println("asdf");
-}				assignmentQuestion = questionFactory.getAssignmentQuestion(node.getLineNumber(), name, index);
+				assignmentQuestion = questionFactory.getAssignmentQuestion(node.getLineNumber(), name, index);
 			}
 		}
 		else
