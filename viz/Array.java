@@ -125,7 +125,7 @@ public class Array extends Variable implements Drawable {
 			//System.out.println(rectangle);
 			//System.out.println(id);
 			ids.add(rectangle);
-			ids.add(id);
+			
 			
 			do 
 			{
