@@ -48,7 +48,7 @@ public class XAALConnector {
 	private int currentSnapNum;
 
 	// the color used to highlight text
-	private final String highlightColor = "red";
+	public final String highlightColor = "red";
 
 	// the FutureActions to be performed in draw
 	private LinkedList<FutureAction> actions;
@@ -452,9 +452,11 @@ public class XAALConnector {
 	 * Highlights a <code>Variable</code> and its containing slide and fades out
 	 * the non-relevant scope.
 	 * 
-	 * @param highlightVar
+	 * @param highlightVars
 	 *            a list of  <code>Interpreter.Variable</code> that corresponds with the
 	 *            <code>Variable</code>s to be highlighted.
+	 * @param indexForVars the array index of the corresponding variable in <code>highlightVars</code>.
+	 * If the corresponding variable is not an array, enter -1 for that.
 	 * @param fadedScopeId
 	 *            the name of the scope to fade out.
 	 * @param highlightScopeId
@@ -464,7 +466,7 @@ public class XAALConnector {
 	 * @param value the new value of <code>modifiedVar</code>
 	 * @return true if works, false if something went bad.
 	 */
-	public boolean callByNameHighlight(Interpreter.Variable[] highlightVars,
+	public boolean callByNameHighlight(Interpreter.Variable[] highlightVars, int[] indexForVars,
 			String fadedScopeId, String highlightScopeIds[], Interpreter.Variable modifiedVar,
 			int value) {
 		
@@ -487,7 +489,10 @@ public class XAALConnector {
 		}
 		
 		Variable innerVar = varToVar.get(modifiedVar.getUUID());
+		innerVar.setValue(value);
 
+		innerVar.addCopy();
+		
 		actions.offer(new CallByNameHighlightAction(highlightedVars, fadedScopeId,
 				highlightScopeIds, innerVar, value, currentSnapNum));
 
@@ -523,13 +528,6 @@ public class XAALConnector {
 		return startSnap(lineNum, pseudocode);
 	}
 	
-	public boolean startSnap(int lineNum, String[] pseudocode, boolean neverReplace) 
-	{
-		return startSnap(lineNum, pseudocode, neverReplace, false);
-		
-		
-	}
-	
 	/**
 	 * Starts a new snapshot for actions to take place.
 	 * 
@@ -538,11 +536,37 @@ public class XAALConnector {
 	 * @param pseudocode array containing the lines of pseudocode that correspond to
 	 *            this slide. Only needed if the contents of the pseudocode pane
 	 *            is changed.
-	 * @param neverReplace whether this pseudocode line will ever be replaced
-	 * @param replaceCodeOnOtherSlides should all the other slides, not marked neverReplace, 
-	 * 		have their pseudocode replaced.
+	 * @param neverReplace whether this pseudocode line will ever be replaced.
 	 * @return true if the snap was started, false if something went wrong.
 	 */
+	public boolean startSnap(int lineNum, String[] pseudocode, boolean neverReplace) 
+	{
+		
+		if (currentSnapNum > 0)
+			return false;
+		try 
+		{
+			currentSnapNum = scripter.startSlide();
+			
+			if (pseudocode != null)
+				pseudoAtSnap.put(currentSnapNum, pseudocode);
+			
+			if (neverReplace)
+				pseudoSnapsToNeverReplace.add(currentSnapNum);
+			
+			lineToHighlightOnSnap.put(currentSnapNum, lineNum);
+			lineToHighlight = lineNum;
+		} 
+		catch (SlideException e) 
+		{
+			return false;
+		}
+		
+		return true;
+		
+	}
+	
+	
 	public boolean startSnap(int lineNum, String[] pseudocode, boolean neverReplace, 
 			boolean replaceCodeOnOtherSlides) 
 	{
@@ -552,9 +576,7 @@ public class XAALConnector {
 
 		try {
 			currentSnapNum = scripter.startSlide();
-
 			
-
 			// replace the code on the other slides
 			if (replaceCodeOnOtherSlides && pseudocode != null)
 			{
@@ -578,6 +600,15 @@ public class XAALConnector {
 		}
 		return true;
 	}
+	
+	public void modifyPseudoCodeOnAll(String[] pseudocode)
+	{
+		for(Integer i : pseudoAtSnap.keySet())
+		{
+			if (!pseudoSnapsToNeverReplace.contains(i))
+				pseudoAtSnap.put(i, pseudocode);
+		}
+	}
 
 	/**
 	 * ends the current snapshot.
@@ -591,7 +622,9 @@ public class XAALConnector {
 		try {
 			
 			scripter.endSlide();
-		} catch (SlideException e) {
+		} 
+		catch (SlideException e) 
+		{
 			return false;
 		}
 		lineToHighlight = -1;
@@ -2050,10 +2083,8 @@ public class XAALConnector {
 			
 			scripter.reopenSlide(action.getSnapNum() + highlightVars.length);
 			
-			boolean parExists = false;
-			parExists = scripter.reopenPar(0);
-			if (!parExists)
-				scripter.startPar();
+			
+			scripter.reopenPar();
 			
 			Variable v = action.getModifiedVar();
 			// pop copy of current value
@@ -2061,9 +2092,30 @@ public class XAALConnector {
 
 			// hide oldCopy
 			scripter.addHide(oldCopy);
+			String newCopy = v.peekCopyId();
 			
+			scripter.addShow(newCopy);
+
+			// highlight the change
+			scripter.addChangeStyle(highlightColor, newCopy);
+
+			// set the value of variable to its new value
+			v.setValue(action.getValue());
 			
-			 
+			// reclose the par
+			scripter.reclosePar();
+			// reclose the slide
+			scripter.recloseSlide();
+
+			// turn off highlighting on next slide
+
+			scripter.reopenSlide(action.getSnapNum() + 1);
+			scripter.reopenPar();
+
+			scripter.addChangeStyle("black", newCopy);
+
+			scripter.reclosePar();
+			scripter.recloseSlide();
 			 
 		}
 		catch (XAALScripterException e)
