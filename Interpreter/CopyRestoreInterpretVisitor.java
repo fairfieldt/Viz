@@ -497,7 +497,7 @@ if (XAALScripter.debug) {						System.out.println("Copying out to an array " + v
 				ASTExpression exp = (ASTExpression)node.jjtGetChild(0);
 				ASTNum num = new ASTNum(JJTNUM);
 				Random r= new Random();
-				num.setValue(/*r.nextInt(6)*/0);
+				num.setValue(r.nextInt(6));
 				exp.jjtAddChild(num, 0);
 				try
 				{
@@ -556,7 +556,7 @@ if (XAALScripter.debug) {		System.out.println("Assigning to " + name + " value o
 				ASTNum num = new ASTNum(JJTNUM);
 
 				int val = r.nextInt(6);
-				num.setValue(0);
+				num.setValue(val);
 				exp.jjtAddChild(num, 0);
 			index = (Integer) node.jjtGetChild(0).jjtGetChild(0).jjtAccept(this, null);
 				try

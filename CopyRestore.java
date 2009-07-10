@@ -9,7 +9,7 @@ public class CopyRestore
 		System.out.println("Starting");
 		Global.InterpreterType = InterpreterTypes.BY_COPY_RESTORE;
 		BufferedReader br = null;
-		String name = "Samples/simple.src";
+		String name = "Samples/shell.src";
 		try
 		{
 			br = new BufferedReader(new FileReader(name));
@@ -26,7 +26,7 @@ public class CopyRestore
 
 			RandomizingVisitor2<ByRefVariable> rv = new RandomizingVisitor2<ByRefVariable>(ByRefVariable.class);
 				
-			//program.jjtAccept(rv, null);		
+			program.jjtAccept(rv, null);		
 			System.out.println("Successfully Parsed");
 			System.out.println("________________\n");
 			
