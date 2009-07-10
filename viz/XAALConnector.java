@@ -164,6 +164,24 @@ public class XAALConnector {
 	 */
 	public void moveArgs(String codePageId, int fromLineNum, int fromPos,
 			String fromStr, int toLineNum, int toPos) {
+		/*
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println("moveArgs call:");
+		System.out.println("\tcodePageId=" + codePageId);
+		System.out.println("\tfromLineNum=" + fromLineNum);
+		System.out.println("\tfromPos=" + fromPos);
+		System.out.println("\tfromStr=" + fromStr);
+		System.out.println("\toLineNum=" + toLineNum);
+		System.out.println("\ttoPos=" + toPos);
+		*/
+		
 		CodePage cp = cpc.get(codePageId);
 		// System.out.println(cp);
 		cp.setCallLineNum(fromLineNum);
@@ -1714,6 +1732,7 @@ public class XAALConnector {
 			// reopen par
 			scripter.reopenPar();
 
+			//TODO: fix it so we stop trying to close foo in by-macro
 			Scope scope = scopes.get(action.getScope());
 			ArrayList<String> scopeIds = scope.getIds();
 			// show all the ids
