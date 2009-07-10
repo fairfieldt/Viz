@@ -31,7 +31,7 @@ public class ByReference
 			
 			program.buildCode();
 			
-			XAALConnector xc = new XAALConnector(program.getPseudocode(), "foo");
+			XAALConnector xc = new XAALConnector(program.getPseudocode(), "Call by Reference");
 		
 			QuestionFactory questionFactory = new QuestionFactory();
 			

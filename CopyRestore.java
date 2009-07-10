@@ -35,7 +35,7 @@ public class CopyRestore
 			{
 				System.out.println(s);
 			}
-			XAALConnector xc = new XAALConnector(program.getPseudocode(), "foo");
+			XAALConnector xc = new XAALConnector(program.getPseudocode(), "Call by Copy-Restore");
 		
 			QuestionFactory questionFactory = new QuestionFactory();
 			

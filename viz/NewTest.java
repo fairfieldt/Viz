@@ -44,11 +44,12 @@ public class NewTest
 			System.out.println("Built code");
 			
 
-			String[] info = {"Step 1. Copy in the arguments",
-					 "Step 2. Copy in the function body",
-					 "Step 3. Run the program.  (Click next to begin)"};
+			String[] info = {"Step 1. Copy in the arguments\nEach argument to the function being called is\ncopied textually into the function body.\n",
+					 "Step 2. Copy in the function body\nThe entire function body is copied into the\ncalling function.  It has its own scope \nwhich is a subscope of the calling function.\n",
+					 "Step 3. Run the program.  (Click next to begin)\nNow the program is run just as in other\nevaluation strategies."
+					 };
 					 
-			XAALConnector xc = new XAALConnector(info, "foo");			//program.dump("");
+			XAALConnector xc = new XAALConnector(info, "Call by Macro");			//program.dump("");
 			String p0 = xc.addCodePage(program.getPseudocode());
 			currentPage = p0;
 			xc.startSnap(0);
@@ -85,6 +86,10 @@ public class NewTest
 			Global.lineNumber = 1;
 			program.codeBuilt = false;
 			program.buildCode();
+for (String s : program.getPseudocode())
+			{
+				System.out.println(s);
+			}
 				String p3 = null;
 			xc.startPar();
 			

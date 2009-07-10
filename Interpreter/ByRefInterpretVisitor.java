@@ -138,7 +138,15 @@ if (XAALScripter.debug) {		System.out.println("visiting program");
 		node.jjtGetChild(0).jjtAccept(this, null);
 		update(LINE_NUMBER_END, UPDATE_REASON_END);
 		
-		int value = Global.getSymbolTable().get(startQuestion.getVariable());
+		int value = -256;
+		try
+		{
+			value = Global.getSymbolTable().get(startQuestion.getVariable());
+		}
+		catch (Exception e)
+		{
+			System.out.println(e);
+		}
 		if (startQuestion instanceof FIBQuestion)
 		{
 		
@@ -400,20 +408,34 @@ if (XAALScripter.debug) {					System.out.println("Adding a reference from " + ar
 		if(gotAQuestion)
 		{
 
-			int answer = Global.getFunction("main").getSymbolTable().get(callQuestion.getVariable());
-if (XAALScripter.debug) {			System.out.println("ASF " + answer);
-}			if (callQuestion instanceof FIBQuestion)
+			int answer =  -256;
+			try
 			{
-if (XAALScripter.debug) {				System.out.println("AAAA " + answer);
-}				((FIBQuestion)callQuestion).addAnswer(answer+"");
+				answer = Global.getFunction("main").getSymbolTable().get(callQuestion.getVariable());
+			}
+			catch (Exception e)
+			{
+				System.out.println(e);
+			}
+		
+			if (callQuestion instanceof FIBQuestion)
+			{
+				((FIBQuestion)callQuestion).addAnswer(answer+"");
 			}
 			else if (callQuestion instanceof TFQuestion)
 			{
 				int qa = answer;
 				//Getting the value of the var at the end of the function FIXME
-				int prevVal = Global.getFunction("foo").getSymbolTable().get("x");
-if (XAALScripter.debug) {				System.out.println("YYY " + prevVal);
-}				Random r = new Random();
+				int prevVal = -256;
+				try
+				{
+					prevVal = Global.getFunction("foo").getSymbolTable().get("x");
+				}
+				catch (Exception e)
+				{
+					System.out.println(e);
+				}
+				Random r = new Random();
 				int choose = r.nextInt(3);
 				switch (choose)
 				{
@@ -454,17 +476,53 @@ if (XAALScripter.debug) {				System.out.println("CQC " + callQuestion);
 	
 	public Integer handleVar(ASTVar node)
 	{
-		Integer value;
+		Integer value = -256;
 		Variable v = Global.getCurrentSymbolTable().getVariable(node.getName());
 		if (node.getIsArray())
 		{
 			int index = (Integer) node.jjtGetChild(0).jjtAccept(this, null);
 			node.setIndex(index);
-			value = v.getValue(index);
+			try
+			{
+				System.out.println(index);
+				value = v.getValue(index);
+				System.out.println("Got value " + value + " from index " + index);
+			}
+			catch (VizIndexOutOfBoundsException e)
+			{
+				System.out.println(e);
+				/*ASTExpression exp = (ASTExpression)node.jjtGetChild(0);
+				ASTNum num = new ASTNum(JJTNUM);
+				Random r= new Random();
+				num.setValue(r.nextInt(6));
+				exp.jjtAddChild(num, 0);
+				try
+				{
+					index = (Integer) exp.jjtAccept(this, null);
+					value = v.getValue(index);
+				}
+				catch (VizIndexOutOfBoundsException f)
+				{
+					System.out.println("oops...");
+				}
+				program.codeBuilt = false;
+				Global.lineNumber = 1;
+				program.buildCode();
+				connector.modifyPseudocodeOnAll(program.getPseudocode());
+				*/
+			}
+			//////////////////////////////////////////
 		}
 		else
 		{
-			value = v.getValue();
+			try
+			{
+				value = v.getValue();
+			}
+			catch (Exception e)
+			{
+				System.out.println(e);
+			}
 		}
 		return value;
 	}
@@ -494,6 +552,7 @@ if (XAALScripter.debug) {		System.out.println("Assigning to " + name + " value o
 			}
 			catch (VizIndexOutOfBoundsException e)
 			{
+			/*
 				ASTExpression exp = (ASTExpression)node.jjtGetChild(0).jjtGetChild(0);
 				ASTNum num = new ASTNum(JJTNUM);
 
@@ -514,8 +573,8 @@ if (XAALScripter.debug) {		System.out.println("Assigning to " + name + " value o
 				program.codeBuilt = false;
 
 				program.buildCode();
-				
-			
+				connector.modifyPseudocodeOnAll(program.getPseudocode());				
+			*/
 				System.out.println(e);
 				
 			}
@@ -542,24 +601,31 @@ if (XAALScripter.debug) {			System.out.println("ADFS " + value);
 		
 		
 		
-if (XAALScripter.debug) {		System.out.println("Ok, set value");
-}		//Drawing stuff. snap and par should be opened from enclosing statement
+		//Drawing stuff. snap and par should be opened from enclosing statement
 		if (gotAQuestion)
 		{
-			int i;
+			int i = -256;
 			if (assignmentQuestion.getIndex() != -1)
 			{
-if (XAALScripter.debug) {				System.out.println("This might be wrong");
-}				i = Global.getCurrentSymbolTable().get(name, assignmentQuestion.getIndex());
+				try
+				{i = Global.getCurrentSymbolTable().get(name, assignmentQuestion.getIndex());
+				}
+				catch (Exception e)
+				{
+					System.out.println(e);
+				}
 			}
 			else
 			{
-if (XAALScripter.debug) {				System.out.println("RRRRR " + assignmentQuestion.getVariable());
-}				i = Global.getCurrentSymbolTable().get(assignmentQuestion.getVariable());
-if (XAALScripter.debug) {				System.out.println("Getting " + assignmentQuestion.getVariable());
-}if (XAALScripter.debug) {				System.out.println(i);
-}if (XAALScripter.debug) {				System.out.println("qq");
-}			}
+				try
+				{
+				i = Global.getCurrentSymbolTable().get(assignmentQuestion.getVariable());
+				}
+				catch (Exception e)
+				{
+					System.out.println(e);
+				}
+			}
 			setAssignmentQuestionAnswer(value);
 			connector.addQuestion(assignmentQuestion);
 			connector.endPar();

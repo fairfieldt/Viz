@@ -55,23 +55,25 @@ public class ByValVariable extends AbstractVariable implements Variable
 	 * @param subscript the index to get the value for
 	 * @returns the corresponding value
 	 */
-	public int getValue(int subscript) throws VizIndexOutOfBoundsException
+	public int getValue(int index) throws VizIndexOutOfBoundsException
 	{
-
+		System.out.println("This is " + index);
 		if (!isArray)
 		{
 
 			return -255;
 		}
-		if (values.size() -1 < subscript)
+		/*if (index > values.size() || index < 0) //being consistent would be nice
 		{
+			System.out.println("throwing exception");
 			throw new VizIndexOutOfBoundsException();
 
 		}
 		else
-		{
-			return values.get(subscript);
-		}
+		{*/
+
+			return values.get(index);
+		//}
 	}
 	
 	/**
@@ -92,15 +94,14 @@ public class ByValVariable extends AbstractVariable implements Variable
 	{
 		if (isArray)
 		{
-			if (index < values.size())
-			{
+			/*if (index < values.size() && index >= 0)
+			{*/
 				values.set(index, new Integer(value));
-				System.out.println("heh");
-			}
+			/*}
 			else
 			{
 				throw new VizIndexOutOfBoundsException();
-			}
+			}*/
 		}
 		else
 		{
