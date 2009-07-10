@@ -65,21 +65,20 @@ public class XAALConnector {
 	private ArrayList<Question> questions;
 
 	private Scope globalScope;
-
-	
-	//private Queue<Integer> lineToHighlight;
 	
 	private String title;
-	// the PsuedoSerializer used to create the psuedocode for each slide
-	private PseudoSerializer pseudo;
+	
 	// holds all the CodePages used by the XAALConnector
 	private CodePageContainer cpc;
 
 	//snap then line
 	private HashMap<Integer, Integer> lineToHighlightOnSnap;
 	
-	private HashMap<Integer, String[]> pseudoAtSnap;
-	private HashSet<Integer> pseudoSnapsToNeverReplace;
+	private String[] previewPseudo = null;
+	
+	private int snapRegularPseudoStartsAt = -1;
+	
+	private String[] pseudoCode = null;
 	
 	private int lineToHighlight = -1;
 
@@ -91,27 +90,49 @@ public class XAALConnector {
 	 * @param title
 	 *            the title of the visualization
 	 */
-	public XAALConnector(String[] pseudoCode, String title) {
+	public XAALConnector(String[] pseudoCode, String title) 
+	{
+		XAALSetup();
+		this.title = title;
+		
+		this.pseudoCode = pseudoCode;
+		this.snapRegularPseudoStartsAt = 0;
+	}
+	
+	public XAALConnector(String[] pseudoCode, String title, boolean codeIsPreview)
+	{
+		XAALSetup();
+		this.title = title;
+		
+		if (codeIsPreview)
+			this.previewPseudo = pseudoCode;
+		else
+		{
+			this.pseudoCode = pseudoCode;
+			this.snapRegularPseudoStartsAt = 0;
+		}
+		
+	}
+	
+	private void XAALSetup()
+	{
 		scripter = new XAALScripter();
 		varToVar = new HashMap<UUID, Variable>();
 		scopes = new HashMap<String, Scope>();
 		questions = new ArrayList<Question>();
 		currentSnapNum = 0;
-		this.title = title;
+		
 		
 		actions = new LinkedList<FutureAction>();
 		this.cpc = new CodePageContainer();
 		this.lineToHighlightOnSnap = new HashMap<Integer,Integer>();
-		this.pseudoSnapsToNeverReplace = new HashSet<Integer>();
-		this.pseudoAtSnap = new HashMap<Integer, String[]>();
-		this.pseudoAtSnap.put(1, pseudoCode);
 	}
 	
 	//Tom added this and it sucks!!!!!
-	public void setPseudocode(String[] code)
+	/*public void setPseudocode(String[] code)
 	{
 		pseudo.setPseudocode(code);
-	}
+	}*/
 
 	/**
 	 * Adds a <code>CodePage</code> for use by <code>XAALConnector</code>.
@@ -590,13 +611,23 @@ public class XAALConnector {
 			currentSnapNum = scripter.startSlide();
 			
 			if (pseudocode != null)
-				pseudoAtSnap.put(new Integer(currentSnapNum), pseudocode);
+			{
+				if (neverReplace) // its the preview pseudocode
+				{
+					previewPseudo = pseudoCode;
+				}
+				else // its normal pseudocode
+				{
+					this.pseudoCode = pseudocode;
+					if (snapRegularPseudoStartsAt == -1) // we haven't set the normal pseudocode yet
+						snapRegularPseudoStartsAt = currentSnapNum;
+				}
+			}
 			
-			if (neverReplace)
-				pseudoSnapsToNeverReplace.add(new Integer(currentSnapNum));
+			
 			
 			lineToHighlightOnSnap.put(new Integer(currentSnapNum), lineNum);
-			lineToHighlight = lineNum;
+			//lineToHighlight = lineNum;
 		} 
 		catch (SlideException e) 
 		{
@@ -606,14 +637,10 @@ public class XAALConnector {
 		return true;
 		
 	}
-		
+	
 	public void modifyPseudocodeOnAll(String[] pseudocode)
 	{
-		for(Integer i : pseudoAtSnap.keySet())
-		{
-			if (!pseudoSnapsToNeverReplace.contains(i))
-				pseudoAtSnap.put(i, pseudocode);
-		}
+		pseudoCode = pseudocode;
 	}
 
 	/**
@@ -633,7 +660,7 @@ public class XAALConnector {
 		{
 			return false;
 		}
-		lineToHighlight = -1;
+		//lineToHighlight = -1;
 		currentSnapNum = -1;
 		return true;
 	}
@@ -866,18 +893,27 @@ public class XAALConnector {
 		//write out pseudocode to each snap
 		for (Integer i : lineToHighlightOnSnap.keySet())
 		{
+			PseudoSerializer pseudo = null;
 			scripter.reopenSlide(i);
 			try {
-				if (pseudoAtSnap.get(i) != null)
-					pseudo = new PseudoSerializer(pseudoAtSnap.get(i), title);
+				int lineToHighlight = lineToHighlightOnSnap.get(i);
+				if (i < snapRegularPseudoStartsAt)// do preview code
+				{
+					pseudo = new PseudoSerializer(previewPseudo, title);
+				}
+				else // its not preview, use normal
+				{
+					pseudo = new PseudoSerializer(pseudoCode, title);
+				}
 				
-				scripter.addPseudocodeUrl(pseudo.toPseudoPage(i.intValue()));
+				scripter.addPseudocodeUrl(pseudo.toPseudoPage(lineToHighlight));
 			} catch (SlideException e) {
 				
 				e.printStackTrace();
 			}
 			scripter.recloseSlide();
 		}
+		
 		// perform and write future actions to the scripter
 		FutureAction action = null;
 		do {
