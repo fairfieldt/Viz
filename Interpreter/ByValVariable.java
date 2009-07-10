@@ -55,18 +55,18 @@ public class ByValVariable extends AbstractVariable implements Variable
 	 * @param subscript the index to get the value for
 	 * @returns the corresponding value
 	 */
-	public int getValue(int subscript)
+	public int getValue(int subscript) throws VizIndexOutOfBoundsException
 	{
-if (XAALScripter.debug) {		System.out.println("Getting index " + subscript);
-}		if (!isArray)
+
+		if (!isArray)
 		{
-if (XAALScripter.debug) {			System.out.println("Trying to access non-array as an array");
-}			return -255;
+
+			return -255;
 		}
 		if (values.size() -1 < subscript)
 		{
-if (XAALScripter.debug) {			System.out.println("Error, array index out of bounds");
-}			return -255;
+			throw new VizIndexOutOfBoundsException();
+
 		}
 		else
 		{
@@ -88,16 +88,24 @@ if (XAALScripter.debug) {			System.out.println("Error, array index out of bounds
 	 * @param value the value to set
 	 * @param the index to set
 	 */
-	public void setValue(int value, int index)
+	public void setValue(int value, int index) throws VizIndexOutOfBoundsException
 	{
 		if (isArray)
 		{
-			values.set(index, new Integer(value));
+			if (index < values.size())
+			{
+				values.set(index, new Integer(value));
+				System.out.println("heh");
+			}
+			else
+			{
+				throw new VizIndexOutOfBoundsException();
+			}
 		}
 		else
 		{
-if (XAALScripter.debug) {			System.out.println("trying to index a non-array");
-}		}
+			System.out.println("trying to index a non-array");
+		}
 	}
 	
 	/**

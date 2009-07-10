@@ -135,6 +135,7 @@ if (XAALScripter.debug) {				System.out.println(subscript.getCode());
 			int lineNumber = 0;
 			Object[] params =  Global.getCurrentParamToArg().keySet().toArray();
 			String expectedArgName = Global.getCurrentParamToArg().get((String)params[1]);
+			//FIXME handle case with 2 args same name
 			if (argName.equals(expectedArgName))
 			{
 if (XAALScripter.debug) {				System.out.println("**");

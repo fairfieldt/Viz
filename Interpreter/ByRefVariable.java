@@ -46,7 +46,7 @@ if (XAALScripter.debug) {		System.out.println("ref: " + ref);
 if (XAALScripter.debug) {		System.out.println("Done setting value");
 }	}
 	
-	public int getValue()
+	public int getValue() throws VizIndexOutOfBoundsException
 	{
 if (XAALScripter.debug) {		System.out.println("Getting value");
 }		if (this.refIndex == -1) //Normal var

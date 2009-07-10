@@ -31,10 +31,16 @@ if (XAALScripter.debug) {		System.out.println("My value is now " + value);
 	
 	public void setRef(ByValVariable ref, int index)
 	{
-if (XAALScripter.debug) {		System.out.println("Setting ref to array");
-}		this.ref = ref;
+		this.ref = ref;
 		this.refIndex = index;
-		this.value = ref.getValue(index);
+		try
+		{	
+			this.value = ref.getValue(index);
+		}
+		catch (Exception e)
+		{
+			System.out.println(e);
+		}
 	}	
 	
 	public int getRefIndex()
@@ -51,9 +57,14 @@ if (XAALScripter.debug) {			System.out.println("Copying out value " + this.value
 		}
 		else
 		{
-if (XAALScripter.debug) {			System.out.println("coping out value " + this.value + " to " + refIndex);
-}if (XAALScripter.debug) {			System.out.println(this.ref.getIsArray());
-}			this.ref.setValue(value, this.refIndex);
+			try
+			{
+				this.ref.setValue(value, this.refIndex);
+			}
+			catch (VizIndexOutOfBoundsException e)
+			{
+				System.out.println(e);
+			}		
 		}
 	}
 	

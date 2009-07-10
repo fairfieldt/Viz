@@ -176,7 +176,7 @@ public class CodePage implements Drawable {
 			while (posCopiesToMake.size() > 0)
 			{
 				String temp = posCopiesToMake.poll();
-				String id = scripter.addText(fromPosX[i], y + (lineHeight*callLineNum)
+				String id = scripter.addText(fromPosX[i], y + (lineHeight*(callLineNum-1))
 						, temp, "black", true);
 				copiesOwned.get(i).offer(id);
 			} 

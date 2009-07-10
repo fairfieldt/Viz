@@ -106,6 +106,12 @@ public class XAALConnector {
 		this.pseudoAtSnap = new HashMap<Integer, String[]>();
 		this.pseudoAtSnap.put(1, pseudoCode);
 	}
+	
+	//Tom added this and it sucks!!!!!
+	public void setPseudocode(String[] code)
+	{
+		pseudo.setPseudocode(code);
+	}
 
 	/**
 	 * Adds a <code>CodePage</code> for use by <code>XAALConnector</code>.
@@ -292,14 +298,21 @@ public class XAALConnector {
 				for (String p : params) {
 					Interpreter.Variable iv = symbols.getVariable(p);
 					Variable v = null;
-					if (iv instanceof Interpreter.ByCopyRestoreVariable) {
-						v = new Variable(p, null, iv.getValue(), true);
-						v.setIsCopyRestore();
-					} else if (iv instanceof Interpreter.ByRefVariable) {
-						v = new Variable(p, -255, true);
-						v.setIsReference(true);
-					} else {
-						v = new Variable(p, symbols.get(p), true);
+					try
+					{
+						if (iv instanceof Interpreter.ByCopyRestoreVariable) {
+							v = new Variable(p, null, iv.getValue(), true);
+							v.setIsCopyRestore();
+						} else if (iv instanceof Interpreter.ByRefVariable) {
+							v = new Variable(p, -255, true);
+							v.setIsReference(true);
+						} else {
+							v = new Variable(p, symbols.get(p), true);
+						}
+					}
+					catch (Exception e)
+					{
+						System.out.println(e);
 					}
 					retScope.addVariable(v);
 
@@ -323,20 +336,32 @@ public class XAALConnector {
 	 *            the name of the scope containing the variable.
 	 */
 	public void addVariable(Interpreter.Variable var, String varName,
-			String scope) {
-		Variable v;
-		if (var.getIsArray()) {
-			v = new Array(varName, var.getValues(), false);
-			Array vArray = (Array) v;
-
-			for (int i = 0; i < var.getValues().size(); i++) {
-				vArray.addCopy(i);
+			String scope)
+	{
+				Variable v = null;
+		try
+		{
+			if (var.getIsArray()) 
+			{
+				v = new Array(varName, var.getValues(), false);
+				Array vArray = (Array) v;
+	
+				for (int i = 0; i < var.getValues().size(); i++) 
+				{
+					vArray.addCopy(i);
+				}
 			}
-		} else {
-			v = new Variable(varName, var.getValue(), false);
-
-			v.addCopy();
+			else
+			{
+				v = new Variable(varName, var.getValue(), false);
+			}
 		}
+		catch (Exception e)
+		{
+			System.out.println(e);
+		}
+
+		v.addCopy();
 
 		// addCopy of the original value
 

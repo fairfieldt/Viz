@@ -13,10 +13,10 @@ public abstract class AbstractVariable implements Variable {
 	}
 	
 	@Override
-	public abstract int getValue();
+	public abstract int getValue() throws VizIndexOutOfBoundsException;
 
 	@Override
-	public abstract void setValue(int value);
+	public abstract void setValue(int value) ;
 	
 	public UUID getUUID()
 	{

@@ -24,7 +24,7 @@ public class QuestionFactory implements UpdateReasons
 						 + varName + " be after the main function returns?");
 				break;
 			case 1:
-				question = new TFQuestion("After them main function returns, the value of "
+				question = new TFQuestion("After the main function returns, the value of "
 				 + varName + " will be ");
 				 break;
 				 
@@ -32,7 +32,14 @@ public class QuestionFactory implements UpdateReasons
 			
 		}
 		question.setVariable(varName);
-		question.setValue(Global.getSymbolTable().get(varName));
+		try
+		{
+			question.setValue(Global.getSymbolTable().get(varName));
+		}
+		catch (Exception e)
+		{
+			System.out.println(e);
+		}
 
 		return question;
 	}
@@ -90,7 +97,15 @@ public class QuestionFactory implements UpdateReasons
 		else
 		{
 			String scopeHint = " from the global scope ";
-			int var = Global.getFunction("main").getSymbolTable().get(varName, true);
+			int var = 0;
+			try
+			{
+				var = Global.getFunction("main").getSymbolTable().get(varName, true);
+			}
+			catch (Exception e)
+			{
+				System.out.println(e);
+			}
 			//System.out.println("QQQQ " + var);
 			if (var != -255)
 			{
@@ -154,41 +169,50 @@ public class QuestionFactory implements UpdateReasons
 	{
 		//System.out.println("Getting an array question");
 		int i = 0;
-		int localVal = Global.getCurrentSymbolTable().get(varName, true);
-		
-		//This stuff does nothing now.  FIXME
-		if (localVal != -255)//Exists locally
+		int localVal = 0;
+		FIBQuestion question = null;
+		try
 		{
-			int globalVal = Global.getCurrentSymbolTable().get(varName, true);
-			int mainVal = Global.getFunction("main").getSymbolTable().get(varName, true);
-			//Exists globally and /could/ index the array
-			if (globalVal != -255 && globalVal >= 0 && globalVal < 5)
+			localVal = Global.getCurrentSymbolTable().get(varName, true);
+		
+			//This stuff does nothing now.  FIXME
+			if (localVal != -255)//Exists locally
 			{
-				Random r = new Random();
-				int prob = r.nextInt(2);
-				if (prob == 0)
+				int globalVal = Global.getCurrentSymbolTable().get(varName, true);
+				int mainVal = Global.getFunction("main").getSymbolTable().get(varName, true);
+				//Exists globally and /could/ index the array
+				if (globalVal != -255 && globalVal >= 0 && globalVal < 5)
 				{
-					i = globalVal;  
-				}
-				else if (mainVal != -255 && mainVal >= 0 && mainVal < 5)
-				{
-					prob = r.nextInt(2);
+					Random r = new Random();
+					int prob = r.nextInt(2);
 					if (prob == 0)
 					{
-						i = mainVal;
+						i = globalVal;  
+					}
+					else if (mainVal != -255 && mainVal >= 0 && mainVal < 5)
+					{
+						prob = r.nextInt(2);
+						if (prob == 0)
+						{
+							i = mainVal;
+						}
 					}
 				}
 			}
-		}
-		else
-		{
-			i = index;
-		}
-		String scopeHint = " in the current scope ";
+			else
+			{
+				i = index;
+			}
+			String scopeHint = " in the current scope ";
 		
-		FIBQuestion question = new FIBQuestion("What will be the value of " + varName + "[" + index + "] " + scopeHint + "after the current line executes?");
-		question.setVariable(varName);
-		question.setIndex(index);
+			question = new FIBQuestion("What will be the value of " + varName + "[" + index + "] " + scopeHint + "after the current line executes?");
+			question.setVariable(varName);
+			question.setIndex(index);
+		}
+		catch (Exception e)
+		{
+			System.out.println(e);
+		}
 		return question;
 	}
 /*	

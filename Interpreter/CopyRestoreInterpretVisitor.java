@@ -10,6 +10,8 @@ public class CopyRestoreInterpretVisitor implements VizParserVisitor, VizParserT
 	private Question callQuestion;
 	private Question startQuestion; 
 	
+	private ASTProgram program;
+	
 	private ArrayList<Question> startQuestions = new ArrayList<Question>();//FIXME use this?
 	private XAALConnector connector;
 	public static final int LINE_NUMBER_END = -1;
@@ -101,6 +103,7 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 	
 	public void handleProgram(ASTProgram node)
 	{
+		program = node;
 if (XAALScripter.debug) {		System.out.println("visiting program");
 }		Global.setCurrentSymbolTable(Global.getSymbolTable()); 
 		update(1, UPDATE_REASON_BEGIN);
@@ -115,7 +118,15 @@ if (XAALScripter.debug) {		System.out.println("visiting program");
 		
 		node.jjtGetChild(0).jjtAccept(this, null);
 		update(LINE_NUMBER_END, UPDATE_REASON_END);
-		int value = Global.getCurrentSymbolTable().get(startQuestion.getVariable());
+		int value = 0;
+		try
+		{
+			 Global.getCurrentSymbolTable().get(startQuestion.getVariable());
+		}
+		catch( Exception e)
+		{
+			System.out.println(e);
+		}
 		if (startQuestion instanceof FIBQuestion)
 		{
 		
@@ -382,7 +393,16 @@ if (XAALScripter.debug) {					System.out.println("Adding a reference from " + ar
 		if(gotAQuestion)
 		{
 
-			int answer = Global.getFunction("main").getSymbolTable().get(callQuestion.getVariable());
+			int answer = -256;
+			try
+			{
+				answer = Global.getFunction("main").getSymbolTable().get(callQuestion.getVariable());
+			}
+			catch (Exception e)
+			{
+				System.out.println(e);
+			}
+			
 			if (callQuestion instanceof FIBQuestion)
 			{
 if (XAALScripter.debug) {				System.out.println("AAAA " + answer);
@@ -393,8 +413,15 @@ if (XAALScripter.debug) {				System.out.println("AAAA " + answer);
 				int qa = answer;
 				//Getting the value of the var at the end of the function
 				String paramName = Global.getCurrentParamToArg().get(callQuestion.getVariable());
-				int prevVal = Global.getFunction("foo").getSymbolTable().get(paramName);
-				
+				int prevVal = -256;
+				try
+				{
+					prevVal =  Global.getFunction("foo").getSymbolTable().get(paramName);
+				}
+				catch (Exception e)
+				{
+					System.out.println(e);
+				}
 				Random r = new Random();
 				int choose = r.nextInt(3);
 				switch (choose)
@@ -452,21 +479,51 @@ if (XAALScripter.debug) {						System.out.println("Copying out to an array " + v
 		return 0;
 	}
 	
-	public Integer handleVar(ASTVar node)
+	public Integer handleVar(ASTVar node) 
 	{
-		Integer value;
+		Integer value = -256;
 		Variable v = Global.getCurrentSymbolTable().getVariable(node.getName());
 		if (node.getIsArray())
 		{
 			int index = (Integer) node.jjtGetChild(0).jjtAccept(this, null);
 			node.setIndex(index);
-			value = v.getValue(index);
+			try
+			{
+				value = v.getValue(index);
+			}
+			catch (VizIndexOutOfBoundsException e)
+			{
+				System.out.println(e);
+				ASTExpression exp = (ASTExpression)node.jjtGetChild(0);
+				ASTNum num = new ASTNum(JJTNUM);
+				Random r= new Random();
+				num.setValue(r.nextInt(6));
+				exp.jjtAddChild(num, 0);
+				try
+				{
+					index = (Integer) exp.jjtAccept(this, null);
+					value = v.getValue(index);
+				}
+				catch (VizIndexOutOfBoundsException f)
+				{
+					System.out.println("oops...");
+				}
+				program.codeBuilt = false;
+				Global.lineNumber = 1;
+				program.buildCode();
+			}
 		}
 		else
 		{
-			value = v.getValue();
-if (XAALScripter.debug) {			System.out.println("Got value " + value);
-}		}
+			try
+			{
+				value = v.getValue();
+			}
+			catch (Exception g)
+			{
+				System.out.println(g);
+			}
+		}
 		return value;
 	}
 	
@@ -485,9 +542,42 @@ if (XAALScripter.debug) {		System.out.println("Assigning to " + name + " value o
 
 		if (v.getIsArray())
 		{
-if (XAALScripter.debug) {			System.out.println("AN ARRRAY");
-}			index = (Integer) node.jjtGetChild(0).jjtGetChild(0).jjtAccept(this, null);
-			v.setValue(value, index);
+			if (XAALScripter.debug) {System.out.println("AN ARRRAY");}
+			
+			index = (Integer) node.jjtGetChild(0).jjtGetChild(0).jjtAccept(this, null);
+			System.out.println("Index " + index + " of " + node.getName());
+			try
+			{
+				v.setValue(value, index);
+			}
+			catch (VizIndexOutOfBoundsException e)
+			{
+				ASTExpression exp = (ASTExpression)node.jjtGetChild(0).jjtGetChild(0);
+				ASTNum num = new ASTNum(JJTNUM);
+
+				int val = r.nextInt(6);
+				num.setValue(val);
+				exp.jjtAddChild(num, 0);
+			index = (Integer) node.jjtGetChild(0).jjtGetChild(0).jjtAccept(this, null);
+				try
+				{
+					v.setValue(value, index);
+				}
+				catch (VizIndexOutOfBoundsException f)
+				{
+					System.out.println("oops");
+				}
+				Global.lineNumber = 1;
+
+				program.codeBuilt = false;
+
+				program.buildCode();
+				connector.modifyPseudocodeOnAll(program.getPseudocode());
+			
+				System.out.println(e);
+				
+			}
+			System.out.println("that was close");
 			if (gotAQuestion)
 			{
 if (XAALScripter.debug) {				System.out.println("asdf");
@@ -508,15 +598,29 @@ if (XAALScripter.debug) {		System.out.println("Ok, set value");
 		if (gotAQuestion)
 		{
 if (XAALScripter.debug) {			System.out.println(assignmentQuestion);
-}			int i;
+}			int i = -256;
 			if (assignmentQuestion.getIndex() != -1)
 			{
 if (XAALScripter.debug) {				System.out.println("This might be wrong");
-}				i = Global.getCurrentSymbolTable().get(name, assignmentQuestion.getIndex());
+}				try
+				{
+					i = Global.getCurrentSymbolTable().get(name, assignmentQuestion.getIndex());
+				}
+				catch (Exception e)
+				{
+					System.out.println(e);
+				}
 			}
 			else
 			{
-				i = Global.getCurrentSymbolTable().get(assignmentQuestion.getVariable());
+				try
+				{
+					i = Global.getCurrentSymbolTable().get(assignmentQuestion.getVariable());
+				}
+				catch (Exception e)
+				{
+					System.out.println(e);
+				}
 			}
 			setAssignmentQuestionAnswer(i);
 			connector.addQuestion(assignmentQuestion);
@@ -640,7 +744,7 @@ if (XAALScripter.debug) {		System.out.println("gg" + node.getValue());
   	{
   		return handleVar(node);
   	}
-  	public Object visit(ASTAssignment node, Object data)
+  	public Object visit(ASTAssignment node, Object data) 
   	{
   		handleAssignment(node);
   		return null;

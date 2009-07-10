@@ -73,8 +73,8 @@ public class NewTest
 						{
 							System.out.println(line);
 						}
-		
-			String p2 = xc.addCodePage(program.getPseudocode());
+			System.out.println("ASDF" + removeLineNumbers(program.getPseudocode()));
+			String p2 = xc.addCodePage(removeLineNumbers(program.getPseudocode()));
 			xc.swapCodePage(p0, p2);			
 			xc.endPar();
 			xc.endSnap();
@@ -89,8 +89,8 @@ public class NewTest
 			xc.startPar();
 			
 			//Prettier now
-			//System.out.println("callline: " + callLine + " start " + startScope + " end " + endScope + " endmain " + endMain);
-			xc.replaceWithScope(p2, callLine, startScope, endScope, endMain+1);
+			System.out.println("callline: " + callLine + " start " + startScope + " end " + endScope + " endmain " + (endMain+2));
+			xc.replaceWithScope(p2, callLine-1, startScope, endScope, endMain+1);
 			p3 = xc.addCodePage(program.getPseudocode());
 			/*
 				xc.hideCodePage(p2);
@@ -132,4 +132,15 @@ public class NewTest
 			System.out.println(e);
 		}
 	}
+	
+	private static String[] removeLineNumbers(String[] code)
+	{
+		for (String s : code)
+		{
+			s = s.replaceFirst("(\\d)*.", "");
+			System.out.println("D" + s);
+		}
+		return code;
+	}
+
 }
