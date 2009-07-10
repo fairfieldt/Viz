@@ -4,11 +4,6 @@ import java.io.*;
 
 public class NewTest
 {
-	public static String currentPage;
-	public static int callLine;
-	public static int startScope;
-	public static int endScope;
-	public static int endMain;
 	public static void main(String[] args)
 	{
 		Global.InterpreterType = InterpreterTypes.BY_VALUE;
@@ -51,7 +46,7 @@ public class NewTest
 					 
 			XAALConnector xc = new XAALConnector(info, "Call by Macro");			//program.dump("");
 			String p0 = xc.addCodePage(program.getPseudocode());
-			currentPage = p0;
+			Global.currentPage = p0;
 			xc.startSnap(0);
 			xc.startPar();
 				xc.showCodePage(p0);
@@ -94,8 +89,8 @@ for (String s : program.getPseudocode())
 			xc.startPar();
 			
 			//Prettier now
-			System.out.println("callline: " + callLine + " start " + startScope + " end " + endScope + " endmain " + (endMain+2));
-			xc.replaceWithScope(p2, callLine-1, startScope, endScope, endMain+1);
+			System.out.println("Global.callLine: " + Global.callLine + " start " + Global.startScope + " end " + Global.endScope + " Global.endMain " + (Global.endMain+2));
+			xc.replaceWithScope(p2, Global.callLine-1, Global.startScope, Global.endScope, Global.endMain+1);
 			p3 = xc.addCodePage(program.getPseudocode());
 			/*
 				xc.hideCodePage(p2);
