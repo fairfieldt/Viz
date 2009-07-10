@@ -64,14 +64,16 @@ public class XAALConnector {
 
 	private Scope globalScope;
 
-	private String[] psuedoCode;
+	
+	//private Queue<Integer> lineToHighlight;
+	
 	private String title;
 	// the PsuedoSerializer used to create the psuedocode for each slide
 	private PseudoSerializer pseudo;
 	// holds all the CodePages used by the XAALConnector
 	private CodePageContainer cpc;
 
-	private int lineToHighlight = -1;
+	private Queue<Integer> lineToHighlightOnSnap;
 
 	/**
 	 * Constructor for <code>XAALConnector</code>
@@ -87,11 +89,11 @@ public class XAALConnector {
 		scopes = new HashMap<String, Scope>();
 		questions = new ArrayList<Question>();
 		currentSnapNum = 0;
-		this.psuedoCode = psuedoCode;
 		this.title = title;
 		this.pseudo = new PseudoSerializer(psuedoCode, title);
 		actions = new LinkedList<FutureAction>();
 		this.cpc = new CodePageContainer();
+		this.lineToHighlightOnSnap = new LinkedList<Integer>();
 	}
 
 	/**
@@ -515,7 +517,7 @@ public class XAALConnector {
 			if (pseudocode != null)
 				pseudo.setPseudocode(pseudocode);
 
-			lineToHighlight = lineNum;
+			lineToHighlightOnSnap.offer(lineNum);
 
 		} catch (SlideException e) {
 			return false;
@@ -534,12 +536,12 @@ public class XAALConnector {
 			return false;
 
 		try {
-			scripter.addPseudocodeUrl(pseudo.toPseudoPage(lineToHighlight));
+			
 			scripter.endSlide();
 		} catch (SlideException e) {
 			return false;
 		}
-		lineToHighlight = -1;
+		
 		currentSnapNum = -1;
 		return true;
 	}
@@ -768,6 +770,18 @@ public class XAALConnector {
 		cpc.draw(scripter);
 		// System.out.println("Drew code pages");
 
+		//write out pseudocode to each snap
+		for (int i = 1; i <= lineToHighlightOnSnap.size(); i++)
+		{
+			scripter.reopenSlide(i);
+			try {
+				scripter.addPseudocodeUrl(pseudo.toPseudoPage(lineToHighlightOnSnap.poll()));
+			} catch (SlideException e) {
+				
+				e.printStackTrace();
+			}
+			scripter.recloseSlide();
+		}
 		// perform and write future actions to the scripter
 		FutureAction action = null;
 		do {
@@ -1917,11 +1931,9 @@ public class XAALConnector {
 		try 
 		{
 			
-			
-		
-			
 			Variable[] highlightVars = action.getHighlightVars();
 			String[] highlightScopes = action.getHighlightScopes();
+			
 			for(int i = 0; i < highlightVars.length; i++)
 			{
 				Variable nextHighlightedVar = null;
@@ -1944,7 +1956,57 @@ public class XAALConnector {
 				
 				//fade the background color
 				scripter.addChangeStyle("gray", true, action.getFadedScope());
+				if (!parExists)
+					scripter.endPar();
+				else
+					scripter.reclosePar();
+				
+				scripter.recloseSlide();
+				
+				if (i + 1 < highlightVars.length)
+					nextHighlightedVar = highlightVars[i+1];
+				
+				if(i + 1 < highlightVars.length)
+					nextHighlightedScope = highlightScopes[i+1];
+				
+				scripter.reopenSlide(action.getSnapNum() + i + 1);
+				scripter.reopenPar();
+				
+				//we can stop highlighting a particular variable if the 
+				//next snap doesn't highlight it
+				if (nextHighlightedVar == null || temp != nextHighlightedVar)
+				{
+					scripter.addChangeStyle(StrokeType.solid, XAALScripter.DEFAULT_STROKE_WIDTH, 
+							nextHighlightedVar.getRectId());
+				}
+				
+				//we can stop highlighting a particular scope if the 
+				//next snap doesn't highlight it
+				if (nextHighlightedScope == null || scope != scopes.get(nextHighlightedScope))
+				{
+					scripter.addChangeStyle(StrokeType.solid, XAALScripter.DEFAULT_STROKE_WIDTH, 
+							scopes.get(nextHighlightedScope).getRectId());
+				}
+				
+				scripter.reclosePar();
+				scripter.recloseSlide();
 			}
+			
+			scripter.reopenSlide(action.getSnapNum() + highlightVars.length);
+			
+			boolean parExists = false;
+			parExists = scripter.reopenPar(0);
+			if (!parExists)
+				scripter.startPar();
+			
+			Variable v = action.getModifiedVar();
+			// pop copy of current value
+			String oldCopy = v.popCopyId();
+
+			// hide oldCopy
+			scripter.addHide(oldCopy);
+			
+			
 			 
 			 
 		}
