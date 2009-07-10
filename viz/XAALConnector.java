@@ -104,8 +104,7 @@ public class XAALConnector {
 		this.lineToHighlightOnSnap = new HashMap<Integer,Integer>();
 		this.pseudoSnapsToNeverReplace = new HashSet<Integer>();
 		this.pseudoAtSnap = new HashMap<Integer, String[]>();
-		this.pseudoAtSnap.put(0, pseudoCode);
-		pseudoAtSnap.put(0, pseudoCode);
+		this.pseudoAtSnap.put(1, pseudoCode);
 	}
 	
 	//Tom added this and it sucks!!!!!
@@ -868,6 +867,7 @@ public class XAALConnector {
 			try {
 				if (pseudoAtSnap.get(i) != null)
 					pseudo = new PseudoSerializer(pseudoAtSnap.get(i), title);
+				
 				scripter.addPseudocodeUrl(pseudo.toPseudoPage(i.intValue()));
 			} catch (SlideException e) {
 				
