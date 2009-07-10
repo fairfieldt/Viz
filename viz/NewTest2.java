@@ -41,8 +41,8 @@ Global.InterpreterType = InterpreterTypes.BY_VALUE;
 			System.out.println("Built code");
 			
 
-			String[] info = {"Step 1. Copy in the arguments\nEach argument to the function being called is\ncopied textually into the function body.\n",
-					 "Step 2. Copy in the function body\nThe entire function body is copied into the\ncalling function.  It has its own scope \nwhich is a subscope of the calling function.\n",
+			String[] info = {"Step 1. Copy in the arguments\nEach argument to the function being called is\ncopied textually into the function body.",
+					 "Step 2. Copy in the function body\nThe entire function body is copied into the\ncalling function.  It has its own scope \nwhich is a subscope of the calling function.",
 					 "Step 3. Run the program.  (Click next to begin)\nNow the program is run just as in other\nevaluation strategies."
 					 };
 					 

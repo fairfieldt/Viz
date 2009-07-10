@@ -918,13 +918,15 @@ public class XAALConnector {
 				if (i < snapRegularPseudoStartsAt)// do preview code
 				{
 					pseudo = new PseudoSerializer(previewPseudo, title);
+					scripter.addPseudocodeUrl(pseudo.toPseudoPage(lineToHighlight, true));
 				}
 				else // its not preview, use normal
 				{
 					pseudo = new PseudoSerializer(pseudoCode, title);
+					scripter.addPseudocodeUrl(pseudo.toPseudoPage(lineToHighlight));
 				}
 				
-				scripter.addPseudocodeUrl(pseudo.toPseudoPage(lineToHighlight));
+				
 			} catch (SlideException e) {
 				
 				e.printStackTrace();
@@ -1875,7 +1877,7 @@ public class XAALConnector {
 					+ (cp.getLineHeight() * (action.getFromLine() - 3));
 
 			int endX = cp.x + cp.toPosX[action.getToPos()];
-			int endY = cp.y + (cp.getLineHeight() * (action.getToLine() - 4));
+			int endY = cp.y + (cp.getLineHeight() * (action.getToLine() - 3));
 
 			int moveX = startX - endX;
 			int moveY = startY - endY;
