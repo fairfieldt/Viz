@@ -18,9 +18,10 @@ public class EricTest
 		VizParser parser = new VizParser(stream);
 		try
 		{
+			
 			ASTProgram program = (ASTProgram)parser.program();
-
-			RandomizingVisitor rv = new RandomizingVisitor();
+			/*
+			RandomizingVisitor2 rv = new RandomizingVisitor2();
 				
 			program.jjtAccept(rv, null);
 		
@@ -44,7 +45,7 @@ public class EricTest
 			program.jjtAccept(iv, null);
 			
 			xc.draw("C:\\Users\\Eric\\Desktop\\EricTest.xaal");
-
+			 */
 		}
 		catch (Exception e)
 		{
