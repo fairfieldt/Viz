@@ -588,12 +588,12 @@ public class XAALConnector {
 			currentSnapNum = scripter.startSlide();
 			
 			if (pseudocode != null)
-				pseudoAtSnap.put(currentSnapNum, pseudocode);
+				pseudoAtSnap.put(new Integer(currentSnapNum), pseudocode);
 			
 			if (neverReplace)
-				pseudoSnapsToNeverReplace.add(currentSnapNum);
+				pseudoSnapsToNeverReplace.add(new Integer(currentSnapNum));
 			
-			lineToHighlightOnSnap.put(currentSnapNum, lineNum);
+			lineToHighlightOnSnap.put(new Integer(currentSnapNum), lineNum);
 			lineToHighlight = lineNum;
 		} 
 		catch (SlideException e) 
@@ -604,42 +604,7 @@ public class XAALConnector {
 		return true;
 		
 	}
-	
-	
-	public boolean startSnap(int lineNum, String[] pseudocode, boolean neverReplace, 
-			boolean replaceCodeOnOtherSlides) 
-	{
-		if (currentSnapNum > 0)
-			return false;
 		
-
-		try {
-			currentSnapNum = scripter.startSlide();
-			
-			// replace the code on the other slides
-			if (replaceCodeOnOtherSlides && pseudocode != null)
-			{
-				for(Integer i : pseudoAtSnap.keySet())
-				{
-					if (!pseudoSnapsToNeverReplace.contains(i))
-						pseudoAtSnap.put(i, pseudocode);
-				}
-			}
-			
-			if (pseudocode != null)
-				pseudoAtSnap.put(currentSnapNum, pseudocode);
-			
-			if (neverReplace)
-				pseudoSnapsToNeverReplace.add(currentSnapNum);
-			
-			lineToHighlightOnSnap.put(currentSnapNum, lineNum);
-			lineToHighlight = lineNum;
-		} catch (SlideException e) {
-			return false;
-		}
-		return true;
-	}
-	
 	public void modifyPseudocodeOnAll(String[] pseudocode)
 	{
 		for(Integer i : pseudoAtSnap.keySet())
