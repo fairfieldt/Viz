@@ -59,12 +59,12 @@ public class NewTest
 			xc.endSnap();
 			xc.startSnap(1);
 			xc.startPar();
-			
+			System.out.println("asdf");
 			ByMacroVisitor bm = new ByMacroVisitor();
 			bm.setXAALConnector(xc);
 			program.jjtAccept(bm, null);
 
-
+			System.out.println("jkl;");
 			
 			//System.out.println("MACRO TIME");		
 			Global.lineNumber = 1;
@@ -79,7 +79,7 @@ public class NewTest
 			xc.swapCodePage(p0, p2);			
 			xc.endPar();
 			xc.endSnap();
-	
+
 			xc.startSnap(2);
 			ByMacroVisitor2 bm2 = new ByMacroVisitor2();
 			program.jjtAccept(bm2, null);

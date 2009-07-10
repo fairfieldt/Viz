@@ -489,6 +489,7 @@ if (XAALScripter.debug) {				System.out.println("CQC " + callQuestion);
 		if (node.getIsArray())
 		{
 			int index = (Integer) node.jjtGetChild(0).jjtAccept(this, null);
+			System.out.println("Index: " + index);
 			node.setIndex(index);
 			try
 			{
@@ -521,6 +522,17 @@ if (XAALScripter.debug) {				System.out.println("CQC " + callQuestion);
 				connector.modifyPseudocodeOnAll(program.getPseudocode());
 				*/
 			}
+		}
+		else
+		{
+			try
+			{
+				value = v.getValue();
+			}	
+			catch (VizIndexOutOfBoundsException f)
+			{
+				System.out.println(f);
+			}	
 		}
 		return value;
 	}
@@ -593,7 +605,7 @@ if (XAALScripter.debug) {				System.out.println("CQC " + callQuestion);
 		//Drawing stuff. snap and par should be opened from enclosing statement
 		if (gotAQuestion)
 		{
-			int i = -256;
+			int i = -257;
 			if (assignmentQuestion.getIndex() != -1)
 			{
 				if (assignmentQuestion.aboutArg)
