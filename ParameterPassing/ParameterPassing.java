@@ -12,7 +12,7 @@ public class ParameterPassing {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		XAALScripter.debug = true;
+		XAALScripter.debug = false;
 		
 		Random r = new Random();
 		int num = r.nextInt(3);
