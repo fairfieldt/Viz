@@ -4,6 +4,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
+import com.sun.org.apache.bcel.internal.generic.RETURN;
+
 import Interpreter.Global;
 
 //TODO: highlighting doesn't always work.
@@ -73,7 +75,11 @@ public class XAALConnector {
 	// holds all the CodePages used by the XAALConnector
 	private CodePageContainer cpc;
 
-	private Queue<Integer> lineToHighlightOnSnap;
+	//snap then line
+	private HashMap<Integer, Integer> lineToHighlightOnSnap;
+	
+	private HashMap<Integer, String[]> pseudoAtSnap;
+	private HashSet<Integer> pseudoSnapsToNeverReplace;
 	
 	private int lineToHighlight = -1;
 
@@ -85,17 +91,20 @@ public class XAALConnector {
 	 * @param title
 	 *            the title of the visualization
 	 */
-	public XAALConnector(String[] psuedoCode, String title) {
+	public XAALConnector(String[] pseudoCode, String title) {
 		scripter = new XAALScripter();
 		varToVar = new HashMap<UUID, Variable>();
 		scopes = new HashMap<String, Scope>();
 		questions = new ArrayList<Question>();
 		currentSnapNum = 0;
 		this.title = title;
-		this.pseudo = new PseudoSerializer(psuedoCode, title);
+		this.pseudoAtSnap.put(0, pseudoCode);
 		actions = new LinkedList<FutureAction>();
 		this.cpc = new CodePageContainer();
-		this.lineToHighlightOnSnap = new LinkedList<Integer>();
+		this.lineToHighlightOnSnap = new HashMap<Integer,Integer>();
+		this.pseudoSnapsToNeverReplace = new HashSet<Integer>();
+		this.pseudoAtSnap = new HashMap<Integer, String[]>();
+		pseudoAtSnap.put(0, pseudoCode);
 	}
 
 	/**
@@ -462,15 +471,15 @@ public class XAALConnector {
 		if (currentSnapNum < 0)
 			return false;
 		int highLine = lineToHighlight;
-		String[] pseudo = this.pseudo.getPseudocode();
-		int snapNum = currentSnapNum;
+		//String[] pseudo = this.pseudo.getPseudocode();
+		//int snapNum = currentSnapNum;
 		
 		endPar();
 		endSnap();
 		Variable[] highlightedVars = new Variable[highlightVars.length];
 		for (int i = 0; i < highlightVars.length; i++)
 		{
-			startSnap(highLine, pseudo);
+			startSnap(highLine);
 			startPar();
 			highlightedVars[i] = varToVar.get(highlightVars[i].getUUID());
 			endPar();
@@ -509,22 +518,64 @@ public class XAALConnector {
 	 *            is changed.
 	 * @return true if the snap was started, false if something went wrong.
 	 */
-	public boolean startSnap(int lineNum, String[] pseudocode) {
+	public boolean startSnap(int lineNum, String[] pseudocode) 
+	{
+		return startSnap(lineNum, pseudocode);
+	}
+	
+	public boolean startSnap(int lineNum, String[] pseudocode, boolean neverReplace) 
+	{
+		return startSnap(lineNum, pseudocode, neverReplace, false);
+		
+		
+	}
+	
+	/**
+	 * Starts a new snapshot for actions to take place.
+	 * 
+	 * @param lineNum the line number corresponds to the snapshot in the
+	 *            visualization.
+	 * @param pseudocode array containing the lines of pseudocode that correspond to
+	 *            this slide. Only needed if the contents of the pseudocode pane
+	 *            is changed.
+	 * @param neverReplace whether this pseudocode line will ever be replaced
+	 * @param replaceCodeOnOtherSlides should all the other slides, not marked neverReplace, 
+	 * 		have their pseudocode replaced.
+	 * @return true if the snap was started, false if something went wrong.
+	 */
+	public boolean startSnap(int lineNum, String[] pseudocode, boolean neverReplace, 
+			boolean replaceCodeOnOtherSlides) 
+	{
 		if (currentSnapNum > 0)
 			return false;
+		
 
 		try {
 			currentSnapNum = scripter.startSlide();
 
-			if (pseudocode != null)
-				pseudo.setPseudocode(pseudocode);
+			
 
-			lineToHighlightOnSnap.offer(lineNum);
+			// replace the code on the other slides
+			if (replaceCodeOnOtherSlides && pseudocode != null)
+			{
+				for(Integer i : pseudoAtSnap.keySet())
+				{
+					if (!pseudoSnapsToNeverReplace.contains(i))
+						pseudoAtSnap.put(i, pseudocode);
+				}
+			}
+			
+			if (pseudocode != null)
+				pseudoAtSnap.put(currentSnapNum, pseudocode);
+			
+			if (neverReplace)
+				pseudoSnapsToNeverReplace.add(currentSnapNum);
+			
+			lineToHighlightOnSnap.put(currentSnapNum, lineNum);
 			lineToHighlight = lineNum;
 		} catch (SlideException e) {
 			return false;
 		}
-
 		return true;
 	}
 
@@ -772,12 +823,15 @@ public class XAALConnector {
 		cpc.draw(scripter);
 		// System.out.println("Drew code pages");
 
+		
 		//write out pseudocode to each snap
-		for (int i = 1; i <= lineToHighlightOnSnap.size(); i++)
+		for (Integer i : lineToHighlightOnSnap.keySet())
 		{
 			scripter.reopenSlide(i);
 			try {
-				scripter.addPseudocodeUrl(pseudo.toPseudoPage(lineToHighlightOnSnap.poll()));
+				if (pseudoAtSnap.get(i) != null)
+					pseudo = new PseudoSerializer(pseudoAtSnap.get(i), title);
+				scripter.addPseudocodeUrl(pseudo.toPseudoPage(i.intValue()));
 			} catch (SlideException e) {
 				
 				e.printStackTrace();
