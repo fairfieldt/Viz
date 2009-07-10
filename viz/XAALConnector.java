@@ -474,6 +474,18 @@ public class XAALConnector {
 	}
 
 	/**
+	 * Highlights a variable in the pseudocode for by-name. 
+	 * @param varStr the string of the variable
+	 * @param scopeName
+	 * @param beginLine
+	 * @param endLine
+	 */
+	public void highlightVarInPseudo(String varStr, String scopeName, int beginLine, int endLine)
+	{
+		
+	}
+	
+	/**
 	 * Highlights a <code>Variable</code> and its containing slide and fades out
 	 * the non-relevant scope.
 	 * 
