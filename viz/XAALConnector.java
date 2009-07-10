@@ -539,7 +539,7 @@ public class XAALConnector {
 	 */
 	public boolean startSnap(int lineNum, String[] pseudocode) 
 	{
-		return startSnap(lineNum, pseudocode);
+		return startSnap(lineNum, pseudocode, false);
 	}
 	
 	/**
