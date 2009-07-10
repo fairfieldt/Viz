@@ -15,6 +15,12 @@ public class Global
 	
 	private static HashMap<String, String> currentParamToArg;
 	
+	public static String currentPage;
+	public static int callLine;
+	public static int startScope;
+	public static int endScope;
+	public static int endMain;
+	
 	public static SymbolTable getSymbolTable()
 	{
 		return symbolTable;
