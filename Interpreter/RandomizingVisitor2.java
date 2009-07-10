@@ -14,7 +14,7 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 	final int minVarDeclsInGlobal = 5;
 	final int maxVarDeclsInGlobal = 5;
 	
-	final int minIntInDecl = 1;
+	final int minIntInDecl = 0;
 	final int maxIntInDecl = 9;
 	
 	final int minVarDeclsInMain = 0;
@@ -249,6 +249,24 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 		}
 		//}
 		
+		//do we have any valid variables for an array index?
+		if(!areThereValidIndexes(localTable))
+		{
+			//there are none so lets make one!!!
+			ArrayList<String> badNames = localTable.getLocalVarNamesArray();
+			badNames.addAll(localTable.getCurrentVarNamesArray(VarRetrRest.ArrayOnly));
+			String name = getNewVarName(badNames);
+			int value = randomArrayIndex();
+			
+			ASTVarDecl newVarDecl = createVarDecl(name, value);
+			main.addLogicalChild(newVarDecl, numVars);
+			 
+			localTable.put(name, new ByValVariable(value));
+			
+			//increment this so the foo call is in the right place
+			numVars++;
+		}
+		
 		
 		int numOfParams = numOfFooParams();
 		addParamsToFoo(numOfParams);
@@ -350,7 +368,7 @@ if (XAALScripter.debug) {		System.out.println("YYY " + fooCall.getArgs().size())
 		
 		
 		ArrayList<String> safeIndexVars = new ArrayList<String>();
-		safeIndexVars.addAll(localTable.getCurrentVarNamesArray(VarRetrRest.NotArrayOnly));
+		//safeIndexVars.addAll(localTable.getCurrentVarNamesArray(VarRetrRest.NotArrayOnly));
 		
 		int numAOStmts = numOfFooAOStmts();
 		
@@ -363,18 +381,19 @@ if (XAALScripter.debug) {		System.out.println("YYY " + fooCall.getArgs().size())
 			
 			if (i == posForArrayIndex)// the operation with teh array index
 			{
-				assign = createIndexedAssign(localTable, safeIndexVars);
+				assign = createIndexedAssign(localTable, 
+						localTable.getCurrentVarNamesArray(VarRetrRest.NotArrayOnly));
 			
 			}
 			else //non array index action
 			{
 				if(assignOrOp()) //basic assignment
 				{
-					assign = createBasicAssign(localTable, safeIndexVars);
+					assign = createBasicAssign(localTable, new ArrayList<String>());
 				}
 				else //assign with op
 				{
-					assign = createOpAssign(localTable, safeIndexVars);
+					assign = createOpAssign(localTable, null);
 				}
 			}
 			
@@ -419,6 +438,21 @@ if (XAALScripter.debug) {		System.out.println("YYY " + fooCall.getArgs().size())
 	
 	private ASTVar createVar(SymbolTable table, ArrayList<String> bannedNames, boolean indexIsNum)
 	{
+		return createVar(table, bannedNames, indexIsNum, false);
+	}
+	
+	/**
+	 * 
+	 * @param table
+	 * @param bannedNames
+	 * @param indexIsNum
+	 * @param makeSureValidIndex makes sure that if there's an array with an index, the index 
+	 * 	is valid. If true, assumes that ONLY declarations have happened, nothing else.
+	 * @return
+	 */
+	private ASTVar createVar(SymbolTable table, ArrayList<String> bannedNames, boolean indexIsNum, 
+			boolean makeSureValidIndex)
+	{
 		ArrayList<String> origVarNames = table.getCurrentVarNamesArray();
 		ArrayList<String> varNames = new ArrayList<String>();
 		
@@ -442,7 +476,9 @@ if (XAALScripter.debug) {		System.out.println("YYY " + fooCall.getArgs().size())
 		if (v.getIsArray())
 		{
 			ArrayList<String> nonArrayVars = table.getCurrentVarNamesArray(VarRetrRest.NotArrayOnly);
-			
+			//we really, really want a valid index
+			if (makeSureValidIndex)
+				nonArrayVars = getValidArrayIndexesForCall(table);
 			testNonArrayVars(nonArrayVars, table);
 			if (indexIsNum == true) //index must be a num
 			{
@@ -467,7 +503,7 @@ if (XAALScripter.debug) {		System.out.println("YYY " + fooCall.getArgs().size())
 		if(intrCase == InterestingCases.Aliasing)
 		{
 			//add first one
-			ASTVar var1 = createVar(table);
+			ASTVar var1 = createVar(table, null, false, true);
 			ret.add(var1);
 			
 			//create second one based on first
@@ -491,6 +527,8 @@ if (XAALScripter.debug) {		System.out.println("YYY " + fooCall.getArgs().size())
 			ArrayList<String> arrays = table.getCurrentVarNamesArray(VarRetrRest.ArrayOnly);
 			ArrayList<String> indexVars = table.getCurrentVarNamesArray(VarRetrRest.NotArrayOnly);
 			
+			indexVars = getValidArrayIndexesForCall(table);
+			
 			testArrayEmpty(arrays);
 			testArrayVars(arrays, table);
 			testNonArrayVars(indexVars, table);
@@ -507,7 +545,7 @@ if (XAALScripter.debug) {		System.out.println("YYY " + fooCall.getArgs().size())
 
 		for (; i < numOfParams; i++)
 		{
-			ASTVar var = createVar(table);
+			ASTVar var = createVar(table, null, false, true);
 			ret.add(var);
 		}
 		
@@ -750,6 +788,8 @@ if (XAALScripter.debug) {		System.out.println("YYY " + fooCall.getArgs().size())
 		return randomNum(minIntInDecl, maxIntInDecl);
 	}
 	
+	
+	
 	private int randomArrayIndex()
 	{
 		return randomNum(minArrayIndex, maxArrayIndex);
@@ -778,6 +818,68 @@ if (XAALScripter.debug) {		System.out.println("YYY " + fooCall.getArgs().size())
 	private String getNewVarFromList (ArrayList<String> choices)
 	{
 		return getRandomItem(choices);
+	}
+	
+	private ArrayList<String> getInvalidArrayIndexesForCall(SymbolTable localTable)
+	{
+		ArrayList<String> ret = new ArrayList<String>(
+				localTable.getCurrentVarNamesArray(VarRetrRest.ArrayOnly));
+		
+		for(String s : localTable.getCurrentVarNamesArray(VarRetrRest.NotArrayOnly))
+		{
+			
+			try {
+				if (localTable.get(s) > 5)
+					ret.add(s);
+			} catch (VizIndexOutOfBoundsException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return ret;
+	}
+	
+	private ArrayList<String> getValidArrayIndexesForCall(SymbolTable localTable)
+	{
+		ArrayList<String> ret = new ArrayList<String>();
+		
+		for(String s : localTable.getCurrentVarNamesArray(VarRetrRest.NotArrayOnly))
+		{
+			
+			try {
+				if (localTable.get(s) <= 5)
+					ret.add(s);
+			} catch (VizIndexOutOfBoundsException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		if (ret.size() <= 0)
+			throw new AssumptionFailedException();
+		return ret;
+	}
+	
+	private boolean areThereValidIndexes(SymbolTable localTable)
+	{
+		ArrayList<String> test = new ArrayList<String>();
+		
+		for (String s : localTable.getCurrentVarNamesArray(VarRetrRest.NotArrayOnly))
+		{
+			try {
+				if (localTable.get(s) > 5)
+					test.add(s);
+			} catch (VizIndexOutOfBoundsException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		if (test.size() == localTable.getCurrentVarNamesArray(VarRetrRest.NotArrayOnly).size())
+			return false;
+		
+		return true;
 	}
 	
 	private ArrayList<String> nonArgsVarList(SymbolTable localTable)

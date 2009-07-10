@@ -24,7 +24,7 @@ public class CRTest2
 
 			RandomizingVisitor2<ByRefVariable> rv = new RandomizingVisitor2<ByRefVariable>(ByRefVariable.class);
 				
-			//program.jjtAccept(rv, null);
+			program.jjtAccept(rv, null);
 		
 			System.out.println("Successfully Parsed");
 			System.out.println("________________\n");

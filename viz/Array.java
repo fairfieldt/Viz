@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Array extends Variable implements Drawable {
 	
-	ArrayList<Integer> values  = new ArrayList<Integer>();
+	private ArrayList<Integer> values  = new ArrayList<Integer>();
 	private ArrayList<Queue<Integer>> arrayCopiesToMake;
 	
 	private ArrayList<LinkedList<String>> arrayCopiesOwned;
@@ -125,7 +125,7 @@ public class Array extends Variable implements Drawable {
 			//System.out.println(rectangle);
 			//System.out.println(id);
 			ids.add(rectangle);
-			//ids.add(id);
+			ids.add(id);
 			
 			do 
 			{
