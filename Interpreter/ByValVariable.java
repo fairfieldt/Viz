@@ -63,17 +63,17 @@ public class ByValVariable extends AbstractVariable implements Variable
 
 			return -255;
 		}
-		if (index > values.size() || index < 0) //being consistent would be nice
+		/*if (index > values.size() || index < 0) //being consistent would be nice
 		{
 			System.out.println("throwing exception");
 			throw new VizIndexOutOfBoundsException();
 
 		}
 		else
-		{
-			System.out.println("Should be fine");
+		{*/
+
 			return values.get(index);
-		}
+		//}
 	}
 	
 	/**
@@ -94,14 +94,14 @@ public class ByValVariable extends AbstractVariable implements Variable
 	{
 		if (isArray)
 		{
-			if (index < values.size() && index >= 0)
-			{
+			/*if (index < values.size() && index >= 0)
+			{*/
 				values.set(index, new Integer(value));
-			}
+			/*}
 			else
 			{
 				throw new VizIndexOutOfBoundsException();
-			}
+			}*/
 		}
 		else
 		{

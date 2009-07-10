@@ -491,7 +491,7 @@ if (XAALScripter.debug) {				System.out.println("CQC " + callQuestion);
 			catch (VizIndexOutOfBoundsException e)
 			{
 				System.out.println(e);
-				ASTExpression exp = (ASTExpression)node.jjtGetChild(0);
+				/*ASTExpression exp = (ASTExpression)node.jjtGetChild(0);
 				ASTNum num = new ASTNum(JJTNUM);
 				Random r= new Random();
 				num.setValue(r.nextInt(6));
@@ -509,6 +509,7 @@ if (XAALScripter.debug) {				System.out.println("CQC " + callQuestion);
 				Global.lineNumber = 1;
 				program.buildCode();
 				connector.modifyPseudocodeOnAll(program.getPseudocode());
+				*/
 			}
 			//////////////////////////////////////////
 		}
@@ -551,6 +552,7 @@ if (XAALScripter.debug) {		System.out.println("Assigning to " + name + " value o
 			}
 			catch (VizIndexOutOfBoundsException e)
 			{
+			/*
 				ASTExpression exp = (ASTExpression)node.jjtGetChild(0).jjtGetChild(0);
 				ASTNum num = new ASTNum(JJTNUM);
 
@@ -572,7 +574,7 @@ if (XAALScripter.debug) {		System.out.println("Assigning to " + name + " value o
 
 				program.buildCode();
 				connector.modifyPseudocodeOnAll(program.getPseudocode());				
-			
+			*/
 				System.out.println(e);
 				
 			}

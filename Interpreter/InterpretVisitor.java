@@ -499,6 +499,7 @@ if (XAALScripter.debug) {				System.out.println("CQC " + callQuestion);
 			catch (VizIndexOutOfBoundsException e)
 			{
 				System.out.println(e);
+				/*
 				ASTExpression exp = (ASTExpression)node.jjtGetChild(0);
 				ASTNum num = new ASTNum(JJTNUM);
 				Random r= new Random();
@@ -518,6 +519,7 @@ if (XAALScripter.debug) {				System.out.println("CQC " + callQuestion);
 				Global.lineNumber = 1;
 				program.buildCode();
 				connector.modifyPseudocodeOnAll(program.getPseudocode());
+				*/
 			}
 		}
 		return value;
@@ -547,7 +549,7 @@ if (XAALScripter.debug) {				System.out.println("CQC " + callQuestion);
 			catch (VizIndexOutOfBoundsException e)
 			{
 				System.out.println(e);
-				ASTExpression exp = (ASTExpression)node.jjtGetChild(0).jjtGetChild(0);
+				/*ASTExpression exp = (ASTExpression)node.jjtGetChild(0).jjtGetChild(0);
 				ASTNum num = new ASTNum(JJTNUM);
 
 				int val = r.nextInt(6);
@@ -570,6 +572,7 @@ if (XAALScripter.debug) {				System.out.println("CQC " + callQuestion);
 				connector.modifyPseudocodeOnAll(program.getPseudocode());				
 			
 				System.out.println(e);
+				*/
 				
 			}
 			System.out.println("that was close");
