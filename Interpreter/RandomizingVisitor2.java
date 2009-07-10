@@ -15,7 +15,7 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 	final int maxVarDeclsInGlobal = 5;
 	
 	final int minIntInDecl = 1;
-	final int maxIntInDecl = 9;
+	final int maxIntInDecl = 5;
 	
 	final int minVarDeclsInMain = 0;
 	final int maxVarDeclsInMain = 1;
@@ -349,8 +349,21 @@ if (XAALScripter.debug) {		System.out.println("YYY " + fooCall.getArgs().size())
 		}
 		
 		
+		//figure out the safe index vars and add them
 		ArrayList<String> safeIndexVars = new ArrayList<String>();
-		safeIndexVars.addAll(localTable.getCurrentVarNamesArray(VarRetrRest.NotArrayOnly));
+		String safeVar = getRandomItem(localTable.getCurrentVarNamesArray(VarRetrRest.NotArrayOnly));
+		safeIndexVars.add(safeVar);
+		
+		
+		/*
+		 * //Variable safeVarAsVar = localTable.getVariable(safeVar);
+		//if its a reference, also add the referenced variable
+		if (safeVarAsVar instanceof ByRefVariable)
+		{
+			ByRefVariable refVar = (ByRefVariable)safeVarAsVar;
+			refVar.getRef()
+		}
+		*/
 		
 		int numAOStmts = numOfFooAOStmts();
 		
@@ -361,7 +374,7 @@ if (XAALScripter.debug) {		System.out.println("YYY " + fooCall.getArgs().size())
 		{
 			ASTAssignment assign = null;
 			
-			if (i == posForArrayIndex)// the operation with teh array index
+			if (i == posForArrayIndex)// the operation with the array index
 			{
 				assign = createIndexedAssign(localTable, safeIndexVars);
 			
