@@ -511,20 +511,11 @@ public class XAALConnector {
 		
 		if (currentSnapNum < 0)
 			return false;
-		int highLine = lineToHighlight;
-		//String[] pseudo = this.pseudo.getPseudocode();
-		//int snapNum = currentSnapNum;
 		
-		endPar();
-		endSnap();
 		Variable[] highlightedVars = new Variable[highlightVars.length];
 		for (int i = 0; i < highlightVars.length; i++)
 		{
-			startSnap(highLine);
-			startPar();
 			highlightedVars[i] = varToVar.get(highlightVars[i].getUUID());
-			endPar();
-			endSnap();
 		}
 		
 		Variable innerVar = varToVar.get(modifiedVar.getUUID());
@@ -2031,6 +2022,7 @@ public class XAALConnector {
 		}
 	}
 	
+	//TODO must fix this.
 	private void writeCallByNameHighlight(CallByNameHighlightAction action)
 	{
 		try 
