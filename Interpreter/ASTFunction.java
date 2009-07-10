@@ -114,12 +114,12 @@ if (XAALScripter.debug) {		System.out.println(jjtGetChild(0));
 		code += endLineNumber + ". }";
 		if (this.name.equals("foo"))
 		{
-			NewTest.startScope = startLineNumber;
-			NewTest.endScope = endLineNumber;
+			Global.startScope = startLineNumber;
+			Global.endScope = endLineNumber;
 		}
 		else
 		{
-			NewTest.endMain = endLineNumber;
+			Global.endMain = endLineNumber;
 		}
 		return code;
 	}

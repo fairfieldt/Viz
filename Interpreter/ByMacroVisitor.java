@@ -194,9 +194,9 @@ if (XAALScripter.debug) {				System.out.println("You've lost...");
 			{
 				argName = argName + "[" + subscript.getCode() + "]";
 			}
-if (XAALScripter.debug) {			System.out.println(argName + ": " + NewTest.currentPage + " " + callLineNumber + " " + pos + " " + argName + " " + lineNumber + " " + endPos);
+if (XAALScripter.debug) {			System.out.println(argName + ": " + Global.currentPage + " " + callLineNumber + " " + pos + " " + argName + " " + lineNumber + " " + endPos);
 }if (XAALScripter.debug) {			System.out.println("Moving to");
-}			connector.moveArgs(NewTest.currentPage, callLineNumber, pos, argName, lineNumber, endPos);
+}			connector.moveArgs(Global.currentPage, callLineNumber, pos, argName, lineNumber, endPos);
 			
 if (XAALScripter.debug) {			System.out.println("...");
 }		}

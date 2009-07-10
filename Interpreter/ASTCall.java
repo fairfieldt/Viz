@@ -76,7 +76,7 @@ if (XAALScripter.debug) {		System.out.println("I had no args");
   
   public String getCode()
   {
-  	NewTest.callLine = Global.lineNumber;
+  	Global.callLine = Global.lineNumber;
   	if (!inUse)
   	{
   		return "";
