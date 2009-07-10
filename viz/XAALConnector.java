@@ -110,7 +110,6 @@ public class XAALConnector {
 	//Tom added this and it sucks!!!!!
 	public void setPseudocode(String[] code)
 	{
-		this.psuedoCode = code;
 		pseudo.setPseudocode(code);
 	}
 

@@ -572,7 +572,7 @@ if (XAALScripter.debug) {		System.out.println("Assigning to " + name + " value o
 				program.codeBuilt = false;
 
 				program.buildCode();
-				
+				connector.modifyPseudocodeOnAll(program.getPseudocode());
 			
 				System.out.println(e);
 				
