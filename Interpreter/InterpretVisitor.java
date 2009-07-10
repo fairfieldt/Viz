@@ -11,6 +11,8 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	private Question callQuestion;
 	private Question startQuestion;
 	
+	private ASTProgram program;
+	
 	private XAALConnector connector;
 		private static final int QUESTION_FREQUENCY = 65;
 	public static final int LINE_NUMBER_END = -1;
@@ -108,6 +110,7 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 	
 	public void handleProgram(ASTProgram node)
 	{
+		program = node;
 		//System.out.println("visiting program");
 		Global.setCurrentSymbolTable(Global.getSymbolTable()); 
 		update(1, UPDATE_REASON_BEGIN);
@@ -481,7 +484,39 @@ if (XAALScripter.debug) {				System.out.println("CQC " + callQuestion);
 		if (v.getIsArray())
 		{
 			index = (Integer) node.jjtGetChild(0).jjtGetChild(0).jjtAccept(this, null);
-			v.setValue(value, index);
+			System.out.println("Index " + index + " of " + node.getName());
+			try
+			{
+				v.setValue(value, index);
+			}
+			catch (VizIndexOutOfBoundsException e)
+			{
+				ASTExpression exp = (ASTExpression)node.jjtGetChild(0).jjtGetChild(0);
+				ASTNum num = new ASTNum(JJTNUM);
+
+				int val = r.nextInt(6);
+				num.setValue(val);
+				exp.jjtAddChild(num, 0);
+			index = (Integer) node.jjtGetChild(0).jjtGetChild(0).jjtAccept(this, null);
+				try
+				{
+					v.setValue(value, index);
+				}
+				catch (VizIndexOutOfBoundsException f)
+				{
+					System.out.println("oops");
+				}
+				Global.lineNumber = 1;
+
+				program.codeBuilt = false;
+
+				program.buildCode();
+				
+			
+				System.out.println(e);
+				
+			}
+			System.out.println("that was close");
 		if (gotAQuestion)
 		{
 			assignmentQuestion = questionFactory.getAssignmentQuestion(node.getLineNumber(), name, index);

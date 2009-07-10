@@ -5,6 +5,7 @@ def foo(x, y, z)
 {
 	var q = 5;
 	x  = 2;
+	m[q] = m[f];
 	y = 5;
 	j = x + y;
 	z = 11;

@@ -9,7 +9,7 @@ public class CopyRestore
 		System.out.println("Starting");
 		Global.InterpreterType = InterpreterTypes.BY_COPY_RESTORE;
 		BufferedReader br = null;
-		String name = "Samples/shell.src";
+		String name = "Samples/simple.src";
 		try
 		{
 			br = new BufferedReader(new FileReader(name));
@@ -26,12 +26,15 @@ public class CopyRestore
 
 			RandomizingVisitor2<ByRefVariable> rv = new RandomizingVisitor2<ByRefVariable>(ByRefVariable.class);
 				
-			program.jjtAccept(rv, null);		
+			//program.jjtAccept(rv, null);		
 			System.out.println("Successfully Parsed");
 			System.out.println("________________\n");
 			
 			program.buildCode();
-			
+			for (String s : program.getPseudocode())
+			{
+				System.out.println(s);
+			}
 			XAALConnector xc = new XAALConnector(program.getPseudocode(), "foo");
 		
 			QuestionFactory questionFactory = new QuestionFactory();

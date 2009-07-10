@@ -3,15 +3,15 @@ import java.util.*;
 
 public interface Variable
 {
-	public int getValue();
+	public int getValue() throws VizIndexOutOfBoundsException;
 	
 	public ArrayList<Integer> getValues();
 	
-	public int getValue(int subscript);
+	public int getValue(int subscript) throws VizIndexOutOfBoundsException;
 	
 	public void setValue(int value);
 	
-	public void setValue(int value, int index);
+	public void setValue(int value, int index) throws VizIndexOutOfBoundsException;
 	
 	public UUID getUUID();
 	

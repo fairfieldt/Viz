@@ -22,7 +22,7 @@ if (XAALScripter.debug) {			System.out.println("Setting prev st to " + previous.
 		this.vars = new HashMap<String, Variable>();
 	}
 	
-	public int get(String varName)
+	public int get(String varName) throws VizIndexOutOfBoundsException
 	{
 		return get(varName, false);
 	}
@@ -87,7 +87,7 @@ if (XAALScripter.debug) {			System.out.println("Error!  Couldn't find variable")
 	 * @param localOnly should you only look in the local symbol table or all of its parents.
 	 * @return an int representing the var or -255 if none was found.
 	 */
-	public int get(String varName, boolean localOnly)
+	public int get(String varName, boolean localOnly) throws VizIndexOutOfBoundsException
 	{
 		int retVal = -255;
 		if (vars.containsKey(varName))
@@ -103,7 +103,7 @@ if (XAALScripter.debug) {			System.out.println("Error!  Couldn't find variable")
 	}
 	
 	//This is the version to get an array value
-	public int get(String varName, int index, boolean localOnly)
+	public int get(String varName, int index, boolean localOnly) throws VizIndexOutOfBoundsException
 	{
 		int retVal = -255;
 		if (vars.containsKey(varName))
@@ -117,7 +117,7 @@ if (XAALScripter.debug) {			System.out.println("Error!  Couldn't find variable")
 		return retVal;
 	}
 	
-	public int get(String varName, int index)
+	public int get(String varName, int index) throws VizIndexOutOfBoundsException
 	{
 		return get(varName, index, false);
 	}
@@ -222,31 +222,9 @@ if (XAALScripter.debug) {			System.out.println("error! variable not found: " + n
 		return new ArrayList<String>(getLocalVarNames());
 	}
 	
-	public String toString()
+	public String toString() 
 	{
-		String code = "Scope " + name + ":\n";
-		for (String key : vars.keySet())
-		{
-			code += key + ":";
-			if (vars.get(key).getIsArray())
-			{
-				for (Integer value : vars.get(key).getValues())
-				{
-					code += " ";
-				}
-				code += "\n";
-			}
-			else
-			{
-			
-				code += vars.get(key).getValue() + "\n";
-			}
-		}
 		
-		if (previous != null)
-		{
-			code += previous.toString();
-		}
-		return code;
+		return "blah";
 	}
 }
