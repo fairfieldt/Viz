@@ -98,12 +98,13 @@ public class XAALConnector {
 		questions = new ArrayList<Question>();
 		currentSnapNum = 0;
 		this.title = title;
-		this.pseudoAtSnap.put(0, pseudoCode);
+		
 		actions = new LinkedList<FutureAction>();
 		this.cpc = new CodePageContainer();
 		this.lineToHighlightOnSnap = new HashMap<Integer,Integer>();
 		this.pseudoSnapsToNeverReplace = new HashSet<Integer>();
 		this.pseudoAtSnap = new HashMap<Integer, String[]>();
+		this.pseudoAtSnap.put(0, pseudoCode);
 		pseudoAtSnap.put(0, pseudoCode);
 	}
 
@@ -456,19 +457,21 @@ public class XAALConnector {
 	 *            a list of  <code>Interpreter.Variable</code> that corresponds with the
 	 *            <code>Variable</code>s to be highlighted.
 	 * @param indexForVars the array index of the corresponding variable in <code>highlightVars</code>.
-	 * If the corresponding variable is not an array, enter -1 for that.
+	 * If the corresponding variable is not an array, enter -1.
 	 * @param fadedScopeId
 	 *            the name of the scope to fade out.
 	 * @param highlightScopeId
 	 *            the name of the scopes to highlight containing
 	 *            <code>hightlightVar</code>
 	 * @param modifiedVar the variable being modified
+	 * @param modifiedVarIndex the index of <code>modifiedVar</code> being modified. 
+	 * 				If <code>modifiedVar</code> isn't an array, enter -1.
 	 * @param value the new value of <code>modifiedVar</code>
 	 * @return true if works, false if something went bad.
 	 */
 	public boolean callByNameHighlight(Interpreter.Variable[] highlightVars, int[] indexForVars,
-			String fadedScopeId, String highlightScopeIds[], Interpreter.Variable modifiedVar,
-			int value) {
+			String fadedScopeId, String highlightScopeIds[], Interpreter.Variable modifiedVar, 
+			int modifiedVarIndex,int value) {
 		
 		if (currentSnapNum < 0)
 			return false;
@@ -489,12 +492,23 @@ public class XAALConnector {
 		}
 		
 		Variable innerVar = varToVar.get(modifiedVar.getUUID());
-		innerVar.setValue(value);
-
-		innerVar.addCopy();
 		
-		actions.offer(new CallByNameHighlightAction(highlightedVars, fadedScopeId,
-				highlightScopeIds, innerVar, value, currentSnapNum));
+		if (modifiedVarIndex > -1)
+		{
+			Array innerArray = (Array)innerVar;
+			
+			innerArray.setElem(modifiedVarIndex, value);
+			innerArray.addCopy(modifiedVarIndex);
+		}
+		else
+		{
+			innerVar.setValue(value);
+	
+			innerVar.addCopy();
+		}
+		
+		actions.offer(new CallByNameHighlightAction(highlightedVars, indexForVars, fadedScopeId,
+				highlightScopeIds, innerVar, modifiedVarIndex, value, currentSnapNum));
 
 		return true;
 	}
@@ -2021,6 +2035,7 @@ public class XAALConnector {
 		{
 			
 			Variable[] highlightVars = action.getHighlightVars();
+			int[] highlightVarIndexes = action.getHighlightVarIndexes();
 			String[] highlightScopes = action.getHighlightScopes();
 			
 			for(int i = 0; i < highlightVars.length; i++)
@@ -2037,6 +2052,10 @@ public class XAALConnector {
 				
 				
 				Variable temp = highlightVars[i];
+				if (highlightVarIndexes[i] < 0)
+				{
+					
+				}
 				Scope scope = scopes.get(highlightScopes[i]);
 				
 				//highlight the borders of the variable and scope
