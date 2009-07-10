@@ -2007,6 +2007,7 @@ public class XAALConnector {
 			{
 				Variable nextHighlightedVar = null;
 				String nextHighlightedScope = null;
+				int nextHighlightedIndex = -1;
 				
 				scripter.reopenSlide(action.getSnapNum() + i);
 				
@@ -2017,14 +2018,21 @@ public class XAALConnector {
 				
 				
 				Variable temp = highlightVars[i];
+				String tempRectId = null;
 				if (highlightVarIndexes[i] < 0)
 				{
-					
+					Array tempArray = (Array)temp;
+					tempRectId = tempArray.getRect(highlightVarIndexes[i]);
 				}
+				else
+				{
+					tempRectId = temp.getRectId();
+				}
+				
 				Scope scope = scopes.get(highlightScopes[i]);
 				
 				//highlight the borders of the variable and scope
-				String[] ids = {temp.getRectId(), scope.getRectId()};
+				String[] ids = {tempRectId, scope.getRectId()};
 				scripter.addChangeStyle(StrokeType.solid, XAALScripter.DEFAULT_STROKE_WIDTH * 3, ids);
 				
 				//fade the background color
@@ -2037,7 +2045,11 @@ public class XAALConnector {
 				scripter.recloseSlide();
 				
 				if (i + 1 < highlightVars.length)
+				{
 					nextHighlightedVar = highlightVars[i+1];
+					nextHighlightedIndex = highlightVarIndexes[i+1];
+				}
+				
 				
 				if(i + 1 < highlightVars.length)
 					nextHighlightedScope = highlightScopes[i+1];
@@ -2050,7 +2062,15 @@ public class XAALConnector {
 				if (nextHighlightedVar == null || temp != nextHighlightedVar)
 				{
 					scripter.addChangeStyle(StrokeType.solid, XAALScripter.DEFAULT_STROKE_WIDTH, 
-							nextHighlightedVar.getRectId());
+							temp.getRectId());
+				}
+				else if (temp == nextHighlightedVar && 
+						highlightVarIndexes[i] !=nextHighlightedIndex )
+				{
+					Array tempA = (Array)temp;
+					
+					scripter.addChangeStyle(StrokeType.solid, XAALScripter.DEFAULT_STROKE_WIDTH,
+							tempA.getRect(highlightVarIndexes[i]));
 				}
 				
 				//we can stop highlighting a particular scope if the 
@@ -2058,7 +2078,7 @@ public class XAALConnector {
 				if (nextHighlightedScope == null || scope != scopes.get(nextHighlightedScope))
 				{
 					scripter.addChangeStyle(StrokeType.solid, XAALScripter.DEFAULT_STROKE_WIDTH, 
-							scopes.get(nextHighlightedScope).getRectId());
+							scope.getRectId());
 				}
 				
 				scripter.reclosePar();
@@ -2069,23 +2089,46 @@ public class XAALConnector {
 			
 			
 			scripter.reopenPar();
-			
-			Variable v = action.getModifiedVar();
-			// pop copy of current value
-			String oldCopy = v.popCopyId();
-
-			// hide oldCopy
-			scripter.addHide(oldCopy);
-			String newCopy = v.peekCopyId();
-			
-			scripter.addShow(newCopy);
-
-			// highlight the change
-			scripter.addChangeStyle(highlightColor, newCopy);
-
-			// set the value of variable to its new value
-			v.setValue(action.getValue());
-			
+			String newCopy = null;
+			if( action.getModifiedVarIndex() > -1) // its a regular variable
+			{
+				
+				Variable v = action.getModifiedVar();
+				// pop copy of current value
+				String oldCopy = v.popCopyId();
+	
+				// hide oldCopy
+				scripter.addHide(oldCopy);
+				newCopy = v.peekCopyId();
+				
+				scripter.addShow(newCopy);
+	
+				// highlight the change
+				scripter.addChangeStyle(highlightColor, newCopy);
+	
+				// set the value of variable to its new value
+				v.setValue(action.getValue());
+			}
+			else //its a stinkin' array
+			{
+				Variable v = action.getModifiedVar();
+				Array vA = (Array)v;
+				// pop copy of current value
+				String oldCopy = vA.popCopyId(action.getModifiedVarIndex());
+				// hide oldCopy
+				scripter.addHide(oldCopy);
+				
+				newCopy = vA.peekCopyId(action.getModifiedVarIndex());
+				
+				scripter.addShow(newCopy);
+				
+				// highlight the change
+				scripter.addChangeStyle(highlightColor, newCopy);
+				
+				// set the value of variable to its new value
+				vA.setElem(action.getModifiedVarIndex(), action.getValue());
+				
+			}
 			// reclose the par
 			scripter.reclosePar();
 			// reclose the slide

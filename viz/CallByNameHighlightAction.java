@@ -47,7 +47,7 @@ public class CallByNameHighlightAction extends FutureAction{
 		return modifiedVar;
 	}
 	
-	public int modifiedVarIndex()
+	public int getModifiedVarIndex()
 	{
 		return modifiedVarIndex;
 	}
