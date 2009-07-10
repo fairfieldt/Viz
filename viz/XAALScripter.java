@@ -1307,49 +1307,62 @@ public class XAALScripter {
 	 *             No slide open.
 	 */
 	public void addChangeStyle(String color, String... ids)
-			throws SlideException {
+			throws SlideException 
+	{
+		addChangeStyle(color, false, ids);
+	}
+	
+	public void addChangeStyle(String color,  boolean isFillColor, String... ids)
+	throws SlideException 
+	{
 		if (!inSlide())
 			throw new SlideException(
 					"You must create a slide before creating actions.");
-
+		
 		boolean closeParAtEnd = false;
-
+		
 		if (!inPar()) {
 			try {
 				startPar();
 			} catch (ParException e) {
-
+		
 				e.printStackTrace();
 			}
 			closeParAtEnd = true;
 		}
-
+		
 		Element parent = currentPar;
-
+		
 		Element changeStyle = createElement("change-style");
-
+		
 		for (String id : ids) {
 			Element objRef = createElement("object-ref");
 			objRef.setAttribute("id", id);
 			changeStyle.addContent(objRef);
 		}
-
+		
 		Element style = createElement("style");
-
-		Element colorElem = createElement("color");
+		
+		Element colorElem = null;
+		
+		if (isFillColor)
+			colorElem = createElement("fill-color");
+		else
+			colorElem = createElement("color");
+		
 		colorElem.setAttribute("name", color);
-
+		
 		style.addContent(colorElem);
-
+		
 		changeStyle.addContent(style);
-
+		
 		parent.addContent(changeStyle);
-
+		
 		if (closeParAtEnd)
 			try {
 				endPar();
 			} catch (ParException e) {
-
+		
 				e.printStackTrace();
 			}
 	}

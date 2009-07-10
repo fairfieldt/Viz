@@ -1914,24 +1914,42 @@ public class XAALConnector {
 	
 	private void writeCallByNameHighlight(CallByNameHighlightAction action)
 	{
-		/*
 		try 
 		{
-			/*
+			
+			
 		
-			scripter.reopenSlide(action.getSnapNum());
 			
-			boolean parExists = false;
-			parExists = scripter.reopenPar(0);
-			if (!parExists)
-				scripter.startPar();
-			
-			//action.getHighlightVar()
-			 * 
+			Variable[] highlightVars = action.getHighlightVars();
+			String[] highlightScopes = action.getHighlightScopes();
+			for(int i = 0; i < highlightVars.length; i++)
+			{
+				Variable nextHighlightedVar = null;
+				String nextHighlightedScope = null;
+				
+				scripter.reopenSlide(action.getSnapNum() + i);
+				
+				boolean parExists = false;
+				parExists = scripter.reopenPar(0);
+				if (!parExists)
+					scripter.startPar();
+				
+				
+				Variable temp = highlightVars[i];
+				Scope scope = scopes.get(highlightScopes[i]);
+				
+				//highlight the borders of the variable and scope
+				String[] ids = {temp.getRectId(), scope.getRectId()};
+				scripter.addChangeStyle(StrokeType.solid, XAALScripter.DEFAULT_STROKE_WIDTH * 3, ids);
+				
+				//fade the background color
+				scripter.addChangeStyle("gray", true, action.getFadedScope());
+			}
+			 
 			 
 		}
 		catch (XAALScripterException e)
 		{
-		}*/
+		}
 	}
 }

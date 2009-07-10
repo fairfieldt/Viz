@@ -34,7 +34,7 @@ public class ParameterPassing {
 		BufferedReader br = null;
 		try
 		{
-			br = new BufferedReader(new FileReader("Samples/shell.src"));
+			br = new BufferedReader(new FileReader("C:\\Users\\Eric\\ws\\Viz\\bin\\Samples\\shell.src"));
 		}
 		catch (Exception e)
 		{
@@ -85,7 +85,7 @@ public class ParameterPassing {
 		BufferedReader br = null;
 		try
 		{
-			br = new BufferedReader(new FileReader("Samples/shell.src"));
+			br = new BufferedReader(new FileReader("C:\\Users\\Eric\\ws\\Viz\\bin\\Samples\\shell.src"));
 		}
 		catch (Exception e)
 		{
@@ -132,7 +132,7 @@ public class ParameterPassing {
 	{
 		Global.InterpreterType = InterpreterTypes.BY_COPY_RESTORE;
 		BufferedReader br = null;
-		String name = "Samples/shell.src";
+		String name = "C:\\Users\\Eric\\ws\\Viz\\bin\\Samples\\shell.src";
 		try
 		{
 			br = new BufferedReader(new FileReader(name));
@@ -154,11 +154,6 @@ public class ParameterPassing {
 			System.out.println("________________\n");
 			
 			program.buildCode();
-			if (XAALScripter.debug)
-				for (String s : program.getPseudocode())
-				{
-					System.out.println(s);
-				}
 			
 			XAALConnector xc = new XAALConnector(program.getPseudocode(), "By Copy Restore");
 			
