@@ -209,10 +209,39 @@ public class XAALScripter {
 	 * @param strokeType
 	 * @param lineWidth
 	 *            the width of the rectangle's border.
-	 * @return
+	 * @return a String containing the id of the rectangle added.
 	 */
 	public String addRectangle(int x, int y, int width, int height,
 			String color, boolean hidden, StrokeType strokeType, int lineWidth) {
+		return addRectangle(x, y, width, height, color, hidden, strokeType, lineWidth, null);
+	}
+	
+	/**
+	 * Adds a new solid rectangle to the initial element of a XAAL script.
+	 * 
+	 * @param x
+	 *            y coordinate for the top left corner of the rectangle.
+	 * @param y
+	 *            y coordinate for the top left corner of the rectangle.
+	 * @param width
+	 *            width of the rectangle in pixels.
+	 * @param height
+	 *            height of the rectangle in pixels.
+	 * @param color
+	 *            color of the rectangle's border. Must be a named XAAL color.
+	 * @param hidden
+	 *            specifies whether the rectangle should be hidden initially.
+	 * @param strokeType
+	 * @param lineWidth
+	 *            the width of the rectangle's border.
+	 * @param fillColor color the rectangle should be filled with. If null, 
+	 *            it won't be filled.
+	 * @return a String containing the id of the rectangle added.
+	 */
+	public String addRectangle(int x, int y, int width, int height,
+			String color, boolean hidden, StrokeType strokeType, int lineWidth, 
+			String fillColor) 
+	{
 		Element initial = document.getRootElement().getChild("initial",
 				defaultNS);
 
@@ -268,7 +297,13 @@ public class XAALScripter {
 		strokeElem.setAttribute("width", lineWidth + "");
 		strokeElem.setAttribute("type", strokeType.name());
 		style.addContent(strokeElem);
-
+		
+		if (fillColor != null) {
+			Element fillColorElem = createElement("fill-color");
+			fillColorElem.setAttribute("name", fillColor);
+			style.addContent(fillColorElem);
+		}
+		
 		rect.addContent(style);
 
 		initial.addContent(rect);
@@ -897,9 +932,10 @@ public class XAALScripter {
 		int endX = 0;
 		int endY = 0;
 		try {
-			startX = startPos.getAttribute("x").getIntValue();
-			// (origin.getAttribute("shapeWidth", jhaveNS).getIntValue() /2);
-			startY = startPos.getAttribute("y").getIntValue();
+			startX = startPos.getAttribute("x").getIntValue() +
+			    (origin.getAttribute("shapeWidth", jhaveNS).getIntValue() /2);
+			startY = startPos.getAttribute("y").getIntValue() +
+				(origin.getAttribute("shapeHeight", jhaveNS).getIntValue() /2);
 			//System.out.println("X: " + startX + " Y: " + startY);
 
 			// TODO: fix this so that we get the correct vars

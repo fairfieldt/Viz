@@ -220,7 +220,7 @@ public class Variable implements Drawable
 			//title
 			String id2 = scripter.addText(xPos, yPos-5, name, "black", hidden);
 			//pointer triangle
-			String id3 = scripter.addTriangle(xPos + 16, yPos + 16 , 8, "black", hidden, 
+			String id3 = scripter.addRectangle(xPos + 16, yPos + 16 , 8, 8, "black", hidden,
 					StrokeType.solid, 1, "black");
 			//
 			
@@ -274,8 +274,8 @@ public class Variable implements Drawable
 			String id1 = scripter.addRectangle(xPos, yPos, 40, 40, color,  hidden);
 			//title
 			String id2 = scripter.addText(xPos, yPos-5, name, "black", hidden);
-			//pointer triangle
-			String id3 = scripter.addTriangle(xPos + 16, yPos + 16 , 8, "black", hidden, 
+			//pointer rectangle
+			String id3 = scripter.addRectangle(xPos + 16, yPos + 16 , 8, 8, "black", hidden,
 					StrokeType.solid, 1, "black");
 			//
 			
