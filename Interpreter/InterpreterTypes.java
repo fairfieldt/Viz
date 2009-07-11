@@ -6,4 +6,5 @@ public class InterpreterTypes
 	public static final int BY_REFERENCE = 1;
 	public static final int BY_COPY_RESTORE = 2;
 	public static final int BY_MACRO = 3;
+	public static final int BY_NAME = 4;
 }

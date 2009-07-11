@@ -40,16 +40,12 @@ public class ByRefVariable extends AbstractVariable implements Variable
 	
 	public void setValue(int value)
 	{
-if (XAALScripter.debug) {		System.out.println("ref: " + ref);
-}if (XAALScripter.debug) {		System.out.println("Setting value");
-}		this.ref.setValue(value);
-if (XAALScripter.debug) {		System.out.println("Done setting value");
-}	}
+	this.ref.setValue(value);
+	}
 	
 	public int getValue() throws VizIndexOutOfBoundsException
 	{
-if (XAALScripter.debug) {		System.out.println("Getting value");
-}		if (this.refIndex == -1) //Normal var
+		if (this.refIndex == -1) //Normal var
 		{
 			return this.ref.getValue();
 		}

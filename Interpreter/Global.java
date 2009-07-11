@@ -52,16 +52,14 @@ public class Global
 	public static void setCurrentSymbolTable(SymbolTable table)
 	{
 		currentSymbolTable = table;
-if (XAALScripter.debug) {		System.out.println("done here");
-}	}
+	}
 	
 	public static boolean addFunction(ASTFunction fun)
 	{
 		//System.out.println("Adding a function");
 		if (functions.containsKey(fun.getName()))
 		{
-if (XAALScripter.debug) {			System.out.println("Found key " + fun.getName());
-}			return false;
+			return false;
 		}
 		functions.put(fun.getName(), fun);
 		return true;

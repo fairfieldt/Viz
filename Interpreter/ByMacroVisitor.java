@@ -172,8 +172,7 @@ if (XAALScripter.debug) {				System.out.println("Line yes: " + lineNumber);
 				{
 					endPos = 1;
 					lineNumber = temp.getLineNumber();
-if (XAALScripter.debug) {					System.out.println("Line maybe: " + lineNumber);
-}				}
+				}
 				else if (temp instanceof ASTOp) // RHS of op grandparent knows lineNumber
 				{
 					endPos = 2;
@@ -183,23 +182,19 @@ if (XAALScripter.debug) {					System.out.println("Line maybe: " + lineNumber);
 				}
 				else
 				{
-if (XAALScripter.debug) {					System.out.println("You forgot something Tom");
-}				}
+				}
 			}
 			else
 			{
-if (XAALScripter.debug) {				System.out.println("You've lost...");
-}			}
+			}
 			if (node.getIsArray()) //An array, we have to put the subscript on for the move
 			{
 				argName = argName + "[" + subscript.getCode() + "]";
 			}
-if (XAALScripter.debug) {			System.out.println(argName + ": " + Global.currentPage + " " + callLineNumber + " " + pos + " " + argName + " " + lineNumber + " " + endPos);
-}if (XAALScripter.debug) {			System.out.println("Moving to");
-}			connector.moveArgs(Global.currentPage, callLineNumber, pos, argName, lineNumber, endPos);
+			System.out.println(Global.currentPage + " " + callLineNumber + " " + pos + " " + argName + " " + lineNumber + " " + endPos);
+			connector.moveArgs(Global.currentPage, callLineNumber, pos, argName, lineNumber, endPos);
 			
-if (XAALScripter.debug) {			System.out.println("...");
-}		}
+		}
 	}
 	
 	public void handleVarDecl(ASTVarDecl node)

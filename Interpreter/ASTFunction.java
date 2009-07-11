@@ -62,6 +62,9 @@ public class ASTFunction extends SimpleNode
 			case InterpreterTypes.BY_COPY_RESTORE:
 				v = new ByCopyRestoreVariable();
 				break;
+			case InterpreterTypes.BY_NAME:
+				v = new ByNameVariable();
+				break;
 			default:
 				v = new ByValVariable(-255);
 if (XAALScripter.debug) {				System.out.println("Error, default interpreter type reached");
