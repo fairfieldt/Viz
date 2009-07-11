@@ -164,6 +164,24 @@ public class XAALConnector {
 	 */
 	public void moveArgs(String codePageId, int fromLineNum, int fromPos,
 			String fromStr, int toLineNum, int toPos) {
+		/*
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println("moveArgs call:");
+		System.out.println("\tcodePageId=" + codePageId);
+		System.out.println("\tfromLineNum=" + fromLineNum);
+		System.out.println("\tfromPos=" + fromPos);
+		System.out.println("\tfromStr=" + fromStr);
+		System.out.println("\toLineNum=" + toLineNum);
+		System.out.println("\ttoPos=" + toPos);
+		*/
+		
 		CodePage cp = cpc.get(codePageId);
 		// System.out.println(cp);
 		cp.setCallLineNum(fromLineNum);
@@ -900,13 +918,15 @@ public class XAALConnector {
 				if (i < snapRegularPseudoStartsAt)// do preview code
 				{
 					pseudo = new PseudoSerializer(previewPseudo, title);
+					scripter.addPseudocodeUrl(pseudo.toPseudoPage(lineToHighlight, true));
 				}
 				else // its not preview, use normal
 				{
 					pseudo = new PseudoSerializer(pseudoCode, title);
+					scripter.addPseudocodeUrl(pseudo.toPseudoPage(lineToHighlight));
 				}
 				
-				scripter.addPseudocodeUrl(pseudo.toPseudoPage(lineToHighlight));
+				
 			} catch (SlideException e) {
 				
 				e.printStackTrace();
@@ -1714,6 +1734,7 @@ public class XAALConnector {
 			// reopen par
 			scripter.reopenPar();
 
+			//TODO: fix it so we stop trying to close foo in by-macro
 			Scope scope = scopes.get(action.getScope());
 			ArrayList<String> scopeIds = scope.getIds();
 			// show all the ids
@@ -1856,7 +1877,7 @@ public class XAALConnector {
 					+ (cp.getLineHeight() * (action.getFromLine() - 3));
 
 			int endX = cp.x + cp.toPosX[action.getToPos()];
-			int endY = cp.y + (cp.getLineHeight() * (action.getToLine() - 4));
+			int endY = cp.y + (cp.getLineHeight() * (action.getToLine() - 3));
 
 			int moveX = startX - endX;
 			int moveY = startY - endY;

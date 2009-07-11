@@ -8,7 +8,7 @@ public class NewTest2
 	public static String currentPage;
 	public static void main(String[] args)
 	{
-		Global.InterpreterType = InterpreterTypes.BY_VALUE;
+Global.InterpreterType = InterpreterTypes.BY_VALUE;
 		
 		BufferedReader br = null;
 		try
@@ -34,16 +34,21 @@ public class NewTest2
 
 			program.dump("");
 			program.buildCode();
+			for (String s : program.getPseudocode())
+			{
+				System.out.println(s);
+			}
 			System.out.println("Built code");
 			
 
-			String[] info = {"Step 1. Copy in the arguments",
-					 "Step 2. Copy in the function body",
-					 "Step 3. Run the program.  (Click next to begin)"};
+			String[] info = {"Step 1. Copy in the arguments\nEach argument to the function being called is\ncopied textually into the function body.",
+					 "Step 2. Copy in the function body\nThe entire function body is copied into the\ncalling function.  It has its own scope \nwhich is a subscope of the calling function.",
+					 "Step 3. Run the program.  (Click next to begin)\nNow the program is run just as in other\nevaluation strategies."
+					 };
 					 
-			XAALConnector xc = new XAALConnector(info, "foo");			//program.dump("");
+			XAALConnector xc = new XAALConnector(info, "Call by Macro", true);			//program.dump("");
 			String p0 = xc.addCodePage(program.getPseudocode());
-			NewTest.currentPage = p0;
+			Global.currentPage = p0;
 			xc.startSnap(0);
 			xc.startPar();
 				xc.showCodePage(p0);
@@ -51,12 +56,14 @@ public class NewTest2
 			xc.endSnap();
 			xc.startSnap(1);
 			xc.startPar();
-			
+			System.out.println("asdf");
 			ByMacroVisitor bm = new ByMacroVisitor();
 			bm.setXAALConnector(xc);
 			program.jjtAccept(bm, null);
+
+			System.out.println("jkl;");
 			
-			System.out.println("MACRO TIME");		
+			//System.out.println("MACRO TIME");		
 			Global.lineNumber = 1;
 			program.codeBuilt = false;
 			program.buildCode();
@@ -64,8 +71,9 @@ public class NewTest2
 						{
 							System.out.println(line);
 						}
-			String p2 = xc.addCodePage(program.getPseudocode());
-			xc.swapCodePage(p0, p2);
+			System.out.println("ASDF" + removeLineNumbers(program.getPseudocode()));
+			String p2 = xc.addCodePage(removeLineNumbers(program.getPseudocode()));
+			xc.swapCodePage(p0, p2);			
 			xc.endPar();
 			xc.endSnap();
 
@@ -75,37 +83,47 @@ public class NewTest2
 			Global.lineNumber = 1;
 			program.codeBuilt = false;
 			program.buildCode();
-				String p3 = xc.addCodePage(program.getPseudocode());
+for (String s : program.getPseudocode())
+			{
+				System.out.println(s);
+			}
+				String p3 = null;
 			xc.startPar();
-				//xc.hideCodePage(p2);
-			xc.replaceWithScope(p2, 16, 4, 11, 8);
-				//xc.showCodePage(p3);
+			
+			//Prettier now
+			System.out.println("Global.callLine: " + Global.callLine + " start " + Global.startScope + " end " + Global.endScope + " Global.endMain " + (Global.endMain+2));
+			xc.replaceWithScope(p2, Global.callLine-1, Global.startScope, Global.endScope, Global.endMain+1);
+			p3 = xc.addCodePage(program.getPseudocode());
+			/*
+				xc.hideCodePage(p2);
+				xc.showCodePage(p3);
+			*/
 			xc.endPar();
+			xc.startPar();
+			xc.swapCodePage(p2, p3, true);			
+			xc.endPar();
+			
+			
 			xc.endSnap();
 			
 			xc.startSnap(3);
 			xc.startPar();
-				xc.hideCodePage(p2);
-			// xc.hideCodePage(p3);
+				xc.hideCodePage(p3);
 			xc.endPar();
 			xc.endSnap();
 			xc.startSnap(1, program.getPseudocode());
 			xc.startPar();
-			xc.hideCodePage(p2);
 			xc.endPar();
 			xc.endSnap();
 			
-			System.out.println("\n\n Testing Interpret Visitor");
+			//System.out.println("\n\n Testing Interpret Visitor");
 			
 			QuestionFactory questionFactory = new QuestionFactory();
 			
 			InterpretVisitor iv = new InterpretVisitor();
 			iv.setXAALConnector(xc);
 			iv.setQuestionFactory(questionFactory);
-			iv.setByMacroFlag();
 			program.jjtAccept(iv, null);
-			System.out.println(Global.getFunction("foo").getParameters().size());
-			System.out.println(Global.getFunction("foo").getSymbolTable().getLocalVariables().size());
 			xc.draw("C:\\Users\\Eric\\Desktop\\bymacro.xaal");
 			
 
@@ -114,5 +132,14 @@ public class NewTest2
 		{
 			System.out.println(e);
 		}
+	}
+	private static String[] removeLineNumbers(String[] code)
+	{
+		for (String s : code)
+		{
+			s = s.replaceFirst("(\\d)*.", "");
+			System.out.println("D" + s);
+		}
+		return code;
 	}
 }

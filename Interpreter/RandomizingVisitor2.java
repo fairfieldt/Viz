@@ -9,7 +9,9 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 	
 	Class<T> varClass = null;
 	
-	final String[] possVars = {"g","i", "j", "k", "m","n", "v", "w"};
+	final String[] possVarNames = {"g","i", "j", "k", "m","n", "v", "w"};
+	
+	final String[] arrVarNames = { "a", "b", "c", "d", "e", "f"};
 	final String[] paramNames = {"x", "y", "z" };	
 	final int minVarDeclsInGlobal = 5;
 	final int maxVarDeclsInGlobal = 5;
@@ -107,7 +109,7 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 				badNames.add(paramNames[j]);
 			}
 			
-			String newName = getNewVarName(badNames);
+			String newName = getNewArrayName(badNames);
 			
 			ASTVarDecl arrayDecl = createArrayDecl(newName);
 			
@@ -237,7 +239,7 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 		if (arrayInMain())
 		{
 			ArrayList<String> badNames = localTable.getLocalVarNamesArray();
-			String name = getNewVarName(badNames);
+			String name = getNewArrayName(badNames);
 			
 			ASTVarDecl newVarDecl = createArrayDecl(name);
 			main.addLogicalChild(newVarDecl, numVars);
@@ -337,7 +339,7 @@ if (XAALScripter.debug) {		System.out.println("YYY " + fooCall.getArgs().size())
 		if (arrayInFoo() && intrCase != InterestingCases.Shadowing)
 		{
 			ArrayList<String> badVars = localTable.getLocalVarNamesArray();
-			String name = getNewVarName(badVars);
+			String name = getNewArrayName(badVars);
 			
 			ASTVarDecl v = createArrayDecl(name);
 			foo.addLogicalChild(v, numVarDecls);
@@ -778,7 +780,7 @@ if (XAALScripter.debug) {		System.out.println("YYY " + fooCall.getArgs().size())
 	{
 		ArrayList<String> possNames = new ArrayList<String>();
 		
-		for(String name : this.possVars)
+		for(String name : this.possVarNames)
 		{
 			if( !bannedNames.contains(name))
 				possNames.add(name);
@@ -786,6 +788,19 @@ if (XAALScripter.debug) {		System.out.println("YYY " + fooCall.getArgs().size())
 		
 		return getRandomItem(possNames);
 		
+	}
+	
+	private String getNewArrayName(ArrayList<String> bannedNames)
+	{
+		ArrayList<String> possNames = new ArrayList<String>();
+		
+		for(String name : this.arrVarNames)
+		{
+			if( !bannedNames.contains(name))
+				possNames.add(name);
+		}
+		
+		return getRandomItem(possNames);
 	}
 	
 	private String getNewVarFromList (ArrayList<String> choices)

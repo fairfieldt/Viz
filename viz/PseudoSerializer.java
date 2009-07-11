@@ -35,6 +35,12 @@ public class PseudoSerializer {
 		
 	public String toPseudoPage(int lineNum)
 	{
+		return toPseudoPage(lineNum, false);
+	}
+	
+	public String toPseudoPage(int lineNum, boolean doubleSpace)
+	{
+	
 		final String less_than = "%26lt;";
 		final String less_than_in_uri = "%2625lt;";
 		
@@ -52,6 +58,9 @@ public class PseudoSerializer {
 				content += "</span>";
 			
 			content += "\n";
+			
+			if (doubleSpace)
+				content += "\n";
 		}
 		
 		content += "</pre></body></html>";
@@ -67,4 +76,5 @@ public class PseudoSerializer {
 		
 		return uri.toASCIIString().replaceAll(less_than_in_uri, less_than);
 	}
+	
 }
