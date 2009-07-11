@@ -49,6 +49,9 @@ public class XAALScripter {
 	
 	//whether we should be running in debug mode and printing out debug info.
 	public static boolean debug = false;
+	
+	private static final double ARROW_HALF_ANGLE = Math.PI / 6;
+    private static final int ARROW_LENGTH = 8;
 
 	/**
 	 * Constructor for XAALScripter
@@ -209,10 +212,39 @@ public class XAALScripter {
 	 * @param strokeType
 	 * @param lineWidth
 	 *            the width of the rectangle's border.
-	 * @return
+	 * @return a String containing the id of the rectangle added.
 	 */
 	public String addRectangle(int x, int y, int width, int height,
 			String color, boolean hidden, StrokeType strokeType, int lineWidth) {
+		return addRectangle(x, y, width, height, color, hidden, strokeType, lineWidth, null);
+	}
+	
+	/**
+	 * Adds a new solid rectangle to the initial element of a XAAL script.
+	 * 
+	 * @param x
+	 *            y coordinate for the top left corner of the rectangle.
+	 * @param y
+	 *            y coordinate for the top left corner of the rectangle.
+	 * @param width
+	 *            width of the rectangle in pixels.
+	 * @param height
+	 *            height of the rectangle in pixels.
+	 * @param color
+	 *            color of the rectangle's border. Must be a named XAAL color.
+	 * @param hidden
+	 *            specifies whether the rectangle should be hidden initially.
+	 * @param strokeType
+	 * @param lineWidth
+	 *            the width of the rectangle's border.
+	 * @param fillColor color the rectangle should be filled with. If null, 
+	 *            it won't be filled.
+	 * @return a String containing the id of the rectangle added.
+	 */
+	public String addRectangle(int x, int y, int width, int height,
+			String color, boolean hidden, StrokeType strokeType, int lineWidth, 
+			String fillColor) 
+	{
 		Element initial = document.getRootElement().getChild("initial",
 				defaultNS);
 
@@ -268,7 +300,13 @@ public class XAALScripter {
 		strokeElem.setAttribute("width", lineWidth + "");
 		strokeElem.setAttribute("type", strokeType.name());
 		style.addContent(strokeElem);
-
+		
+		if (fillColor != null) {
+			Element fillColorElem = createElement("fill-color");
+			fillColorElem.setAttribute("name", fillColor);
+			style.addContent(fillColorElem);
+		}
+		
 		rect.addContent(style);
 
 		initial.addContent(rect);
@@ -872,6 +910,8 @@ public class XAALScripter {
 	 */
 	public String addArrow(String originName, String destName, String color,
 			boolean hidden, StrokeType strokeType, int lineWidth) {
+		
+
 		Element initial = document.getRootElement().getChild("initial",
 				defaultNS);
 
@@ -897,9 +937,10 @@ public class XAALScripter {
 		int endX = 0;
 		int endY = 0;
 		try {
-			startX = startPos.getAttribute("x").getIntValue();
-			// (origin.getAttribute("shapeWidth", jhaveNS).getIntValue() /2);
-			startY = startPos.getAttribute("y").getIntValue();
+			startX = startPos.getAttribute("x").getIntValue() +
+			    (origin.getAttribute("shapeWidth", jhaveNS).getIntValue() /2);
+			startY = startPos.getAttribute("y").getIntValue() +
+				(origin.getAttribute("shapeHeight", jhaveNS).getIntValue() /2);
 			//System.out.println("X: " + startX + " Y: " + startY);
 
 			// TODO: fix this so that we get the correct vars
@@ -928,22 +969,31 @@ public class XAALScripter {
 		coordinate.setAttribute("y", endY + "");
 		arrow.addContent(coordinate);
 
-		/*
-		 * coordinate = new Element("coordinate"); coordinate.setAttribute("x",
-		 * (endX -10) + ""); coordinate.setAttribute("y", (endY +10) + "");
-		 * 
-		 * arrow.addContent(coordinate);
-		 * 
-		 * coordinate = createElement("coordinate");
-		 * coordinate.setAttribute("x", endX + ""); coordinate.setAttribute("y",
-		 * endY + ""); arrow.addContent(coordinate);
-		 * 
-		 * 
-		 * coordinate = new Element("coordinate"); coordinate.setAttribute("x",
-		 * (endX +10) + ""); coordinate.setAttribute("y", (endY +10) + "");
-		 * 
-		 * arrow.addContent(coordinate);
-		 */
+		
+		//add the arrowhead!
+		double toAngle = 2 * Math.PI - Math.atan2(startY - endY, startX - endX);
+		
+		
+	
+		 coordinate = new Element("coordinate"); 
+		 coordinate.setAttribute("x", createArrowheadLineCoor(endX, toAngle - ARROW_HALF_ANGLE, true) + ""); 
+		 coordinate.setAttribute("y", createArrowheadLineCoor(endY, toAngle - ARROW_HALF_ANGLE, false) + "");
+		 
+		 arrow.addContent(coordinate);
+		
+		 coordinate = createElement("coordinate");
+		 coordinate.setAttribute("x", endX + ""); 
+		 coordinate.setAttribute("y", endY + ""); 
+		 
+		 arrow.addContent(coordinate);
+		 
+		  
+		coordinate = new Element("coordinate"); 
+		coordinate.setAttribute("x", createArrowheadLineCoor(endX, toAngle + ARROW_HALF_ANGLE, true) + ""); 
+		coordinate.setAttribute("y", createArrowheadLineCoor(endY, toAngle + ARROW_HALF_ANGLE, false) + "");
+		
+		arrow.addContent(coordinate);
+		 
 		arrow.setAttribute("hidden", hidden + "");
 
 		Element style = createElement("style");
@@ -1837,5 +1887,14 @@ public class XAALScripter {
 		 * 
 		 * }
 		 */
+	}
+	
+	
+	private int createArrowheadLineCoor(int xOrY, double angle, boolean isX)
+	{
+		if (isX) // its an x
+			return xOrY + (int) (Math.cos(angle) * ARROW_LENGTH);
+		// its y!
+		return xOrY - (int) (Math.sin(angle) * ARROW_LENGTH);
 	}
 }

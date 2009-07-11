@@ -721,7 +721,8 @@ public class XAALConnector {
 	}
 
 	/**
-	 * adds a question to the current snapshot.
+	 * adds a question to the slide BEFORE the current snapshot. Don't call this while
+	 * you're on the first slide; bad things could happen.
 	 * 
 	 * @param q
 	 *            the <code>Question</code> to add to the current snapshot.
@@ -731,7 +732,7 @@ public class XAALConnector {
 		if (currentSnapNum < 0)
 			return false;
 
-		q.setSlideId(currentSnapNum);
+		q.setSlideId(currentSnapNum - 1);
 
 		questions.add(q);
 
