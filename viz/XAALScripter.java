@@ -49,6 +49,9 @@ public class XAALScripter {
 	
 	//whether we should be running in debug mode and printing out debug info.
 	public static boolean debug = false;
+	
+	private static final double ARROW_HALF_ANGLE = Math.PI / 6;
+    private static final int ARROW_LENGTH = 8;
 
 	/**
 	 * Constructor for XAALScripter
@@ -907,6 +910,8 @@ public class XAALScripter {
 	 */
 	public String addArrow(String originName, String destName, String color,
 			boolean hidden, StrokeType strokeType, int lineWidth) {
+		
+
 		Element initial = document.getRootElement().getChild("initial",
 				defaultNS);
 
@@ -964,22 +969,31 @@ public class XAALScripter {
 		coordinate.setAttribute("y", endY + "");
 		arrow.addContent(coordinate);
 
-		/*
-		 * coordinate = new Element("coordinate"); coordinate.setAttribute("x",
-		 * (endX -10) + ""); coordinate.setAttribute("y", (endY +10) + "");
-		 * 
-		 * arrow.addContent(coordinate);
-		 * 
-		 * coordinate = createElement("coordinate");
-		 * coordinate.setAttribute("x", endX + ""); coordinate.setAttribute("y",
-		 * endY + ""); arrow.addContent(coordinate);
-		 * 
-		 * 
-		 * coordinate = new Element("coordinate"); coordinate.setAttribute("x",
-		 * (endX +10) + ""); coordinate.setAttribute("y", (endY +10) + "");
-		 * 
-		 * arrow.addContent(coordinate);
-		 */
+		
+		//add the arrowhead!
+		double toAngle = 2 * Math.PI - Math.atan2(startY - endY, startX - endX);
+		
+		
+	
+		 coordinate = new Element("coordinate"); 
+		 coordinate.setAttribute("x", createArrowheadLineCoor(endX, toAngle - ARROW_HALF_ANGLE, true) + ""); 
+		 coordinate.setAttribute("y", createArrowheadLineCoor(endY, toAngle - ARROW_HALF_ANGLE, false) + "");
+		 
+		 arrow.addContent(coordinate);
+		
+		 coordinate = createElement("coordinate");
+		 coordinate.setAttribute("x", endX + ""); 
+		 coordinate.setAttribute("y", endY + ""); 
+		 
+		 arrow.addContent(coordinate);
+		 
+		  
+		coordinate = new Element("coordinate"); 
+		coordinate.setAttribute("x", createArrowheadLineCoor(endX, toAngle + ARROW_HALF_ANGLE, true) + ""); 
+		coordinate.setAttribute("y", createArrowheadLineCoor(endY, toAngle + ARROW_HALF_ANGLE, false) + "");
+		
+		arrow.addContent(coordinate);
+		 
 		arrow.setAttribute("hidden", hidden + "");
 
 		Element style = createElement("style");
@@ -1873,5 +1887,14 @@ public class XAALScripter {
 		 * 
 		 * }
 		 */
+	}
+	
+	
+	private int createArrowheadLineCoor(int xOrY, double angle, boolean isX)
+	{
+		if (isX) // its an x
+			return xOrY + (int) (Math.cos(angle) * ARROW_LENGTH);
+		// its y!
+		return xOrY - (int) (Math.sin(angle) * ARROW_LENGTH);
 	}
 }
