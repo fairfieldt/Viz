@@ -44,7 +44,7 @@ public class NewTest
 					 "Step 3. Run the program.  (Click next to begin)\nNow the program is run just as in other\nevaluation strategies."
 					 };
 					 
-			XAALConnector xc = new XAALConnector(info, "Call by Macro");			//program.dump("");
+			XAALConnector xc = new XAALConnector(info, "Call by Macro", true);			//program.dump("");
 			String p0 = xc.addCodePage(program.getPseudocode());
 			Global.currentPage = p0;
 			xc.startSnap(0);
