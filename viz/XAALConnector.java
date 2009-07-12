@@ -4,8 +4,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
-import com.sun.org.apache.bcel.internal.generic.RETURN;
-
 import Interpreter.Global;
 
 //TODO: highlighting doesn't always work.
@@ -889,6 +887,22 @@ public class XAALConnector {
 				currentSnapNum));
 
 		return true;
+	}
+	
+	/**
+	 * Used to highlight the scope of variables being highlighted in the pseudocode.<br><br>
+	 * NOTE: You must call this method on smaller variables for longer variables Ex: 'x' before 'a[x]' 
+	 * @param varStr the string to look for in the pseudocode.
+	 * @param scope the name of the scope that the variable named <code>varStr</code> belongs to.
+	 * @param lineToStart the line to begin to look for <code>varStr</code> for highlighting.
+	 * @param lineToEnd the line to begin to look for <code>varStr</code> for highlighting.
+	 */
+	public void highlightStrInPseudo(String varStr, String scope, int lineToStart, int lineToEnd)
+	{
+		int startIndex = lineToStart - 1;
+		int endIndex = lineToEnd - 1;
+		
+		
 	}
 
 	/**
