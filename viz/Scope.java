@@ -90,7 +90,6 @@ public class Scope implements Drawable
 			{
 				v.setHidden(true);
 			}
-			
 	}
 	
 	public void setSize(int sizeX, int sizeY)
@@ -127,7 +126,7 @@ public class Scope implements Drawable
 			s.setPosition(subScopeXPos, subScopeYPos);
 			s.setSize(sizeX - 20, subScopeYSize);
 			subScopeYPos += subScopeYSize + 40;
-		}		 		
+		}
 			
 	}
 	
@@ -176,7 +175,7 @@ public class Scope implements Drawable
 	{
 		//System.out.println("Drawing scope: " + name);
 		//System.out.println("XPos: " + xPos + " YPos: " + yPos);
-		int captionLength = name.length() * 13;
+		//int captionLength = name.length() * 13;
 		String id1 = scripter.addRectangle(xPos, yPos, sizeX, sizeY, color, hidden, 6);
 		rectId = id1;
 		String id3 = scripter.addText(xPos+3, yPos-5, name, "black", hidden);
