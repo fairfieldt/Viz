@@ -4,7 +4,7 @@ var f = 2;
 def foo(x, y, z)
 {
 	var q = 5;
-	x  = 2;
+	var f = 1;
 	m[1] = m[f];
 	y = 5;
 	j = x + y;
