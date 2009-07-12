@@ -3,6 +3,8 @@ package viz;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import Interpreter.Global;
 
@@ -891,7 +893,8 @@ public class XAALConnector {
 	
 	/**
 	 * Used to highlight the scope of variables being highlighted in the pseudocode.<br><br>
-	 * NOTE: You must call this method on smaller variables for longer variables Ex: 'x' before 'a[x]' 
+	 * NOTE: You must call this method on longer variables before smaller methods. 
+	 * 	Ex: 'a[x]' before 'x' 
 	 * @param varStr the string to look for in the pseudocode.
 	 * @param scope the name of the scope that the variable named <code>varStr</code> belongs to.
 	 * @param lineToStart the line to begin to look for <code>varStr</code> for highlighting.
@@ -901,6 +904,25 @@ public class XAALConnector {
 	{
 		int startIndex = lineToStart - 1;
 		int endIndex = lineToEnd - 1;
+		
+		Pattern var = Pattern.compile(".*var.*");
+		Pattern foundVar = Pattern.compile(".*(" + varStr + ").*");
+		
+		for (int i = startIndex; i <= endIndex; i++)
+		{
+			String temp = pseudoCode[i];
+			Matcher m = var.matcher(temp);
+			if (!m.find()) // if you don't find var, we check if the var is not in it 
+			{
+				Matcher foundVarM = foundVar.matcher(temp);
+				
+				while(foundVarM.find())
+				for (int j = 0; j < foundVarM.groupCount(); i++)
+				{
+					foundVarM.group(j);
+				}
+			}
+		}
 		
 		
 	}
@@ -2113,7 +2135,7 @@ public class XAALConnector {
 				scripter.reopenSlide(action.getSnapNum() + i);
 				
 				boolean parExists = false;
-				parExists = scripter.reopenPar(0);
+				parExists = scripter.reopenPar(i *2 );
 				if (!parExists)
 					scripter.startPar();
 				
@@ -2143,7 +2165,7 @@ public class XAALConnector {
 				else
 					scripter.reclosePar();
 				
-				scripter.recloseSlide();
+				
 				
 				if (i + 1 < highlightVars.length)
 				{
@@ -2155,8 +2177,11 @@ public class XAALConnector {
 				if(i + 1 < highlightVars.length)
 					nextHighlightedScope = highlightScopes[i+1];
 				
-				scripter.reopenSlide(action.getSnapNum() + i + 1);
-				scripter.reopenPar();
+				
+				 parExists = false;
+					parExists = scripter.reopenPar(i *2  + 1);
+					if (!parExists)
+						scripter.startPar();
 				
 				//we can stop highlighting a particular variable if the 
 				//next snap doesn't highlight it
@@ -2182,14 +2207,19 @@ public class XAALConnector {
 							scope.getRectId());
 				}
 				
-				scripter.reclosePar();
-				scripter.recloseSlide();
+				if (!parExists)
+					scripter.endPar();
+				else
+					scripter.reclosePar();
+				
 			}
 			
-			scripter.reopenSlide(action.getSnapNum() + highlightVars.length);
 			
+			boolean parExists = false;
+			parExists = scripter.reopenPar(highlightVars.length);
+			if (!parExists)
+				scripter.startPar();
 			
-			scripter.reopenPar();
 			String newCopy = null;
 			if( action.getModifiedVarIndex() > -1) // its a regular variable
 			{
