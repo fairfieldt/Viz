@@ -1136,6 +1136,11 @@ public class XAALScripter {
 	public boolean inSlide() {
 		return currentSlide != null;
 	}
+	
+	public int getIndexOfPar()
+	{
+		return currentSlide.indexOf(currentPar);
+	}
 
 	/**
 	 * Begins a section that runs multiple changes in parallel. Corresponds to
@@ -1417,6 +1422,8 @@ public class XAALScripter {
 			}
 	}
 	
+	
+	
 	public void addChangeStyle(StrokeType type, int strokeWidth, String...ids) throws SlideException 
 	{
 	
@@ -1466,7 +1473,117 @@ public class XAALScripter {
 				e.printStackTrace();
 			}
 	}
+	
+	/**
+	 * we can modify the width in a safe fashion
+	 * @param type
+	 * @param strokeWidth
+	 * @param id
+	 * @throws SlideException
+	 */
+	public void changeStyleSafe(StrokeType type, int strokeWidth, String id) throws SlideException
+	{
+		if (!inSlide())
+			throw new SlideException(
+					"You must create a slide before creating actions.");
+		
+		Element parent = currentPar;
+		
+		Element changestyle = parent.getChild("change-style", defaultNS);
+		
+		if (changestyle == null)
+			addChangeStyle(type, strokeWidth, id);
+		
+		List l = changestyle.getChildren("object-ref", defaultNS);
+		
+		if (l.size() == 0)
+			addChangeStyle(type, strokeWidth, id);
+		
+		boolean foundId = false;
+		for(Object o : l)
+		{
+			Element e = (Element)o;
+			Attribute a = e.getAttribute("id", defaultNS);
+			if (a != null)
+			{
+				
+				if (a.getValue().equals(id))
+				{
+					foundId = true;
+					break;
+				}
+			}
+		}
+		
+		if (!foundId)
+			addChangeStyle(type, strokeWidth, id);
+		
+		//we need to modify the stroke element if it exists
+		Element style = changestyle.getChild("style", defaultNS);
+		
+		//style should exist so don't check for null
+		
+		Element c = style.getChild("stroke", defaultNS);
+		if (c == null)
+			addChangeStyle(type,strokeWidth, id);
+		
+		c.setAttribute("type", type.toString(), defaultNS);
+		c.setAttribute("width", strokeWidth + "", defaultNS);
 
+	}
+
+	public void changeFillColorSafe(String color, String id) throws SlideException 
+	{
+		if (!inSlide())
+			throw new SlideException(
+					"You must create a slide before creating actions.");
+		
+		Element parent = currentPar;
+		
+		Element changestyle = parent.getChild("change-style", defaultNS);
+		
+		if (changestyle == null)
+			addChangeStyle(color, true, id);
+		
+		List l = changestyle.getChildren("object-ref", defaultNS);
+		
+		if (l.size() == 0)
+			addChangeStyle(color, true, id);
+		
+		boolean foundId = false;
+		for(Object o : l)
+		{
+			Element e = (Element)o;
+			Attribute a = e.getAttribute("id", defaultNS);
+			if (a != null)
+			{
+				
+				if (a.getValue().equals(id))
+				{
+					foundId = true;
+					break;
+				}
+			}
+		}
+		
+		if (!foundId)
+			addChangeStyle(color, true, id);
+		
+		//we need to modify the stroke element if it exists
+		Element style = changestyle.getChild("style", defaultNS);
+		
+		//style should exist so don't check for null
+		
+		Element c = style.getChild("fill-color", defaultNS);
+		
+		if (c == null)
+			addChangeStyle(color, true, id);
+		
+		c.setAttribute("name", color, defaultNS);
+		
+		
+	}
+	
 	/**
 	 * Adds a move for no object. Used for current pause hack. Move not
 	 * implemented.

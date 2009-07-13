@@ -524,6 +524,36 @@ public class XAALConnector {
 		
 	}
 	
+	public void highlightVarByName(Interpreter.Variable iv)
+	{
+		Variable v = varToVar.get(iv);
+		actions.offer(new HighlightVarAction(v, scripter.getIndexOfPar(), currentSnapNum));
+	}
+	
+	public void highlightVarByName(Interpreter.Variable iv, int index)
+	{
+		Variable v = varToVar.get(iv);
+		actions.offer(new HighlightVarIndexAction(v, index, 
+				scripter.getIndexOfPar(), currentSnapNum));
+	}
+	
+	public void highlightScopeByName(String scope)
+	{
+		actions.offer(new HighlightScopeAction(scope, 
+				scripter.getIndexOfPar(), currentSnapNum));
+	}
+	
+	public void greyScope(String scope)
+	{
+		actions.offer(new GreyScopeAction(scope, 
+				scripter.getIndexOfPar(), currentSnapNum));
+	}
+	
+	public void pause(int ms)
+	{
+		actions.offer(new PauseAction(ms, scripter.getIndexOfPar(), currentSnapNum));
+	}
+	
 	/**
 	 * Highlights a <code>Variable</code> and its containing slide and fades out
 	 * the non-relevant scope.
@@ -991,7 +1021,8 @@ public class XAALConnector {
 					{
 						writeVarHide((ShowHideVarAction) action);
 					}
-				} else if (action instanceof MoveVarAction) // this is a
+				} 
+				else if (action instanceof MoveVarAction) // this is a
 				// movement from one
 				// var to another
 				{
@@ -1003,12 +1034,25 @@ public class XAALConnector {
 						writeMove((MoveVarAction) action);
 					}
 				}
-				else // a variable is being set by a constant
+				
+				else if (action instanceof ModifyVarAction)// a variable is being set by a constant
 				{
 					if (action instanceof ModifyVarIndexAction) {
 						writeIndexModify((ModifyVarIndexAction) action);
 					} else {
 						writeVarModify((ModifyVarAction) action);
+					}
+				}
+				else if(action instanceof HighlightVarAction)
+				{
+					if (action instanceof HighlightVarIndexAction)
+					{
+						writeHighlightVarIndex((HighlightVarIndexAction)action);
+					}
+					else
+					{
+						writeHighlightVar((HighlightVarAction)action);
+					
 					}
 				}
 			} 
@@ -1026,10 +1070,22 @@ public class XAALConnector {
 						writeScopeHide((ShowHideScopeAction) action);
 					}
 				}
+				else if (action instanceof HighlightScopeAction)
+				{
+					writeHighlightScope((HighlightScopeAction)action);
+				}
+				else if (action instanceof GreyScopeAction)
+				{
+					writeGreyScope((GreyScopeAction)action);
+				}
 			}
-			else if (action instanceof CallByNameHighlightAction) //call by name highlighting
+			/*else if (action instanceof CallByNameHighlightAction) //call by name highlighting
 			{
 				writeCallByNameHighlight((CallByNameHighlightAction)action);
+			}*/
+			else if (action instanceof PauseAction)
+			{
+				writePause((PauseAction)action);
 			}
 			else // its a CodePageAction
 			{
@@ -2279,6 +2335,123 @@ public class XAALConnector {
 		}
 		catch (XAALScripterException e)
 		{
+		}
+	}
+	
+	private void writePause(PauseAction action)
+	{
+		try
+		{
+			scripter.reopenSlide(action.getSnapNum());
+			scripter.reopenPar(action.getPar());
+				
+			scripter.addPause(action.getMS());
+			
+			scripter.reclosePar();
+			scripter.recloseSlide();
+		}
+		catch (XAALScripterException e)
+		{
+			
+		}
+	}
+	/**
+	 * ASSUMES THERE WILL BE A PAUSE INBETWEEN THIS PAR AND THE NEXT
+	 * @param action
+	 */
+	private void writeHighlightScope(HighlightScopeAction action)
+	{
+		
+			Scope scope = scopes.get(action.getScope());
+			
+			String id = scope.getRectId();
+			
+			writeHighlightOnOff(id, action.getPar(), action.getSnapNum());
+		
+	}
+	
+	/**
+	 * ASSUMES THERE WILL BE A PAUSE INBETWEEN THIS PAR AND THE NEXT
+	 * @param action
+	 */
+	private void writeGreyScope(GreyScopeAction action)
+	{
+		try
+		{
+			scripter.reopenSlide(action.getSnapNum());
+			scripter.reopenPar(action.getPar());
+			
+			Scope scope = scopes.get(action.getScope());
+			
+			String id = scope.getRectId();
+			
+			scripter.changeFillColorSafe("grey", id);
+			
+			scripter.reclosePar();
+			
+			scripter.reopenPar(action.getPar()+ 2);
+			
+			scripter.changeFillColorSafe("white", id);
+			
+			scripter.reclosePar();
+			
+			scripter.recloseSlide();
+		}
+		catch (XAALScripterException e)
+		{
+			
+		}
+	}
+	
+	/**
+	 * ASSUMES THERE WILL BE A PAUSE INBETWEEN THIS PAR AND THE NEXT
+	 * @param action
+	 */
+	private void writeHighlightVar(HighlightVarAction action)
+	{
+		
+			Variable v = action.getTo();
+			
+			String id = v.getRectId();
+			
+		writeHighlightOnOff(id, action.getPar(), action.getSnapNum());
+	}
+	
+	/**
+	 * ASSUMES THERE WILL BE A PAUSE INBETWEEN THIS PAR AND THE NEXT
+	 * @param action
+	 */
+	private void writeHighlightVarIndex(HighlightVarIndexAction action)
+	{
+		Variable v = action.getTo();
+		Array a = (Array)v;
+		String id = a.getRect(action.getIndex());
+		
+		writeHighlightOnOff(id, action.getPar(), action.getSnapNum());
+	}
+	
+	private void writeHighlightOnOff(String id, int parNum, int snapNum)
+	{
+		try
+		{
+			scripter.reopenSlide(snapNum);
+			scripter.reopenPar(parNum);
+		
+			scripter.changeStyleSafe(StrokeType.solid, 3, id);
+			
+			scripter.reclosePar();
+			
+			scripter.reopenPar(parNum+ 2);
+			
+			scripter.changeStyleSafe(StrokeType.solid, 1, id);
+			
+			scripter.reclosePar();
+			
+			scripter.recloseSlide();
+		}
+		catch (XAALScripterException e)
+		{
+			
 		}
 	}
 }
