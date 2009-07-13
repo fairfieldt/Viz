@@ -196,7 +196,8 @@ if (XAALScripter.debug) {		System.out.println("Visiting declList");
 		//System.out.println("Visiting decl");
 		SimpleNode child = (SimpleNode) node.jjtGetChild(0);
 		if (child.getId() == JJTFUNCTION)
-		{			
+		{		
+			connector.startPar();	
 			startQuestion = questionFactory.getStartQuestion();
 			connector.addQuestion(startQuestion);
 			connector.endPar();
@@ -204,9 +205,7 @@ if (XAALScripter.debug) {		System.out.println("Visiting declList");
 			ASTFunction main = Global.getFunction("main");
 			connector.addScope(main.getSymbolTable(), "main", "Global");
 			connector.startSnap(Global.getFunction("main").getLineNumber());
-			connector.startPar();
-
-			connector.endPar();
+			
 			connector.startPar();
 				connector.showScope("main");
 			connector.endPar();
