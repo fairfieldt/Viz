@@ -545,7 +545,7 @@ if (XAALScripter.debug) {				System.out.println("AAAA " + answer);
 			connector.highlightScopeByName("main");
 			if (((ByNameVariable)v).getVariable().getIsArray())
 			{
-				connector.highlightVarByName(((ByNameVariable)v).getVariable(), index);
+				connector.highlightVarByName(((ByNameVariable)v).getVariable(), 0);
 			}
 			else
 			{
