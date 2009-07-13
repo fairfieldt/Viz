@@ -73,15 +73,15 @@ public class ByNameVariable extends AbstractVariable implements Variable
 	public int getValue()
 	{
 		SymbolTable temp = Global.getCurrentSymbolTable();
-		System.out.println(temp);
+		//System.out.println(temp);
 		Global.setCurrentSymbolTable(Global.getFunction("main").getSymbolTable());
-		System.out.println("Current Symbol table is now " + Global.getCurrentSymbolTable());
+		//System.out.println("Current Symbol table is now " + Global.getCurrentSymbolTable());
 		InterpretVisitor iv = new  InterpretVisitor();
 		System.out.println(ref);
 		Integer value = (Integer) ref.jjtAccept(iv, null);
-		System.out.println("Got value : " + value);
+		//System.out.println("Got value : " + value);
 		Global.setCurrentSymbolTable(temp);
-		System.out.println("Back to symbol table: " + Global.getCurrentSymbolTable());
+		//System.out.println("Back to symbol table: " + Global.getCurrentSymbolTable());
 		
 		return value;
 	}

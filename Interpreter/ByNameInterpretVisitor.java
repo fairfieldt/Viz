@@ -338,8 +338,7 @@ if (XAALScripter.debug) {		System.out.println("Visiting declList");
 			{
 				((ASTCall)(node.jjtGetChild(0))).setLineNumber(node.getLineNumber());
 			}
-				
-				connector.endPar();
+			
 			connector.endSnap();
 			update(node.getLineNumber(), UPDATE_REASON_STATEMENT);
 		}
@@ -540,7 +539,7 @@ if (XAALScripter.debug) {				System.out.println("AAAA " + answer);
 		if (v instanceof ByNameVariable)
 		{
 			connector.startPar();
-			//connector.greyScope("foo");
+			connector.greyScope("foo");
 			connector.highlightScopeByName("main");
 			if (((ByNameVariable)v).getVariable().getIsArray())
 			{
@@ -651,7 +650,7 @@ if (XAALScripter.debug) {				System.out.println("AAAA " + answer);
 		if (v instanceof ByNameVariable)
 		{
 	
-			//connector.greyScope("foo");
+			connector.greyScope("foo");
 			connector.highlightScopeByName("main");
 			
 			if (v.getIsArray())
