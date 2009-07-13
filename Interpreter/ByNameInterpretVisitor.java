@@ -337,7 +337,7 @@ if (XAALScripter.debug) {		System.out.println("Visiting declList");
 				((ASTCall)(node.jjtGetChild(0))).setLineNumber(node.getLineNumber());
 			}
 			
-			connector.endSnap();
+
 			update(node.getLineNumber(), UPDATE_REASON_STATEMENT);
 		}
 	}
@@ -380,13 +380,11 @@ if (XAALScripter.debug) {		System.out.println("Visiting declList");
 		
 		//Drawing Stuff
 		connector.addScope(new SymbolTable(null), fun.getName(), "Global");
-		connector.startSnap(node.getLineNumber());
 			connector.startPar();
 				connector.showScope(node.getName());
 				
 			connector.endPar();
 		
-		connector.endSnap();
 		
 				
 		fun.jjtAccept(this, null);
