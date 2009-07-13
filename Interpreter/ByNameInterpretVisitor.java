@@ -168,18 +168,15 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 				// we can't hide foo in by macro cuz it doesn't exist
 				if (!byMacroFlag)
 					connector.hideScope("foo");
-if (XAALScripter.debug) {				System.out.println("BLAH");
-}			connector.endPar();
+			connector.endPar();
 		connector.endSnap();
-if (XAALScripter.debug) {		System.out.println("Done");
-}	}
+	}
 	
 	public void handleDeclarationList(ASTDeclarationList node)
 	{
 		connector.startSnap(Global.getFunction("main").getLineNumber());
-		
-if (XAALScripter.debug) {		System.out.println("Visiting declList");
-}		int numDecls = node.jjtGetNumChildren();
+
+		int numDecls = node.jjtGetNumChildren();
 		for (int i = 0; i < numDecls; i++)
 		{
 			//A Declaration returned false which means we ran.
@@ -188,11 +185,13 @@ if (XAALScripter.debug) {		System.out.println("Visiting declList");
 				return;
 			}
 		}
+			connector.endSnap();
 	}
 	
 	//returning false means we're done executing now.
 	public Boolean handleDeclaration(ASTDeclaration node)
 	{
+	
 		//System.out.println("Visiting decl");
 		SimpleNode child = (SimpleNode) node.jjtGetChild(0);
 		if (child.getId() == JJTFUNCTION)
@@ -287,13 +286,7 @@ if (XAALScripter.debug) {		System.out.println("Visiting declList");
 	
 	public void handleStatementList(ASTStatementList node)
 	{
-		if (!node.getIsFunction())
-		{
-			Global.setCurrentSymbolTable(Global.getFunction("foo").getSymbolTable());
-			connector.addScope(Global.getCurrentSymbolTable(), "", "main");
-			connector.showScope("");
-		}
-
+		
 		int numStatements = node.jjtGetNumChildren();
 		for (int i = 0; i < numStatements; i++)
 		{
@@ -340,6 +333,7 @@ if (XAALScripter.debug) {		System.out.println("Visiting declList");
 
 			update(node.getLineNumber(), UPDATE_REASON_STATEMENT);
 		}
+		connector.endSnap();
 	}
 	
 	public Integer handleCall(ASTCall node)
@@ -385,9 +379,9 @@ if (XAALScripter.debug) {		System.out.println("Visiting declList");
 				
 			connector.endPar();
 		
-		
+			connector.endSnap();
 				
-		fun.jjtAccept(this, null);
+		fun.jjtAccept(this, null);//and we gogogo
 		
 		if(gotAQuestion)
 				{
@@ -453,6 +447,7 @@ if (XAALScripter.debug) {				System.out.println("AAAA " + answer);
 			{
 			}
 		}
+		connector.startSnap(node.getLineNumber());
 		return 0;
 	}
 	
