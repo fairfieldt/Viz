@@ -526,13 +526,13 @@ public class XAALConnector {
 	
 	public void highlightVarByName(Interpreter.Variable iv)
 	{
-		Variable v = varToVar.get(iv);
+		Variable v = varToVar.get(iv.getUUID());
 		actions.offer(new HighlightVarAction(v, scripter.getIndexOfPar(), currentSnapNum));
 	}
 	
 	public void highlightVarByName(Interpreter.Variable iv, int index)
 	{
-		Variable v = varToVar.get(iv);
+		Variable v = varToVar.get(iv.getUUID());
 		actions.offer(new HighlightVarIndexAction(v, index, 
 				scripter.getIndexOfPar(), currentSnapNum));
 	}
