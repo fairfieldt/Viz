@@ -177,7 +177,6 @@ if (XAALScripter.debug) {		System.out.println("Done");
 	public void handleDeclarationList(ASTDeclarationList node)
 	{
 		connector.startSnap(Global.getFunction("main").getLineNumber());
-		connector.startPar();
 		
 if (XAALScripter.debug) {		System.out.println("Visiting declList");
 }		int numDecls = node.jjtGetNumChildren();
