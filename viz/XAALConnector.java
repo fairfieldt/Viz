@@ -2115,7 +2115,7 @@ public class XAALConnector {
 		{
 		}
 	}
-	
+
 	//TODO must fix this.
 	private void writeCallByNameHighlight(CallByNameHighlightAction action)
 	{
