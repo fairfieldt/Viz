@@ -567,7 +567,7 @@ if (XAALScripter.debug) {				System.out.println("AAAA " + answer);
 			connector.endPar();
 		}
 		connector.startPar();
-		connector.addPause(1500);
+		connector.pause(1500);
 		connector.endPar();
 		System.out.println("Got value " + value + " from " + name);
 		return value;
