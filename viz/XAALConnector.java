@@ -2142,7 +2142,7 @@ public class XAALConnector {
 				
 				Variable temp = highlightVars[i];
 				String tempRectId = null;
-				if (highlightVarIndexes[i] < 0)
+				if (highlightVarIndexes[i] > -1)
 				{
 					Array tempArray = (Array)temp;
 					tempRectId = tempArray.getRect(highlightVarIndexes[i]);
@@ -2155,7 +2155,8 @@ public class XAALConnector {
 				Scope scope = scopes.get(highlightScopes[i]);
 				
 				//highlight the borders of the variable and scope
-				String[] ids = {tempRectId, scope.getRectId()};
+				String[] ids = {/*tempRectId,*/ scope.getRectId()};  //FIXME this was broken
+				System.out.println(tempRectId + " " + scope.getRectId());
 				scripter.addChangeStyle(StrokeType.solid, XAALScripter.DEFAULT_STROKE_WIDTH * 3, ids);
 				
 				//fade the background color
@@ -2188,8 +2189,8 @@ public class XAALConnector {
 				if (nextHighlightedVar == null || temp != nextHighlightedVar)
 				{
 					scripter.addChangeStyle(StrokeType.solid, XAALScripter.DEFAULT_STROKE_WIDTH, 
-							temp.getRectId());
-				}
+							temp.getRectId()); //FIXME This was broken
+				}// FIXME This was broken
 				else if (temp == nextHighlightedVar && 
 						highlightVarIndexes[i] !=nextHighlightedIndex )
 				{
@@ -2240,7 +2241,7 @@ public class XAALConnector {
 				// set the value of variable to its new value
 				v.setValue(action.getValue());
 			}
-			else //its a stinkin' array
+			else //its a stinkin' array FIXME doesn't work!
 			{
 				Variable v = action.getModifiedVar();
 				Array vA = (Array)v;

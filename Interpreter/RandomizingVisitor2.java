@@ -294,7 +294,7 @@ if (XAALScripter.debug) {		System.out.println("YYY " + fooCall.getArgs().size())
 				e.printStackTrace();
 			}
 			
-			if (varClass != ByRefVariable.class)
+			if (varClass != ByRefVariable.class && varClass != ByNameVariable.class)
 				v.setValue(-255);
 			
 			v.setParam();

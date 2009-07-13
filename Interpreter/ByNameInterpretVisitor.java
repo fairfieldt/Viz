@@ -617,13 +617,29 @@ if (XAALScripter.debug) {				System.out.println("AAAA " + answer);
 		
 		if (v instanceof ByNameVariable)
 		{
+		/*
+		public boolean callByNameHighlight(Interpreter.Variable[] highlightVars, int[] indexForVars,
+			String fadedScopeId, String highlightScopeIds[], Interpreter.Variable modifiedVar, 
+			int modifiedVarIndex,int value) {
+		*/
 			if (v.getIsArray())
 			{
-				connector.modifyVar(v.getVariable(), index, value);
+			/* FIXME once eric fixes this put it back
+				Variable[] va = {((ByNameVariable)v).getVariable()};
+				int[] vai = {index};
+				String[] scopes = {"main"};
+				connector.callByNameHighlight(va, vai, "foo", scopes, ((ByNameVariable)v).getVariable(), index, value);
+			*/	
+				connector.modifyVar(((ByNameVariable)v).getVariable(), index, value);
 			}
 			else
-			{
-				connector.modifyVar(v.getVariable(), value);
+			{/* FIXME once eric fixes this put it back
+				Variable[] va = {((ByNameVariable)v).getVariable()};
+				int[] vai = {-1};
+				String[] scopes = {"main"};
+				connector.callByNameHighlight(va, vai, "foo", scopes, ((ByNameVariable)v).getVariable(), -1, value);
+			*/
+				connector.modifyVar(((ByNameVariable)v).getVariable(), value);
 			}
 		}
 		else
