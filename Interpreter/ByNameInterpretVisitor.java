@@ -314,7 +314,7 @@ if (XAALScripter.debug) {		System.out.println("Visiting declList");
 		
 		//Drawing
 		connector.startSnap(node.getLineNumber());
-			connector.startPar();
+
 		
 		//FIXME we'll see how this works	
 		
@@ -347,7 +347,8 @@ if (XAALScripter.debug) {		System.out.println("Visiting declList");
 	
 	public Integer handleCall(ASTCall node)
 	{
-			boolean gotAQuestion = false; //FIXME HACK
+		connector.startPar();
+		boolean gotAQuestion = false; //FIXME HACK
 		//Get the correct function head node
 		ASTFunction fun = Global.getFunction(node.getName());
 		System.out.println("Calling: " + fun.getName());
@@ -644,7 +645,10 @@ if (XAALScripter.debug) {				System.out.println("AAAA " + answer);
 				System.out.println(e);
 			}
 		}
-		connector.startPar();		
+		connector.startPar();	
+		connector.pause(1500);
+		connector.endPar();
+		connector.startPar();	
 		if (v instanceof ByNameVariable)
 		{
 	
