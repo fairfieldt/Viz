@@ -230,17 +230,14 @@ if (XAALScripter.debug) {		System.out.println("Visiting declList");
 		String name = node.getName();
 		node.setLineNumber(((SimpleNode)node.jjtGetParent()).getLineNumber());
 		SymbolTable s = Global.getCurrentSymbolTable();
-if (XAALScripter.debug) {		System.out.println("VDCL " + s + " " + name);
-}		ArrayList<Integer> values;
+		ArrayList<Integer> values;
 
 		if (node.getIsArray())
 		{
 			ByValVariable v = (ByValVariable) s.getVariable(name);
 			v.setArray();
-if (XAALScripter.debug) {			System.out.println("BLAH" + node.jjtGetChild(0));
-}			 values = (ArrayList<Integer>)handleArrayDeclaration((ASTArrayDeclaration)node.jjtGetChild(0));
-if (XAALScripter.debug) {			System.out.println("Values: " + values);
-}			v.setValues(values);
+			values = (ArrayList<Integer>)handleArrayDeclaration((ASTArrayDeclaration)node.jjtGetChild(0));
+			v.setValues(values);
 		}
 		else
 		{
@@ -468,6 +465,7 @@ if (XAALScripter.debug) {				System.out.println("AAAA " + answer);
 	{
 		System.out.println(node.getName());
 		Integer value = -256;
+		int index = -10000;
 		String name = node.getName();
 		if (node.isArg())
 		{
@@ -494,7 +492,7 @@ if (XAALScripter.debug) {				System.out.println("AAAA " + answer);
 		{
 			if (node.getIsArray())
 			{
-				int index = (Integer) node.jjtGetChild(0).jjtAccept(this, null);
+				index = (Integer) node.jjtGetChild(0).jjtAccept(this, null);
 				System.out.println(node.jjtGetChild(0));
 				node.setIndex(index);
 				try
@@ -539,6 +537,38 @@ if (XAALScripter.debug) {				System.out.println("AAAA " + answer);
 				}	
 			}
 		}
+		if (v instanceof ByNameVariable)
+		{
+			connector.startPar();
+			connector.greyScope("foo");
+			connector.highlightScopeByName("main");
+			if (((ByNameVariable)v).getVariable().getIsArray())
+			{
+				connector.highlightVarByName(((ByNameVariable)v).getVariable(), index);
+			}
+			else
+			{
+				connector.highlightVarByName(((ByNameVariable)v).getVariable());
+			}
+			connector.endPar();
+			
+		}
+		else
+		{
+			connector.startPar();
+			if (node.getIsArray())
+			{
+				connector.highlightVarByName(v, index);
+			}
+			else
+			{
+				connector.highlightVarByName(v);
+			}
+			connector.endPar();
+		}
+		connector.startPar();
+		connector.addPause(1500);
+		connector.endPar();
 		System.out.println("Got value " + value + " from " + name);
 		return value;
 	}
@@ -614,31 +644,21 @@ if (XAALScripter.debug) {				System.out.println("AAAA " + answer);
 				System.out.println(e);
 			}
 		}
-		
+		connector.startPar();		
 		if (v instanceof ByNameVariable)
 		{
-		/*
-		public boolean callByNameHighlight(Interpreter.Variable[] highlightVars, int[] indexForVars,
-			String fadedScopeId, String highlightScopeIds[], Interpreter.Variable modifiedVar, 
-			int modifiedVarIndex,int value) {
-		*/
+	
+			connector.greyScope("foo");
+			connector.highlightScopeByName("main");
+			
 			if (v.getIsArray())
-			{
-			/* FIXME once eric fixes this put it back
-				Variable[] va = {((ByNameVariable)v).getVariable()};
-				int[] vai = {index};
-				String[] scopes = {"main"};
-				connector.callByNameHighlight(va, vai, "foo", scopes, ((ByNameVariable)v).getVariable(), index, value);
-			*/	
+			{			
+				connector.highlightVarByName(((ByNameVariable)v).getVariable(), index);
 				connector.modifyVar(((ByNameVariable)v).getVariable(), index, value);
 			}
 			else
-			{/* FIXME once eric fixes this put it back
-				Variable[] va = {((ByNameVariable)v).getVariable()};
-				int[] vai = {-1};
-				String[] scopes = {"main"};
-				connector.callByNameHighlight(va, vai, "foo", scopes, ((ByNameVariable)v).getVariable(), -1, value);
-			*/
+			{
+				connector.highlightVarByName(((ByNameVariable)v).getVariable());
 				connector.modifyVar(((ByNameVariable)v).getVariable(), value);
 			}
 		}
@@ -650,6 +670,7 @@ if (XAALScripter.debug) {				System.out.println("AAAA " + answer);
 			}
 			connector.modifyVar(v, value);
 		}
+			connector.endPar();
 		update(node.getLineNumber(), UPDATE_REASON_ASSIGNMENT);
 		
 	}
