@@ -272,6 +272,7 @@ public class Variable implements Drawable
 		{
 			// rectangle
 			String id1 = scripter.addRectangle(xPos, yPos, 40, 40, color,  hidden);
+			this.rectId = id1;
 			//title
 			String id2 = scripter.addText(xPos, yPos-5, name, "black", hidden);
 			//pointer rectangle
@@ -303,6 +304,7 @@ public class Variable implements Drawable
 		else
 		{
 			String id1 = scripter.addRectangle(xPos, yPos, 40, 40, color,  hidden);
+			this.rectId = id1;
 			String id2 = scripter.addText(xPos, yPos-5, name, "black", hidden);
 
 			ids.add(id1);

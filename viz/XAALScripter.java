@@ -1139,7 +1139,11 @@ public class XAALScripter {
 	
 	public int getIndexOfPar()
 	{
-		return currentSlide.indexOf(currentPar);
+		int index = currentSlide.indexOf(currentPar);
+		if (index != -1)
+			return index;
+		else
+			return currentSlide.getContentSize();
 	}
 
 	/**
@@ -1492,12 +1496,18 @@ public class XAALScripter {
 		Element changestyle = parent.getChild("change-style", defaultNS);
 		
 		if (changestyle == null)
+		{
 			addChangeStyle(type, strokeWidth, id);
+			return;
+		}
 		
 		List l = changestyle.getChildren("object-ref", defaultNS);
 		
 		if (l.size() == 0)
+		{
 			addChangeStyle(type, strokeWidth, id);
+			return;
+		}
 		
 		boolean foundId = false;
 		for(Object o : l)
@@ -1516,7 +1526,10 @@ public class XAALScripter {
 		}
 		
 		if (!foundId)
+		{
 			addChangeStyle(type, strokeWidth, id);
+			return;
+		}
 		
 		//we need to modify the stroke element if it exists
 		Element style = changestyle.getChild("style", defaultNS);
@@ -1525,7 +1538,10 @@ public class XAALScripter {
 		
 		Element c = style.getChild("stroke", defaultNS);
 		if (c == null)
+		{
 			addChangeStyle(type,strokeWidth, id);
+			return;
+		}
 		
 		c.setAttribute("type", type.toString(), defaultNS);
 		c.setAttribute("width", strokeWidth + "", defaultNS);
@@ -1543,12 +1559,18 @@ public class XAALScripter {
 		Element changestyle = parent.getChild("change-style", defaultNS);
 		
 		if (changestyle == null)
+		{
 			addChangeStyle(color, true, id);
+			return;
+		}
 		
 		List l = changestyle.getChildren("object-ref", defaultNS);
 		
 		if (l.size() == 0)
+		{
 			addChangeStyle(color, true, id);
+			return;
+		}
 		
 		boolean foundId = false;
 		for(Object o : l)
@@ -1567,7 +1589,10 @@ public class XAALScripter {
 		}
 		
 		if (!foundId)
+		{
 			addChangeStyle(color, true, id);
+			return;
+		}
 		
 		//we need to modify the stroke element if it exists
 		Element style = changestyle.getChild("style", defaultNS);
@@ -1577,7 +1602,10 @@ public class XAALScripter {
 		Element c = style.getChild("fill-color", defaultNS);
 		
 		if (c == null)
+		{
 			addChangeStyle(color, true, id);
+			return;
+		}
 		
 		c.setAttribute("name", color, defaultNS);
 		
