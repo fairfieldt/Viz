@@ -4,6 +4,7 @@ public class ASTVar extends SimpleNode implements VizParserTreeConstants{
   
   private String name;
   private boolean isArray = false;
+  private boolean isArg = false;
   private int index;
   public ASTVar(int id) {
     super(id);
@@ -26,6 +27,16 @@ public class ASTVar extends SimpleNode implements VizParserTreeConstants{
   public void setIndex(int index)
   {
   	this.index = index;
+  }
+  
+  public boolean isArg()
+  {
+  	return isArg;
+  }
+  
+  public void setArg()
+  {
+  	this.isArg = true;
   }
   
   public int getIndex()

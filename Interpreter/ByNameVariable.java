@@ -24,6 +24,7 @@ public class ByNameVariable extends AbstractVariable implements Variable
 	
 	public void setRef(ASTVar v)
 	{
+		System.out.println("Setting ref to " + v + " " + v.getName());
 		this.ref = v;
 	}
 	
@@ -72,10 +73,15 @@ public class ByNameVariable extends AbstractVariable implements Variable
 	public int getValue()
 	{
 		SymbolTable temp = Global.getCurrentSymbolTable();
-		Global.setCurrentSymbolTable(symbolTable);
+		System.out.println(temp);
+		Global.setCurrentSymbolTable(Global.getFunction("main").getSymbolTable());
+		System.out.println("Current Symbol table is now " + Global.getCurrentSymbolTable());
 		InterpretVisitor iv = new  InterpretVisitor();
+		System.out.println(ref);
 		Integer value = (Integer) ref.jjtAccept(iv, null);
+		System.out.println("Got value : " + value);
 		Global.setCurrentSymbolTable(temp);
+		System.out.println("Back to symbol table: " + Global.getCurrentSymbolTable());
 		
 		return value;
 	}
@@ -87,7 +93,7 @@ public class ByNameVariable extends AbstractVariable implements Variable
 	}
 	public void setValue(int value)
 	{
-		if (index == -1)
+		if (!isArray)
 		{
 			var.setValue(value);
 		}
@@ -95,7 +101,8 @@ public class ByNameVariable extends AbstractVariable implements Variable
 		{
 			try
 			{
-				var.setValue(value, index);
+				InterpretVisitor iv = new InterpretVisitor();
+				var.setValue(value, (Integer)ref.jjtGetChild(0).jjtAccept(iv, null));
 			}
 			catch (Exception e)
 			{

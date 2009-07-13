@@ -57,7 +57,6 @@ public class ByValVariable extends AbstractVariable implements Variable
 	 */
 	public int getValue(int index) throws VizIndexOutOfBoundsException
 	{
-		System.out.println("This is " + index);
 		if (!isArray)
 		{
 

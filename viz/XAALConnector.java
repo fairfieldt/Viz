@@ -327,7 +327,7 @@ public class XAALConnector {
 
 		retScope.setHidden(true);
 
-		if (!name.equals("Global")) // global's not in the function table so
+		if (!name.equals("Global") && Global.InterpreterType != Interpreter.InterpreterTypes.BY_NAME) // global's not in the function table so
 		// don't try to find it
 		{
 			Interpreter.ASTFunction func = Global.getFunction(name);

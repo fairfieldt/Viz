@@ -3,17 +3,17 @@ var j = 1;
 var f = 2;
 def foo(x, y, z)
 {
-	var q = 5;
-	var f = 1;
-	m[1] = m[f];
-	y = 5;
-	j = x + y;
-	z = 11;
+	var j = 2;
+	var l = 1;
+	m[z] = 17;
+	j = x - z;
+	l = y;
+	x = z;
 }
 
 def main()
 {
-	foo( m[1], m[j], j);
-	j = 3;
+	var k = 3;
+	foo( k, m[j], j);
 }
 

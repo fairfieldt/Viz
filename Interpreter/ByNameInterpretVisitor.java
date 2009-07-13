@@ -4,6 +4,8 @@ import java.util.*;
 
 public class ByNameInterpretVisitor implements VizParserVisitor, VizParserTreeConstants, UpdateReasons
 {
+
+	public boolean JustCalling = false;
 	private QuestionFactory questionFactory;
 
 
@@ -247,11 +249,10 @@ if (XAALScripter.debug) {			System.out.println("Values: " + values);
 		}
 
 			//Drawing Stuff
-if (XAALScripter.debug) {			System.out.println(s.getName());
-}			connector.addVariable(s.getVariable(name), name, s.getName());
+			connector.addVariable(s.getVariable(name), name, s.getName());
 			
 			//This is a snapshot
-					connector.showVar(Global.getCurrentSymbolTable().getVariable(name));
+			connector.showVar(Global.getCurrentSymbolTable().getVariable(name));
 	
 	}
 	
@@ -294,16 +295,14 @@ if (XAALScripter.debug) {			System.out.println(s.getName());
 		if (!node.getIsFunction())
 		{
 			Global.setCurrentSymbolTable(Global.getFunction("foo").getSymbolTable());
-if (XAALScripter.debug) {			System.out.println(Global.getCurrentSymbolTable());
-}			connector.addScope(Global.getCurrentSymbolTable(), "", "main");
+			connector.addScope(Global.getCurrentSymbolTable(), "", "main");
 			connector.showScope("");
 		}
 
 		int numStatements = node.jjtGetNumChildren();
 		for (int i = 0; i < numStatements; i++)
 		{
-if (XAALScripter.debug) {			System.out.println(node.jjtGetChild(i));
-}			node.jjtGetChild(i).jjtAccept(this, null);
+		node.jjtGetChild(i).jjtAccept(this, null);
 		}
 		if (!node.getIsFunction())
 		{
@@ -328,16 +327,12 @@ if (XAALScripter.debug) {			System.out.println(node.jjtGetChild(i));
 		if (s instanceof ASTStatementList)
 		{
 
-if (XAALScripter.debug) {			System.out.println("Nested scope!");
-}if (XAALScripter.debug) {			System.out.println(Global.getCurrentSymbolTable());
-}			SymbolTable st = new SymbolTable(Global.getCurrentSymbolTable());
+			SymbolTable st = new SymbolTable(Global.getCurrentSymbolTable());
 			st.setName("nested");
-if (XAALScripter.debug) {			System.out.println(st);
-}			Global.setCurrentSymbolTable(st);
+			Global.setCurrentSymbolTable(st);
 			s.jjtAccept(this, null);
 			Global.setCurrentSymbolTable(st.getPrevious());
-if (XAALScripter.debug) {			System.out.println("Done with nested scope!");
-}		}
+		}
 		else
 		{
 		
@@ -355,31 +350,29 @@ if (XAALScripter.debug) {			System.out.println("Done with nested scope!");
 	
 	public Integer handleCall(ASTCall node)
 	{
-			boolean gotAQuestion = true; //FIXME HACK
+			boolean gotAQuestion = false; //FIXME HACK
 		//Get the correct function head node
 		ASTFunction fun = Global.getFunction(node.getName());
-if (XAALScripter.debug) {		System.out.println("Calling: " + fun.getName());
-}		//Get the parameters and put the correct values in the symbolTable
+		System.out.println("Calling: " + fun.getName());
+		//Get the parameters and put the correct values in the symbolTable
 		SymbolTable st = fun.getSymbolTable();
 		String name = fun.getName();
-		ArrayList<String> parameters = fun.getParameters();		
+		ArrayList<String> parameters = fun.getParameters();
+		JustCalling = true;		
 		ArrayList<Integer> args = (ArrayList<Integer>) node.jjtGetChild(0).jjtAccept(this, null);
+		JustCalling = false;
 		ArrayList<ASTVar> argNames = ((ASTArgs)node.jjtGetChild(0)).getArgs();
-
+		System.out.println(args.size());
+		System.out.println(Global.getCurrentSymbolTable());
 		for (int i = 0; i < args.size(); i++)
 		{
 			ByNameVariable v = (ByNameVariable) st.getVariable(parameters.get(i));
 			v.setRef(argNames.get(i));
-			ByValVariable argVar = (ByValVariable) Global.getCurrentSymbolTable().getVariable(argNames.get(i).getName());
+			System.out.println("Setting ref of " + parameters.get(i) + " to " + argNames.get(i).getName());
+			System.out.println(argNames.get(i).getName());
+			System.out.println(st.getName());
+			ByNameVariable argVar = (ByNameVariable) st.getVariable(argNames.get(i).getName()+"_");
 
-			if (argVar.getIsArray())
-			{
-				v.setVariable(argVar, argNames.get(i).getIndex());
-			}
-			else
-			{
-				v.setVariable(argVar);
-			}
 		}
 		HashMap<String, String> pa = new HashMap<String, String>(); //Maps args to params
 		for (int i = 0; i < parameters.size(); i++)
@@ -389,35 +382,18 @@ if (XAALScripter.debug) {		System.out.println("Calling: " + fun.getName());
 		Global.setCurrentParamToArg(pa);
 
 	//QUESTION!!!
-		callQuestion = questionFactory.getCallQuestion(name, pa);
+		//callQuestion = questionFactory.getCallQuestion(name, pa);
 		
 		//Drawing Stuff
-		connector.addScope(fun.getSymbolTable(), fun.getName(), "Global");
+		connector.addScope(new SymbolTable(null), fun.getName(), "Global");
 		connector.startSnap(node.getLineNumber());
 			connector.startPar();
 				connector.showScope(node.getName());
 				
 			connector.endPar();
-
-				connector.showScope(node.getName());
-				connector.addQuestion(callQuestion);			
-			connector.startPar();
-				for (int i = 0; i < parameters.size(); i++)
-				{
-					Variable v1 = Global.getCurrentSymbolTable().getVariable(argNames.get(i).getName());
-					Variable v2 = st.getVariable(parameters.get(i));
-					if (v1.getIsArray())
-					{
-						int index = argNames.get(i).getIndex();
-						connector.moveValue(v1, index, v2);
-					}
-					else
-					{
-						connector.moveValue(v1, v2);
-					}
-				}
-			connector.endPar();
+		
 		connector.endSnap();
+		
 				
 		fun.jjtAccept(this, null);
 		
@@ -483,8 +459,7 @@ if (XAALScripter.debug) {				System.out.println("AAAA " + answer);
 			}	
 			else
 			{
-if (XAALScripter.debug) {				System.out.println("CQC " + callQuestion);
-}			}
+			}
 		}
 		return 0;
 	}
@@ -493,53 +468,78 @@ if (XAALScripter.debug) {				System.out.println("CQC " + callQuestion);
 	{
 		System.out.println(node.getName());
 		Integer value = -256;
-		Variable v = Global.getCurrentSymbolTable().getVariable(node.getName());
-		if (node.getIsArray())
+		String name = node.getName();
+		if (node.isArg())
 		{
-			int index = (Integer) node.jjtGetChild(0).jjtAccept(this, null);
-			System.out.println(node.jjtGetChild(0));
-			node.setIndex(index);
+			name+="_";
+		}
+		Variable v = Global.getCurrentSymbolTable().getVariable(name);
+		System.out.println(name + " is a " + v);
+		if (JustCalling)
+		{
+			return value;
+		}
+		if (v instanceof ByNameVariable)
+		{	
 			try
 			{
-				System.out.println(index);
-				System.out.println(v);
-				value = v.getValue(index);
-				System.out.println("Got value " + value + " from index " + index);
+				value = v.getValue();
 			}
 			catch (VizIndexOutOfBoundsException e)
 			{
 				System.out.println(e);
-				ASTExpression exp = (ASTExpression)node.jjtGetChild(0);
-				ASTNum num = new ASTNum(JJTNUM);
-				Random r= new Random();
-				num.setValue(r.nextInt(6));
-				exp.jjtAddChild(num, 0);
-				try
-				{
-					index = (Integer) exp.jjtAccept(this, null);
-					value = v.getValue(index);
-				}
-				catch (VizIndexOutOfBoundsException f)
-				{
-					System.out.println("oops...");
-				}
-				program.codeBuilt = false;
-				Global.lineNumber = 1;
-				program.buildCode();
-				connector.modifyPseudocodeOnAll(program.getPseudocode());
 			}
 		}
 		else
 		{
-			try
+			if (node.getIsArray())
 			{
-				value = v.getValue();
-			}	
-			catch (VizIndexOutOfBoundsException f)
+				int index = (Integer) node.jjtGetChild(0).jjtAccept(this, null);
+				System.out.println(node.jjtGetChild(0));
+				node.setIndex(index);
+				try
+				{
+					System.out.println(index);
+					System.out.println(v);
+					value = v.getValue(index);
+					System.out.println("Got value " + value + " from index " + index);
+				}
+				catch (VizIndexOutOfBoundsException e)
+				{
+					System.out.println(e);
+					ASTExpression exp = (ASTExpression)node.jjtGetChild(0);
+					ASTNum num = new ASTNum(JJTNUM);
+					Random r= new Random();
+					num.setValue(r.nextInt(6));
+					exp.jjtAddChild(num, 0);
+					try
+					{
+						index = (Integer) exp.jjtAccept(this, null);
+						value = v.getValue(index);
+					}
+					catch (VizIndexOutOfBoundsException f)
+					{
+						System.out.println("oops...");
+					}
+					program.codeBuilt = false;
+					Global.lineNumber = 1;
+					program.buildCode();
+					//connector.modifyPseudocodeOnAll(program.getPseudocode());
+				}
+			}
+			else
 			{
-				System.out.println(f);
-			}	
+				try
+				{
+					value = v.getValue();
+				}	
+				catch (VizIndexOutOfBoundsException f)
+				{
+					System.out.println(f);
+				}	
+			}
 		}
+		System.out.println("Got value " + value + " from " + name);
 		return value;
 	}
 	
@@ -548,15 +548,24 @@ if (XAALScripter.debug) {				System.out.println("CQC " + callQuestion);
 		Random r = new Random();
 		int q = r.nextInt(100);
 		
-			boolean gotAQuestion = q < QUESTION_FREQUENCY;//HACK FOR NOW FIXME
+			boolean gotAQuestion = false;//q < QUESTION_FREQUENCY;//HACK FOR NOW FIXME
 		String name = node.getName();
-		if (XAALScripter.debug) {System.out.println("Assigning to " + name);}
+		if (((ASTVar)node.jjtGetChild(0)).isArg())
+		{
+			name+="_";
+		}
+		System.out.println("Assigning to " + name);
+		System.out.println("in function " + Global.getCurrentSymbolTable());
 		Integer value = (Integer)node.jjtGetChild(1).jjtAccept(this, null);
 		int index = 0;
 		
 		Variable v = Global.getCurrentSymbolTable().getVariable(name);
-
-		if (v.getIsArray())
+		if (v instanceof ByNameVariable)
+		{
+			System.out.println("A byname var");
+			v.setValue(value);
+		}
+		else if (v.getIsArray())
 		{
 			index = (Integer) node.jjtGetChild(0).jjtGetChild(0).jjtAccept(this, null);
 			System.out.println("Index " + index + " of " + node.getName());
@@ -593,93 +602,38 @@ if (XAALScripter.debug) {				System.out.println("CQC " + callQuestion);
 				System.out.println(e);
 				
 			}
-			System.out.println("that was close");
-		if (gotAQuestion)
-		{
-			assignmentQuestion = questionFactory.getAssignmentQuestion(node.getLineNumber(), name, index);
-		}
 		}
 		else
 		{
-			if (gotAQuestion)
+			try
 			{
-				assignmentQuestion = questionFactory.getAssignmentQuestion(node.getLineNumber(), name);
+				v.setValue(value);
 			}
-			Global.getCurrentSymbolTable().setValue(name, value);
+			catch (Exception e)
+			{
+				System.out.println(e);
+			}
 		}
 		
-		//Drawing stuff. snap and par should be opened from enclosing statement
-		if (gotAQuestion)
+		if (v instanceof ByNameVariable)
 		{
-			int i = -256;
-			if (assignmentQuestion.getIndex() != -1)
-			{
-				if (assignmentQuestion.aboutArg)
-				{
-					try
-					{
-						i = Global.getFunction("main").getSymbolTable().get(assignmentQuestion.getVariable(), assignmentQuestion.getIndex());
-					}
-					catch (Exception e)
-					{
-						System.out.println(e);
-					}
-				}
-				else
-				{
-					try
-					{
-						i = Global.getCurrentSymbolTable().get(name, assignmentQuestion.getIndex());
-					}
-					catch (Exception e)
-					{
-						System.out.println(e);
-					}
-				}
-			}
-			else
-			{
-				if (assignmentQuestion.aboutArg)
-				{
-					System.out.println("Getting " + name);
-					try
-					{
-						i = Global.getFunction("main").getSymbolTable().get(assignmentQuestion.getVariable());
-					}
-					catch (Exception e)
-					{
-						System.out.println(e);
-					}
-				}
-				else
-				{
-					try
-					{
-						i = Global.getCurrentSymbolTable().get(name);
-					}
-					catch (Exception e)
-					{
-						System.out.println(e);
-					}
-				}
-			}
-			setAssignmentQuestionAnswer(i);
-			connector.addQuestion(assignmentQuestion);
-			connector.endPar();
-			connector.endSnap();
-			connector.startSnap(node.getLineNumber());
-			connector.startPar();
-		}
-		
 			if (v.getIsArray())
 			{
-				connector.modifyVar(Global.getCurrentSymbolTable().getVariable(name), index, value);
+				connector.modifyVar(v.getVariable(), index, value);
 			}
 			else
 			{
-				connector.modifyVar(Global.getCurrentSymbolTable().getVariable(name), value);
+				connector.modifyVar(v.getVariable(), value);
 			}
-		
+		}
+		else
+		{
+			if (v.getIsArray())
+			{
+				connector.modifyVar(v, index, value);
+			}
+			connector.modifyVar(v, value);
+		}
 		update(node.getLineNumber(), UPDATE_REASON_ASSIGNMENT);
 		
 	}

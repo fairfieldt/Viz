@@ -22,5 +22,9 @@ public interface Variable
 	public boolean getIsArray();
 	
 	public void setArray();
+	
+	public void setSubscript(ASTExpression exp);
+
+	public ASTExpression getSubscript();
 
 }

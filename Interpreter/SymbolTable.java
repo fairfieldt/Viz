@@ -102,6 +102,19 @@ if (XAALScripter.debug) {			System.out.println("Error!  Couldn't find variable")
 		return retVal;
 	}
 	
+	public void makeByName(String varName)
+	{
+		Variable v= vars.get(varName);
+
+		ByNameVariable vv = new ByNameVariable();
+		if (v.getIsArray())
+		{
+			vv.setArray();
+			vv.setSubscript(v.getSubscript());
+		}
+		vars.put(varName, vv);
+	}
+	
 	//This is the version to get an array value
 	public int get(String varName, int index, boolean localOnly) throws VizIndexOutOfBoundsException
 	{
@@ -124,7 +137,7 @@ if (XAALScripter.debug) {			System.out.println("Error!  Couldn't find variable")
 	
 	public boolean put(String varName, Variable v)
 	{
-		if (vars.containsKey(varName))
+		if (vars.containsKey(varName) && Global.InterpreterType != InterpreterTypes.BY_NAME)
 		{
 			return false;
 		}
@@ -224,7 +237,18 @@ if (XAALScripter.debug) {			System.out.println("error! variable not found: " + n
 	
 	public String toString() 
 	{
-		
-		return "blah";
+		String ret = name + "\n";
+		try
+		{
+			for (String s : vars.keySet())
+			{
+				ret += s + " " + (vars.get(s) instanceof ByValVariable? vars.get(s).getValue() : "")+"\n";
+			}
+		}
+		catch (Exception e)
+		{
+			System.out.println(e);
+		}
+		return ret + previous;
 	}
 }

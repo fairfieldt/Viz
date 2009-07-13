@@ -29,12 +29,10 @@ public class ByMacroVisitor implements VizParserVisitor, VizParserTreeConstants,
 	{
 		int id = node.getId();
 		Object retVal = null;
-if (XAALScripter.debug) {		System.out.println("Visiting " + id);
-}		switch (id)
+		switch (id)
 		{
 			case JJTSTATEMENTLIST:
-if (XAALScripter.debug) {				System.out.println("STMT LIST");
-}							currentLineNumber++;
+							currentLineNumber++;
 							node.childrenAccept(this, null);
 							currentLineNumber++;
 							break;
@@ -43,8 +41,7 @@ if (XAALScripter.debug) {				System.out.println("STMT LIST");
 				node.childrenAccept(this, null);
 				break;
 			case JJTCALL:
-if (XAALScripter.debug) {				System.out.println("CALL");
-}				handleCall((ASTCall)node);
+				handleCall((ASTCall)node);
 				node.childrenAccept(this, null);
 				break;
 			case JJTVAR:
@@ -58,52 +55,46 @@ if (XAALScripter.debug) {				System.out.println("CALL");
 			default:
 				for (int i = 0; i < node.jjtGetNumChildren(); i++)
 				{
-if (XAALScripter.debug) {					System.out.println(node.jjtGetChild(i));
-}					SimpleNode s = (SimpleNode)node.jjtGetChild(i);
+					SimpleNode s = (SimpleNode)node.jjtGetChild(i);
 					s.jjtAccept(this, null);
 				}
-if (XAALScripter.debug) {				System.out.println("AFTER");
-}		}
+		}
 		return retVal;
 	}
 	
 	public void handleVar(ASTVar node)
 	{
-		
-if (XAALScripter.debug) {		System.out.println(node.getName());
-}		
+				
 		SimpleNode subscript = null;
-		if (node.getIsArray())
+		if (node.getIsArray())		//Let the variable know its subscript
 		{
-			ByValVariable v = (ByValVariable) Global.getCurrentSymbolTable().getVariable(node.getName());
-			if (v == null)
-			{
-				v = (ByValVariable) Global.getFunction("foo").getSymbolTable().getVariable(node.getName());
-			}
-if (XAALScripter.debug) {			System.out.println("LLL" + v.getIsArray() + " " + node.getName());
-}			ASTExpression sub = (ASTExpression)node.jjtGetChild(0);
+			Variable v = Global.getCurrentSymbolTable().getVariable(node.getName());
+			
+			ASTExpression sub = (ASTExpression)node.jjtGetChild(0);
 			v.setSubscript(sub);
-if (XAALScripter.debug) {			System.out.println(sub.getCode());
-}		}
+		}
 		
-		if (!inNested)
+		if (!inNested)			//We don't have to worry about this one, not in foo
 		{
 			return;
 		}
 		
 		String argName = Global.getCurrentParamToArg().get(node.getName());
-if (XAALScripter.debug) {		System.out.println("Var " + argName);
-}		if (argName != null)		//It's one of the args
+		System.out.println("Var " + argName);
+		if (argName != null)		//It's one of the args
 		{
-if (XAALScripter.debug) {			System.out.println(argName + ": " + node.getName());
-}			String name = node.getName();
+			String name = node.getName();
 			node.setName(argName);
-if (XAALScripter.debug) {			System.out.println("Substituted " + argName);
-}			ByValVariable arg =(ByValVariable) Global.getCurrentSymbolTable().getVariable(argName);
+			if (Global.InterpreterType == InterpreterTypes.BY_NAME)
+			{
+				Global.getCurrentSymbolTable().makeByName(argName);
+				System.out.println("made " + argName + " a " + Global.getCurrentSymbolTable().getVariable(argName));
+			}
+			Variable arg = Global.getCurrentSymbolTable().getVariable(argName);
 			if (arg.getIsArray())
 			{
-if (XAALScripter.debug) {				System.out.println("An array");
-}				node.setIsArray(true);
+				System.out.println("An array");
+				node.setIsArray(true);
 				//here we want to get the correct subscript
 				//ASTFunction fn = Global.getFunction("main");
 				ASTArgs args = (ASTArgs) theCall.jjtGetChild(0);
@@ -123,10 +114,10 @@ if (XAALScripter.debug) {				System.out.println("An array");
 				}
 				else
 				{
-if (XAALScripter.debug) {					System.out.println("Something is wrong");
-}				}
-if (XAALScripter.debug) {				System.out.println(subscript.getCode());
-}				node.jjtAddChild(subscript, 0);
+					System.out.println("Something is wrong");
+				}
+				
+				node.jjtAddChild(subscript, 0);
 			}
 			
 			//Add the graphical move
@@ -208,17 +199,14 @@ if (XAALScripter.debug) {				System.out.println("Line yes: " + lineNumber);
 			return;
 		}
 		String argName = Global.getCurrentParamToArg().get(node.getName());
-if (XAALScripter.debug) {		System.out.println("Assignemnt " + argName);
-}		if (argName != null)
+		if (argName != null)
 		{
 			node.setName(argName);
-if (XAALScripter.debug) {			System.out.println("Subbed in assignment " + argName);
-}if (XAALScripter.debug) {			System.out.println(node.getName());
-}			ByValVariable arg = (ByValVariable) Global.getCurrentSymbolTable().getVariable(argName);
+			/*ByValVariable arg = (ByValVariable) Global.getCurrentSymbolTable().getVariable(argName);
 			if (arg.getIsArray())
 			{
 				//node.setIsArray(true);
-			}
+			}*/
 		}
 	}
 	
@@ -227,31 +215,22 @@ if (XAALScripter.debug) {			System.out.println("Subbed in assignment " + argName
 		theCall = node;
 		//Get the correct function head node
 		ASTFunction fun = Global.getFunction(node.getName());
-if (XAALScripter.debug) {		System.out.println("Calling: " + fun.getName());
-}		
+		
 		//The call's grandparent knows the line number and we need to know it later
 		SimpleNode sn = (SimpleNode) node.jjtGetParent();
 		sn = (SimpleNode) sn.jjtGetParent();
 		
-		callLineNumber = sn.getLineNumber();
-if (XAALScripter.debug) {		System.out.println("AHHHH " + callLineNumber);
-}		
+		callLineNumber = sn.getLineNumber();		
 		
 		//Get the parameters and put the correct values in the symbolTable
 		SymbolTable st = fun.getSymbolTable();
 		st.setPrevious(Global.getCurrentSymbolTable());
-if (XAALScripter.debug) {		System.out.println(Global.getCurrentSymbolTable());
-}
 		String name = fun.getName();
-if (XAALScripter.debug) {		System.out.println("FUNNAME: " + name);
-}		
+		
 		
 		ArrayList<String> parameters = fun.getParameters();		
 		ASTArgs argsNode = (ASTArgs) node.jjtGetChild(0);
-if (XAALScripter.debug) {		System.out.println(argsNode);
-}		ArrayList<ASTVar> args = node.getArgs();
-if (XAALScripter.debug) {		System.out.println("args: " + args.size() + " params: " + parameters.size());
-}		
+		ArrayList<ASTVar> args = node.getArgs();		
 		
 		HashMap<String, String> pa = new HashMap<String, String>(); //Maps args to params
 		for (int i = 0; i < parameters.size(); i++)
@@ -260,12 +239,8 @@ if (XAALScripter.debug) {		System.out.println("args: " + args.size() + " params:
 			args.get(i).jjtAccept(this, null);
 		}
 		Global.setCurrentParamToArg(pa);
-		for (String s : Global.getCurrentParamToArg().keySet())
-		{
-if (XAALScripter.debug) {			System.out.println(s + ": " + Global.getCurrentParamToArg().get(s));
-}		}
-if (XAALScripter.debug) {		System.out.println("FYF");
-}		inNested = true;
+
+		inNested = true;
 		fun.jjtAccept(this, null);
 		inNested = false;
 		
@@ -315,8 +290,7 @@ if (XAALScripter.debug) {		System.out.println("Handle decl list");
 	public Object visit(ASTFunction node, Object data)
 	{	
 		currentLineNumber+=2;
-if (XAALScripter.debug) {		System.out.println("Visiting function");
-}		
+	
 		node.childrenAccept(this, null);
 		currentLineNumber++;
 		return null;
@@ -324,8 +298,7 @@ if (XAALScripter.debug) {		System.out.println("Visiting function");
 	
 	public Object visit(ASTStatementList node, Object data)
 	{
-if (XAALScripter.debug) {		System.out.println("here");
-}		for (int i = 0; i < node.jjtGetNumChildren(); i++)
+		for (int i = 0; i < node.jjtGetNumChildren(); i++)
 		{
 if (XAALScripter.debug) {			System.out.println(node.jjtGetChild(i));
 }			node.jjtGetChild(i).jjtAccept(this, null);
@@ -337,8 +310,7 @@ if (XAALScripter.debug) {			System.out.println(node.jjtGetChild(i));
   		currentLineNumber++;
 	  	for (int i = 0; i < node.jjtGetNumChildren(); i++)
 		{
-if (XAALScripter.debug) {			System.out.println(node.jjtGetChild(i));
-}			node.jjtGetChild(i).jjtAccept(this, null);
+			node.jjtGetChild(i).jjtAccept(this, null);
 		}
   		return null;
   	}
@@ -350,8 +322,7 @@ if (XAALScripter.debug) {			System.out.println(node.jjtGetChild(i));
   	}
   	public Object visit(ASTVar node, Object data)
   	{
-if (XAALScripter.debug) {  		System.out.println("VAR " + node.getName());
-}  		handleVar((ASTVar)node);
+  		handleVar((ASTVar)node);
   		node.childrenAccept(this, null);
   		return null;
   	}
