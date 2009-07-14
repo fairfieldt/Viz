@@ -16,6 +16,10 @@ public class Variable implements Drawable
 	
 	private String rectId;
 	
+	private String highlightRectId = null;
+	
+	private boolean createhighlight;
+	
 	protected boolean hidden = false;
 	
 	protected int xPos;
@@ -145,6 +149,11 @@ public class Variable implements Drawable
 		this.value = value;
 	}
 	
+	public void createHighlight()
+	{
+		createhighlight = true;
+	}
+	
 	public void addCopy()
 	{
 		copiesToMake.offer(new Integer(value));
@@ -158,6 +167,11 @@ public class Variable implements Drawable
 	public String peekCopyId()
 	{
 		return copiesOwned.peek();
+	}
+	
+	public String getHighlightId()
+	{
+		return highlightRectId;
 	}
 	
 	/**
@@ -306,7 +320,12 @@ public class Variable implements Drawable
 			String id1 = scripter.addRectangle(xPos, yPos, 40, 40, color,  hidden);
 			this.rectId = id1;
 			String id2 = scripter.addText(xPos, yPos-5, name, "black", hidden);
-
+			
+			if (createhighlight)
+			{
+				highlightRectId  = scripter.addRectangle(xPos, yPos, 40, 40, color,  true, 3);
+				
+			}
 			ids.add(id1);
 			ids.add(id2);
 			//System.out.println(id1);
