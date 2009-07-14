@@ -529,7 +529,7 @@ if (XAALScripter.debug) {				System.out.println("AAAA " + answer);
 		}
 		if (v instanceof ByNameVariable)
 		{
-			connector.startPar();
+			
 			connector.greyScope("foo");
 			connector.highlightScopeByName("main");
 			if (((ByNameVariable)v).getVariable().getIsArray())
@@ -540,12 +540,12 @@ if (XAALScripter.debug) {				System.out.println("AAAA " + answer);
 			{
 				connector.highlightVarByName(((ByNameVariable)v).getVariable());
 			}
-			connector.endPar();
+			
 			
 		}
 		else
 		{
-			connector.startPar();
+			
 			if (node.getIsArray())
 			{
 				connector.highlightVarByName(v, index);
@@ -554,11 +554,9 @@ if (XAALScripter.debug) {				System.out.println("AAAA " + answer);
 			{
 				connector.highlightVarByName(v);
 			}
-			connector.endPar();
+			
 		}
-		connector.startPar();
-		connector.pause(1500);
-		connector.endPar();
+		
 		System.out.println("Got value " + value + " from " + name);
 		return value;
 	}
@@ -634,9 +632,7 @@ if (XAALScripter.debug) {				System.out.println("AAAA " + answer);
 				System.out.println(e);
 			}
 		}
-		connector.startPar();	
-		connector.pause(1500);
-		connector.endPar();
+		
 		connector.startPar();	
 		if (v instanceof ByNameVariable)
 		{
@@ -647,21 +643,21 @@ if (XAALScripter.debug) {				System.out.println("AAAA " + answer);
 			if (v.getIsArray())
 			{			
 				connector.highlightVarByName(((ByNameVariable)v).getVariable(), index);
-				connector.modifyVar(((ByNameVariable)v).getVariable(), index, value);
+				connector.modifyVarByName(((ByNameVariable)v).getVariable(), index, value);
 			}
 			else
 			{
 				connector.highlightVarByName(((ByNameVariable)v).getVariable());
-				connector.modifyVar(((ByNameVariable)v).getVariable(), value);
+				connector.modifyVarByName(((ByNameVariable)v).getVariable(), value);
 			}
 		}
 		else
 		{
 			if (v.getIsArray())
 			{
-				connector.modifyVar(v, index, value);
+				connector.modifyVarByName(v, index, value);
 			}
-			connector.modifyVar(v, value);
+			connector.modifyVarByName(v, value);
 		}
 			connector.endPar();
 		update(node.getLineNumber(), UPDATE_REASON_ASSIGNMENT);
