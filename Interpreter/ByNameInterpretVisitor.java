@@ -341,6 +341,7 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 
 			update(node.getLineNumber(), UPDATE_REASON_STATEMENT);
 		}
+		//System.out.println("endStatement");
 		connector.endSnap();
 	}
 	
@@ -450,6 +451,7 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 			}
 		}
 		connector.startSnap(node.getLineNumber());
+		System.out.println("leaving call");
 		return 0;
 	}
 	
