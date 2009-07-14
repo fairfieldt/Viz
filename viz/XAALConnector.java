@@ -2247,25 +2247,25 @@ public class XAALConnector {
 				String tempFaded = fadedScopes.poll();
 				String tempHighScope = highlightScopes.poll();
 				
-				if (tempVar == null)
+				if (tempVar == null || i >=2)
 					break;
 				int tempVarIndex = highlightVarIndexes.poll().intValue();
 				boolean parExists = reopenOrCreatePar(i);
 				
 				if (tempVarIndex > -1)
 				{
-					scripter.addChangeStyle(StrokeType.solid, 3, ((Array)tempVar).getRect(tempVarIndex));
+					//scripter.addChangeStyle(StrokeType.solid, 3, ((Array)tempVar).getRect(tempVarIndex));
 				}
 				else
 				{
 					scripter.addChangeStyle(StrokeType.solid, 3, tempVar.getRectId());
 				}
 				//do highlight scope
-				Scope highScope = scopes.get(tempHighScope);
-				scripter.addChangeStyle(StrokeType.solid, 3, highScope.getRectId());
+				//Scope highScope = scopes.get(tempHighScope);
+				//scripter.addChangeStyle(StrokeType.solid, 3, highScope.getRectId());
 				
 				//do faded scope
-				Scope fadedScope = scopes.get(tempFaded);
+				//Scope fadedScope = scopes.get(tempFaded);
 				//scripter.addChangeStyle("gray", true, fadedScope.getRectId());
 				
 				
@@ -2581,14 +2581,14 @@ public class XAALConnector {
 		{
 			try {
 				scripter.startPar();
-				return false;
+				
 			} catch (XAALScripterException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		
-		return true;
+		return parExists;
 
 	}
 	
