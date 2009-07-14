@@ -200,6 +200,7 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 		SimpleNode child = (SimpleNode) node.jjtGetChild(0);
 		if (child.getId() == JJTFUNCTION)
 		{		
+			System.out.println("Found a function");
 			//connector.startPar();	
 			startQuestion = questionFactory.getStartQuestion();
 			//connector.addQuestion(startQuestion);
@@ -321,7 +322,7 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 		
 		if (s instanceof ASTStatementList)
 		{
-
+			System.out.println("This'll never happen");
 			SymbolTable st = new SymbolTable(Global.getCurrentSymbolTable());
 			st.setName("nested");
 			Global.setCurrentSymbolTable(st);
@@ -382,9 +383,9 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 				
 			connector.endPar();					//ENDPAR
 		
-				
+			connector.endSnap();
 		fun.jjtAccept(this, null);//and we gogogo
-		
+			
 		if(gotAQuestion)
 				{
 
@@ -448,7 +449,7 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 			{
 			}
 		}
-
+		connector.startSnap(node.getLineNumber());
 		return 0;
 	}
 	

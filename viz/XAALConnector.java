@@ -703,7 +703,7 @@ public class XAALConnector {
 	 */
 	public boolean startSnap(int lineNum, String[] pseudocode, boolean neverReplace) 
 	{
-		
+		System.out.println("Snap started");
 		if (currentSnapNum > 0)
 			return false;
 		try 
@@ -749,6 +749,7 @@ public class XAALConnector {
 	 * @return true if the snap was ended, false if something went wrong.
 	 */
 	public boolean endSnap() {
+		System.out.println("Snap ended");
 		if (currentSnapNum < 0)
 			return false;
 
