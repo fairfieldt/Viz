@@ -212,6 +212,7 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 			connector.startPar();					//STARTPAR
 				connector.showScope("main");
 			connector.endPar();
+					connector.endSnap();
 			main.jjtAccept(this, null);
 			
 			
@@ -292,7 +293,7 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 	public void handleStatementList(ASTStatementList node)
 	{
 		//connector.endPar();						//ENDPAR
-		connector.endSnap();
+
 		int numStatements = node.jjtGetNumChildren();
 		for (int i = 0; i < numStatements; i++)
 		{
