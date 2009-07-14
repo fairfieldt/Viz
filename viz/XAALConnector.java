@@ -2250,7 +2250,7 @@ public class XAALConnector {
 			
 			scripter.reopenSlide(snapNum);
 			int i = 0;
-			for(i = 0; true; i += 4)
+			for(i = 0; true; i += 6)
 			{
 				
 				Variable tempVar = highlightVars.poll();
@@ -2263,6 +2263,19 @@ public class XAALConnector {
 				int tempVarIndex = highlightVarIndexes.poll().intValue();
 				boolean parExists = reopenOrCreatePar(i);
 				
+				//do faded scope
+				Scope fadedScope = scopes.get(tempFaded);
+				String scopeFadedId = fadedScope.getFadedId();
+				scripter.addShow(scopeFadedId);
+				
+				recloseOrEndPar(parExists);
+				
+				//do a quick pause
+				parExists = reopenOrCreatePar(i+1);
+				scripter.addPause(1500);
+				recloseOrEndPar(parExists);
+				
+				parExists = reopenOrCreatePar(i+2);
 				String varHighId = null;
 				if (tempVarIndex > -1)
 				{
@@ -2280,41 +2293,30 @@ public class XAALConnector {
 				String scopeHighId = highScope.getHighlightId();
 				scripter.addShow(scopeHighId);
 				
-				//do faded scope
-				Scope fadedScope = scopes.get(tempFaded);
-				String scopeFadedId = fadedScope.getFadedId();
-				scripter.addShow(scopeFadedId);
+	
 				
 				
 				recloseOrEndPar(parExists);
 				
 				//we need to add the pause
-				parExists = reopenOrCreatePar(i+1);
+				parExists = reopenOrCreatePar(i+3);
 				scripter.addPause(2000);
 				recloseOrEndPar(parExists);
 				
 				//turn off highlighting
-				parExists = reopenOrCreatePar(i+2);
+				parExists = reopenOrCreatePar(i+4);
 				scripter.addHide(varHighId);
 				scripter.addHide(scopeHighId);
 				scripter.addHide(scopeFadedId);
 				//scripter.add
 				recloseOrEndPar(parExists);
 				
-				parExists = reopenOrCreatePar(i+3);
+				parExists = reopenOrCreatePar(i+5);
 				scripter.addPause(500);
 				recloseOrEndPar(parExists);
 			}
 			
-			
-			
-			
-			
-			//TODO start here!
-			
-			
 			boolean parExists = reopenOrCreatePar(i);
-			
 			
 			if (modifyVarIndex > -1) // its an array
 			{
