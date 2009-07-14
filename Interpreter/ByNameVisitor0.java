@@ -86,13 +86,11 @@ public class ByNameVisitor0 implements VizParserVisitor, VizParserTreeConstants,
 			node.setName(argName);  //Changed its name.  
 			node.setArg();		//Set it as an arg
 			
-			System.out.println(fooST + " should be foo");
 			Variable arg = Global.getCurrentSymbolTable().getVariable(argName);  //The Entry for the argument.  
 			ByNameVariable v = new ByNameVariable();		
 			ASTArgs args = (ASTArgs) theCall.jjtGetChild(0);		
 			if (arg.getIsArray())
 			{
-				System.out.println("An array");
 				node.setIsArray(true);
 				v.setArray();
 
@@ -203,7 +201,6 @@ if (XAALScripter.debug) {				System.out.println("Line yes: " + lineNumber);
 			{
 				argName = argName + "[" + subscript.getCode() + "]";
 			}
-			System.out.println(Global.currentPage + " " + callLineNumber + " " + pos + " " + argName + " " + lineNumber + " " + endPos);
 			connector.moveArgs(Global.currentPage, callLineNumber, pos, argName, lineNumber, endPos);
 			
 		}
