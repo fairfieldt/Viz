@@ -1,7 +1,7 @@
 
 var j = 1;
 var g = 3;
-
+var a[] = {1, 2, 3 };
 def foo(x, y)
 {
 	x = x;
@@ -10,6 +10,6 @@ def foo(x, y)
 def main()
 {
 	
-	foo( j,g);
+	foo( a[1],g);
 }
 

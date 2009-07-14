@@ -2258,22 +2258,26 @@ public class XAALConnector {
 				int tempVarIndex = highlightVarIndexes.poll().intValue();
 				boolean parExists = reopenOrCreatePar(i);
 				
+				String varHighId = null;
 				if (tempVarIndex > -1)
 				{
-					//scripter.addChangeStyle(StrokeType.solid, 3, ((Array)tempVar).getRect(tempVarIndex));
+					Array a= (Array)tempVar;
+					varHighId = a.getHighlightRectId(tempVarIndex);
+					scripter.addShow(varHighId);
 				}
 				else
 				{
-					String high = tempVar.getHighlightId();
-					scripter.addShow(high);
+					varHighId = tempVar.getHighlightId();
+					scripter.addShow(varHighId);
 				}
 				//do highlight scope
-				//Scope highScope = scopes.get(tempHighScope);
-				//scripter.addChangeStyle(StrokeType.solid, 3, highScope.getRectId());
+				Scope highScope = scopes.get(tempHighScope);
+				String scopeHighId = highScope.getHighlightId();
+				scripter.addShow(scopeHighId);
 				
 				//do faded scope
 				//Scope fadedScope = scopes.get(tempFaded);
-				//scripter.addChangeStyle("gray", true, fadedScope.getRectId());
+				//scripter.addChangeStyle("gray", false, fadedScope.getRectId());
 				
 				
 				recloseOrEndPar(parExists);
