@@ -27,8 +27,10 @@ public class Scope implements Drawable
 	private boolean isGlobal = false;
 	
 	private String highlightRectId = null;
+	private String fadedRectId = null;
 	
-	private boolean createhighlight;
+	private boolean createHighlight;
+	private boolean createFaded;
 
 	public Scope(String name, String color, boolean isGlobal)
 	{
@@ -114,12 +116,22 @@ public class Scope implements Drawable
 	
 	public void createHighlight()
 	{
-		createhighlight = true;
+		createHighlight = true;
+	}
+	
+	public void createFaded()
+	{
+		createFaded = true;
 	}
 	
 	public String getHighlightId()
 	{
 		return highlightRectId;
+	}
+	
+	public String getFadedId()
+	{
+		return fadedRectId;
 	}
 	
 	private void sizeScopes()
@@ -193,10 +205,16 @@ public class Scope implements Drawable
 		String id1 = scripter.addRectangle(xPos, yPos, sizeX, sizeY, color, hidden, 6);
 		rectId = id1;
 		
-		if (createhighlight)
+		if (createHighlight)
 		{
 			highlightRectId  = scripter.addRectangle(xPos, yPos, sizeX, sizeY, color,  true, 10);
 			
+		}
+		
+		if (createFaded)
+		{
+			fadedRectId = scripter.addRectangle(xPos, yPos, sizeX, sizeY, "gray", true, 
+					StrokeType.solid, 6, "gray");
 		}
 		
 		String id3 = scripter.addText(xPos+3, yPos-5, name, "black", hidden);

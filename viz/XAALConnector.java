@@ -563,6 +563,7 @@ public class XAALConnector {
 	public void greyScope(String scope)
 	{
 		createByNameActionIfNeeded();
+		scopes.get(scope).createFaded();
 		callByNameAction.addFadedScope(scope);
 	}
 	
@@ -2239,15 +2240,16 @@ public class XAALConnector {
 			Queue<Integer> highlightVarIndexes = action.getHighlightVarIndexes();
 			Queue<String> fadedScopes = action.getFadedScopes();
 			Queue<String> highlightScopes = action.getHighlightScopes();
+			Variable modifyVar = action.getModifiedVar();
+			int modifyVarIndex = action.getModifiedVarIndex();
+			int newValue = action.getValue();
 			int snapNum = action.getSnapNum();
+			
 			
 			scripter.reopenSlide(snapNum);
 			int i = 0;
 			for(i = 0; true; i += 4)
 			{
-				Variable nextHighlightedVar = null;
-				String nextHighlightedScope = null;
-				int nextHighlightedIndex = -1;
 				
 				Variable tempVar = highlightVars.poll();
 				
@@ -2277,26 +2279,28 @@ public class XAALConnector {
 				scripter.addShow(scopeHighId);
 				
 				//do faded scope
-				//Scope fadedScope = scopes.get(tempFaded);
-				//scripter.addChangeStyle("gray", false, fadedScope.getRectId());
+				Scope fadedScope = scopes.get(tempFaded);
+				String scopeFadedId = fadedScope.getFadedId();
+				scripter.addShow(scopeFadedId);
 				
 				
 				recloseOrEndPar(parExists);
 				
 				//we need to add the pause
 				parExists = reopenOrCreatePar(i+1);
-				scripter.addPause(1000);
+				scripter.addPause(2000);
 				recloseOrEndPar(parExists);
 				
 				//turn off highlighting
 				parExists = reopenOrCreatePar(i+2);
 				scripter.addHide(varHighId);
 				scripter.addHide(scopeHighId);
+				scripter.addHide(scopeFadedId);
 				//scripter.add
 				recloseOrEndPar(parExists);
 				
 				parExists = reopenOrCreatePar(i+3);
-				scripter.addPause(250);
+				scripter.addPause(500);
 				recloseOrEndPar(parExists);
 			}
 			
@@ -2306,12 +2310,35 @@ public class XAALConnector {
 			
 			//TODO start here!
 			
-			/*
+			
 			boolean parExists = reopenOrCreatePar(i);
 			
-			scripter.addChangeStyle(highlightColor, ids)
+			
+			if (modifyVarIndex > -1) // its an array
+			{
+				writeModifyVarIndexInternal(modifyVar, modifyVarIndex, newValue);
+			}
+			else // its not an array!
+			{
+				writeModifyVarInternal(modifyVar, newValue);
+			}
+			
 			recloseOrEndPar(parExists);
-			*/
+			
+			scripter.recloseSlide();
+			
+			scripter.reopenSlide(snapNum + 1);
+			scripter.reopenPar();
+			
+			if (modifyVarIndex > -1) // its an array
+			{
+				writeModVarIndexUnhighInt(modifyVar, modifyVarIndex);
+			}
+			else // its not an array!
+			{
+				writeModVarUnhighInt(modifyVar);
+			}
+			scripter.reclosePar();
 			scripter.recloseSlide();
 		}
 		catch (XAALScripterException e)
@@ -2320,6 +2347,65 @@ public class XAALConnector {
 		}
 		
 	}
+	
+	private void writeModifyVarInternal(Variable v, int newValue) throws XAALScripterException
+	{
+		// pop copy of current value
+		String oldCopy = v.popCopyId();
+
+		// hide oldCopy
+		scripter.addHide(oldCopy);
+		
+		String newCopy = v.peekCopyId();
+
+		// show new copy
+		scripter.addShow(newCopy);
+
+		// highlight the change
+		scripter.addChangeStyle(highlightColor, newCopy);
+		
+		// set the value of variable to its new value
+		v.setValue(newValue);
+	}
+	
+	private void writeModVarUnhighInt(Variable v) throws XAALScripterException
+	{
+		String newCopy = v.peekCopyId();
+		scripter.addChangeStyle("black", newCopy);
+	}
+	
+	private void writeModifyVarIndexInternal (Variable var, int index, int newValue) throws XAALScripterException
+	{
+		Array v = (Array) var;
+
+		// pop copy of current value
+		String oldCopy = v.popCopyId(index);
+		// System.out.println("Current value = " + oldCopy);
+		// hide oldCopy
+		scripter.addHide(oldCopy);
+
+		// pop copy of new value
+		String newCopy = v.getCopyId(index);
+		
+		scripter.addShow(newCopy);
+
+		// highlight the change
+		scripter.addChangeStyle(highlightColor, newCopy);
+
+		// set the value of variable to its new value
+		v.setElem(index, newValue);
+	}
+	
+	private void writeModVarIndexUnhighInt(Variable var, int index) throws XAALScripterException
+	{
+		Array v = (Array)var;
+		
+		String newCopy = v.getCopyId(index);
+		scripter.addChangeStyle("black", newCopy);
+	}
+	
+	
+	
 	//TODO must fix this.
 	private void writeCallByNameHighlight(CallByNameHighlightAction action)
 	{

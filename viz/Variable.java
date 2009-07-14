@@ -233,10 +233,9 @@ public class Variable implements Drawable
 			this.rectId = id1;
 			//title
 			String id2 = scripter.addText(xPos, yPos-5, name, "black", hidden);
-			//pointer triangle
+			//pointer square
 			String id3 = scripter.addRectangle(xPos + 16, yPos + 16 , 8, 8, "black", hidden,
 					StrokeType.solid, 1, "black");
-			//
 			
 			ids.add(id1);
 			ids.add(id2);
@@ -289,10 +288,9 @@ public class Variable implements Drawable
 			this.rectId = id1;
 			//title
 			String id2 = scripter.addText(xPos, yPos-5, name, "black", hidden);
-			//pointer rectangle
+			//pointer square
 			String id3 = scripter.addRectangle(xPos + 16, yPos + 16 , 8, 8, "black", hidden,
 					StrokeType.solid, 1, "black");
-			//
 			
 			ids.add(id1);
 			ids.add(id2);
