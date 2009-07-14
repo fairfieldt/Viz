@@ -526,14 +526,14 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 
 			connector.greyScope("foo");
 			
-			//connector.highlightScopeByName("main");
+			connector.highlightScopeByName("main");
 			if (((ByNameVariable)v).getVariable().getIsArray())
 			{
-				//connector.highlightVarByName(((ByNameVariable)v).getVariable(), 0);
+				connector.highlightVarByName(((ByNameVariable)v).getVariable(), 0);
 			}
 			else
 			{
-				//connector.highlightVarByName(((ByNameVariable)v).getVariable());
+				connector.highlightVarByName(((ByNameVariable)v).getVariable());
 			}
 			
 		}
@@ -606,16 +606,16 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 	
 			connector.greyScope("foo");
 			System.out.println("Greying scope");
-			//connector.highlightScopeByName("main");
+			connector.highlightScopeByName("main");
 			
 			if (v.getIsArray())
 			{			
-				//connector.highlightVarByName(((ByNameVariable)v).getVariable(), index);
+				connector.highlightVarByName(((ByNameVariable)v).getVariable(), index);
 				connector.modifyVar(((ByNameVariable)v).getVariable(), index, value);
 			}
 			else
 			{
-				//connector.highlightVarByName(((ByNameVariable)v).getVariable());
+				connector.highlightVarByName(((ByNameVariable)v).getVariable());
 				connector.modifyVar(((ByNameVariable)v).getVariable(), value);
 			}
 		}
