@@ -1,13 +1,15 @@
 
 var j = 1;
+var g = 3;
 
-def foo(x, y, z)
+def foo(x, y)
 {
 	x = x;
 }
 
 def main()
 {
-	foo(j, j, j);
+	
+	foo( j,g);
 }
 

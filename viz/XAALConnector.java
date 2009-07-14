@@ -81,6 +81,9 @@ public class XAALConnector {
 	private String[] pseudoCode = null;
 	
 	private int lineToHighlight = -1;
+	
+	// the action that needs to be done
+	private CallByNameAction callByNameAction = null;
 
 	/**
 	 * Constructor for <code>XAALConnector</code>
@@ -527,31 +530,73 @@ public class XAALConnector {
 	public void highlightVarByName(Interpreter.Variable iv)
 	{
 		Variable v = varToVar.get(iv.getUUID());
-		actions.offer(new HighlightVarAction(v, scripter.getIndexOfPar(), currentSnapNum));
+		//actions.offer(new HighlightVarAction(v, scripter.getIndexOfPar(), currentSnapNum));
+		callByNameAction.addHighlightVar(v);
 	}
 	
 	public void highlightVarByName(Interpreter.Variable iv, int index)
 	{
 		Variable v = varToVar.get(iv.getUUID());
+		/*
 		actions.offer(new HighlightVarIndexAction(v, index, 
-				scripter.getIndexOfPar(), currentSnapNum));
+				scripter.getIndexOfPar(), currentSnapNum));*/
+		createByNameActionIfNeeded();
+		callByNameAction.addHighlightVar(v, index);
 	}
 	
 	public void highlightScopeByName(String scope)
 	{
+		/*
 		actions.offer(new HighlightScopeAction(scope, 
 				scripter.getIndexOfPar(), currentSnapNum));
+				*/
+		createByNameActionIfNeeded();
+		callByNameAction.addHighlightScope(scope);
 	}
 	
 	public void greyScope(String scope)
 	{
-		actions.offer(new GreyScopeAction(scope, 
-				scripter.getIndexOfPar(), currentSnapNum));
+		createByNameActionIfNeeded();
+		callByNameAction.addFadedScope(scope);
 	}
 	
+	public void modifyVarByName(Interpreter.Variable iv, int newValue)
+	{
+		createByNameActionIfNeeded();
+		Variable v = varToVar.get(iv.getUUID());
+		v.setValue(newValue);
+
+		v.addCopy();
+		
+		callByNameAction.setModifiedVar(v);
+		callByNameAction.setValue(newValue);
+	}
+	
+	public void modifyVarByName(Interpreter.Variable iv, int index, int newValue)
+	{
+		Variable v = varToVar.get(iv.getUUID());
+		Array vArray = (Array) v;
+
+		vArray.setElem(index, newValue);
+
+		vArray.addCopy(index);
+		
+		callByNameAction.setModifiedVar(v, index);
+		callByNameAction.setValue(newValue);
+	}
+	
+	/*
 	public void pause(int ms)
 	{
 		actions.offer(new PauseAction(ms, scripter.getIndexOfPar(), currentSnapNum));
+	}
+	*/
+	private void createByNameActionIfNeeded()
+	{
+		if (callByNameAction == null)
+		{
+			callByNameAction = new CallByNameAction(currentSnapNum);
+		}
 	}
 	
 	/**
@@ -708,6 +753,11 @@ public class XAALConnector {
 		{
 			return false;
 		}
+		
+		if (callByNameAction != null)
+			actions.offer(callByNameAction);
+		
+		callByNameAction = null;
 		//lineToHighlight = -1;
 		currentSnapNum = -1;
 		return true;
@@ -1079,10 +1129,12 @@ public class XAALConnector {
 					writeGreyScope((GreyScopeAction)action);
 				}
 			}
-			/*else if (action instanceof CallByNameHighlightAction) //call by name highlighting
+			
+			else if (action instanceof CallByNameAction)
 			{
-				writeCallByNameHighlight((CallByNameHighlightAction)action);
-			}*/
+				writeCallByName((CallByNameAction)action);
+			}
+			
 			else if (action instanceof PauseAction)
 			{
 				writePause((PauseAction)action);
@@ -2172,6 +2224,67 @@ public class XAALConnector {
 		}
 	}
 
+	
+	private void writeCallByName(CallByNameAction action)
+	{
+		try 
+		{
+			Queue<Variable> highlightVars = action.getHighlightVars();
+			Queue<Integer> highlightVarIndexes = action.getHighlightVarIndexes();
+			Queue<String> fadedScopes = action.getFadedScopes();
+			Queue<String> highlightScopes = action.getHighlightScopes();
+			int snapNum = action.getSnapNum();
+			
+			scripter.reopenSlide(snapNum);
+			for(int i = 0; true; i += 2)
+			{
+				Variable nextHighlightedVar = null;
+				String nextHighlightedScope = null;
+				int nextHighlightedIndex = -1;
+				
+				Variable tempVar = highlightVars.poll();
+				
+				String tempFaded = fadedScopes.poll();
+				String tempHighScope = highlightScopes.poll();
+				
+				if (tempVar == null || i >=2)
+					break;
+				int tempVarIndex = highlightVarIndexes.poll().intValue();
+				boolean parExists = reopenOrCreatePar(i);
+				
+				if (tempVarIndex > -1)
+				{
+					//scripter.addChangeStyle(StrokeType.solid, 3, ((Array)tempVar).getRect(tempVarIndex));
+				}
+				else
+				{
+					scripter.addChangeStyle(StrokeType.solid, 3, tempVar.getRectId());
+				}
+				//do highlight scope
+				//Scope highScope = scopes.get(tempHighScope);
+				//scripter.addChangeStyle(StrokeType.solid, 3, highScope.getRectId());
+				
+				//do faded scope
+				//Scope fadedScope = scopes.get(tempFaded);
+				//scripter.addChangeStyle("gray", true, fadedScope.getRectId());
+				
+				
+				recloseOrEndPar(parExists);
+				
+				//we need to add the pause
+				parExists = reopenOrCreatePar(i+1);
+				scripter.addPause(1000);
+				recloseOrEndPar(parExists);
+			}
+			
+			scripter.recloseSlide();
+		}
+		catch (XAALScripterException e)
+		{
+			
+		}
+		
+	}
 	//TODO must fix this.
 	private void writeCallByNameHighlight(CallByNameHighlightAction action)
 	{
@@ -2453,5 +2566,42 @@ public class XAALConnector {
 		{
 			
 		}
+	}
+	
+	/**
+	 * true if its a reopen, false if it was created
+	 * @param index
+	 * @return
+	 */
+	private boolean reopenOrCreatePar(int index)
+	{
+		boolean parExists = false;
+		parExists = scripter.reopenPar(index);
+		if (!parExists)
+		{
+			try {
+				scripter.startPar();
+				
+			} catch (XAALScripterException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return parExists;
+
+	}
+	
+	private void recloseOrEndPar(boolean oldPar)
+	{
+		if (oldPar)
+			scripter.reclosePar();
+		else
+			try {
+				scripter.endPar();
+			} catch (ParException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 }
