@@ -34,12 +34,13 @@ public class ByName
 			XAALConnector xc = new XAALConnector(initial, "Call by Name", true);
 			String p0 = xc.addCodePage(program.getPseudocode());
 			Global.currentPage = p0;
+							xc.showCodePage(p0);
 			xc.startSnap(1);
 				xc.startPar();
 				xc.showCodePage(p0);
 				xc.endPar();
 			xc.endSnap();
-			xc.startSnap(1);
+			xc.startSnap(2);
 			xc.startPar();
 				xc.showCodePage(p0);
 			xc.endPar();			
@@ -59,8 +60,7 @@ public class ByName
 			Global.executing = true;
 			xc.endPar();
 			xc.endSnap();
-			xc.startSnap(2);
-			xc.endSnap();
+			
 			
 			Global.lineNumber = 1;
 			program.codeBuilt = false;
@@ -69,7 +69,7 @@ public class ByName
 			xc.startPar();
 			xc.hideCodePage(p2);
 			xc.endPar();
-			xc.endSnap();
+
 			
 			
 			

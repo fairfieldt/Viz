@@ -2311,8 +2311,11 @@ public class XAALConnector {
 				//scripter.add
 				recloseOrEndPar(parExists);
 				
+
 				parExists = reopenOrCreatePar(i+5);
-				scripter.addPause(500);
+
+				scripter.addPause(2000);
+
 				recloseOrEndPar(parExists);
 			}
 			
