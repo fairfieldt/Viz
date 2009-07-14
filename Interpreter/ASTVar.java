@@ -54,8 +54,7 @@ public class ASTVar extends SimpleNode implements VizParserTreeConstants{
 
   public String getCode()
   {
-	System.out.println(Global.executing + " ADFDSFSDFSDFSDFSD");
-	String code = (isArg && Global.executing ? "<em>" : "") + this.name  + (isArray ? "[" + jjtGetChild(0).getCode() + "]" : "") + (isArg && Global.executing ? "</em>" : "");
+	String code = (isArg && Global.executing ? "<em><font color = \"blue\">" : "") + this.name  + (isArray ? "[" + jjtGetChild(0).getCode() + "]" : "") + (isArg && Global.executing ? "</font></em>" : "");
  	return code;
   }
   

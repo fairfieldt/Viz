@@ -24,7 +24,6 @@ public class ByNameVariable extends AbstractVariable implements Variable
 	
 	public void setRef(ASTVar v)
 	{
-		System.out.println("Setting ref to " + v + " " + v.getName());
 		this.ref = v;
 	}
 	
