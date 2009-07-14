@@ -11,6 +11,9 @@ public class Array extends Variable implements Drawable {
 	private ArrayList<Integer> xPositions;
 	private ArrayList<String> indexRects;
 	
+	private ArrayList<Boolean> createHighlightRect;
+	private ArrayList<String> highlightRects;
+	
 	public Array(String name, ArrayList<Integer> values, boolean isParam)
 	{
 		super(name, 0, isParam);
@@ -19,11 +22,15 @@ public class Array extends Variable implements Drawable {
 		
 		arrayCopiesToMake = new ArrayList<Queue<Integer>>();
 		arrayCopiesOwned = new ArrayList<LinkedList<String>>();
+		createHighlightRect = new ArrayList<Boolean>();
+		highlightRects = new ArrayList<String>();
 		
 		for (int i = 0; i < values.size(); i++)
 		{
 			arrayCopiesToMake.add(new LinkedList<Integer>());
 			arrayCopiesOwned.add(new LinkedList<String>());
+			createHighlightRect.add(false);
+			highlightRects.add("");
 		}
 		
 		xPositions = new ArrayList<Integer>();
@@ -68,6 +75,16 @@ public class Array extends Variable implements Drawable {
 		//	System.out.println(s);
 		}
 		return arrayCopiesOwned.get(index).pop();
+	}
+	
+	public void createHighlightRect(int index)
+	{
+		createHighlightRect.set(index, true);
+	}
+	
+	public String getHighlightRectId(int index)
+	{
+		return highlightRects.get(index);
 	}
 	
 	public String peekCopyId(int index)
@@ -119,6 +136,11 @@ public class Array extends Variable implements Drawable {
 			String rectangle = 
 				scripter.addRectangle(indexXPos, getYPos(), 40, 40, getColor(), getHidden());
 			indexRects.add(rectangle);
+			
+			if (createHighlightRect.get(i).booleanValue())// make a neato highlight
+			{
+				highlightRects.set(i, scripter.addRectangle(indexXPos, getYPos(), 40, 40, color,  true, 3));
+			}
 		
 			String id = 
 				scripter.addText(indexXPos + 15, getYPos() + 25, values.get(i) + "", "black", true);

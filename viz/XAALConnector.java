@@ -529,8 +529,10 @@ public class XAALConnector {
 	
 	public void highlightVarByName(Interpreter.Variable iv)
 	{
+		createByNameActionIfNeeded();
 		Variable v = varToVar.get(iv.getUUID());
 		//actions.offer(new HighlightVarAction(v, scripter.getIndexOfPar(), currentSnapNum));
+		v.createHighlight();
 		callByNameAction.addHighlightVar(v);
 	}
 	
@@ -541,6 +543,8 @@ public class XAALConnector {
 		actions.offer(new HighlightVarIndexAction(v, index, 
 				scripter.getIndexOfPar(), currentSnapNum));*/
 		createByNameActionIfNeeded();
+		Array a = (Array)v;
+		a.createHighlightRect(index);
 		callByNameAction.addHighlightVar(v, index);
 	}
 	
@@ -551,6 +555,8 @@ public class XAALConnector {
 				scripter.getIndexOfPar(), currentSnapNum));
 				*/
 		createByNameActionIfNeeded();
+		
+		scopes.get(scope).createHighlight();
 		callByNameAction.addHighlightScope(scope);
 	}
 	
@@ -2258,7 +2264,8 @@ public class XAALConnector {
 				}
 				else
 				{
-					scripter.addChangeStyle(StrokeType.solid, 3, tempVar.getRectId());
+					String high = tempVar.getHighlightId();
+					scripter.addShow(high);
 				}
 				//do highlight scope
 				//Scope highScope = scopes.get(tempHighScope);
