@@ -119,11 +119,10 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 		
 		//Drawing Stuff
 		connector.addScope(Global.getSymbolTable(), "Global", null);
-		connector.startSnap(1);
 		connector.startPar();						//STARTPAR
 			connector.showScope("Global");
 		connector.endPar();						//ENDPAR
-		connector.endSnap();
+		//connector.endSnap();
 		
 		
 		node.jjtGetChild(0).jjtAccept(this, null);
@@ -178,8 +177,9 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 	
 	public void handleDeclarationList(ASTDeclarationList node)
 	{
-		connector.startSnap(Global.getFunction("main").getLineNumber());
-		connector.startPar();						//STARTPAR
+		//connector.startSnap(Global.getFunction("main").getLineNumber());
+		connector.startPar();	
+
 		int numDecls = node.jjtGetNumChildren();
 		for (int i = 0; i < numDecls; i++)
 		{
@@ -208,12 +208,13 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 			connector.endSnap();
 			ASTFunction main = Global.getFunction("main");
 			connector.addScope(main.getSymbolTable(), "main", "Global");
-			connector.startSnap(Global.getFunction("main").getLineNumber());
+			/*connector.startSnap(Global.getFunction("main").getLineNumber());
 			
 			connector.startPar();					//STARTPAR
 				connector.showScope("main");
 			connector.endPar();
 					connector.endSnap();
+			*/
 			main.jjtAccept(this, null);
 			
 			
@@ -261,6 +262,12 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 	{	
 		//Get the function's symbol table, set it's previous to the
 		// calling function's, and then set it to current.
+		connector.startSnap(node.getLineNumber());
+		if (node.getName().equals("main"))
+		{
+			connector.showScope("main");
+		}
+		connector.endSnap();
 		if (!node.getUsed())
 		{
 			return;
@@ -547,11 +554,11 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 
 			if (node.getIsArray())
 			{
-				//connector.highlightVarByName(v, index);
+				connector.highlightVarByName(v, index);
 			}
 			else
 			{
-				//connector.highlightVarByName(v);
+				connector.highlightVarByName(v);
 			}
 
 		}

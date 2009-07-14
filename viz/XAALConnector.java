@@ -2302,7 +2302,7 @@ public class XAALConnector {
 				recloseOrEndPar(parExists);
 				
 				parExists = reopenOrCreatePar(i+3);
-				scripter.addPause(500);
+				scripter.addPause(2000);
 				recloseOrEndPar(parExists);
 			}
 			
