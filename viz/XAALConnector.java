@@ -581,6 +581,7 @@ public class XAALConnector {
 	
 	public void modifyVarByName(Interpreter.Variable iv, int index, int newValue)
 	{
+		createByNameActionIfNeeded();
 		Variable v = varToVar.get(iv.getUUID());
 		Array vArray = (Array) v;
 
