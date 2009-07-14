@@ -120,9 +120,9 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 		//Drawing Stuff
 		connector.addScope(Global.getSymbolTable(), "Global", null);
 		connector.startSnap(1);
-		connector.startPar();
+		connector.startPar();						//STARTPAR
 			connector.showScope("Global");
-		connector.endPar();
+		connector.endPar();						//ENDPAR
 		connector.endSnap();
 		
 		
@@ -166,11 +166,11 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 		//TODO Write the last snap nicely
 	
 		connector.startSnap(node.getPseudocode().length);
-			connector.startPar();
+			connector.startPar();					//STARTPAR
 				// we can't hide foo in by macro cuz it doesn't exist
 				if (!byMacroFlag)
 					connector.hideScope("foo");
-			connector.endPar();
+			connector.endPar();					//ENDPAR
 		connector.endSnap();
 		
 		
@@ -179,7 +179,7 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 	public void handleDeclarationList(ASTDeclarationList node)
 	{
 		connector.startSnap(Global.getFunction("main").getLineNumber());
-		connector.startPar();
+		connector.startPar();						//STARTPAR
 		int numDecls = node.jjtGetNumChildren();
 		for (int i = 0; i < numDecls; i++)
 		{
@@ -203,13 +203,13 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 			//connector.startPar();	
 			startQuestion = questionFactory.getStartQuestion();
 			//connector.addQuestion(startQuestion);
-			connector.endPar();
+			connector.endPar();					//ENDPAR
 			connector.endSnap();
 			ASTFunction main = Global.getFunction("main");
 			connector.addScope(main.getSymbolTable(), "main", "Global");
 			connector.startSnap(Global.getFunction("main").getLineNumber());
 			
-			connector.startPar();
+			connector.startPar();					//STARTPAR
 				connector.showScope("main");
 			main.jjtAccept(this, null);
 			
@@ -290,7 +290,7 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 	
 	public void handleStatementList(ASTStatementList node)
 	{
-		connector.endPar();
+		connector.endPar();						//ENDPAR
 		connector.endSnap();
 		int numStatements = node.jjtGetNumChildren();
 		for (int i = 0; i < numStatements; i++)
@@ -375,10 +375,10 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 		
 		//Drawing Stuff
 		connector.addScope(new SymbolTable(null), fun.getName(), "Global");
-			connector.startPar();
+			connector.startPar();					//STARTPAR
 				connector.showScope(node.getName());
 				
-			connector.endPar();
+			connector.endPar();					//ENDPAR
 		
 				
 		fun.jjtAccept(this, null);//and we gogogo
@@ -526,14 +526,14 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 
 			connector.greyScope("foo");
 			
-			connector.highlightScopeByName("main");
+			//connector.highlightScopeByName("main");
 			if (((ByNameVariable)v).getVariable().getIsArray())
 			{
-				connector.highlightVarByName(((ByNameVariable)v).getVariable(), 0);
+				//connector.highlightVarByName(((ByNameVariable)v).getVariable(), 0);
 			}
 			else
 			{
-				connector.highlightVarByName(((ByNameVariable)v).getVariable());
+				//connector.highlightVarByName(((ByNameVariable)v).getVariable());
 			}
 			
 		}
@@ -542,11 +542,11 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 
 			if (node.getIsArray())
 			{
-				connector.highlightVarByName(v, index);
+				//connector.highlightVarByName(v, index);
 			}
 			else
 			{
-				connector.highlightVarByName(v);
+				//connector.highlightVarByName(v);
 			}
 
 		}
@@ -555,7 +555,7 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 	
 	public void handleAssignment(ASTAssignment node)
 	{
-		connector.startPar();
+		connector.startPar();						//STARTPAR
 		Random r = new Random();
 		int q = r.nextInt(100);
 		
@@ -605,16 +605,17 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 		{
 	
 			connector.greyScope("foo");
-			connector.highlightScopeByName("main");
+			System.out.println("Greying scope");
+			//connector.highlightScopeByName("main");
 			
 			if (v.getIsArray())
 			{			
-				connector.highlightVarByName(((ByNameVariable)v).getVariable(), index);
+				//connector.highlightVarByName(((ByNameVariable)v).getVariable(), index);
 				connector.modifyVar(((ByNameVariable)v).getVariable(), index, value);
 			}
 			else
 			{
-				connector.highlightVarByName(((ByNameVariable)v).getVariable());
+				//connector.highlightVarByName(((ByNameVariable)v).getVariable());
 				connector.modifyVar(((ByNameVariable)v).getVariable(), value);
 			}
 		}
@@ -629,7 +630,7 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 				connector.modifyVar(v, value);
 			}
 		}
-		connector.endPar();
+		connector.endPar();						//ENDPAR
 		update(node.getLineNumber(), UPDATE_REASON_ASSIGNMENT);
 		
 	}
