@@ -2242,7 +2242,8 @@ public class XAALConnector {
 			int snapNum = action.getSnapNum();
 			
 			scripter.reopenSlide(snapNum);
-			for(int i = 0; true; i += 2)
+			int i = 0;
+			for(i = 0; true; i += 4)
 			{
 				Variable nextHighlightedVar = null;
 				String nextHighlightedScope = null;
@@ -2253,27 +2254,31 @@ public class XAALConnector {
 				String tempFaded = fadedScopes.poll();
 				String tempHighScope = highlightScopes.poll();
 				
-				if (tempVar == null || i >=2)
+				if (tempVar == null)
 					break;
 				int tempVarIndex = highlightVarIndexes.poll().intValue();
 				boolean parExists = reopenOrCreatePar(i);
 				
+				String varHighId = null;
 				if (tempVarIndex > -1)
 				{
-					//scripter.addChangeStyle(StrokeType.solid, 3, ((Array)tempVar).getRect(tempVarIndex));
+					Array a= (Array)tempVar;
+					varHighId = a.getHighlightRectId(tempVarIndex);
+					scripter.addShow(varHighId);
 				}
 				else
 				{
-					String high = tempVar.getHighlightId();
-					scripter.addShow(high);
+					varHighId = tempVar.getHighlightId();
+					scripter.addShow(varHighId);
 				}
 				//do highlight scope
-				//Scope highScope = scopes.get(tempHighScope);
-				//scripter.addChangeStyle(StrokeType.solid, 3, highScope.getRectId());
+				Scope highScope = scopes.get(tempHighScope);
+				String scopeHighId = highScope.getHighlightId();
+				scripter.addShow(scopeHighId);
 				
 				//do faded scope
 				//Scope fadedScope = scopes.get(tempFaded);
-				//scripter.addChangeStyle("gray", true, fadedScope.getRectId());
+				//scripter.addChangeStyle("gray", false, fadedScope.getRectId());
 				
 				
 				recloseOrEndPar(parExists);
@@ -2282,8 +2287,31 @@ public class XAALConnector {
 				parExists = reopenOrCreatePar(i+1);
 				scripter.addPause(1000);
 				recloseOrEndPar(parExists);
+				
+				//turn off highlighting
+				parExists = reopenOrCreatePar(i+2);
+				scripter.addHide(varHighId);
+				scripter.addHide(scopeHighId);
+				//scripter.add
+				recloseOrEndPar(parExists);
+				
+				parExists = reopenOrCreatePar(i+3);
+				scripter.addPause(250);
+				recloseOrEndPar(parExists);
 			}
 			
+			
+			
+			
+			
+			//TODO start here!
+			
+			/*
+			boolean parExists = reopenOrCreatePar(i);
+			
+			scripter.addChangeStyle(highlightColor, ids)
+			recloseOrEndPar(parExists);
+			*/
 			scripter.recloseSlide();
 		}
 		catch (XAALScripterException e)
