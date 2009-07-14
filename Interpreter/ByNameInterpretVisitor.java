@@ -616,23 +616,23 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 			if (v.getIsArray())
 			{			
 				connector.highlightVarByName(((ByNameVariable)v).getVariable(), index);
-				connector.modifyVar(((ByNameVariable)v).getVariable(), index, value);
+				connector.modifyVarByName(((ByNameVariable)v).getVariable(), index, value);
 			}
 			else
 			{
 				connector.highlightVarByName(((ByNameVariable)v).getVariable());
-				connector.modifyVar(((ByNameVariable)v).getVariable(), value);
+				connector.modifyVarByName(((ByNameVariable)v).getVariable(), value);
 			}
 		}
 		else
 		{
 			if (v.getIsArray())
 			{
-				connector.modifyVar(v, index, value);
+				connector.modifyVarByName(v, index, value);
 			}
 			else
 			{
-				connector.modifyVar(v, value);
+				connector.modifyVarByName(v, value);
 			}
 		}
 		connector.endPar();						//ENDPAR
