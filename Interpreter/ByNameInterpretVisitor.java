@@ -554,11 +554,11 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 
 			if (node.getIsArray())
 			{
-				connector.highlightVarByName(v, index);
+				//connector.highlightVarByName(v, index);
 			}
 			else
 			{
-				connector.highlightVarByName(v);
+				//connector.highlightVarByName(v);
 			}
 
 		}
