@@ -553,28 +553,34 @@ public class XAALConnector {
 	
 	public void modifyVarByName(Interpreter.Variable iv, int newValue)
 	{
-		createByNameActionIfNeeded();
-		Variable v = varToVar.get(iv.getUUID());
-		v.setValue(newValue);
-
-		v.addCopy();
+	
+			createByNameActionIfNeeded();
+			Variable v = varToVar.get(iv.getUUID());
+			v.setValue(newValue);
+	
+			v.addCopy();
+			
+			callByNameAction.setModifiedVar(v);
+			callByNameAction.setValue(newValue);
 		
-		callByNameAction.setModifiedVar(v);
-		callByNameAction.setValue(newValue);
+	
 	}
 	
 	public void modifyVarByName(Interpreter.Variable iv, int index, int newValue)
 	{
-		createByNameActionIfNeeded();
-		Variable v = varToVar.get(iv.getUUID());
-		Array vArray = (Array) v;
-
-		vArray.setElem(index, newValue);
-
-		vArray.addCopy(index);
 		
-		callByNameAction.setModifiedVar(v, index);
-		callByNameAction.setValue(newValue);
+		
+			createByNameActionIfNeeded();
+			Variable v = varToVar.get(iv.getUUID());
+			Array vArray = (Array) v;
+	
+			vArray.setElem(index, newValue);
+	
+			vArray.addCopy(index);
+			
+			callByNameAction.setModifiedVar(v, index);
+			callByNameAction.setValue(newValue);
+		
 	}
 	
 	private void createByNameActionIfNeeded()
@@ -744,7 +750,10 @@ public class XAALConnector {
 		if (currentSnapNum < 0)
 			return false;
 
-		q.setSlideId(currentSnapNum - 1);
+		if (currentSnapNum == 1)
+			q.setSlideId(currentSnapNum);
+		else
+			q.setSlideId(currentSnapNum - 1);
 
 		questions.add(q);
 
@@ -2105,7 +2114,8 @@ public class XAALConnector {
 				scripter.endPar();
 
 			scripter.recloseSlide();
-		} catch (Exception e) {
+		} 
+		catch (Exception e) {
 		}
 	}
 
@@ -2172,6 +2182,10 @@ public class XAALConnector {
 			
 			
 			scripter.reopenSlide(snapNum);
+			String varHighId = null;
+			String scopeFadedId = null;
+			String scopeHighId = null;
+			
 			int i = 0;
 			for(i = 0; true; i += 6)
 			{
@@ -2188,7 +2202,7 @@ public class XAALConnector {
 				
 				//do faded scope
 				Scope fadedScope = scopes.get(tempFaded);
-				String scopeFadedId = fadedScope.getFadedId();
+				scopeFadedId = fadedScope.getFadedId();
 				scripter.addShow(scopeFadedId);
 				
 				recloseOrEndPar(parExists);
@@ -2199,7 +2213,7 @@ public class XAALConnector {
 				recloseOrEndPar(parExists);
 				
 				parExists = reopenOrCreatePar(i+2);
-				String varHighId = null;
+				varHighId = null;
 				if (tempVarIndex > -1)
 				{
 					Array a= (Array)tempVar;
@@ -2213,11 +2227,8 @@ public class XAALConnector {
 				}
 				//do highlight scope
 				Scope highScope = scopes.get(tempHighScope);
-				String scopeHighId = highScope.getHighlightId();
+				scopeHighId = highScope.getHighlightId();
 				scripter.addShow(scopeHighId);
-				
-	
-				
 				
 				recloseOrEndPar(parExists);
 				
@@ -2226,6 +2237,11 @@ public class XAALConnector {
 				scripter.addPause(2000);
 				recloseOrEndPar(parExists);
 				
+				if ( highlightVars.peek() == null)
+				{
+					i +=4;
+					break;
+				}
 				//turn off highlighting
 				parExists = reopenOrCreatePar(i+4);
 				scripter.addHide(varHighId);
@@ -2242,6 +2258,9 @@ public class XAALConnector {
 				recloseOrEndPar(parExists);
 			}
 			
+			
+			
+			
 			boolean parExists = reopenOrCreatePar(i);
 			
 			if (modifyVarIndex > -1) // its an array
@@ -2255,10 +2274,28 @@ public class XAALConnector {
 			
 			recloseOrEndPar(parExists);
 			
+			parExists = reopenOrCreatePar(i + 1);
+			
+			scripter.addPause(1500);
+			
+			recloseOrEndPar(parExists);
+			
+			parExists = reopenOrCreatePar(i + 2);
+		
+			if (varHighId != null)
+				scripter.addHide(varHighId);
+			
+			if (scopeHighId != null)
+				scripter.addHide(scopeHighId);
+			
+			if (scopeFadedId != null)
+				scripter.addHide(scopeFadedId);
+			
+			recloseOrEndPar(parExists);
 			scripter.recloseSlide();
 			
 			scripter.reopenSlide(snapNum + 1);
-			scripter.reopenPar();
+			scripter.reopenPar(0);
 			
 			if (modifyVarIndex > -1) // its an array
 			{
@@ -2273,7 +2310,7 @@ public class XAALConnector {
 		}
 		catch (XAALScripterException e)
 		{
-			
+			System.out.println();
 		}
 		
 	}
