@@ -8,6 +8,8 @@ public class Scope implements Drawable
 	private ArrayList<Variable> params;
 	private ArrayList<Scope> scopes;
 	
+	private ByNeedCache cache = null;
+	
 	private ArrayList<String> ids;
 	private String rectId;
 
@@ -82,7 +84,6 @@ public class Scope implements Drawable
 		this.currentVarYPos = yPos;
 		this.currentParamXPos = xPos;
 		this.currentParamYPos = yPos;
-		
 	}
 	
 	public void setHidden(boolean isHidden)
@@ -132,6 +133,30 @@ public class Scope implements Drawable
 	public String getFadedId()
 	{
 		return fadedRectId;
+	}
+	
+	/**
+	 * It's your job to make sure the variable makes sense in the scope!
+	 * @param v
+	 */
+	public void addVariableToCache(Variable v)
+	{
+		Variable newV = new Variable (v);
+		if (cache == null)
+			cache = new ByNeedCache(this);
+		cache.addVariable(newV);
+	}
+	
+	public void addVariableToCache (Variable v, int i)
+	{
+		 Variable newV = new Variable(v);
+		 if (cache == null)
+				cache = new ByNeedCache(this);
+		 newV.setName(v.name + "[" + i + "]");
+		 Array a = (Array)v;
+		 newV.setValue(a.getValue(i));
+		 
+		 cache.addVariable(newV);
 	}
 	
 	private void sizeScopes()
@@ -254,6 +279,12 @@ public class Scope implements Drawable
 			//	System.out.println("Drawing subScope");
 				s.draw(scripter);
 			}
+		}
+		
+		if (cache != null) //there's a cache we need to draw it
+		{
+			cache.setPosition(xPos + 400, yPos);
+			cache.draw(scripter);
 		}
 	}
 }

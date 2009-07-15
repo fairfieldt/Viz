@@ -465,6 +465,31 @@ public class XAALConnector {
 		v1.setReference(v2, index);
 
 	}
+	
+	/**
+	 * It's your job to make sure the var makes sense in the scope
+	 * @param var
+	 * @param scope
+	 */
+	public void addVariableToCache(Interpreter.Variable var, String scope)
+	{
+		Scope s = scopes.get(scope);
+		Variable v = varToVar.get(var.getUUID());
+		s.addVariableToCache(v);
+	}
+	
+	/**
+	 * It's your job to make sure the var makes sense in the scope
+	 * @param var
+	 * @param index
+	 * @param scope
+	 */
+	public void addVariableToCache(Interpreter.Variable var, int index, String scope)
+	{
+		Scope s = scopes.get(scope);
+		Variable v = varToVar.get(var.getUUID());
+		s.addVariableToCache(v, index);
+	}
 
 	// TODO: check if you're actually on a slide
 	/**

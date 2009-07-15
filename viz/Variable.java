@@ -75,6 +75,20 @@ public class Variable implements Drawable
 		setReference(ref);
 	}
 	
+	/**
+	 * make a copy of the variable
+	 * @param v
+	 */
+	public Variable (Variable v)
+	{
+		
+		ids = new ArrayList<String>();
+		this.name = v.name;
+		this.value = v.value;
+		copiesToMake = new LinkedList<Integer>();
+		copiesOwned = new LinkedList<String>();
+	}
+	
 	public boolean getHidden()
 	{
 		return hidden;
@@ -89,7 +103,11 @@ public class Variable implements Drawable
 	{
 		this.ref = ref;
 		this.refIndex = index;
-		
+	}
+	
+	public void setName(String name)
+	{
+		this.name = name;
 	}
 	
 	public void setIsCopyRestore()
