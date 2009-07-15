@@ -514,18 +514,6 @@ public class XAALConnector {
 		Variable v = varToVar.get(var.getUUID());
 		actions.offer(new ShowHideVarAction(false, v, currentSnapNum));
 	}
-
-	/**
-	 * Highlights a variable in the pseudocode for by-name. 
-	 * @param varStr the string of the variable
-	 * @param scopeName
-	 * @param beginLine
-	 * @param endLine
-	 */
-	public void highlightVarInPseudo(String varStr, String scopeName, int beginLine, int endLine)
-	{
-		
-	}
 	
 	public void highlightVarByName(Interpreter.Variable iv)
 	{
@@ -538,11 +526,10 @@ public class XAALConnector {
 	
 	public void highlightVarByName(Interpreter.Variable iv, int index)
 	{
-		Variable v = varToVar.get(iv.getUUID());
-		/*
-		actions.offer(new HighlightVarIndexAction(v, index, 
-				scripter.getIndexOfPar(), currentSnapNum));*/
 		createByNameActionIfNeeded();
+		Variable v = varToVar.get(iv.getUUID());
+		
+		
 		Array a = (Array)v;
 		a.createHighlightRect(index);
 		callByNameAction.addHighlightVar(v, index);
@@ -550,10 +537,7 @@ public class XAALConnector {
 	
 	public void highlightScopeByName(String scope)
 	{
-		/*
-		actions.offer(new HighlightScopeAction(scope, 
-				scripter.getIndexOfPar(), currentSnapNum));
-				*/
+		
 		createByNameActionIfNeeded();
 		
 		scopes.get(scope).createHighlight();
@@ -593,73 +577,12 @@ public class XAALConnector {
 		callByNameAction.setValue(newValue);
 	}
 	
-	/*
-	public void pause(int ms)
-	{
-		actions.offer(new PauseAction(ms, scripter.getIndexOfPar(), currentSnapNum));
-	}
-	*/
 	private void createByNameActionIfNeeded()
 	{
 		if (callByNameAction == null)
 		{
 			callByNameAction = new CallByNameAction(currentSnapNum);
 		}
-	}
-	
-	/**
-	 * Highlights a <code>Variable</code> and its containing slide and fades out
-	 * the non-relevant scope.
-	 * 
-	 * @param highlightVars
-	 *            a list of  <code>Interpreter.Variable</code> that corresponds with the
-	 *            <code>Variable</code>s to be highlighted.
-	 * @param indexForVars the array index of the corresponding variable in <code>highlightVars</code>.
-	 * If the corresponding variable is not an array, enter -1.
-	 * @param fadedScopeId
-	 *            the name of the scope to fade out.
-	 * @param highlightScopeId
-	 *            the name of the scopes to highlight containing
-	 *            <code>hightlightVar</code>
-	 * @param modifiedVar the variable being modified
-	 * @param modifiedVarIndex the index of <code>modifiedVar</code> being modified. 
-	 * 				If <code>modifiedVar</code> isn't an array, enter -1.
-	 * @param value the new value of <code>modifiedVar</code>
-	 * @return true if works, false if something went bad.
-	 */
-	public boolean callByNameHighlight(Interpreter.Variable[] highlightVars, int[] indexForVars,
-			String fadedScopeId, String highlightScopeIds[], Interpreter.Variable modifiedVar, 
-			int modifiedVarIndex,int value) {
-		
-		if (currentSnapNum < 0)
-			return false;
-		
-		Variable[] highlightedVars = new Variable[highlightVars.length];
-		for (int i = 0; i < highlightVars.length; i++)
-		{
-			highlightedVars[i] = varToVar.get(highlightVars[i].getUUID());
-		}
-		
-		Variable innerVar = varToVar.get(modifiedVar.getUUID());
-		
-		if (modifiedVarIndex > -1)
-		{
-			Array innerArray = (Array)innerVar;
-			
-			innerArray.setElem(modifiedVarIndex, value);
-			innerArray.addCopy(modifiedVarIndex);
-		}
-		else
-		{
-			innerVar.setValue(value);
-	
-			innerVar.addCopy();
-		}
-		
-		actions.offer(new CallByNameHighlightAction(highlightedVars, indexForVars, fadedScopeId,
-				highlightScopeIds, innerVar, modifiedVarIndex, value, currentSnapNum));
-
-		return true;
 	}
 
 	/**
@@ -2411,174 +2334,6 @@ public class XAALConnector {
 		scripter.addChangeStyle("black", newCopy);
 	}
 	
-	
-	
-	//TODO must fix this.
-	private void writeCallByNameHighlight(CallByNameHighlightAction action)
-	{
-		try 
-		{
-			
-			Variable[] highlightVars = action.getHighlightVars();
-			int[] highlightVarIndexes = action.getHighlightVarIndexes();
-			String[] highlightScopes = action.getHighlightScopes();
-			
-			for(int i = 0; i < highlightVars.length; i++)
-			{
-				Variable nextHighlightedVar = null;
-				String nextHighlightedScope = null;
-				int nextHighlightedIndex = -1;
-				
-				scripter.reopenSlide(action.getSnapNum() + i);
-				
-				boolean parExists = false;
-				parExists = scripter.reopenPar(i *2 );
-				if (!parExists)
-					scripter.startPar();
-				
-				
-				Variable temp = highlightVars[i];
-				String tempRectId = null;
-				if (highlightVarIndexes[i] > -1)
-				{
-					Array tempArray = (Array)temp;
-					tempRectId = tempArray.getRect(highlightVarIndexes[i]);
-				}
-				else
-				{
-					tempRectId = temp.getRectId();
-				}
-				
-				Scope scope = scopes.get(highlightScopes[i]);
-				
-				//highlight the borders of the variable and scope
-				String[] ids = {/*tempRectId,*/ scope.getRectId()};  //FIXME this was broken
-				System.out.println(tempRectId + " " + scope.getRectId());
-				scripter.addChangeStyle(StrokeType.solid, XAALScripter.DEFAULT_STROKE_WIDTH * 3, ids);
-				
-				//fade the background color
-				scripter.addChangeStyle("gray", true, action.getFadedScope());
-				if (!parExists)
-					scripter.endPar();
-				else
-					scripter.reclosePar();
-				
-				
-				
-				if (i + 1 < highlightVars.length)
-				{
-					nextHighlightedVar = highlightVars[i+1];
-					nextHighlightedIndex = highlightVarIndexes[i+1];
-				}
-				
-				
-				if(i + 1 < highlightVars.length)
-					nextHighlightedScope = highlightScopes[i+1];
-				
-				
-				 parExists = false;
-					parExists = scripter.reopenPar(i *2  + 1);
-					if (!parExists)
-						scripter.startPar();
-				
-				//we can stop highlighting a particular variable if the 
-				//next snap doesn't highlight it
-				if (nextHighlightedVar == null || temp != nextHighlightedVar)
-				{
-					scripter.addChangeStyle(StrokeType.solid, XAALScripter.DEFAULT_STROKE_WIDTH, 
-							temp.getRectId()); //FIXME This was broken
-				}// FIXME This was broken
-				else if (temp == nextHighlightedVar && 
-						highlightVarIndexes[i] !=nextHighlightedIndex )
-				{
-					Array tempA = (Array)temp;
-					
-					scripter.addChangeStyle(StrokeType.solid, XAALScripter.DEFAULT_STROKE_WIDTH,
-							tempA.getRect(highlightVarIndexes[i]));
-				}
-				
-				//we can stop highlighting a particular scope if the 
-				//next snap doesn't highlight it
-				if (nextHighlightedScope == null || scope != scopes.get(nextHighlightedScope))
-				{
-					scripter.addChangeStyle(StrokeType.solid, XAALScripter.DEFAULT_STROKE_WIDTH, 
-							scope.getRectId());
-				}
-				
-				if (!parExists)
-					scripter.endPar();
-				else
-					scripter.reclosePar();
-				
-			}
-			
-			
-			boolean parExists = false;
-			parExists = scripter.reopenPar(highlightVars.length);
-			if (!parExists)
-				scripter.startPar();
-			
-			String newCopy = null;
-			if( action.getModifiedVarIndex() > -1) // its a regular variable
-			{
-				
-				Variable v = action.getModifiedVar();
-				// pop copy of current value
-				String oldCopy = v.popCopyId();
-	
-				// hide oldCopy
-				scripter.addHide(oldCopy);
-				newCopy = v.peekCopyId();
-				
-				scripter.addShow(newCopy);
-	
-				// highlight the change
-				scripter.addChangeStyle(highlightColor, newCopy);
-	
-				// set the value of variable to its new value
-				v.setValue(action.getValue());
-			}
-			else //its a stinkin' array FIXME doesn't work!
-			{
-				Variable v = action.getModifiedVar();
-				Array vA = (Array)v;
-				// pop copy of current value
-				String oldCopy = vA.popCopyId(action.getModifiedVarIndex());
-				// hide oldCopy
-				scripter.addHide(oldCopy);
-				
-				newCopy = vA.peekCopyId(action.getModifiedVarIndex());
-				
-				scripter.addShow(newCopy);
-				
-				// highlight the change
-				scripter.addChangeStyle(highlightColor, newCopy);
-				
-				// set the value of variable to its new value
-				vA.setElem(action.getModifiedVarIndex(), action.getValue());
-				
-			}
-			// reclose the par
-			scripter.reclosePar();
-			// reclose the slide
-			scripter.recloseSlide();
-
-			// turn off highlighting on next slide
-
-			scripter.reopenSlide(action.getSnapNum() + 1);
-			scripter.reopenPar();
-
-			scripter.addChangeStyle("black", newCopy);
-
-			scripter.reclosePar();
-			scripter.recloseSlide();
-			 
-		}
-		catch (XAALScripterException e)
-		{
-		}
-	}
-	
 	private void writePause(PauseAction action)
 	{
 		try
@@ -2596,6 +2351,7 @@ public class XAALConnector {
 			
 		}
 	}
+	
 	/**
 	 * ASSUMES THERE WILL BE A PAUSE INBETWEEN THIS PAR AND THE NEXT
 	 * @param action
