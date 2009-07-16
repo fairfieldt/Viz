@@ -1964,7 +1964,7 @@ public class XAALConnector {
 			// reopen par
 			scripter.reopenPar();
 
-			//TODO: fix it so we stop trying to close foo in by-macro
+			
 			Scope scope = scopes.get(action.getScope());
 			ArrayList<String> scopeIds = scope.getIds();
 			// show all the ids
@@ -2015,24 +2015,22 @@ public class XAALConnector {
 			}
 			
 			
-			/*ByNeedCache c = scope.getCache();
 			
-			if (c != null)
+			ArrayList<Variable> cache = scope.getCache();
+			
+			if (cache != null)
 			{
-				for (String s: c.getIds())
+				for (Variable v : cache)
 				{
-					scripter.addHide(s);
-				}
-				
-				for (Variable v : c.getVars())
-				{
-					for (String s : v.getIds())
+					ArrayList<String> vIds = v.getIds();
+					for (String id : vIds)
 					{
-						scripter.addHide(s);
+						scripter.addHide(id);
 					}
 					
+					scripter.addHide(v.peekCopyId());
 				}
-			}*/
+			}
 
 			// reclose par
 			scripter.reclosePar();

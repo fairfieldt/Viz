@@ -181,6 +181,11 @@ public class Scope implements Drawable
 		cache.add(v);
 	}
 	
+	public ArrayList<Variable> getCache()
+	{
+		return cache;
+	}
+	
 	private void sizeScopes()
 	{
 		int subScopeXPos = xPos + 10;
