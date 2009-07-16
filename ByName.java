@@ -11,7 +11,7 @@ public class ByName
 		BufferedReader br = null;
 		try
 		{
-			br = new BufferedReader(new FileReader("Samples/shell.src"));
+			br = new BufferedReader(new FileReader("Samples/simple.src"));
 		}
 		catch (Exception e)
 		{
@@ -24,7 +24,7 @@ public class ByName
 
 			RandomizingVisitor2<ByNameVariable> rv = new RandomizingVisitor2<ByNameVariable>(ByNameVariable.class);
 				
-			program.jjtAccept(rv, null);
+			//program.jjtAccept(rv, null);
 		
 			System.out.println("Successfully Parsed");
 			System.out.println("________________\n");
