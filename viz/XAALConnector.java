@@ -478,9 +478,10 @@ public class XAALConnector {
 	{
 		Scope s = scopes.get(scope);
 		Variable v = varToVar.get(var.getUUID());
-		s.addVariableToCache(v);
+		Variable newVar = new Variable(v);
+		s.addVariableToCache(newVar);
 		
-		actions.offer(new ShowHideVarAction(true, v, currentSnapNum));
+		actions.offer(new ShowHideVarAction(true, newVar, currentSnapNum));
 	}
 	
 	/**
@@ -493,9 +494,16 @@ public class XAALConnector {
 	{
 		Scope s = scopes.get(scope);
 		Variable v = varToVar.get(var.getUUID());
-		s.addVariableToCache(v, index);
+		Variable newVar = new Variable(v);
+		Array a = (Array) v;
 		
-		actions.offer(new ShowHideVarAction(true, v, currentSnapNum));
+		newVar.setName(v.name + "[" + index + "]");
+		newVar.setValue(a.getValue(index));
+		
+		s.addVariableToCache(newVar);
+		
+		
+		actions.offer(new ShowHideVarAction(true, newVar, currentSnapNum));
 	}
 
 	// TODO: check if you're actually on a slide

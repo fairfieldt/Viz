@@ -142,22 +142,9 @@ public class Scope implements Drawable
 	 */
 	public void addVariableToCache(Variable v)
 	{
-		Variable newV = new Variable (v);
 		if (cache == null)
 			cache = new ByNeedCache(this);
-		cache.addVariable(newV);
-	}
-	
-	public void addVariableToCache (Variable v, int i)
-	{
-		 Variable newV = new Variable(v);
-		 if (cache == null)
-				cache = new ByNeedCache(this);
-		 newV.setName(v.name + "[" + i + "]");
-		 Array a = (Array)v;
-		 newV.setValue(a.getValue(i));
-		 
-		 cache.addVariable(newV);
+		cache.addVariable(v);
 	}
 	
 	private void sizeScopes()
