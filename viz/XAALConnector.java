@@ -532,7 +532,7 @@ public class XAALConnector {
 		Scope s = scopes.get(scope);
 		//Variable v = varToVar.get(var.getUUID());
 		//This didn't work, v was always null
-		Variable newVar = new Variable(name, value, true);
+		Variable newVar = new Variable(name.replace("_", ""), value, true);
 		newVar.setHidden(true);
 		newVar.addCopy();
 		s.addVariableToCache(newVar);
