@@ -37,9 +37,6 @@ public class InterpretVisitor implements VizParserVisitor, VizParserTreeConstant
 	//FIXME use this?
 	public void update(int lineNumber, int reason)
 	{
-if (XAALScripter.debug) {		System.out.println("Update on " + lineNumber);
-}if (XAALScripter.debug) {		System.out.println(Global.getCurrentSymbolTable().toString());
-}		//questionFactory.addAnswers(lineNumber, reason);
 	}
 	
 	public void setAssignmentQuestionAnswer(int value)
@@ -124,13 +121,13 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 		connector.endSnap();
 		
 		node.jjtGetChild(0).jjtAccept(this, null);
-		update(LINE_NUMBER_END, UPDATE_REASON_END);
+
 		
 		
 		int value = 0;
 		try
 		{
-			value = Global.getCurrentSymbolTable().get(startQuestion.getVariable());
+			value = Global.getSymbolTable().get(startQuestion.getVariable());
 		}
 		catch (Exception e)
 		{
@@ -382,17 +379,20 @@ if (XAALScripter.debug) {		System.out.println("Calling: " + fun.getName());
 
 	//QUESTION!!!
 		callQuestion = questionFactory.getCallQuestion(name, pa);
-		
+		if (callQuestion == null)
+		{
+			gotAQuestion = false;
+		}
 		//Drawing Stuff
 		connector.addScope(fun.getSymbolTable(), fun.getName(), "Global");
 		connector.startSnap(node.getLineNumber());
+			
 			connector.startPar();
 				connector.showScope(node.getName());
-				
 			connector.endPar();
 
 				connector.showScope(node.getName());
-				connector.addQuestion(callQuestion);			
+				if (gotAQuestion) connector.addQuestion(callQuestion);			
 			connector.startPar();
 				for (int i = 0; i < parameters.size(); i++)
 				{
@@ -415,12 +415,12 @@ if (XAALScripter.debug) {		System.out.println("Calling: " + fun.getName());
 		fun.jjtAccept(this, null);
 		
 		if(gotAQuestion)
-				{
+		{
 
 			int answer = 0;
 			try
 			{
-				Global.getFunction("main").getSymbolTable().get(callQuestion.getVariable());
+				answer = Global.getFunction("main").getSymbolTable().get(callQuestion.getVariable());
 			}
 			catch (Exception e)
 			{
@@ -428,8 +428,8 @@ if (XAALScripter.debug) {		System.out.println("Calling: " + fun.getName());
 			}
 			if (callQuestion instanceof FIBQuestion)
 			{
-if (XAALScripter.debug) {				System.out.println("AAAA " + answer);
-}				((FIBQuestion)callQuestion).addAnswer(answer+"");
+				System.out.println("AAAA " + answer);
+				((FIBQuestion)callQuestion).addAnswer(answer+"");
 			}
 			else if (callQuestion instanceof TFQuestion)
 			{
@@ -561,30 +561,7 @@ if (XAALScripter.debug) {				System.out.println("CQC " + callQuestion);
 			catch (VizIndexOutOfBoundsException e)
 			{
 				System.out.println(e);
-				/*ASTExpression exp = (ASTExpression)node.jjtGetChild(0).jjtGetChild(0);
-				ASTNum num = new ASTNum(JJTNUM);
-
-				int val = r.nextInt(6);
-				num.setValue(val);
-				exp.jjtAddChild(num, 0);
-				index = (Integer) node.jjtGetChild(0).jjtGetChild(0).jjtAccept(this, null);
-				try
-				{
-					v.setValue(value, index);
-				}
-				catch (VizIndexOutOfBoundsException f)
-				{
-					System.out.println("oops");
-				}
-				Global.lineNumber = 1;
-
-				program.codeBuilt = false;
-
-				program.buildCode();
-				connector.modifyPseudocodeOnAll(program.getPseudocode());				
-			
-				System.out.println(e);
-				*/
+				
 				
 			}
 			System.out.println("that was close");
@@ -659,10 +636,6 @@ if (XAALScripter.debug) {				System.out.println("CQC " + callQuestion);
 			}
 			setAssignmentQuestionAnswer(i);
 			connector.addQuestion(assignmentQuestion);
-			connector.endPar();
-			connector.endSnap();
-			connector.startSnap(node.getLineNumber());
-			connector.startPar();
 		}
 		
 			if (v.getIsArray())

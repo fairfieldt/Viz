@@ -14,7 +14,7 @@ public class ASTDeclarationList extends SimpleNode
 		{
 			ASTDeclaration d = (ASTDeclaration) jjtGetChild(i);
 			d.setLineNumber(Global.lineNumber);
-			code += Global.lineNumber++ + ". " + d.getCode();
+			code += Global.lineNumber++ + ". " + (this.lineNumber < 10 ? " " : "") + d.getCode();
 		}
 		return code + "\n";
 	}

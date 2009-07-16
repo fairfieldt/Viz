@@ -116,7 +116,7 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 		//System.out.println("visiting program");
 		Global.setCurrentSymbolTable(Global.getSymbolTable()); 
 		update(1, UPDATE_REASON_BEGIN);
-		
+		startQuestion = questionFactory.getStartQuestion();
 		//Drawing Stuff
 		connector.addScope(Global.getSymbolTable(), "Global", null);
 		connector.startPar();						//STARTPAR
@@ -266,6 +266,7 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 		if (node.getName().equals("main"))
 		{
 			connector.showScope("main");
+			connector.addQuestion(startQuestion);
 		}
 		connector.endSnap();
 		if (!node.getUsed())

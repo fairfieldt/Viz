@@ -29,7 +29,7 @@ public class ASTStatement extends SimpleNode implements VizParserTreeConstants
 
   	this.lineNumber = Global.lineNumber++;
 
-	return "\n" + this.lineNumber + ".\t" + jjtGetChild(0).getCode();
+	return "\n" + this.lineNumber + (this.lineNumber < 10 ? ". " : ".") + "\t" + jjtGetChild(0).getCode();
   }
   public String getCode(boolean nested)
   {

@@ -370,7 +370,10 @@ if (XAALScripter.debug) {		System.out.println("Set args");
 
 	//QUESTION!!!
 		callQuestion = questionFactory.getCallQuestion(name, pa);
-
+		if (callQuestion == null)
+		{
+			gotAQuestion = false;
+		}
 		//Drawing Stuff
 		connector.addScope(fun.getSymbolTable(), fun.getName(), "Global");
 		connector.startSnap(node.getLineNumber());
@@ -378,7 +381,7 @@ if (XAALScripter.debug) {		System.out.println("Set args");
 			connector.startPar();
 
 				connector.showScope(node.getName());
-				connector.addQuestion(callQuestion);
+				if (gotAQuestion) connector.addQuestion(callQuestion);
 			connector.endPar();
 			
 			connector.startPar();
@@ -395,10 +398,6 @@ if (XAALScripter.debug) {		System.out.println("Set args");
 						connector.addVariableReference(v2, v1);	
 					}
 					 //Now in interpreter we should be pointing correctly.  				
-					
-if (XAALScripter.debug) {					System.out.println("Adding a reference from " + argNames.get(i).getName() +
-						" to " + parameters.get(i));
-}
 				}
 				
 			connector.endPar();
@@ -628,10 +627,7 @@ if (XAALScripter.debug) {			System.out.println("ADFS " + value);
 			}
 			setAssignmentQuestionAnswer(value);
 			connector.addQuestion(assignmentQuestion);
-			connector.endPar();
-			connector.endSnap();
-			connector.startSnap(node.getLineNumber());
-			connector.startPar();
+			
 		}
 			if (v.getIsArray())
 			{

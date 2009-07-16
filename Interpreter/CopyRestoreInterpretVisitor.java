@@ -121,12 +121,13 @@ if (XAALScripter.debug) {		System.out.println("visiting program");
 		int value = 0;
 		try
 		{
-			 Global.getCurrentSymbolTable().get(startQuestion.getVariable());
+			value = Global.getCurrentSymbolTable().get(startQuestion.getVariable());
 		}
 		catch( Exception e)
 		{
 			System.out.println(e);
 		}
+		System.out.println("Value: " + value);
 		if (startQuestion instanceof FIBQuestion)
 		{
 		
@@ -140,6 +141,7 @@ if (XAALScripter.debug) {		System.out.println("visiting program");
 			if (prob >= 3 && value != startQuestion.getValue())
 			{
 				qa = startQuestion.getValue();
+				System.out.println("Changing, " + qa);
 				((TFQuestion)startQuestion).setAnswer(false);
 			}
 			else
@@ -346,6 +348,10 @@ if (XAALScripter.debug) {		System.out.println(values);
 		
 			//QUESTION!!!
 		callQuestion = questionFactory.getCallQuestion(name, pa);
+		if (callQuestion == null)
+		{
+			gotAQuestion = false;
+		}
 		//Ok lets set refs now	
 	
 		//Drawing Stuff
@@ -353,7 +359,7 @@ if (XAALScripter.debug) {		System.out.println(values);
 		connector.startSnap(node.getLineNumber());
 			connector.startPar();
 				connector.showScope(node.getName());
-				connector.addQuestion(callQuestion);
+				if (gotAQuestion) connector.addQuestion(callQuestion);
 			connector.endPar();
 			
 			connector.startPar();
@@ -385,6 +391,30 @@ if (XAALScripter.debug) {					System.out.println("Adding a reference from " + ar
 		connector.endSnap();
 				
 		fun.jjtAccept(this, null);
+		// Copying out Stuff
+		for (int i = 0; i < parameters.size(); i++)
+		{
+				v2 = (ByCopyRestoreVariable)st.getVariable(parameters.get(i));	
+				v1 = Global.getFunction("main").getSymbolTable().getVariable(argNames.get(i).getName());
+				
+				if (v1.getIsArray())
+				{
+					try
+					{
+						v1.setValue(v2.getValue(), v2.getRefIndex());
+					}	
+					catch (Interpreter.VizIndexOutOfBoundsException e)
+					{
+						System.out.println(e);
+					}
+				}
+				else
+				{
+					v1.setValue(v2.getValue());
+					
+				}
+			
+		}
 		if(gotAQuestion)
 		{
 
@@ -424,6 +454,7 @@ if (XAALScripter.debug) {				System.out.println("AAAA " + answer);
 					case 0:
 						qa = callQuestion.getValue();
 						((TFQuestion)callQuestion).setAnswer(false);
+						System.out.println("QA:0 " + qa);
 						if (qa == answer) // Value is the same anyway
 						{
 							((TFQuestion)callQuestion).setAnswer(true);
@@ -432,12 +463,14 @@ if (XAALScripter.debug) {				System.out.println("AAAA " + answer);
 					case 1:
 						qa = prevVal;
 						((TFQuestion)callQuestion).setAnswer(false);
+						System.out.println("QA:1 " + qa);
 						if (qa == answer) // Value is the same anyway
 						{
 							((TFQuestion)callQuestion).setAnswer(true);
 						}
 						break;
 					case 2:
+						System.out.println("QA:	2 " + qa);
 						((TFQuestion)callQuestion).setAnswer(true);
 						break;
 				}
@@ -590,16 +623,13 @@ if (XAALScripter.debug) {		System.out.println("Assigning to " + name + " value o
 		}
 		}
 		//QUESTION!!!
-if (XAALScripter.debug) {		System.out.println("Ok, set value");
-}		//Drawing stuff. snap and par should be opened from enclosing statement
+		//Drawing stuff. snap and par should be opened from enclosing statement
 		if (gotAQuestion)
 		{
-if (XAALScripter.debug) {			System.out.println(assignmentQuestion);
-}			int i = -256;
+			int i = -256;
 			if (assignmentQuestion.getIndex() != -1)
 			{
-if (XAALScripter.debug) {				System.out.println("This might be wrong");
-}				try
+				try
 				{
 					i = Global.getCurrentSymbolTable().get(name, assignmentQuestion.getIndex());
 				}
@@ -621,10 +651,7 @@ if (XAALScripter.debug) {				System.out.println("This might be wrong");
 			}
 			setAssignmentQuestionAnswer(i);
 			connector.addQuestion(assignmentQuestion);
-			connector.endPar();
-			connector.endSnap();
-			connector.startSnap(node.getLineNumber());
-			connector.startPar();
+			
 		}
 			if (v.getIsArray())
 			{

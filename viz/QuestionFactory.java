@@ -69,9 +69,10 @@ public class QuestionFactory implements UpdateReasons
 			Object[] args = pa.values().toArray();
 			varName = (String)args[choose];
 		}
-		if (Global.getCurrentSymbolTable().getVariable(varName).getIsArray())
+		Interpreter.Variable variable = Global.getCurrentSymbolTable().getVariable(varName);
+		if (variable.getIsArray())
 		{
-			String questionText = "";
+			/*String questionText = "";
 			ArrayList<String> answers = new ArrayList<String>();
 			ArrayList<String> choices = new ArrayList<String>();
 			int whichQ = r.nextInt(2);
@@ -98,6 +99,8 @@ public class QuestionFactory implements UpdateReasons
 			{
 				((MSQuestion)question).addChoice(s);
 			}
+			*/
+			return null;
 			
 		}
 		else
@@ -133,6 +136,14 @@ public class QuestionFactory implements UpdateReasons
 			}
 
 			question.setVariable(varName);
+			try
+			{
+				question.setValue(Global.getCurrentSymbolTable	().get(varName));
+			}
+			catch (VizIndexOutOfBoundsException e)
+			{
+				System.out.println(e);
+			}
 		}			
 		return question;
 	}
@@ -164,7 +175,7 @@ public class QuestionFactory implements UpdateReasons
 				"What will be the value of " + 
 				(gotAnArg ? "the variable passed as an argument " : "") +
 				varName + 
-				" after the current line executes?");
+				" after line " + lineNumber + " executes?");
 		question.setVariable(varName);
 		question.aboutArg = gotAnArg;
 
@@ -211,7 +222,7 @@ public class QuestionFactory implements UpdateReasons
 			}
 			String scopeHint = " in the current scope ";
 		
-			question = new FIBQuestion("What will be the value of " + varName + "[" + index + "] " + scopeHint + "after the current line executes?");
+			question = new FIBQuestion("What will be the value of " + varName + "[" + index + "] " + scopeHint + "after line " + lineNumber + " executes?");
 			question.setVariable(varName);
 			question.setIndex(index);
 		}
