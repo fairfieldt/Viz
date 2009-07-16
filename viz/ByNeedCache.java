@@ -73,20 +73,20 @@ public class ByNeedCache implements Drawable
 			
 			if( i % 2 == 1)
 			{
-				currentVarXPos = 25 + 40 + 10;
+				currentVarXPos = xPos + 25 + 40 + 10;
 			}
 			else
 			{
-				currentVarXPos = 25;
+				currentVarXPos = xPos + 25;
 			}
 			
 			if (i < 2)
 			{
-				currentVarYPos = 25 + 40 + 10;
+				currentVarYPos = yPos + 25 + 40 + 10;
 			}
 			else
 			{
-				currentVarYPos = 25;
+				currentVarYPos = yPos + 25;
 			}
 			
 			v.setPosition(currentVarXPos, currentVarYPos);
