@@ -239,7 +239,7 @@ public class Scope implements Drawable
 		
 		if (createFaded)
 		{
-			fadedRectId = scripter.addRectangle(xPos, yPos, sizeX, sizeY, new Color(192,192,192), true, 
+			fadedRectId = scripter.addRectangle(xPos, yPos, sizeX, sizeY, new Color(78,157,117), true, 
 					StrokeType.solid, 6, new Color(192,192,192));
 		}
 		
