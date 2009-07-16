@@ -52,7 +52,7 @@ public class XAALScripter {
 	public static boolean debug = false;
 	
 	private static final double ARROW_HALF_ANGLE = Math.PI / 6;
-    private static final int ARROW_LENGTH = 8;
+    private static final int ARROW_LENGTH = 15;
 
 	/**
 	 * Constructor for XAALScripter
