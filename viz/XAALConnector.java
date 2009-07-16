@@ -150,6 +150,11 @@ public class XAALConnector {
 	public String addCodePage(String[] code) {
 		return cpc.createCodePage(code);
 	}
+	
+	public String addCodePage(String[] code, boolean showAtStart)
+	{
+		return cpc.createCodePage(code, showAtStart);
+	}
 
 	/**
 	 * Performs animation for the first text substitution of the by-macro

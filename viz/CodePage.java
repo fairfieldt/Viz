@@ -40,6 +40,8 @@ public class CodePage implements Drawable {
 	// the height of a line
 	private int lineHeight;
 	
+	//is this hidden at the start?
+	private boolean hidden = true;
 	
 	//where the top of the codepage starts on the page
 	public final int y = 10;
@@ -97,6 +99,17 @@ public class CodePage implements Drawable {
 	public String getId()
 	{
 		return this.id;
+	}
+	
+	public boolean getHidden()
+	{
+		return hidden;
+	}
+	
+	
+	public void setHidden(boolean hidden)
+	{
+		this.hidden = hidden;
 	}
 	
 	/**
@@ -161,7 +174,7 @@ public class CodePage implements Drawable {
 		//write out all the code
 		for (int i = 0; i < code.length; i++)
 		{
-			String id = scripter.addText(x, y + dy, code[i], "black", true);
+			String id = scripter.addText(x, y + dy, code[i], "black", hidden);
 			ids.add(id);
 			lineToXaalId.add(id);
 			dy += lineHeight;

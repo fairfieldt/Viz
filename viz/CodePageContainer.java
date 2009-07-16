@@ -9,10 +9,18 @@ public class CodePageContainer extends HashMap<String, CodePage> implements Draw
 
 	private int mtNum = 0;
 	
+	
+	
 	public String createCodePage(String[] code)
+	{
+		return createCodePage(code, false);
+	}
+	
+	public String createCodePage (String[] code, boolean showAtStart)
 	{
 		CodePage cp = new CodePage("ml" + mtNum, code);
 		mtNum++;
+		cp.setHidden(!showAtStart);
 		this.put(cp.getId(), cp);
 		
 		return cp.getId();
