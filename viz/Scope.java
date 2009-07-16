@@ -1,4 +1,5 @@
 package viz;
+import java.awt.Color;
 import java.util.*;
 
 public class Scope implements Drawable
@@ -238,8 +239,8 @@ public class Scope implements Drawable
 		
 		if (createFaded)
 		{
-			fadedRectId = scripter.addRectangle(xPos, yPos, sizeX, sizeY, "gray", true, 
-					StrokeType.solid, 6, "gray");
+			fadedRectId = scripter.addRectangle(xPos, yPos, sizeX, sizeY, new Color(192,192,192), true, 
+					StrokeType.solid, 6, new Color(192,192,192));
 		}
 		
 		String id3 = scripter.addText(xPos+3, yPos-5, name, "black", hidden);
