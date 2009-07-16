@@ -844,20 +844,43 @@ public class XAALConnector {
 	 * you're on the first slide; bad things could happen.
 	 * 
 	 * @param q
-	 *            the <code>Question</code> to add to the current snapshot.
+	 *            the <code>Question</code> to add to the previous snapshot.
 	 * @return true if added, false otherwise.
 	 */
 	public boolean addQuestion(Question q) {
 		if (currentSnapNum < 0)
 			return false;
 
-		if (currentSnapNum == 1)
-			q.setSlideId(currentSnapNum);
-		else
-			q.setSlideId(currentSnapNum - 1);
+		q.setSlideId(currentSnapNum - 1);
 
 		questions.add(q);
 
+		return true;
+	}
+	
+	/**
+	 * Adds a question to the current slide or the previous one, dependent on the value of
+	 * <code>addToCurrentSlide</code>.
+	 * @param q the <code>Question</code> to add to the previous snapshot.
+	 * @param addToCurrentSlide true if you want to add the question to the current slide, 
+	 * 			false if you want to add the question to the previous slide
+	 * @return true if added, false otherwise.
+	 */
+	public boolean addQuestion(Question q, boolean addToCurrentSlide)
+	{
+		if (currentSnapNum < 0)
+			return false;
+		if (addToCurrentSlide)
+		{
+			q.setSlideId(currentSnapNum);
+
+			questions.add(q);
+		}
+		else
+		{
+			return addQuestion(q);
+		}
+		
 		return true;
 	}
 
