@@ -329,7 +329,7 @@ public class XAALScripter {
 	 * @return
 	 */
 	public String addRectangle(int x, int y, int width, int height,
-			String color, boolean hidden, StrokeType strokeType, int lineWidth, 
+			Color color, boolean hidden, StrokeType strokeType, int lineWidth, 
 			Color fillColor)
 	{
 		Element initial = document.getRootElement().getChild("initial",
@@ -380,7 +380,9 @@ public class XAALScripter {
 		Element style = createElement("style");
 
 		Element colorElem = createElement("color");
-		colorElem.setAttribute("name", color);
+		colorElem.setAttribute("red", color.getRed() + "");
+		colorElem.setAttribute("green", color.getGreen() +"");
+		colorElem.setAttribute("blue", color.getBlue() +"");
 		style.addContent(colorElem);
 
 		Element strokeElem = createElement("stroke");

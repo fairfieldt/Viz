@@ -52,6 +52,11 @@ public class ByNeedCache implements Drawable
 		return this.ids;
 	}
 	
+	public ArrayList<Variable> getVars()
+	{
+		return vars;
+	}
+	
 	public String getRectId()
 	{
 		return rectId;

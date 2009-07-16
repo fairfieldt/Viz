@@ -212,6 +212,11 @@ public class Scope implements Drawable
 		}
 	}
 	
+	public ByNeedCache getCache()
+	{
+		return cache;
+	}
+	
 	public ArrayList<Variable> getParams()
 	{
 		return params;

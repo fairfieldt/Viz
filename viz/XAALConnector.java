@@ -58,6 +58,8 @@ public class XAALConnector {
 	// a mapping of the Variable used in the interpreter to a Variable used for
 	// display
 	private HashMap<UUID, Variable> varToVar;
+	
+	private HashMap<UUID, Variable> varToCacheVar;
 
 	// a mapping of the name of a scope to the the Scope used for display
 	private HashMap<String, Scope> scopes;
@@ -121,6 +123,7 @@ public class XAALConnector {
 	{
 		scripter = new XAALScripter();
 		varToVar = new HashMap<UUID, Variable>();
+		varToCacheVar = new HashMap<UUID,Variable>();
 		scopes = new HashMap<String, Scope>();
 		questions = new ArrayList<Question>();
 		currentSnapNum = 0;
@@ -476,6 +479,8 @@ public class XAALConnector {
 		Scope s = scopes.get(scope);
 		Variable v = varToVar.get(var.getUUID());
 		s.addVariableToCache(v);
+		
+		actions.offer(new ShowHideVarAction(true, v, currentSnapNum));
 	}
 	
 	/**
@@ -489,6 +494,8 @@ public class XAALConnector {
 		Scope s = scopes.get(scope);
 		Variable v = varToVar.get(var.getUUID());
 		s.addVariableToCache(v, index);
+		
+		actions.offer(new ShowHideVarAction(true, v, currentSnapNum));
 	}
 
 	// TODO: check if you're actually on a slide
@@ -1803,6 +1810,16 @@ public class XAALConnector {
 					param.receiveCopyOwnership(copy);
 				}
 			}
+			
+			ByNeedCache c = scope.getCache();
+			
+			if (c != null)
+			{
+				for (String s : c.getIds())
+				{
+					scripter.addShow(s);
+				}
+			}
 
 			// reclose par
 			scripter.reclosePar();
@@ -1892,6 +1909,26 @@ public class XAALConnector {
 					}
 				} else {
 					scripter.addHide(local.peekCopyId());
+				}
+			}
+			
+			
+			ByNeedCache c = scope.getCache();
+			
+			if (c != null)
+			{
+				for (String s: c.getIds())
+				{
+					scripter.addHide(s);
+				}
+				
+				for (Variable v : c.getVars())
+				{
+					for (String s : v.getIds())
+					{
+						scripter.addHide(s);
+					}
+					
 				}
 			}
 
