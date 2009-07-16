@@ -59,7 +59,7 @@ public class XAALConnector {
 	// display
 	private HashMap<UUID, Variable> varToVar;
 	
-	private HashMap<UUID, Variable> varToCacheVar;
+	//private HashMap<UUID, Variable> varToCacheVar;
 
 	// a mapping of the name of a scope to the the Scope used for display
 	private HashMap<String, Scope> scopes;
@@ -123,7 +123,6 @@ public class XAALConnector {
 	{
 		scripter = new XAALScripter();
 		varToVar = new HashMap<UUID, Variable>();
-		varToCacheVar = new HashMap<UUID,Variable>();
 		scopes = new HashMap<String, Scope>();
 		questions = new ArrayList<Question>();
 		currentSnapNum = 0;
@@ -784,7 +783,8 @@ public class XAALConnector {
 		if (currentSnapNum < 0)
 			return false;
 
-		try {
+		try 
+		{
 			
 			scripter.endSlide();
 		} 
@@ -1175,11 +1175,6 @@ public class XAALConnector {
 			else if (action instanceof CallByNameAction)
 			{
 				writeCallByName((CallByNameAction)action);
-			}
-			
-			else if (action instanceof PauseAction)
-			{
-				writePause((PauseAction)action);
 			}
 			else // its a CodePageAction
 			{
@@ -1719,18 +1714,33 @@ public class XAALConnector {
 			if (v instanceof Array) {
 				Array vArray = (Array) v;
 				for (int i = 0; i < vArray.getValues().size(); i++) {
-					String copy = vArray.popCopyId(i);
+					String copy = vArray.peekCopyId(i);
 					// System.out.println("Showing: " + copy + " on slide "
 					// + action.getSnapNum());
 					scripter.addShow(copy);
 
-					vArray.receiveCopyOwnership(copy, i);
+					scripter.addChangeStyle(highlightColor, copy);
 
 				}
 
 				scripter.reclosePar();
 				// reclose the slide
 				scripter.recloseSlide();
+				
+				scripter.reopenSlide(action.getSnapNum() + 1);
+				scripter.reclosePar();
+				for (int i = 0; i < vArray.getValues().size(); i++) 
+				{
+					String copy = vArray.peekCopyId(i);
+					
+					scripter.addChangeStyle("black", copy);
+				}
+				scripter.reopenPar();
+				scripter.recloseSlide();
+				
+				
+				
+				
 			} else {
 				// pop copy of current value
 				String copy = v.popCopyId();
@@ -2500,24 +2510,6 @@ public class XAALConnector {
 		
 		String newCopy = v.getCopyId(index);
 		scripter.addChangeStyle("black", newCopy);
-	}
-	
-	private void writePause(PauseAction action)
-	{
-		try
-		{
-			scripter.reopenSlide(action.getSnapNum());
-			scripter.reopenPar(action.getPar());
-				
-			scripter.addPause(action.getMS());
-			
-			scripter.reclosePar();
-			scripter.recloseSlide();
-		}
-		catch (XAALScripterException e)
-		{
-			
-		}
 	}
 	
 	/**
