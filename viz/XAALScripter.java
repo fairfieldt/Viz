@@ -4,6 +4,7 @@ import org.jdom.*;
 import org.jdom.output.*;
 import org.jdom.xpath.XPath;
 
+import java.awt.Color;
 import java.util.*;
 
 /**
@@ -216,7 +217,7 @@ public class XAALScripter {
 	 */
 	public String addRectangle(int x, int y, int width, int height,
 			String color, boolean hidden, StrokeType strokeType, int lineWidth) {
-		return addRectangle(x, y, width, height, color, hidden, strokeType, lineWidth, null);
+		return addRectangle(x, y, width, height, color, hidden, strokeType, lineWidth, "none");
 	}
 	
 	/**
@@ -301,9 +302,99 @@ public class XAALScripter {
 		strokeElem.setAttribute("type", strokeType.name());
 		style.addContent(strokeElem);
 		
-		if (fillColor != null) {
+		if (fillColor != null && !fillColor.equals("none")) {
 			Element fillColorElem = createElement("fill-color");
 			fillColorElem.setAttribute("name", fillColor);
+			style.addContent(fillColorElem);
+		}
+		
+		rect.addContent(style);
+
+		initial.addContent(rect);
+
+		return idVal;
+	}
+	
+	/**
+	 * exact same as above but allows you to use Color objects for fill instead of named objects.
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param color
+	 * @param hidden
+	 * @param strokeType
+	 * @param lineWidth
+	 * @param fillColor
+	 * @return
+	 */
+	public String addRectangle(int x, int y, int width, int height,
+			Color color, boolean hidden, StrokeType strokeType, int lineWidth, 
+			Color fillColor)
+	{
+		Element initial = document.getRootElement().getChild("initial",
+				defaultNS);
+
+		Element rect = createElement("polyline");
+
+		String idVal = "rectangle" + rectNum;
+		rectNum++;
+
+		rect.setAttribute("id", idVal);
+
+		rect.setAttribute("hidden", hidden + "");
+
+		// set up jhave width and height EXTENSION
+		rect.setAttribute("shapeWidth", width + "", jhaveNS);
+		rect.setAttribute("shapeHeight", height + "", jhaveNS);
+
+		Element x1y1 = createElement("coordinate");
+		x1y1.setAttribute("x", x + "");
+		x1y1.setAttribute("y", y + "");
+		rect.addContent(x1y1);
+
+		Element x1y2 = createElement("coordinate");
+		x1y2.setAttribute("x", x + "");
+		x1y2.setAttribute("y", (y + height) + "");
+		rect.addContent(x1y2);
+
+		Element x2y2 = createElement("coordinate");
+		x2y2.setAttribute("x", (x + width) + "");
+		x2y2.setAttribute("y", (y + height) + "");
+		rect.addContent(x2y2);
+
+		Element x2y1 = createElement("coordinate");
+		x2y1.setAttribute("x", (x + width) + "");
+		x2y1.setAttribute("y", y + "");
+		rect.addContent(x2y1);
+
+		Element x1y1_2 = createElement("coordinate");
+		x1y1_2.setAttribute("x", x + "");
+		x1y1_2.setAttribute("y", y + "");
+		rect.addContent(x1y1_2);
+
+		Element closed = createElement("closed");
+		closed.setAttribute("value", true + "");
+		rect.addContent(closed);
+
+		Element style = createElement("style");
+
+		Element colorElem = createElement("color");
+		colorElem.setAttribute("red", color.getRed() + "");
+		colorElem.setAttribute("green", color.getGreen() +"");
+		colorElem.setAttribute("blue", color.getBlue() +"");
+		style.addContent(colorElem);
+
+		Element strokeElem = createElement("stroke");
+		strokeElem.setAttribute("width", lineWidth + "");
+		strokeElem.setAttribute("type", strokeType.name());
+		style.addContent(strokeElem);
+		
+		if (fillColor != null) {
+			Element fillColorElem = createElement("fill-color");
+			fillColorElem.setAttribute("red", fillColor.getRed() + "");
+			fillColorElem.setAttribute("green", fillColor.getGreen() + "");
+			fillColorElem.setAttribute("blue", fillColor.getBlue() + "");
 			style.addContent(fillColorElem);
 		}
 		

@@ -1,4 +1,5 @@
 package viz;
+import java.awt.Color;
 import java.util.*;
 
 public class Scope implements Drawable
@@ -141,22 +142,9 @@ public class Scope implements Drawable
 	 */
 	public void addVariableToCache(Variable v)
 	{
-		Variable newV = new Variable (v);
 		if (cache == null)
 			cache = new ByNeedCache(this);
-		cache.addVariable(newV);
-	}
-	
-	public void addVariableToCache (Variable v, int i)
-	{
-		 Variable newV = new Variable(v);
-		 if (cache == null)
-				cache = new ByNeedCache(this);
-		 newV.setName(v.name + "[" + i + "]");
-		 Array a = (Array)v;
-		 newV.setValue(a.getValue(i));
-		 
-		 cache.addVariable(newV);
+		cache.addVariable(v);
 	}
 	
 	private void sizeScopes()
@@ -211,6 +199,11 @@ public class Scope implements Drawable
 		}
 	}
 	
+	public ByNeedCache getCache()
+	{
+		return cache;
+	}
+	
 	public ArrayList<Variable> getParams()
 	{
 		return params;
@@ -238,8 +231,8 @@ public class Scope implements Drawable
 		
 		if (createFaded)
 		{
-			fadedRectId = scripter.addRectangle(xPos, yPos, sizeX, sizeY, "gray", true, 
-					StrokeType.solid, 6, "gray");
+			fadedRectId = scripter.addRectangle(xPos, yPos, sizeX, sizeY, new Color(78,157,117), true, 
+					StrokeType.solid, 6, new Color(192,192,192));
 		}
 		
 		String id3 = scripter.addText(xPos+3, yPos-5, name, "black", hidden);
