@@ -9,7 +9,7 @@ public class ByValVariable extends AbstractVariable implements Variable
 {
 	//If a single variable, the value.
 	private int value;
-	
+	public int index;
 	private boolean isArray = false;
 	
 	private ASTExpression subscript = null;

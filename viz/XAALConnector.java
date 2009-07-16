@@ -369,6 +369,59 @@ public class XAALConnector {
 			}
 		}
 	}
+	
+	public void addScope(Interpreter.SymbolTable symbols, String name,
+			String parent, boolean cached) {
+		boolean isGlobal = parent == null;
+
+		Scope retScope = new Scope(name, scopeColors.pop(), isGlobal, cached);
+
+		scopes.put(name, retScope);
+
+		if (isGlobal) {
+			globalScope = retScope;
+		} else {
+			scopes.get(parent).addScope(retScope);
+		}
+
+		retScope.setHidden(true);
+
+		if (!name.equals("Global") && Global.InterpreterType != Interpreter.InterpreterTypes.BY_NAME) // global's not in the function table so
+		// don't try to find it
+		{
+			Interpreter.ASTFunction func = Global.getFunction(name);
+			if (func != null) {
+				ArrayList<String> params = func.getParameters();
+
+				for (String p : params) {
+					Interpreter.Variable iv = symbols.getVariable(p);
+					Variable v = null;
+					try
+					{
+						if (iv instanceof Interpreter.ByCopyRestoreVariable) {
+							v = new Variable(p, null, iv.getValue(), true);
+							v.setIsCopyRestore();
+						} else if (iv instanceof Interpreter.ByRefVariable) {
+							v = new Variable(p, -255, true);
+							v.setIsReference(true);
+						} else {
+							v = new Variable(p, symbols.get(p), true);
+						}
+					}
+					catch (Exception e)
+					{
+						System.out.println(e);
+					}
+					retScope.addVariable(v);
+
+					// add a copy of the original
+					v.addCopy();
+
+					varToVar.put(iv.getUUID(), v);
+				}
+			}
+		}
+	}
 
 	/**
 	 * Adds a variable to the visualization.
@@ -474,11 +527,14 @@ public class XAALConnector {
 	 * @param var
 	 * @param scope
 	 */
-	public void addVariableToCache(Interpreter.Variable var, String scope)
+	public void addVariableToCache(String name, int value, String scope)
 	{
 		Scope s = scopes.get(scope);
-		Variable v = varToVar.get(var.getUUID());
-		Variable newVar = new Variable(v);
+		//Variable v = varToVar.get(var.getUUID());
+		//This didn't work, v was always null
+		Variable newVar = new Variable(name, value, true);
+		newVar.setHidden(true);
+		newVar.addCopy();
 		s.addVariableToCache(newVar);
 		
 		actions.offer(new ShowHideVarAction(true, newVar, currentSnapNum));
@@ -1819,7 +1875,7 @@ public class XAALConnector {
 				}
 			}
 			
-			ByNeedCache c = scope.getCache();
+			/*ByNeedCache c = scope.getCache();
 			
 			if (c != null)
 			{
@@ -1827,7 +1883,7 @@ public class XAALConnector {
 				{
 					scripter.addShow(s);
 				}
-			}
+			}*/
 
 			// reclose par
 			scripter.reclosePar();
@@ -1921,7 +1977,7 @@ public class XAALConnector {
 			}
 			
 			
-			ByNeedCache c = scope.getCache();
+			/*ByNeedCache c = scope.getCache();
 			
 			if (c != null)
 			{
@@ -1938,7 +1994,7 @@ public class XAALConnector {
 					}
 					
 				}
-			}
+			}*/
 
 			// reclose par
 			scripter.reclosePar();

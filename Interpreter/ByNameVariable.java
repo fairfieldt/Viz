@@ -10,7 +10,7 @@ public class ByNameVariable extends AbstractVariable implements Variable
 	private ASTVar ref;
 	private SymbolTable symbolTable;
 	private ByValVariable var;
-	private int index = -1;
+	public int index = -1;
 	private boolean isArray = false;
 	public ByNameVariable()
 	{

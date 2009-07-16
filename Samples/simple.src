@@ -4,7 +4,7 @@ var g = 3;
 var a[] = {1, 2, 3 };
 def foo(x, y)
 {
-	x = a[x];
+	j = x + x;
 }
 
 def main()

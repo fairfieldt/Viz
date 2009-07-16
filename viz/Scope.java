@@ -7,9 +7,11 @@ public class Scope implements Drawable
 	private String name;
 	private ArrayList<Variable> vars;
 	private ArrayList<Variable> params;
+	private ArrayList<Variable> cache = new ArrayList<Variable>();
 	private ArrayList<Scope> scopes;
+
 	
-	private ByNeedCache cache = null;
+	//private ByNeedCache cache = null;
 	
 	private ArrayList<String> ids;
 	private String rectId;
@@ -34,16 +36,32 @@ public class Scope implements Drawable
 	
 	private boolean createHighlight;
 	private boolean createFaded;
+	private boolean cached = false;
 
-	public Scope(String name, String color, boolean isGlobal)
+	public Scope(String name, String color, boolean isGlobal, boolean cached)
 	{
 		vars = new ArrayList<Variable>();
 		params = new ArrayList<Variable>();
+
 		scopes = new ArrayList<Scope>();
 		ids = new ArrayList<String>();
 		this.name = name;
 		this.color = color;
 		this.isGlobal = isGlobal;
+		this.cached = cached;
+	}
+	
+	public Scope(String name, String color, boolean isGlobal)
+	{
+		vars = new ArrayList<Variable>();
+		params = new ArrayList<Variable>();
+
+		scopes = new ArrayList<Scope>();
+		ids = new ArrayList<String>();
+		this.name = name;
+		this.color = color;
+		this.isGlobal = isGlobal;
+
 	}
 
 	public void addVariable(Variable v)
@@ -65,6 +83,24 @@ public class Scope implements Drawable
 			this.vars.add(v);
 		}
 		
+	}
+	
+	public void addCacheVariable(Variable v)
+	{
+		if (hidden)
+		{
+			v.setHidden(true);
+		}
+		v.setColor(color);
+		
+		if (v.getIsParam())
+		{
+			params.add(v);
+		}
+		else
+		{
+			this.cache.add(v);
+		}
 	}
 	
 	public void addScope(Scope s)
@@ -142,9 +178,7 @@ public class Scope implements Drawable
 	 */
 	public void addVariableToCache(Variable v)
 	{
-		if (cache == null)
-			cache = new ByNeedCache(this);
-		cache.addVariable(v);
+		cache.add(v);
 	}
 	
 	private void sizeScopes()
@@ -197,12 +231,17 @@ public class Scope implements Drawable
 			
 		//	System.out.println("Size param " + v.getName() + " to x: " +  xPos + " y: " + yPos);
 		}
+		
+		int cachePosX = xPos + 360;
+		int cachePosY = yPos;
+		for (Variable v : cache)
+		{
+			v.setPosition(cachePosX, cachePosY + 25);
+			cachePosX += 48;
+		}
 	}
 	
-	public ByNeedCache getCache()
-	{
-		return cache;
-	}
+	
 	
 	public ArrayList<Variable> getParams()
 	{
@@ -274,10 +313,16 @@ public class Scope implements Drawable
 			}
 		}
 		
-		if (cache != null) //there's a cache we need to draw it
+		if (cached) //there's a cache we need to draw it
 		{
-			cache.setPosition(xPos + 400, yPos);
-			cache.draw(scripter);
+			System.out.println("Drawing cache");
+			String cacheId = scripter.addRectangle(xPos + 350, yPos, 200, 70, "green", true, 6);
+			ids.add(cacheId);
+			for (Variable v : cache)
+			{
+				System.out.println(v.getName());
+				v.draw(scripter);
+			}
 		}
 	}
 }

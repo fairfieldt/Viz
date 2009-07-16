@@ -130,9 +130,11 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 		
 		
 		int value = 0;
+		
 		try
 		{
-			value = Global.getCurrentSymbolTable().get(startQuestion.getVariable());
+			value = Global.getSymbolTable().get(startQuestion.getVariable());
+			System.out.println(startQuestion.getVariable() + " is " + value);
 		}
 		catch (Exception e)
 		{
@@ -201,20 +203,13 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 		if (child.getId() == JJTFUNCTION)
 		{		
 			System.out.println("Found a function");
-			//connector.startPar();	
+
 			startQuestion = questionFactory.getStartQuestion();
-			//connector.addQuestion(startQuestion);
 			connector.endPar();					//ENDPAR
 			connector.endSnap();
 			ASTFunction main = Global.getFunction("main");
 			connector.addScope(main.getSymbolTable(), "main", "Global");
-			/*connector.startSnap(Global.getFunction("main").getLineNumber());
 			
-			connector.startPar();					//STARTPAR
-				connector.showScope("main");
-			connector.endPar();
-					connector.endSnap();
-			*/
 			main.jjtAccept(this, null);
 			
 			
@@ -265,8 +260,12 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 		connector.startSnap(node.getLineNumber());
 		if (node.getName().equals("main"))
 		{
-			connector.showScope("main");
 			connector.addQuestion(startQuestion);
+			connector.showScope("main");
+
+		}
+		else
+		{
 		}
 		connector.endSnap();
 		if (!node.getUsed())
@@ -355,7 +354,7 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 	
 	public Integer handleCall(ASTCall node)
 	{
-		boolean gotAQuestion = false; //FIXME HACK
+		boolean gotAQuestion = true; //FIXME HACK
 		//Get the correct function head node
 		ASTFunction fun = Global.getFunction(node.getName());
 		System.out.println("Calling: " + fun.getName());
@@ -383,30 +382,40 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 		Global.setCurrentParamToArg(pa);
 
 	//QUESTION!!!
-		//callQuestion = questionFactory.getCallQuestion(name, pa);
-		
+		callQuestion = questionFactory.getCallQuestion(name, pa);
+		if (callQuestion == null)
+		{
+			System.out.println("No question");
+			gotAQuestion = false;
+		}
 		//Drawing Stuff
 		connector.addScope(new SymbolTable(null), fun.getName(), "Global");
 			connector.startPar();					//STARTPAR
 				connector.showScope(node.getName());
-				
+		if (gotAQuestion) 
+		{
+			System.out.println("Adding the call question");
+			connector.addQuestion(callQuestion);
+		}
 			connector.endPar();					//ENDPAR
 		
 			connector.endSnap();
 		fun.jjtAccept(this, null);//and we gogogo
 			
 		if(gotAQuestion)
-				{
+		{
 
 			int answer = 0;
 			try
 			{
-				Global.getFunction("main").getSymbolTable().get(callQuestion.getVariable());
+				answer = Global.getFunction("main").getSymbolTable().get(callQuestion.getVariable());
 			}
 			catch (Exception e)
 			{
 				System.out.println(e);
 			}
+			System.out.println(callQuestion.getVariable() + " is " + answer);
+
 			if (callQuestion instanceof FIBQuestion)
 			{
 				((FIBQuestion)callQuestion).addAnswer(answer+"");
@@ -432,6 +441,7 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 				{
 					case 0:
 						qa = callQuestion.getValue();
+						System.out.println(qa + "getValue");
 						((TFQuestion)callQuestion).setAnswer(false);
 						if (qa == answer) // Value is the same anyway
 						{
@@ -439,14 +449,8 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 						}
 						break;
 					case 1:
-						qa = prevVal;
-						((TFQuestion)callQuestion).setAnswer(false);
-						if (qa == answer) // Value is the same anyway
-						{
-							((TFQuestion)callQuestion).setAnswer(true);
-						}
-						break;
 					case 2:
+						System.out.println(qa + "value");
 						((TFQuestion)callQuestion).setAnswer(true);
 						break;
 				}
@@ -459,6 +463,7 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 			}
 		}
 		connector.startSnap(node.getLineNumber());
+		
 		System.out.println("leaving call");
 		return 0;
 	}
@@ -572,7 +577,7 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 		Random r = new Random();
 		int q = r.nextInt(100);
 		
-			boolean gotAQuestion = false;//q < QUESTION_FREQUENCY;//HACK FOR NOW FIXME
+		boolean gotAQuestion = q < QUESTION_FREQUENCY;//q < QUESTION_FREQUENCY;//HACK FOR NOW FIXME
 		String name = node.getName();
 		if (((ASTVar)node.jjtGetChild(0)).isArg())
 		{
@@ -584,7 +589,17 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 		Variable v = Global.getCurrentSymbolTable().getVariable(name);
 		if (v instanceof ByNameVariable)
 		{
-
+			if (gotAQuestion)
+			{
+				if (v.getIsArray())
+				{
+					gotAQuestion = false;
+				}
+				else
+				{
+					assignmentQuestion = questionFactory.getByNameQuestion(node.getLineNumber(), name);
+				}
+			}
 			v.setValue(value);
 		}
 		else if (v.getIsArray())
@@ -601,9 +616,17 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 				System.out.println(e);
 				
 			}
+			if (gotAQuestion)
+			{
+				assignmentQuestion = questionFactory.getAssignmentQuestion(node.getLineNumber(), name, index);
+			}
 		}
 		else
 		{
+			if (gotAQuestion)
+			{
+				assignmentQuestion = questionFactory.getAssignmentQuestion(node.getLineNumber(), name);
+			}
 			try
 			{
 				v.setValue(value);
@@ -611,6 +634,66 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 			catch (Exception e)
 			{
 				System.out.println(e);
+			}
+		}
+		System.out.println(assignmentQuestion);
+		if (gotAQuestion)
+		{
+			int i = -257;
+			if (assignmentQuestion.getIndex() != -1)
+			{
+				if (assignmentQuestion.aboutArg)
+				{
+					try
+					{
+						i = Global.getFunction("main").getSymbolTable().get(assignmentQuestion.getVariable(), assignmentQuestion.getIndex());
+					}
+					catch (Exception e)
+					{
+						System.out.println(e);
+					}
+				}
+				else
+				{
+					try
+					{
+						i = Global.getCurrentSymbolTable().get(name, assignmentQuestion.getIndex());
+					}
+					catch (Exception e)
+					{
+						System.out.println(e);
+					}
+				}
+			}
+			else
+			{
+				if (assignmentQuestion.aboutArg || v instanceof ByNameVariable)
+				{
+					System.out.println("Getting " + name);
+					try
+					{
+						i = Global.getFunction("main").getSymbolTable().get(assignmentQuestion.getVariable());
+					}
+					catch (Exception e)
+					{
+						System.out.println(e);
+					}
+				}
+				{
+					try
+					{
+						i = Global.getCurrentSymbolTable().get(name);
+					}
+					catch (Exception e)
+					{
+						System.out.println(e);
+					}
+				}
+			}
+			if (gotAQuestion)
+			{
+				setAssignmentQuestionAnswer(i);
+				connector.addQuestion(assignmentQuestion);
 			}
 		}
 			

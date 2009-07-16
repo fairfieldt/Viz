@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 public class ByNeedCache implements Drawable
 {
-	private ArrayList<Variable> vars;
+	private ArrayList<Variable> vars = new ArrayList<Variable>();		//Initializing arrays makes them work a lot better.
 	private Scope parent;
 	
-	private ArrayList<String> ids;
+	private ArrayList<String> ids = new ArrayList<String>();		//What I said above
 	private String rectId;
 	
 	private int xPos = 0;

@@ -5,21 +5,21 @@ import viz.*;
 public class SymbolTable
 {
 	private HashMap<String, Variable> vars;
-	
+	public HashMap<String, Variable> cache;
 	private SymbolTable previous = null;
 	private String name = "Global";
 	public SymbolTable(SymbolTable previous)
 	{
 		if ( previous != null)
 		{
-if (XAALScripter.debug) {			System.out.println("Setting prev st to " + previous.getName());
-}			this.previous = previous;
+			this.previous = previous;
 		}
 		else
 		{
 			this.previous = Global.getSymbolTable();
 		}
 		this.vars = new HashMap<String, Variable>();
+		this.cache = new HashMap<String, Variable>();
 	}
 	
 	public int get(String varName) throws VizIndexOutOfBoundsException
@@ -44,9 +44,35 @@ if (XAALScripter.debug) {			System.out.println("Setting prev st to " + previous.
 		}
 		else
 		{
-if (XAALScripter.debug) {			System.out.println("Error!  Couldn't find variable");
-}		}
+		}
 		return v;
+	}
+	
+	public Variable getCacheVariable(String varName)
+	{
+		Variable v = null;
+		if (cache.containsKey(varName))
+		{
+			v = cache.get(varName);
+		}
+		else
+		{
+			System.out.println("Not in cache");
+		}
+		return v;
+	}
+	
+	public void addCacheVariable(String varName, int value)
+	{
+		System.out.println("Cached " + varName + " as " + value);
+		cache.put(varName, new ByValVariable(value));
+	}
+	
+	public void addCacheVariable(String varName, int value, int subscript)
+	{
+		ByValVariable v = new ByValVariable(value);
+		v.index = subscript;
+		cache.put(varName, v);
 	}
 	
 	public String getNameByVariable(Variable v)

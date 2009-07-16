@@ -182,6 +182,25 @@ public class QuestionFactory implements UpdateReasons
 		return question;
 	}
 	
+	public Question getByNameQuestion(int lineNumber, String varName)
+	{
+		Question question = new FIBQuestion(
+						"What will be the value of " + varName.replace("_", "") + 
+						" after line " + lineNumber + " executes?");
+		question.setVariable(varName);
+		return question;
+	}
+	
+	public Question getByNameQuestion(int lineNumber, String varName, int index)
+	{
+		Question question = new FIBQuestion(
+						"What will be the value of " + varName + "[" + index + "]" + 
+						" after line " + lineNumber +	 " executes?");
+		question.setVariable(varName);
+		question.setIndex(index);
+		return question;
+	}
+	
 	public Question getAssignmentQuestion(int lineNumber, String varName, int index)
 	{
 		//System.out.println("Getting an array question");
