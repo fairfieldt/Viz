@@ -663,7 +663,7 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 				}
 			}
 			v.setValue(value);
-			index = ((ByNameVariable)v).getName();
+			index = ((ByNameVariable)v).getIndex();
 		}
 		else if (v.getIsArray())
 		{
