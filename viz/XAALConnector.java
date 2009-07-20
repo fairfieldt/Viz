@@ -1751,14 +1751,14 @@ public class XAALConnector {
 				scripter.recloseSlide();
 				
 				scripter.reopenSlide(action.getSnapNum() + 1);
-				scripter.reclosePar();
+				scripter.reopenPar();
 				for (int i = 0; i < vArray.getValues().size(); i++) 
 				{
 					String copy = vArray.peekCopyId(i);
 					
 					scripter.addChangeStyle("black", copy);
 				}
-				scripter.reopenPar();
+				scripter.reclosePar();
 				scripter.recloseSlide();
 				
 				
