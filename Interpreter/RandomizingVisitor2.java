@@ -64,7 +64,10 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 	public RandomizingVisitor2(Class<T> clazz, boolean lazyEval)
 	{
 		varClass = clazz;
-		this.intrCase = getIntrCaseLazy();
+		if (lazyEval)
+			this.intrCase = getIntrCaseLazy();
+		else
+			this.intrCase = getIntrCase();
 	}
 	
 	
