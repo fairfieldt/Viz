@@ -124,6 +124,8 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 		connector.endPar();						//ENDPAR
 		//connector.endSnap();
 		
+		//HACK FIX?
+		Global.getFunction("foo").getSymbolTable().setPrevious(Global.getSymbolTable());
 		
 		node.jjtGetChild(0).jjtAccept(this, null);
 		update(LINE_NUMBER_END, UPDATE_REASON_END);
@@ -478,12 +480,14 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 			name+="_";
 		}
 		Variable v = Global.getCurrentSymbolTable().getVariable(name);
+		System.out.println("Trying to get " + name);
 		if (JustCalling)
 		{
 			return value;
 		}
 		if (v instanceof ByNameVariable)
 		{	
+			System.out.println("It's a ByName");
 			try
 			{
 				value = v.getValue();
@@ -529,6 +533,8 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 			}
 			else
 			{
+				System.out.println("Hmmm");
+				System.out.println(v);
 				try
 				{
 					value = v.getValue();
@@ -585,8 +591,18 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 		}
 		Integer value = (Integer)node.jjtGetChild(1).jjtAccept(this, null);
 		int index = 0;
-		
+		System.out.println("ST: " + Global.getCurrentSymbolTable().getName());
 		Variable v = Global.getCurrentSymbolTable().getVariable(name);
+		System.out.println(Global.getFunction("foo").getSymbolTable().getPrevious().getName());
+		try
+		{
+			System.out.println(name + " is a " + v + " with value " + v.getValue());
+							System.out.println("Set the value to " + value);
+		}
+		catch (VizIndexOutOfBoundsException e)
+		{
+			System.out.println(e);
+		}
 		if (v instanceof ByNameVariable)
 		{
 			if (gotAQuestion)
@@ -601,6 +617,7 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 				}
 			}
 			v.setValue(value);
+
 		}
 		else if (v.getIsArray())
 		{
@@ -636,7 +653,14 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 				System.out.println(e);
 			}
 		}
-		System.out.println(assignmentQuestion);
+		try
+		{
+			System.out.println("Global m is " + Global.getFunction("main").getSymbolTable().get("m"));
+		}
+		catch (VizIndexOutOfBoundsException e)
+		{
+			System.out.println(e);
+		}
 		if (gotAQuestion)
 		{
 			int i = -257;

@@ -1,14 +1,23 @@
-
-var n = 4;
-var g = 4;
-var a[] = {3, 2, 1, 2, 1, 4};
-def foo(x, y)
+ var k = 1;
+ var m = 1;
+ var n = 5;
+ var j = 3;
+ var w = 1;
+ var a[] = {3, 5, 5, 1, 5, 4};
+ def foo(x, y)
 {
-
-	a[n] = x + g;
-
-}
- def main()
+	var n = 3;
+	var g = 4;
+	var d[] = {3, 3, 5, 1, 2, 2};
+	m = x - k;
+	x = y - x;
+	n = a[0] + g;
+	j = x + y;
+	x = 4 - n;
+	g = g + y;
+ }
+  def main()
  {
-	foo(a[g], a[g]);
+	var m = 3;
+	foo(a[w], a[w]);
  }
