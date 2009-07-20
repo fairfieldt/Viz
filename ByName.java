@@ -22,7 +22,7 @@ public class ByName
 		{
 			ASTProgram program = (ASTProgram)parser.program();
 
-			RandomizingVisitor2<ByNameVariable> rv = new RandomizingVisitor2<ByNameVariable>(ByNameVariable.class);
+			RandomizingVisitor2<ByNameVariable> rv = new RandomizingVisitor2<ByNameVariable>(ByNameVariable.class, true);
 				
 				program.jjtAccept(rv, null);
 		
