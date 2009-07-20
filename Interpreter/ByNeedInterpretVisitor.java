@@ -462,7 +462,7 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 			{
 			}
 		}
-		connector.startSnap(node.getLineNumber());
+		connector.startSnap(Global.getFunction("main").getLineNumber() -1);
 		
 		System.out.println("leaving call");
 		return 0;
@@ -542,7 +542,6 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 			try
 			{
 				value = v.getValue();
-				System.out.println("Got value offfffff " + value);
 			}
 			catch (VizIndexOutOfBoundsException e)
 			{
@@ -610,7 +609,7 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 				connector.highlightScopeByName("main");
 				if (((ByNameVariable)v).getVariable().getIsArray())
 				{
-					connector.highlightVarByName(((ByNameVariable)v).getVariable(), 0);
+					connector.highlightVarByName(((ByNameVariable)v).getVariable(), ((ByNameVariable)v).getIndex());
 				}
 				else
 				{
@@ -664,6 +663,7 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 				}
 			}
 			v.setValue(value);
+			index = ((ByNameVariable)v).getIndex();
 		}
 		else if (v.getIsArray())
 		{

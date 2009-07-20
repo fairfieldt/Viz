@@ -242,7 +242,7 @@ if (XAALScripter.debug) {				System.out.println("Line yes: " + lineNumber);
 		
 		//Get the parameters and put the correct values in the symbolTable
 		SymbolTable st = fun.getSymbolTable();
-		st.setPrevious(Global.getCurrentSymbolTable());
+		st.setPrevious(Global.getSymbolTable());
 		String name = fun.getName();
 		
 		
@@ -351,10 +351,7 @@ if (XAALScripter.debug) {			System.out.println(node.jjtGetChild(i));
   	public Object visit(ASTAssignment node, Object data)
   	{
   		handleAssignment((ASTAssignment)node);
-if (XAALScripter.debug) {  		System.out.println("asdf");
-}if (XAALScripter.debug) {  		System.out.println(node.getName());
-}if (XAALScripter.debug) {  		System.out.println(Global.getCurrentSymbolTable());
-}  		node.childrenAccept(this, null);
+  		node.childrenAccept(this, null);
   		return null;
   	}
  	public Object visit(ASTExpression node, Object data)

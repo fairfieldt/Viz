@@ -27,9 +27,21 @@ public class ByNameVariable extends AbstractVariable implements Variable
 		this.ref = v;
 	}
 	
+	
 	public ASTVar getRef()
 	{
 		return this.ref;
+	}
+	
+	public int getIndex()
+	{
+		findIndex();
+		return index;
+	}
+	
+	public void setIndex(int index)
+	{
+		this.index = index;	
 	}
 	
 	public void setVariable(ByValVariable v)
@@ -69,6 +81,25 @@ public class ByNameVariable extends AbstractVariable implements Variable
 		return this.isArray;
 	}
 	
+	public void findIndex()
+	{
+		SymbolTable temp = Global.getCurrentSymbolTable();
+		System.out.println(temp);
+		
+		Global.setCurrentSymbolTable(Global.getFunction("main").getSymbolTable());
+		InterpretVisitor iv = new  InterpretVisitor();
+
+		if (ref.jjtGetChild(0) != null)
+		{
+			index = (Integer) ref.jjtGetChild(0).jjtAccept(iv, null);
+			System.out.println(index + " is the index");
+			
+		}
+
+		Global.setCurrentSymbolTable(temp);
+
+	}
+	
 	public int getValue()
 	{
 		SymbolTable temp = Global.getCurrentSymbolTable();
@@ -79,7 +110,13 @@ public class ByNameVariable extends AbstractVariable implements Variable
 		InterpretVisitor iv = new  InterpretVisitor();
 		System.out.println(ref);
 		Integer value = (Integer) ref.jjtAccept(iv, null);
-		System.out.println("Got value : " + value + "From " + index);
+		if (ref.jjtGetChild(0) != null)
+		{
+			index = (Integer) ref.jjtGetChild(0).jjtAccept(iv, null);
+			System.out.println(index + " is the index");
+			
+		}
+		System.out.println("Got value : " + value + "From " + ref.getName());
 		Global.setCurrentSymbolTable(temp);
 		System.out.println("Back to symbol table: " + Global.getCurrentSymbolTable());
 		
