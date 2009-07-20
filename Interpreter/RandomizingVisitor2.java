@@ -13,23 +13,23 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 	
 	final String[] arrVarNames = { "a", "b", "c", "d", "e", "f"};
 	final String[] paramNames = {"x", "y", "z" };	
-	final int minVarDeclsInGlobal = 5;
-	final int maxVarDeclsInGlobal = 5;
+	final int minVarDeclsInGlobal = 3;
+	final int maxVarDeclsInGlobal = 3;
 	
 	final int minIntInDecl = 1;
 	final int maxIntInDecl = 5;
 	
-	final int minVarDeclsInMain = 0;
+	final int minVarDeclsInMain = 1;
 	final int maxVarDeclsInMain = 1;
 	
 	final int minFooParams = 2;
 	final int maxFooParams = 3;
 	
-	final int minFooVarDecls = 2;
-	final int maxFooVarDecls = 2;
+	final int minFooVarDecls = 1;
+	final int maxFooVarDecls = 1;
 	
-	final int minFooAOStmts = 4;
-	final int maxFooAOStmts = 6;
+	final int minFooAOStmts = 3;
+	final int maxFooAOStmts = 4;
 	
 	final int minArrayIndex = 0;
 	final int maxArrayIndex = 5;
@@ -59,6 +59,12 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 		varClass = clazz;
 		this.intrCase = getIntrCase();
 		
+	}
+	
+	public RandomizingVisitor2(Class<T> clazz, boolean lazyEval)
+	{
+		varClass = clazz;
+		this.intrCase = getIntrCaseLazy();
 	}
 	
 	
@@ -383,14 +389,15 @@ if (XAALScripter.debug) {		System.out.println("YYY " + fooCall.getArgs().size())
 			}
 			else //non array index action
 			{
+				/*// we don't want basic assigns anymore
 				if(assignOrOp()) //basic assignment
 				{
 					assign = createBasicAssign(localTable, safeIndexVars);
 				}
 				else //assign with op
-				{
+				{*/
 					assign = createOpAssign(localTable, safeIndexVars);
-				}
+				//}
 			}
 			
 			foo.addLogicalChild(assign, numVarDecls + i);
@@ -933,6 +940,19 @@ if (XAALScripter.debug) {		System.out.println("YYY " + fooCall.getArgs().size())
 			return InterestingCases.None;
 		}
 		
+	}
+	
+	private InterestingCases getIntrCaseLazy()
+	{
+		double probability = rand.nextDouble();
+		if (probability <= .90)
+		{
+			return InterestingCases.Shadowing;
+		}
+		else
+		{
+			return InterestingCases.None;
+		}
 	}
 	
 	private ArrayList<String> getBadLHSNames(SymbolTable localTable, ArrayList<String> badNames)

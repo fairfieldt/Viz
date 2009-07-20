@@ -32,9 +32,9 @@ public class ByName
 			program.buildCode();
 			String[] initial = {"1. The Arguments are copied into the function.", "2. The program is run (click next to continue)."};
 			XAALConnector xc = new XAALConnector(initial, "Call by Name", true);
-			String p0 = xc.addCodePage(program.getPseudocode());
+			String p0 = xc.addCodePage(program.getPseudocode(), true);
 			Global.currentPage = p0;
-							xc.showCodePage(p0);
+					//		xc.showCodePage(p0);
 			xc.startSnap(1);
 				xc.startPar();
 				xc.showCodePage(p0);
