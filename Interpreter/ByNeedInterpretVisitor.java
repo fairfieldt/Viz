@@ -462,7 +462,7 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 			{
 			}
 		}
-		connector.startSnap(node.getLineNumber());
+		connector.startSnap(Global.getFunction("main").getLineNumber());
 		
 		System.out.println("leaving call");
 		return 0;
@@ -663,6 +663,7 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 				}
 			}
 			v.setValue(value);
+			index = ((ByNameVariable)v).getName();
 		}
 		else if (v.getIsArray())
 		{
