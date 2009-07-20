@@ -89,7 +89,7 @@ public class ByNameVariable extends AbstractVariable implements Variable
 		Global.setCurrentSymbolTable(Global.getFunction("main").getSymbolTable());
 		InterpretVisitor iv = new  InterpretVisitor();
 
-		if (ref.jjtGetChild(0) != null)
+		if (isArray)
 		{
 			index = (Integer) ref.jjtGetChild(0).jjtAccept(iv, null);
 			System.out.println(index + " is the index");
@@ -110,7 +110,7 @@ public class ByNameVariable extends AbstractVariable implements Variable
 		InterpretVisitor iv = new  InterpretVisitor();
 		System.out.println(ref);
 		Integer value = (Integer) ref.jjtAccept(iv, null);
-		if (ref.jjtGetChild(0) != null)
+		if (isArray)
 		{
 			index = (Integer) ref.jjtGetChild(0).jjtAccept(iv, null);
 			System.out.println(index + " is the index");
