@@ -730,6 +730,7 @@ if (XAALScripter.debug) {				System.out.println("Unimplemented");
 			System.out.println("Greying scope");
 			connector.highlightScopeByName("main");
 			
+			
 			if (v.getIsArray())
 			{			
 				connector.highlightVarByName(((ByNameVariable)v).getVariable(), index);
