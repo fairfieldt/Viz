@@ -1751,14 +1751,14 @@ public class XAALConnector {
 				scripter.recloseSlide();
 				
 				scripter.reopenSlide(action.getSnapNum() + 1);
-				scripter.reclosePar();
+				scripter.reopenPar();
 				for (int i = 0; i < vArray.getValues().size(); i++) 
 				{
 					String copy = vArray.peekCopyId(i);
 					
 					scripter.addChangeStyle("black", copy);
 				}
-				scripter.reopenPar();
+				scripter.reclosePar();
 				scripter.recloseSlide();
 				
 				
@@ -1783,11 +1783,11 @@ public class XAALConnector {
 
 				// turn off highlighting on the next slide.
 				scripter.reopenSlide(action.getSnapNum() + 1);
-				scripter.reclosePar();
+				scripter.reopenPar();
 
 				scripter.addChangeStyle("black", copy);
 
-				scripter.reopenPar();
+				scripter.reclosePar();
 				scripter.recloseSlide();
 			}
 		} catch (Exception e) {
