@@ -1783,11 +1783,11 @@ public class XAALConnector {
 
 				// turn off highlighting on the next slide.
 				scripter.reopenSlide(action.getSnapNum() + 1);
-				scripter.reclosePar();
+				scripter.reopenPar();
 
 				scripter.addChangeStyle("black", copy);
 
-				scripter.reopenPar();
+				scripter.reclosePar();
 				scripter.recloseSlide();
 			}
 		} catch (Exception e) {
