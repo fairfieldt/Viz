@@ -132,12 +132,7 @@ public class XAALConnector {
 		this.cpc = new CodePageContainer();
 		this.lineToHighlightOnSnap = new HashMap<Integer,Integer>();
 	}
-	
-	//Tom added this and it sucks!!!!!
-	/*public void setPseudocode(String[] code)
-	{
-		pseudo.setPseudocode(code);
-	}*/
+
 
 	/**
 	 * Adds a <code>CodePage</code> for use by <code>XAALConnector</code>.

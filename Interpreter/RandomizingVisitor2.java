@@ -25,6 +25,8 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 	final int minFooParams = 2;
 	final int maxFooParams = 3;
 	
+	final int numOfLazyFooParams = 3;
+	
 	final int minFooVarDecls = 1;
 	final int maxFooVarDecls = 1;
 	
@@ -45,8 +47,10 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 	//this is actually 25% as this is half of the time a param isn't used as var
 	final double chanceOfArgAsVar = 1.0/2.0;
 	
+	private boolean lazyEval = false;
 	
-	InterestingCases intrCase;
+	
+	private InterestingCases intrCase;
 	
 	
 	
@@ -68,6 +72,8 @@ public class RandomizingVisitor2<T> implements VizParserTreeConstants,
 			this.intrCase = getIntrCaseLazy();
 		else
 			this.intrCase = getIntrCase();
+		
+		this.lazyEval = lazyEval;
 	}
 	
 	
@@ -757,6 +763,9 @@ if (XAALScripter.debug) {		System.out.println("YYY " + fooCall.getArgs().size())
 	
 	private int numOfFooParams()
 	{
+		if (lazyEval)
+			return numOfLazyFooParams;
+		
 		return randomNum(minFooParams, maxFooParams);
 	}
 	

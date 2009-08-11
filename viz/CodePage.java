@@ -57,7 +57,14 @@ public class CodePage implements Drawable {
 	public CodePage(String id, String[] code)
 	{
 		setup();
-		this.code = code;
+		this.code = new String[code.length];
+		
+		for (int i = 0; i < code.length; i++)
+		{
+			String temp = code[i].replaceFirst("\\d{1,2}\\.", "");
+			this.code[i] = temp;
+		}
+		
 		this.id = id;
 		for (int i = 0; i < 3; i++)
 		{
