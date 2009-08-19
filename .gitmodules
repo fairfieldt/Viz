@@ -1,0 +1,3 @@
+[submodule "rxaal"]
+	path = rxaal
+	url = git://github.com/ericschultz/RXAAL.git
