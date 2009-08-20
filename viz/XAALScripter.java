@@ -3,7 +3,11 @@ package viz;
 import org.jdom.*;
 import org.jdom.output.*;
 import org.jdom.xpath.XPath;
-
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+import javax.script.Invocable;
 import java.awt.Color;
 import java.util.*;
 
@@ -17,16 +21,14 @@ import java.util.*;
  * 
  */
 public class XAALScripter {
+	ScriptEngine rubyEngine;
+	Invocable inv;
+	Object XaalDoc;
+	
 	// the jdom document
-	private Document document = new Document();
-	// XAAL namespace
-	private final Namespace defaultNS = Namespace
-			.getNamespace("http://www.cs.hut.fi/Research/SVG/XAAL");
+	//private Document document = new Document();
 
-	// TODO: change the namespace to a final namespace eventually
-	// namespace for JHAVE extensions to XAAL
-	private final Namespace jhaveNS = Namespace.getNamespace("jhave",
-			"http://www.uwosh.edu/jhave/ns");
+
 
 	public static final int DEFAULT_FONT_SIZE = 16;
 	public static final String DEFAULT_FONT_FAMILY = "Lucida Bright";
@@ -58,29 +60,20 @@ public class XAALScripter {
 	 * Constructor for XAALScripter
 	 */
 	public XAALScripter() {
-		Element xaalRoot = createElement("xaal");
-
-		xaalRoot.setAttribute("version", 1.0 + "");
-
-		Namespace xsi = Namespace.getNamespace("xsi",
-				"http://www.w3.org/2001/XMLSchema-instance");
-		xaalRoot.addNamespaceDeclaration(xsi);
-		xaalRoot.addNamespaceDeclaration(jhaveNS);
-
-		Attribute schemaLocation = new Attribute("schemaLocation",
-				"http://www.cs.hut.fi/Research/SVG/XAAL xaal.xsd", xsi);
-		xaalRoot.setAttribute(schemaLocation);
-
-		Element initial = createElement("initial");
-		xaalRoot.addContent(initial);
-
-		Element animation = createElement("animation");
-		xaalRoot.addContent(animation);
-
-		Element questions = new Element("questions", jhaveNS);
-		xaalRoot.addContent(questions);
-
-		document.setRootElement(xaalRoot);
+		ScriptEngineManager m = new ScriptEngineManager();
+		rubyEngine = m.getEngineByName("jruby");
+		inv = (Invocable)rubyEngine;
+		try {
+			rubyEngine.eval("$LOAD_PATH << 'rxaal/lib'");
+			rubyEngine.eval("$LOAD_PATH << 'ruby/1.8'");
+			rubyEngine.eval("require \"rxaal\"");
+			rubyEngine.eval("include RXaal");
+			XaalDoc = rubyEngine.eval("XaalDoc.new");
+		}
+		catch (ScriptException e)
+		{
+			System.out.println("bad");
+		}
 	}
 
 	/**
@@ -242,21 +235,19 @@ public class XAALScripter {
 	 *            it won't be filled.
 	 * @return a String containing the id of the rectangle added.
 	 */
-	public String addRectangle(int x, int y, int width, int height,
+	public Object addRectangle(int x, int y, int width, int height,
 			String color, boolean hidden, StrokeType strokeType, int lineWidth, 
 			String fillColor) 
 	{
-		Element initial = document.getRootElement().getChild("initial",
-				defaultNS);
-
-		Element rect = createElement("polyline");
+		
 
 		String idVal = "rectangle" + rectNum;
 		rectNum++;
-
-		rect.setAttribute("id", idVal);
-
-		rect.setAttribute("hidden", hidden + "");
+		Object polylineClass = rubyEngine.eval("RXAAL::Polyline");
+		Object polyline = inv.invokeMethod(polylineClass, "new", XaalDoc, idVal); 
+		
+		inv.invokeMethod(polyline, "hidden=", hidden + "");
+		inv.invokeMethod(polyline, name, args)
 
 		// set up jhave width and height EXTENSION
 		rect.setAttribute("shapeWidth", width + "", jhaveNS);
