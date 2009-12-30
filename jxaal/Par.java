@@ -4,12 +4,24 @@ import java.util.ArrayList;
 
 import org.jdom.Element;
 
+/**
+ * Represents a par element
+ * @author Eric
+ *
+ */
 public class Par extends XaalElement implements XaalSerializable {
 
+	//the elements that will be unhidden during this par
 	public ShowHide show;
+	// the elements that will be hidden during this par
 	public ShowHide hide;
+	// ChangeStyle elements to be applied during this par
 	public ArrayList<ChangeStyle> cs;
 	
+	/**
+	 * 
+	 * @param doc the XaalDoc the par belongs to
+	 */
 	public Par(XaalDoc doc)
 	{
 		super(doc, null, null);

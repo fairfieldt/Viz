@@ -18,7 +18,6 @@ public class AnswerOption extends XaalElement {
 
 	@Override
 	public String xaalSerialize(Element parent) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

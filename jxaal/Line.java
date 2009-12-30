@@ -2,11 +2,21 @@ package jxaal;
 
 import org.jdom.Element;
 
+/**
+ * represents a line element
+ * @author Eric
+ *
+ */
 public class Line extends NodePrim {
 
+	/**
+	 * 
+	 * @param doc the document this coordinate belongs to
+	 * @param xPos the x position of the coordinate
+	 * @param yPos the y position of the coordinate
+	 */
 	public Line(XaalDoc doc, String id, XaalNS elemNS) {
 		super(doc, id, elemNS);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

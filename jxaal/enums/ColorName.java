@@ -1,5 +1,10 @@
 package jxaal.enums;
 
+/**
+ * the named colors in XAAL
+ * @author Eric
+ *
+ */
 public enum ColorName {
 	MAROON,
 	RED,

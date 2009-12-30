@@ -3,15 +3,22 @@ package jxaal;
 import org.jdom.Element;
 
 import jxaal.enums.*;
-
+/**
+ * Represents a stroke element in XAAL
+ * @author Eric
+ *
+ */
 public class Stroke extends XaalElement implements XaalSerializable {
-
-	public StrokeType type;
-	public Integer width;
 	
+	//the type of stroke
+	public StrokeType type;
+	//the width of the stroke
+	public Integer width;
+	/**
+	 * @param doc the document this stroke belongs to
+	 */
 	public Stroke(XaalDoc doc) {
 		super(doc, null, null);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
