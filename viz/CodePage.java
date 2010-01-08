@@ -62,6 +62,7 @@ public class CodePage implements Drawable {
 		for (int i = 0; i < code.length; i++)
 		{
 			String temp = code[i].replaceFirst("\\d{1,2}\\.", "");
+			temp = temp.replaceAll("\\|", "[");
 			this.code[i] = temp;
 		}
 		
