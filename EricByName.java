@@ -12,7 +12,7 @@ public class EricByName
 		BufferedReader br = null;
 		try
 		{
-			br = new BufferedReader(new FileReader("C:\\Users\\Eric\\EclipseWorkspaces\\newws\\viz\\src\\Samples\\shell.src"));
+			br = new BufferedReader(new FileReader(args[0]));
 		}
 		catch (Exception e)
 		{
@@ -82,7 +82,7 @@ public class EricByName
 			iv.setXAALConnector(xc);
 			iv.setQuestionFactory(questionFactory);
 			program.jjtAccept(iv, null);
-			xc.draw(args[0]);
+			xc.draw(args[1]);
 			System.out.println("Visualization file created");
 
 		}

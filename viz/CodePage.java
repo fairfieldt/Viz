@@ -63,6 +63,9 @@ public class CodePage implements Drawable {
 		{
 			String temp = code[i].replaceFirst("\\d{1,2}\\.", "");
 			temp = temp.replaceAll("\\|", "[");
+			//note the character below is NOT a standard space. Its U+00A8 "no-break space". This is needed
+			// since java tries to eliminate whitespace at the beginning of lines stupidly.
+			temp = " " + temp;
 			this.code[i] = temp;
 		}
 		
