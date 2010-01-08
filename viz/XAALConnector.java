@@ -435,7 +435,7 @@ public class XAALConnector {
 	public void addVariable(Interpreter.Variable var, String varName,
 			String scope)
 	{
-		Variable v = null;
+				Variable v = null;
 		try
 		{
 			if (var.getIsArray()) 

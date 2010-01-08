@@ -1,9 +1,6 @@
 package viz;
 import java.util.*;
 
-import jxaal.Polyline;
-import jxaal.Text;
-
 public class Variable implements Drawable
 {
 	protected String name;
@@ -15,11 +12,11 @@ public class Variable implements Drawable
 	protected ArrayList<String> ids;
 	private Queue<Integer> copiesToMake;
 	
-	private LinkedList<Text> copiesOwned;
+	private LinkedList<String> copiesOwned;
 	
-	private Polyline rect;
+	private String rectId;
 	
-	private Polyline highlightRect = null;
+	private String highlightRectId = null;
 	
 	private boolean createhighlight;
 	
@@ -43,7 +40,7 @@ public class Variable implements Drawable
 		this.isParam = isParam;
 		this.length = (name.length() * 10) + 40;
 		copiesToMake = new LinkedList<Integer>();
-		copiesOwned = new LinkedList<Text>();
+		copiesOwned = new LinkedList<String>();
 	}
 	
 	public Variable(String name, Variable ref, boolean isParam)
@@ -74,7 +71,7 @@ public class Variable implements Drawable
 		this.isParam = isParam;
 		this.length = (name.length() * 10) + 100;
 		copiesToMake = new LinkedList<Integer>();
-		copiesOwned = new LinkedList<Text>();
+		copiesOwned = new LinkedList<String>();
 		setReference(ref);
 	}
 	
@@ -89,7 +86,7 @@ public class Variable implements Drawable
 		this.name = v.name;
 		this.value = v.value;
 		copiesToMake = new LinkedList<Integer>();
-		copiesOwned = new LinkedList<Text>();
+		copiesOwned = new LinkedList<String>();
 	}
 	
 	public boolean getHidden()
@@ -180,26 +177,26 @@ public class Variable implements Drawable
 		copiesToMake.offer(new Integer(value));
 	}
 	
-	public Text popCopyId()
+	public String popCopyId()
 	{
 		return copiesOwned.pop();
 	}
 	
-	public Text peekCopyId()
+	public String peekCopyId()
 	{
 		return copiesOwned.peek();
 	}
 	
-	public Polyline getHighlightId()
+	public String getHighlightId()
 	{
-		return highlightRect;
+		return highlightRectId;
 	}
 	
 	/**
 	 * Allows this variable to own the copy designated by id
 	 * @param id
 	 */
-	public void receiveCopyOwnership(Text id)
+	public void receiveCopyOwnership(String id)
 	{
 		copiesOwned.addFirst(id);
 	}
@@ -229,9 +226,9 @@ public class Variable implements Drawable
 		return this.isParam;
 	}
 	
-	public Polyline getRectId()
+	public String getRectId()
 	{
-		return this.rect;
+		return this.rectId;
 	}
 	
 	public ArrayList<String> getIds()
@@ -251,7 +248,7 @@ public class Variable implements Drawable
 		if (this.isCopyRestore)
 		{
 			String id1 = scripter.addRectangle(xPos, yPos, 40, 40, color,  hidden);
-			this.rect = id1;
+			this.rectId = id1;
 			//title
 			String id2 = scripter.addText(xPos, yPos-5, name, "black", hidden);
 			//pointer square
@@ -306,7 +303,7 @@ public class Variable implements Drawable
 		{
 			// rectangle
 			String id1 = scripter.addRectangle(xPos, yPos, 40, 40, color,  hidden);
-			this.rect = id1;
+			this.rectId = id1;
 			//title
 			String id2 = scripter.addText(xPos, yPos-5, name, "black", hidden);
 			//pointer square
@@ -337,12 +334,12 @@ public class Variable implements Drawable
 		else
 		{
 			String id1 = scripter.addRectangle(xPos, yPos, 40, 40, color,  hidden);
-			this.rect = id1;
+			this.rectId = id1;
 			String id2 = scripter.addText(xPos, yPos-5, name, "black", hidden);
 			
 			if (createhighlight)
 			{
-				highlightRect  = scripter.addRectangle(xPos, yPos, 40, 40, color,  true, 3);
+				highlightRectId  = scripter.addRectangle(xPos, yPos, 40, 40, color,  true, 3);
 				
 			}
 			ids.add(id1);

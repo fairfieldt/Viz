@@ -1356,42 +1356,7 @@ public class XAALScripter {
 	 *             No slide open.
 	 */
 	public void addShow(String... ids) throws SlideException {
-		if (!inSlide())
-			throw new SlideException(
-					"You must create a slide before creating actions.");
-
-		boolean closeParAtEnd = false;
-
-		if (!inPar()) {
-			try {
-				startPar();
-			} catch (ParException e) {
-
-				e.printStackTrace();
-			}
-			closeParAtEnd = true;
-		}
-
-		Element parent = currentPar;
-
-		Element show = createElement("show");
-		show.setAttribute("type", "selected");
-
-		for (String id : ids) {
-			Element objRef = createElement("object-ref");
-			objRef.setAttribute("id", id);
-			show.addContent(objRef);
-		}
-
-		parent.addContent(show);
-
-		if (closeParAtEnd)
-			try {
-				endPar();
-			} catch (ParException e) {
-
-				e.printStackTrace();
-			}
+		addShowOrHide(true, ids);
 	}
 
 	/**
@@ -1405,7 +1370,11 @@ public class XAALScripter {
 	 *             No slide open.
 	 */
 	public void addHide(String... ids) throws SlideException {
-		//System.out.println("Adding hide for " + ids[0]);
+		addShowOrHide(false, ids);
+	}
+
+	private void addShowOrHide(boolean show, String... ids) throws SlideException
+	{
 		if (!inSlide())
 			throw new SlideException(
 					"You must create a slide before creating actions.");
@@ -1423,17 +1392,29 @@ public class XAALScripter {
 		}
 
 		Element parent = currentPar;
-
-		Element hide = createElement("hide");
-		hide.setAttribute("type", "selected");
+		Element showOrHide = null;
+		String showOrHideStr = show ? "show": "hide";
+		
+		Element possChild = parent.getChild(showOrHideStr, defaultNS);
+		if (possChild != null)
+		{
+			showOrHide = possChild;
+		}
+		else
+		{
+			showOrHide = createElement(showOrHideStr);
+			showOrHide.setAttribute("type", "selected");
+		}
+	
 
 		for (String id : ids) {
 			Element objRef = createElement("object-ref");
 			objRef.setAttribute("id", id);
-			hide.addContent(objRef);
+			showOrHide.addContent(objRef);
 		}
-
-		parent.addContent(hide);
+		
+		if (possChild == null)
+			parent.addContent(showOrHide);
 
 		if (closeParAtEnd)
 			try {
@@ -1443,7 +1424,6 @@ public class XAALScripter {
 				e.printStackTrace();
 			}
 	}
-
 	/**
 	 * Adds a change-style action to the open parallel section or creates one if
 	 * necessary.
