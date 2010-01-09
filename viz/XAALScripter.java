@@ -83,43 +83,6 @@ public class XAALScripter {
 		document.setRootElement(xaalRoot);
 	}
 
-	/**
-	 * Adds a new non-hidden, solid, black rectangle with default line width to
-	 * the initial element of a XAAL script.
-	 * 
-	 * @param x
-	 *            y coordinate for the top left corner of the rectangle.
-	 * @param y
-	 *            y coordinate for the top left corner of the rectangle.
-	 * @param width
-	 *            width of the rectangle in pixels.
-	 * @param height
-	 *            height of the rectangle in pixels.
-	 * @return a String containing the id of the rectangle added.
-	 */
-	public String addRectangle(int x, int y, int width, int height) {
-		return addRectangle(x, y, width, height, "black");
-	}
-
-	/**
-	 * Adds a new non-hidden, solid rectangle with default line width to the
-	 * initial element of a XAAL script.
-	 * 
-	 * @param x
-	 *            y coordinate for the top left corner of the rectangle.
-	 * @param y
-	 *            y coordinate for the top left corner of the rectangle.
-	 * @param width
-	 *            width of the rectangle in pixels.
-	 * @param height
-	 *            height of the rectangle in pixels.
-	 * @param color
-	 *            color of the rectangle's border. Must be a named XAAL color.
-	 * @return a String containing the id of the rectangle added.
-	 */
-	public String addRectangle(int x, int y, int width, int height, String color) {
-		return addRectangle(x, y, width, height, "black", false);
-	}
 
 	/**
 	 * Adds a new solid rectangle with default line width to the initial element
@@ -405,21 +368,6 @@ public class XAALScripter {
 		return idVal;
 	}
 
-	/**
-	 * Adds a new black, non-hidden, text block with default font size and
-	 * family to the initial element of the XAAL script.
-	 * 
-	 * @param x
-	 *            x coordinate for the top left corner of the text(?)
-	 * @param y
-	 *            y coordinate for the top left corner of the text(?)
-	 * @param contents
-	 *            the text string to be displayed.
-	 * @return a String containing the id of the text(?) added.
-	 */
-	public String addText(int x, int y, String contents) {
-		return addText(x, y, contents, "black");
-	}
 
 	/**
 	 * Adds a new non-hidden, text block with default font size and family to
@@ -548,66 +496,6 @@ public class XAALScripter {
 		return idVal;
 	}
 
-	/**
-	 * Adds a new non-hidden, solid, black line with the default line width to
-	 * the initial element of the XAAL script.
-	 * 
-	 * @param x1
-	 *            x coordinate for first point.
-	 * @param y1
-	 *            y coordinate for first point.
-	 * @param x2
-	 *            x coordinate for second point.
-	 * @param y2
-	 *            y coordinate for second point.
-	 * @return a String containing the id of the line added.
-	 */
-	public String addLine(int x1, int y1, int x2, int y2) {
-		return addLine(x1, y1, x2, y2, "black");
-	}
-
-	/**
-	 * Adds a new non-hidden, solid line with the default line width to the
-	 * initial element of the XAAL script.
-	 * 
-	 * @param x1
-	 *            x coordinate for first point.
-	 * @param y1
-	 *            y coordinate for first point.
-	 * @param x2
-	 *            x coordinate for second point.
-	 * @param y2
-	 *            y coordinate for second point.
-	 * @param color
-	 *            the color of line. Must be a named XAAL color.
-	 * @return a String containing the id of the line added.
-	 */
-	public String addLine(int x1, int y1, int x2, int y2, String color) {
-		return addLine(x1, y1, x2, y2, color, false);
-	}
-
-	/**
-	 * Adds a new solid line with the default line width to the initial element
-	 * of the XAAL script.
-	 * 
-	 * @param x1
-	 *            x coordinate for first point.
-	 * @param y1
-	 *            y coordinate for first point.
-	 * @param x2
-	 *            x coordinate for second point.
-	 * @param y2
-	 *            y coordinate for second point.
-	 * @param color
-	 *            the color of line. Must be a named XAAL color.
-	 * @param hidden
-	 *            whether the line should be initially hidden.
-	 * @return a String containing the id of the line added.
-	 */
-	public String addLine(int x1, int y1, int x2, int y2, String color,
-			boolean hidden) {
-		return addLine(x1, y1, x2, y2, color, hidden, StrokeType.solid);
-	}
 
 	/**
 	 * Adds a new line with the default line width to the initial element of the
@@ -720,147 +608,6 @@ public class XAALScripter {
 		initial.addContent(line);
 
 		return idVal;
-	}
-
-	/**
-	 * Adds a new non-hidden, black, solid equilateral triangle with the default
-	 * line width to the initial element of a XAAL script.
-	 * 
-	 * @param x
-	 *            y coordinate for the top left corner of the rectangular box
-	 *            containing the triangle.
-	 * @param y
-	 *            y coordinate for the top left corner of the rectangular box
-	 *            containing the triangle.
-	 * @param width
-	 *            width (and height) of the triangle in pixels.
-	 * @return the String containing the id of the triangle added.
-	 */
-	public String addTriangle(int x, int y, int width) {
-		return addTriangle(x, y, width, "black");
-	}
-
-	/**
-	 * Adds a new non-hidden, solid equilateral triangle with the default line
-	 * width to the initial element of a XAAL script.
-	 * 
-	 * @param x
-	 *            y coordinate for the top left corner of the rectangular box
-	 *            containing the triangle.
-	 * @param y
-	 *            y coordinate for the top left corner of the rectangular box
-	 *            containing the triangle.
-	 * @param width
-	 *            width (and height) of the triangle in pixels.
-	 * @param color
-	 *            the border color of the triangle
-	 * @return the String containing the id of the triangle added.
-	 */
-	public String addTriangle(int x, int y, int width, String color) {
-		return addTriangle(x, y, width, color, false);
-	}
-
-	/**
-	 * Adds a new equilateral, solid triangle with the default line width to the
-	 * initial element of a XAAL script.
-	 * 
-	 * @param x
-	 *            y coordinate for the top left corner of the rectangular box
-	 *            containing the triangle.
-	 * @param y
-	 *            y coordinate for the top left corner of the rectangular box
-	 *            containing the triangle.
-	 * @param width
-	 *            width (and height) of the triangle in pixels.
-	 * @param color
-	 *            the border color of the triangle.
-	 * @param hidden
-	 *            whether the triangle is hidden initially.
-	 * @return the String containing the id of the triangle added.
-	 */
-	public String addTriangle(int x, int y, int width, String color,
-			boolean hidden) {
-		return addTriangle(x, y, width, color, hidden, StrokeType.solid);
-	}
-
-	/**
-	 * Adds a new equilateral triangle with the default line width to the
-	 * initial element of a XAAL script.
-	 * 
-	 * @param x
-	 *            y coordinate for the top left corner of the rectangular box
-	 *            containing the triangle.
-	 * @param y
-	 *            y coordinate for the top left corner of the rectangular box
-	 *            containing the triangle.
-	 * @param width
-	 *            width (and height) of the triangle in pixels.
-	 * @param color
-	 *            the border color of the triangle.
-	 * @param hidden
-	 *            whether the triangle is hidden initially.
-	 * @param strokeType
-	 *            whether the line should be solid, dashed or dotted.
-	 * @return the String containing the id of the triangle added.
-	 */
-	public String addTriangle(int x, int y, int width, String color,
-			boolean hidden, StrokeType strokeType) {
-		return addTriangle(x, y, width, color, hidden, strokeType,
-				DEFAULT_STROKE_WIDTH);
-	}
-
-	/**
-	 * Adds a new equilateral, solid triangle to the initial element of a XAAL
-	 * script.
-	 * 
-	 * @param x
-	 *            y coordinate for the top left corner of the rectangular box
-	 *            containing the triangle.
-	 * @param y
-	 *            y coordinate for the top left corner of the rectangular box
-	 *            containing the triangle.
-	 * @param width
-	 *            width (and height) of the triangle in pixels.
-	 * @param color
-	 *            the border color of the triangle.
-	 * @param hidden
-	 *            whether the triangle is hidden initially.
-	 * @param lineWidth
-	 *            the width of the border line.
-	 * @return the String containing the id of the triangle added.
-	 */
-	public String addTriangle(int x, int y, int width, String color,
-			boolean hidden, int lineWidth) {
-		return addTriangle(x, y, width, color, hidden, StrokeType.solid,
-				lineWidth);
-	}
-
-	/**
-	 * Adds a new equilateral, unfilled triangle with the default line width to
-	 * the initial element of a XAAL script.
-	 * 
-	 * @param x
-	 *            y coordinate for the top left corner of the rectangular box
-	 *            containing the triangle.
-	 * @param y
-	 *            y coordinate for the top left corner of the rectangular box
-	 *            containing the triangle.
-	 * @param width
-	 *            width (and height) of the triangle in pixels.
-	 * @param color
-	 *            the border color of the triangle.
-	 * @param hidden
-	 *            whether the triangle is hidden initially.
-	 * @param strokeType
-	 *            whether the line should be solid, dashed or dotted.
-	 * @param lineWidth
-	 *            the width of the line.
-	 * @return the String containing the id of the triangle added.
-	 */
-	public String addTriangle(int x, int y, int width, String color,
-			boolean hidden, StrokeType strokeType, int lineWidth) {
-		return addTriangle(x, y, width, color, hidden, strokeType, lineWidth,
-				null);
 	}
 
 	/**
@@ -1013,9 +760,9 @@ public class XAALScripter {
 			Element e = (Element) o;
 			Attribute a = e.getAttribute("id");
 			//System.out.println(a);
-			if (e.getAttribute("id").getValue().equals(originName)) {
+			if (a.getValue().equals(originName)) {
 				origin = e;
-			} else if (e.getAttribute("id").getValue().equals(destName)) {
+			} else if (a.getValue().equals(destName)) {
 				dest = e;
 			}
 		}
