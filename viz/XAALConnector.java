@@ -82,9 +82,6 @@ public class XAALConnector {
 	private int snapRegularPseudoStartsAt = -1;
 	
 	private String[] pseudoCode = null;
-	
-	private int lineToHighlight = -1;
-	
 	// the action that needs to be done
 	private CallByNameAction callByNameAction = null;
 
