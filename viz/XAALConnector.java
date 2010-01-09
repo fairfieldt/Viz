@@ -1,5 +1,6 @@
 package viz;
 
+import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
@@ -1226,9 +1227,9 @@ public class XAALConnector {
 		}
 
 		// write to the file
-		FileWriter writer;
+		BufferedWriter writer;
 		try {
-			writer = new FileWriter(filename);
+			writer = new BufferedWriter(new FileWriter(filename));
 
 			writer.write(scripter.toString());
 
